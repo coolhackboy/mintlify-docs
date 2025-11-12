@@ -1,97 +1,218 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Welcome to PoYo AI"
+description: "Professional Image and Video Generation APIs"
 ---
 
-## Setting up
+# Welcome to PoYo AI
 
-Get your documentation site up and running in minutes.
+PoYo AI provides state-of-the-art image and video generation APIs powered by the latest AI models from OpenAI and Google. Build amazing applications with our simple, unified API.
+
+## Why PoYo AI?
+
+<CardGroup cols={2}>
+  <Card title="Powerful Models" icon="sparkles">
+    Access GPT-4o, Sora 2, Gemini, and VEO 3.1 through a single API
+  </Card>
+  <Card title="Simple Integration" icon="code">
+    Unified REST API design with comprehensive SDKs and examples
+  </Card>
+  <Card title="Fast & Reliable" icon="bolt">
+    Optimized for speed with 99.9% uptime SLA
+  </Card>
+  <Card title="Flexible Pricing" icon="dollar-sign">
+    Pay only for what you use with transparent credit-based pricing
+  </Card>
+</CardGroup>
+
+## Get Started in Minutes
+
+<Steps>
+  <Step title="Get Your API Key">
+    Sign up and generate your API key from the [console](https://poyo.ai/dashboard/api-key)
+  </Step>
+  <Step title="Make Your First Request">
+    Use our unified API to generate images or videos
+  </Step>
+  <Step title="Retrieve Results">
+    Poll for task status and download your generated content
+  </Step>
+</Steps>
 
 <Card
-  title="Start here"
+  title="Quick Start Guide"
   icon="rocket"
-  href="/quickstart"
+  href="/guides/getting-started/quickstart"
   horizontal
 >
-  Follow our three step quickstart guide.
+  Follow our quick start guide to make your first API call in minutes
 </Card>
 
-## Make it yours
+## Available Models
 
-Design a docs site that looks great and empowers your users.
+### Image Generation
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
-  </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
+<CardGroup cols={2}>
+  <Card title="GPT-4o Image" icon="image" href="/api-manual/image-series/gpt-4o-image">
+    **Premium Quality**
 
-## Create beautiful pages
+    Text-to-image, image-to-image, and advanced editing with masks
 
-Everything you need to create world-class documentation.
+    - Multiple sizes: 1024x1024, 1024x1536, 1536x1024
+    - Batch generation: 1, 2, or 4 images
+    - ~30-60s generation time
+  </Card>
+  <Card title="Nano Banana" icon="sparkles" href="/api-manual/image-series/nano-banana">
+    **Fast & Efficient**
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+    Powered by Gemini 2.5 Flash for rapid generation
 
-## Need inspiration?
+    - 8 aspect ratios including 16:9, 9:16
+    - 40% cost savings
+    - ~15-45s generation time
+  </Card>
+</CardGroup>
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
+### Video Generation
+
+<CardGroup cols={2}>
+  <Card title="Sora 2" icon="video" href="/api-manual/video-series/sora-2">
+    **Professional Quality**
+
+    Multi-tier video generation with extended durations
+
+    - Standard & Pro quality options
+    - 10-25 second durations
+    - Text-to-video & image-to-video
+  </Card>
+  <Card title="VEO 3.1" icon="film" href="/api-manual/video-series/veo3">
+    **Fast Video**
+
+    Google's VEO technology for quick generation
+
+    - 8 second videos
+    - Landscape & portrait support
+    - ~90s generation time
+  </Card>
+</CardGroup>
+
+## Quick Example
+
+Generate an image in just a few lines of code:
+
+```python
+import requests
+
+response = requests.post(
+    "https://api.poyo.ai/api/generate/submit",
+    headers={"Authorization": "Bearer YOUR_API_KEY"},
+    json={
+        "model": "gpt-4o-image",
+        "prompt": "A serene mountain landscape at sunset",
+        "size": "1:1"
+    }
+)
+
+task_id = response.json()["id"]
+```
+
+<Card title="See Full Example" icon="code" href="/guides/getting-started/quickstart">
+  Complete examples with polling and result retrieval
 </Card>
+
+## Explore the Documentation
+
+<CardGroup cols={3}>
+  <Card title="Quick Start" icon="rocket" href="/guides/getting-started/quickstart">
+    Get up and running in minutes
+  </Card>
+  <Card title="API Overview" icon="book" href="/api-manual/overview">
+    Complete API reference
+  </Card>
+  <Card title="Image Series" icon="image" href="/api-manual/image-series/gpt-4o-image">
+    Image generation guide
+  </Card>
+  <Card title="Video Series" icon="video" href="/api-manual/video-series/sora-2">
+    Video generation guide
+  </Card>
+  <Card title="Task Management" icon="list-check" href="/api-manual/task-management/status">
+    Monitor your tasks
+  </Card>
+  <Card title="Get API Key" icon="key" href="https://poyo.ai/dashboard/api-key">
+    Generate your credentials
+  </Card>
+</CardGroup>
+
+## Key Features
+
+### Asynchronous Processing
+
+All generation requests are processed asynchronously for optimal performance:
+
+1. Submit your request and receive a task ID instantly
+2. Poll the status endpoint to check progress
+3. Retrieve results when complete
+4. Optional webhook callbacks for automatic notifications
+
+### Unified API Design
+
+Single endpoint for all models:
+
+- **Submit**: `POST /api/generate/submit`
+- **Status**: `GET /api/generate/status/{task_id}`
+
+Switch between models by simply changing the `model` parameter.
+
+### Flexible Parameters
+
+Customize your generations with extensive parameters:
+
+- **Images**: Size, quantity, reference images, masks
+- **Videos**: Duration, aspect ratio, thumbnails, watermarks
+- **Both**: Callbacks, custom parameters per model
+
+## Pricing
+
+Pay only for what you use with transparent credit-based pricing:
+
+| Model Type | Credits per Generation |
+|------------|----------------------|
+| GPT-4o Image | ~2.5 credits |
+| Nano Banana | ~1.6 credits |
+| Sora 2 | ~30-125 credits |
+| VEO 3.1 | ~24 credits |
+
+<Info>
+  Check your current usage and balance in the [API Console](https://poyo.ai)
+</Info>
+
+## Support
+
+Need help? We're here to assist:
+
+<CardGroup cols={2}>
+  <Card title="Email Support" icon="envelope" href="mailto:support@poyo.ai">
+    support@poyo.ai
+  </Card>
+  <Card title="API Console" icon="terminal" href="https://poyo.ai">
+    Manage your account and API keys
+  </Card>
+</CardGroup>
+
+## Ready to Build?
+
+<CardGroup cols={2}>
+  <Card
+    title="Start Building"
+    icon="rocket"
+    href="/guides/getting-started/quickstart"
+  >
+    Follow our quick start guide
+  </Card>
+  <Card
+    title="Get API Key"
+    icon="key"
+    href="https://poyo.ai/dashboard/api-key"
+  >
+    Generate your credentials now
+  </Card>
+</CardGroup>

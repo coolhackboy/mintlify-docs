@@ -1,0 +1,688 @@
+---
+title: "VEO 3.1 Video Generation"
+description: "Fast video generation with Google's VEO 3.1 technology"
+openapi: "POST /api/generate/submit"
+---
+
+# VEO 3.1 Video Generation
+
+Generate high-quality videos quickly using Google's VEO 3.1 model. Optimized for speed while maintaining professional quality.
+
+## Available Models
+
+- `veo3.1-fast` - Fast video generation (8 seconds, optimized speed)
+
+## Endpoint
+
+```http
+POST https://api.poyo.ai/api/generate/submit
+```
+
+## Authentication
+
+All requests require Bearer token authentication:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+<Card title="Get API Key" icon="key" href="https://poyo.ai/dashboard/api-key">
+  Generate your API key from the console
+</Card>
+
+## Request Parameters
+
+### Required Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `model` | string | Model identifier: `veo3.1-fast` |
+| `prompt` | string | Description of the desired video (max 1000 characters) |
+
+### Optional Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `duration` | integer | `8` | Video length in seconds (fixed at 8 for VEO 3.1) |
+| `aspect_ratio` | string | `16:9` | Video aspect ratio: `16:9` (landscape) or `9:16` (portrait) |
+| `image_urls` | array | - | Reference image URLs for image-to-video generation (max 10MB each) |
+| `callback_url` | string | - | HTTPS webhook URL for task completion notifications |
+
+### Image Requirements (for Image-to-Video)
+
+- **Supported formats**: `.jpeg`, `.jpg`, `.png`, `.webp`
+- **Maximum size**: 10MB per image
+- **Aspect ratio support**: Only `16:9` landscape images are supported for image-to-video
+- **Note**: `9:16` portrait videos do not support image-to-video mode
+
+<Warning>
+  **Portrait Limitation**: The `9:16` aspect ratio does **not support** image-to-video generation. Use text-to-video only for portrait videos.
+</Warning>
+
+## Generation Modes
+
+### Text-to-Video (Landscape)
+
+```json
+{
+  "model": "veo3.1-fast",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "A peaceful stream flowing through a lush green forest, birds flying overhead",
+    "duration": 8,
+    "aspect_ratio": "16:9"
+  }
+}
+```
+
+### Text-to-Video (Portrait)
+
+```json
+{
+  "model": "veo3.1-fast",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "A vertical shot of a waterfall cascading down mossy rocks",
+    "duration": 8,
+    "aspect_ratio": "9:16"
+  }
+}
+```
+
+### Image-to-Video (Landscape Only)
+
+```json
+{
+  "model": "veo3.1-fast",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "Camera slowly zooms in while leaves gently sway in the breeze",
+    "image_urls": [
+      "https://example.com/landscape-image.jpg"
+    ],
+    "duration": 8,
+    "aspect_ratio": "16:9"
+  }
+}
+```
+
+## Response Format
+
+### Success Response (200)
+
+The API returns a task object immediately:
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "not_started",
+    "created_time": "2025-11-12T10:30:00"
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `task_id` | string | Unique task identifier |
+| `status` | string | Task status (always `not_started` for submit response) |
+| `created_time` | string | ISO 8601 timestamp of task creation |
+
+## Retrieving Results
+
+Check task status and retrieve results:
+
+```bash
+GET https://api.poyo.ai/api/generate/status/{task_id}
+```
+
+### Completed Task Response
+
+```json
+{
+  "data": {
+    "id": "task-unified-1757165031-uyujaw3d",
+    "status": "succeeded",
+    "progress": 100,
+    "created": 1757165031,
+    "completed": 1757165121,
+    "model": "veo3.1-fast",
+    "files": [
+      {
+        "file_url": "https://storage.poyo.ai/generated/veo-video-xyz789.mp4",
+        "file_type": "video"
+      }
+    ],
+    "usage": {
+      "credits_used": 24.0
+    }
+  }
+}
+```
+
+### Status Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique task identifier |
+| `status` | string | Task status: `not_started`, `processing`, `succeeded`, `failed` |
+| `progress` | integer | Completion percentage (0-100) |
+| `created` | integer | Unix timestamp of task creation |
+| `completed` | integer | Unix timestamp of task completion |
+| `model` | string | Model identifier used for generation |
+| `files` | array | Array of generated video files |
+| `files[].file_url` | string | Direct URL to the generated video file |
+| `files[].file_type` | string | File type (always `"video"` for video generation) |
+| `usage.credits_used` | number | Credits consumed for this generation |
+
+<Warning>
+  **Video Validity**: Generated video links are valid for **24 hours**. Please download and save them promptly.
+</Warning>
+
+## Code Examples
+
+### Python
+
+```python
+import requests
+import time
+
+API_KEY = "your-api-key-here"
+BASE_URL = "https://api.poyo.ai"
+
+headers = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json"
+}
+
+# Submit VEO 3.1 video generation request
+payload = {
+    "model": "veo3.1-fast",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+        "prompt": "A hummingbird hovering near colorful flowers in slow motion",
+        "duration": 8,
+        "aspect_ratio": "16:9"
+    }
+}
+
+response = requests.post(
+    f"{BASE_URL}/api/generate/submit",
+    json=payload,
+    headers=headers
+)
+result = response.json()
+task = result["data"]
+task_id = task["id"]
+
+print(f"Task submitted: {task_id}")
+print(f"Estimated time: {task['task_info']['estimated_time']} seconds (~{task['task_info']['estimated_time']//60} minutes)")
+
+# Poll for completion
+while True:
+    status_response = requests.get(
+        f"{BASE_URL}/api/generate/status/{task_id}",
+        headers=headers
+    )
+    result = status_response.json()
+    task_status = result["data"]
+
+    print(f"Status: {task_status['status']}, Progress: {task_status['progress']}%")
+
+    if task_status["status"] == "succeeded":
+        video = task_status["files"][0]
+        print(f"Video generated: {video['file_url']}")
+        print(f"Video type: {video['file_type']}")
+
+        # Download the video
+        video_response = requests.get(video['file_url'])
+        with open("veo_video.mp4", "wb") as f:
+            f.write(video_response.content)
+        print("Video saved as veo_video.mp4")
+        break
+    elif task_status["status"] == "error":
+        print(f"Generation failed: {task_status.get('error', {}).get('message', 'Unknown error')}")
+        break
+
+    time.sleep(5)
+```
+
+### JavaScript / Node.js
+
+```javascript
+const API_KEY = 'your-api-key-here';
+const BASE_URL = 'https://api.poyo.ai';
+
+const headers = {
+  'Authorization': `Bearer ${API_KEY}`,
+  'Content-Type': 'application/json'
+};
+
+async function generateVEOVideo() {
+  // Submit video generation request
+  const response = await fetch(`${BASE_URL}/api/generate/submit`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify({
+      model: 'veo3.1-fast',
+      callback_url: 'https://your-domain.com/callback',
+      input: {
+        prompt: 'A hummingbird hovering near colorful flowers in slow motion',
+        duration: 8,
+        aspect_ratio: '16:9'
+      }
+    })
+  });
+
+  const result = await response.json();
+  const task = result.data;
+  const taskId = task.id;
+
+  console.log(`Task submitted: ${taskId}`);
+  console.log(`Estimated time: ${task.task_info.estimated_time} seconds`);
+
+  // Poll for completion
+  while (true) {
+    const statusResponse = await fetch(
+      `${BASE_URL}/api/generate/status/${taskId}`,
+      { headers }
+    );
+    const statusResult = await statusResponse.json();
+    const taskStatus = statusResult.data;
+
+    console.log(`Status: ${taskStatus.status}, Progress: ${taskStatus.progress}%`);
+
+    if (taskStatus.status === 'succeeded') {
+      const video = taskStatus.files[0];
+      console.log(`Video generated: ${video.file_url}`);
+      console.log(`Video type: ${video.file_type}`);
+      return video.file_url;
+    } else if (taskStatus.status === 'error') {
+      throw new Error(`Generation failed: ${taskStatus.error?.message || 'Unknown error'}`);
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 5000));
+  }
+}
+
+generateVEOVideo()
+  .then(url => console.log('Success:', url))
+  .catch(err => console.error('Error:', err));
+```
+
+### cURL
+
+```bash
+# Submit video generation request
+curl -X POST https://api.poyo.ai/api/generate/submit \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "veo3.1-fast",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+      "prompt": "A hummingbird hovering near colorful flowers in slow motion",
+      "duration": 8,
+      "aspect_ratio": "16:9"
+    }
+  }'
+
+# Check task status (replace TASK_ID with actual task ID)
+curl -X GET https://api.poyo.ai/api/generate/status/TASK_ID \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Go
+
+```go
+package main
+
+import (
+    "bytes"
+    "encoding/json"
+    "fmt"
+    "net/http"
+    "time"
+)
+
+const (
+    APIKey  = "your-api-key-here"
+    BaseURL = "https://api.poyo.ai"
+)
+
+type VEOInput struct {
+    Prompt      string `json:"prompt"`
+    Duration    int    `json:"duration"`
+    AspectRatio string `json:"aspect_ratio"`
+}
+
+type VEOSubmitRequest struct {
+    Model       string    `json:"model"`
+    CallbackURL string    `json:"callback_url"`
+    Input       VEOInput  `json:"input"`
+}
+
+type VideoFile struct {
+    FileURL  string `json:"file_url"`
+    FileType string `json:"file_type"`
+}
+
+type TaskData struct {
+    ID       string      `json:"id"`
+    Status   string      `json:"status"`
+    Progress int         `json:"progress"`
+    TaskInfo struct {
+        EstimatedTime int `json:"estimated_time"`
+    } `json:"task_info"`
+    Files []VideoFile `json:"files"`
+}
+
+type TaskResponse struct {
+    Data TaskData `json:"data"`
+}
+
+func main() {
+    client := &http.Client{}
+
+    // Submit request
+    submitData := VEOSubmitRequest{
+        Model:       "veo3.1-fast",
+        CallbackURL: "https://your-domain.com/callback",
+        Input: VEOInput{
+            Prompt:      "A hummingbird hovering near colorful flowers in slow motion",
+            Duration:    8,
+            AspectRatio: "16:9",
+        },
+    }
+
+    jsonData, _ := json.Marshal(submitData)
+    req, _ := http.NewRequest("POST", BaseURL+"/api/generate/submit", bytes.NewBuffer(jsonData))
+    req.Header.Set("Authorization", "Bearer "+APIKey)
+    req.Header.Set("Content-Type", "application/json")
+
+    resp, _ := client.Do(req)
+    defer resp.Body.Close()
+
+    var taskResp TaskResponse
+    json.NewDecoder(resp.Body).Decode(&taskResp)
+    task := taskResp.Data
+
+    fmt.Printf("Task submitted: %s\n", task.ID)
+    fmt.Printf("Estimated time: %d seconds\n", task.TaskInfo.EstimatedTime)
+
+    // Poll for completion
+    for {
+        req, _ = http.NewRequest("GET", BaseURL+"/api/generate/status/"+task.ID, nil)
+        req.Header.Set("Authorization", "Bearer "+APIKey)
+
+        resp, _ = client.Do(req)
+        var statusResp TaskResponse
+        json.NewDecoder(resp.Body).Decode(&statusResp)
+        task = statusResp.Data
+        resp.Body.Close()
+
+        fmt.Printf("Status: %s, Progress: %d%%\n", task.Status, task.Progress)
+
+        if task.Status == "succeeded" {
+            video := task.Files[0]
+            fmt.Printf("Video generated: %s\n", video.FileURL)
+            fmt.Printf("Video type: %s\n", video.FileType)
+            break
+        } else if task.Status == "error" {
+            fmt.Println("Generation failed")
+            break
+        }
+
+        time.Sleep(5 * time.Second)
+    }
+}
+```
+
+## Image-to-Video Example
+
+```python
+import requests
+
+API_KEY = "your-api-key-here"
+headers = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json"
+}
+
+# Animate a landscape image (16:9 only)
+payload = {
+    "model": "veo3.1-fast",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+        "prompt": "Gentle camera push-in as wind rustles through the grass",
+        "image_urls": [
+            "https://example.com/meadow-landscape.jpg"
+        ],
+        "duration": 8,
+        "aspect_ratio": "16:9"
+    }
+}
+
+response = requests.post(
+    "https://api.poyo.ai/api/generate/submit",
+    json=payload,
+    headers=headers
+)
+
+task = response.json()
+print(f"VEO 3.1 image-to-video task submitted: {task['id']}")
+```
+
+## Portrait Video Example
+
+```python
+import requests
+
+API_KEY = "your-api-key-here"
+headers = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json"
+}
+
+# Generate portrait video (9:16) - text-to-video only
+payload = {
+    "model": "veo3.1-fast",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+        "prompt": "Vertical shot of a skyscraper, camera tilting up from street level to the top",
+        "duration": 8,
+        "aspect_ratio": "9:16"
+    }
+}
+
+response = requests.post(
+    "https://api.poyo.ai/api/generate/submit",
+    json=payload,
+    headers=headers
+)
+
+task = response.json()
+print(f"Portrait video task submitted: {task['id']}")
+```
+
+## Webhook Callbacks
+
+Receive automatic notifications when video generation completes:
+
+```json
+{
+  "model": "veo3.1-fast",
+  "callback_url": "https://your-domain.com/webhook/veo-complete",
+  "input": {
+    "prompt": "Underwater scene with tropical fish swimming through coral reefs",
+    "duration": 8,
+    "aspect_ratio": "16:9"
+  }
+}
+```
+
+### Callback Payload
+
+```json
+{
+  "data": {
+    "id": "task-unified-1757165031-uyujaw3d",
+    "status": "succeeded",
+    "files": [
+      {
+        "file_url": "https://storage.poyo.ai/generated/veo-video-xyz789.mp4",
+        "file_type": "video"
+      }
+    ]
+  }
+}
+```
+
+## Error Handling
+
+### Error Response Format
+
+```json
+{
+  "code": 400,
+  "error": {
+    "message": "Image-to-video is not supported for aspect ratio 9:16",
+    "type": "invalid_request_error",
+    "param": "aspect_ratio"
+  }
+}
+```
+
+### Common Error Codes
+
+| Code | Error Type | Description |
+|------|------------|-------------|
+| 400 | `invalid_request_error` | Invalid parameters (e.g., 9:16 with image) |
+| 401 | `authentication_error` | Invalid or missing API key |
+| 402 | `insufficient_quota` | Insufficient credits |
+| 403 | `permission_denied` | No access to this model |
+| 413 | `file_too_large` | Image exceeds 10MB limit |
+| 429 | `rate_limit_exceeded` | Too many requests |
+| 500 | `server_error` | Internal server error |
+| 502 | `service_unavailable` | Service temporarily unavailable |
+
+## Performance Characteristics
+
+- **Fixed Duration**: 8 seconds
+- **Generation Time**: ~90 seconds (1.5 minutes)
+- **Speed**: ~2x faster than Sora 2 for similar duration
+- **Quality**: High quality, optimized for speed
+- **Best for**: Quick iterations, social media content
+
+## Comparison: VEO 3.1 vs Sora 2
+
+| Feature | VEO 3.1 Fast | Sora 2 | Sora 2 Pro |
+|---------|--------------|--------|------------|
+| Duration | 8s (fixed) | 10s, 15s | 15s, 25s |
+| Generation Time | ~90s | ~120-180s | ~180-300s |
+| Cost | Lower | Medium | Higher |
+| Quality | High | High | Very High |
+| Portrait Support | ✅ Text-only | ✅ Full | ✅ Full |
+| Image-to-Video | ✅ Landscape only | ✅ Full | ✅ Full |
+| Best For | Speed, cost | Balanced | Professional |
+
+## Best Practices
+
+<Tip>
+  **Aspect Ratio Selection**: Use `16:9` for YouTube/desktop, `9:16` for Instagram Stories/TikTok.
+</Tip>
+
+<Tip>
+  **Portrait Videos**: Remember that `9:16` only supports text-to-video, not image-to-video.
+</Tip>
+
+<Tip>
+  **Landscape Images**: For image-to-video, ensure your source image is in 16:9 aspect ratio.
+</Tip>
+
+<Tip>
+  **Polling**: Poll every 5 seconds. VEO 3.1 typically completes in ~90 seconds.
+</Tip>
+
+<Tip>
+  **Cost Optimization**: VEO 3.1 Fast is ideal for testing and high-volume applications.
+</Tip>
+
+## Prompt Examples
+
+### Good Prompts for VEO 3.1
+
+✅ **Nature Scenes**
+```
+"Close-up of dewdrops on a spider web at sunrise, gentle breeze causing subtle movement"
+```
+
+✅ **Action Shots**
+```
+"Skateboarder performing a trick in slow motion, urban environment, dynamic camera angle"
+```
+
+✅ **Portrait Videos**
+```
+"Vertical shot of rain drops falling on a window with blurred city lights in the background"
+```
+
+✅ **Image-to-Video**
+```
+"Slow camera zoom while clouds drift across the sky"
+```
+(Use with 16:9 landscape image)
+
+## Pricing
+
+VEO 3.1 Fast offers competitive pricing:
+
+- **8 seconds**: ~24 credits per video
+
+**Cost Comparison:**
+- VEO 3.1 Fast (8s): ~24 credits
+- Sora 2 (10s): ~30 credits
+- Sora 2 (15s): ~45 credits
+
+<Info>
+  VEO 3.1 provides excellent value for 8-second videos, offering **20% cost savings** compared to Sora 2 while maintaining high quality.
+</Info>
+
+## Use Cases
+
+### Social Media Content
+- Instagram Reels (9:16)
+- TikTok videos (9:16)
+- YouTube Shorts (9:16)
+- Twitter/X videos (16:9)
+
+### Marketing
+- Product teasers (16:9)
+- Ad creatives (both ratios)
+- Landing page videos (16:9)
+
+### Creative Projects
+- Stock footage generation
+- Visual effects elements
+- Background videos
+- Concept visualization
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Sora 2" icon="video" href="/api-manual/video-series/sora-2">
+    Professional video generation
+  </Card>
+  <Card title="Image Generation" icon="image" href="/api-manual/image-series/gpt-4o-image">
+    Create images with GPT-4o
+  </Card>
+  <Card title="Task Status" icon="list-check" href="/api-manual/task-management/status">
+    Learn about task management
+  </Card>
+  <Card title="Quick Start" icon="rocket" href="/guides/getting-started/quickstart">
+    Back to Quick Start guide
+  </Card>
+</CardGroup>

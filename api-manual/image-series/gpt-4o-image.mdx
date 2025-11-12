@@ -1,0 +1,489 @@
+---
+title: "GPT-4o Image Generation"
+description: "High-quality image generation and editing with GPT-4o"
+openapi: "POST /api/generate/submit"
+---
+
+# GPT-4o Image Generation
+
+Generate high-quality images using OpenAI's GPT-4o model. Supports text-to-image, image-to-image, and advanced image editing capabilities.
+
+## Available Models
+
+- `gpt-4o-image` - Text-to-image and image-to-image generation
+- `gpt-4o-image-edit` - Advanced image editing with mask support
+
+## Endpoint
+
+```http
+POST https://api.poyo.ai/api/generate/submit
+```
+
+## Authentication
+
+All requests require Bearer token authentication:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+<Card title="Get API Key" icon="key" href="https://poyo.ai/dashboard/api-key">
+  Generate your API key from the console
+</Card>
+
+## Request Parameters
+
+### Required Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `model` | string | Model identifier: `gpt-4o-image` or `gpt-4o-image-edit` |
+| `prompt` | string | Description of the desired image (max 1000 characters) |
+
+### Optional Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `size` | string | `1024x1024` | Image dimensions. Aspect ratio: `1:1`, `2:3`, `3:2` OR pixel format: `1024x1024`, `1024x1536`, `1536x1024` |
+| `n` | integer | `1` | Number of images to generate. Supports `1`, `2`, or `4` |
+| `image_urls` | array | - | Reference image URLs for image-to-image or editing (max 5 images) |
+| `mask_url` | string | - | PNG format mask URL for editing (required for `gpt-4o-image-edit`) |
+| `callback_url` | string | - | HTTPS webhook URL for task completion notifications (max 2048 chars) |
+
+### Image Requirements
+
+- **Supported formats**: `.jpeg`, `.jpg`, `.png`, `.webp`
+- **Maximum size**: 10MB per image
+- **Maximum images**: 5 images in `image_urls` array
+- **Mask requirements**: PNG format, same dimensions as reference image, max 4MB
+
+## Generation Modes
+
+### Text-to-Image
+
+Generate images from text descriptions only.
+
+```json
+{
+  "model": "gpt-4o-image",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "A serene mountain landscape at sunset with vibrant colors",
+    "size": "1:1",
+    "n": 1
+  }
+}
+```
+
+### Image-to-Image
+
+Transform existing images based on a text prompt.
+
+```json
+{
+  "model": "gpt-4o-image",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "Convert this photo to an oil painting style",
+    "image_urls": [
+      "https://example.com/source-image.jpg"
+    ],
+    "size": "1:1"
+  }
+}
+```
+
+### Image Editing with Mask
+
+Edit specific areas of an image using a mask.
+
+```json
+{
+  "model": "gpt-4o-image-edit",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "Replace the sky with a starry night sky",
+    "image_urls": [
+      "https://example.com/original-image.jpg"
+    ],
+    "mask_url": "https://example.com/mask.png",
+    "size": "1:1"
+  }
+}
+```
+
+## Response Format
+
+### Success Response (200)
+
+The API returns a task object with the following structure:
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "not_started",
+    "created_time": "2025-11-12T10:30:00"
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `code` | integer | HTTP status code (200 for success) |
+| `data.task_id` | string | Unique task identifier |
+| `data.status` | string | Task status - always `not_started` for submit response |
+| `data.created_time` | string | ISO 8601 timestamp of task creation |
+
+## Task Status Values
+
+| Status | Description |
+|--------|-------------|
+| `not_started` | Task is queued and waiting to be processed |
+| `running` | Task is currently being generated |
+| `finished` | Task completed successfully - results available |
+| `failed` | Task failed - error details available |
+
+## Retrieving Results
+
+After submitting a task, use the [Task Status API](/api-manual/task-management/status) to check progress and retrieve results:
+
+```bash
+GET https://api.poyo.ai/api/generate/status/{task_id}
+```
+
+When the task completes, the response will include the generated images:
+
+```json
+{
+  "code": 200,
+  "data": {
+    "id": "task-unified-1757165031-uyujaw3d",
+    "status": "finished",
+    "progress": 100,
+    "created": 1757165031,
+    "completed": 1757165061,
+    "model": "gpt-4o-image",
+    "files": [
+      {
+        "file_url": "https://storage.poyo.ai/generated/image-1.jpg",
+        "file_type": "image"
+      }
+    ],
+    "usage": {
+      "credits_used": 2.5
+    }
+  }
+}
+```
+
+### Completed Task Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `data.id` | string | Task identifier |
+| `data.status` | string | Task status (`finished` when complete) |
+| `data.progress` | integer | Completion percentage (0-100) |
+| `data.created` | integer | Unix timestamp of task creation |
+| `data.completed` | integer | Unix timestamp of task completion |
+| `data.model` | string | Model used for generation |
+| `data.files` | array | Array of generated file objects |
+| `data.files[].file_url` | string | URL to download the generated image |
+| `data.files[].file_type` | string | File type identifier (always `"image"` for image generation) |
+| `data.usage.credits_used` | float | Credits consumed for this generation |
+
+<Warning>
+  **Image Validity**: Generated image links are valid for **24 hours**. Please download and save them promptly.
+</Warning>
+
+## Code Examples
+
+### Python
+
+```python
+import requests
+import time
+
+API_KEY = "your-api-key-here"
+BASE_URL = "https://api.poyo.ai"
+
+headers = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json"
+}
+
+# Submit generation request
+payload = {
+    "model": "gpt-4o-image",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+        "prompt": "A futuristic cityscape with flying cars and neon lights",
+        "size": "1:1",
+        "n": 1
+    }
+}
+
+response = requests.post(
+    f"{BASE_URL}/api/generate/submit",
+    json=payload,
+    headers=headers
+)
+result = response.json()
+task_id = result["data"]["task_id"]
+
+print(f"Task submitted: {task_id}")
+
+# Poll for completion
+while True:
+    status_response = requests.get(
+        f"{BASE_URL}/api/generate/status/{task_id}",
+        headers=headers
+    )
+    result = status_response.json()
+    task_status = result["data"]
+
+    print(f"Status: {task_status['status']}, Progress: {task_status['progress']}%")
+
+    if task_status["status"] == "finished":
+        image_url = task_status["files"][0]["file_url"]
+        print(f"Image generated: {image_url}")
+        break
+    elif task_status["status"] == "failed":
+        print(f"Generation failed: {task_status['error']['message']}")
+        break
+
+    time.sleep(2)
+```
+
+### JavaScript / Node.js
+
+```javascript
+const API_KEY = 'your-api-key-here';
+const BASE_URL = 'https://api.poyo.ai';
+
+const headers = {
+  'Authorization': `Bearer ${API_KEY}`,
+  'Content-Type': 'application/json'
+};
+
+// Submit generation request
+async function generateImage() {
+  const response = await fetch(`${BASE_URL}/api/generate/submit`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify({
+      model: 'gpt-4o-image',
+      callback_url: 'https://your-domain.com/callback',
+      input: {
+        prompt: 'A futuristic cityscape with flying cars and neon lights',
+        size: '1:1',
+        n: 1
+      }
+    })
+  });
+
+  const result = await response.json();
+  const taskId = result.data.task_id;
+
+  console.log(`Task submitted: ${taskId}`);
+
+  // Poll for completion
+  while (true) {
+    const statusResponse = await fetch(
+      `${BASE_URL}/api/generate/status/${taskId}`,
+      { headers }
+    );
+    const result = await statusResponse.json();
+    const taskStatus = result.data;
+
+    console.log(`Status: ${taskStatus.status}, Progress: ${taskStatus.progress}%`);
+
+    if (taskStatus.status === 'finished') {
+      console.log(`Image generated: ${taskStatus.files[0].file_url}`);
+      break;
+    } else if (taskStatus.status === 'failed') {
+      console.log(`Generation failed: ${taskStatus.error.message}`);
+      break;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  }
+}
+
+generateImage();
+```
+
+### cURL
+
+```bash
+# Submit generation request
+curl -X POST https://api.poyo.ai/api/generate/submit \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o-image",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+      "prompt": "A futuristic cityscape with flying cars and neon lights",
+      "size": "1:1",
+      "n": 1
+    }
+  }'
+
+# Check task status (replace TASK_ID with actual task ID)
+curl -X GET https://api.poyo.ai/api/generate/status/TASK_ID \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Image Editing Example
+
+### With Mask
+
+```python
+import requests
+
+API_KEY = "your-api-key-here"
+headers = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json"
+}
+
+# Edit specific area of image using mask
+payload = {
+    "model": "gpt-4o-image-edit",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+        "prompt": "Replace the background with a beach sunset scene",
+        "image_urls": [
+            "https://example.com/portrait.jpg"
+        ],
+        "mask_url": "https://example.com/background-mask.png",
+        "size": "1:1"
+    }
+}
+
+response = requests.post(
+    "https://api.poyo.ai/api/generate/submit",
+    json=payload,
+    headers=headers
+)
+
+result = response.json()
+print(f"Edit task submitted: {result['data']['task_id']}")
+```
+
+## Webhook Callbacks
+
+Instead of polling, you can provide a callback URL to receive automatic notifications:
+
+```json
+{
+  "model": "gpt-4o-image",
+  "callback_url": "https://your-domain.com/webhook/image-complete",
+  "input": {
+    "prompt": "A beautiful sunset over the ocean",
+    "size": "1:1"
+  }
+}
+```
+
+### Callback Payload
+
+When the task completes, PoYo AI will send a POST request to your callback URL:
+
+```json
+{
+  "id": "task-unified-1757165031-uyujaw3d",
+  "status": "finished",
+  "files": [
+    {
+      "file_url": "https://storage.poyo.ai/generated/image-1.jpg",
+      "file_type": "image"
+    }
+  ]
+}
+```
+
+### Callback Requirements
+
+- Must be HTTPS URL
+- Maximum 2048 characters
+- Timeout: 10 seconds
+- Retries: 3 attempts (after 1, 2, and 4 seconds)
+- Must not use internal IP addresses
+
+## Error Handling
+
+### Error Response Format
+
+```json
+{
+  "code": 400,
+  "error": {
+    "message": "Invalid parameter: size must be one of 1:1, 2:3, 3:2, 1024x1024, 1024x1536, 1536x1024",
+    "type": "invalid_request_error",
+    "param": "size"
+  }
+}
+```
+
+### Common Error Codes
+
+| Code | Error Type | Description |
+|------|------------|-------------|
+| 400 | `invalid_request_error` | Invalid parameters provided |
+| 401 | `authentication_error` | Invalid or missing API key |
+| 402 | `insufficient_quota` | Account has insufficient credits |
+| 403 | `permission_denied` | Access denied to this model |
+| 413 | `file_too_large` | Image file exceeds size limit (10MB) |
+| 429 | `rate_limit_exceeded` | Too many requests - slow down |
+| 500 | `server_error` | Internal server error |
+| 502 | `service_unavailable` | Service temporarily unavailable |
+
+## Best Practices
+
+<Tip>
+  **Prompt Engineering**: Write clear, detailed prompts for better results. Include style, mood, lighting, and composition details.
+</Tip>
+
+<Tip>
+  **Image URLs**: Ensure image URLs are publicly accessible and return the image directly (not an HTML page).
+</Tip>
+
+<Tip>
+  **Polling Interval**: Poll status every 2-5 seconds. Avoid polling more frequently to prevent rate limiting.
+</Tip>
+
+<Tip>
+  **Error Handling**: Implement exponential backoff for retries on 429 and 5xx errors.
+</Tip>
+
+## Pricing
+
+Pricing is based on credits consumed per generation:
+
+- **Text-to-Image**: ~2.5 credits per image
+- **Image-to-Image**: ~2.5-3.0 credits per image
+- **Image Editing**: ~3.0-3.5 credits per image
+
+Actual credit usage varies based on complexity and parameters. Check your [console](https://poyo.ai) for detailed usage.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Nano Banana" icon="sparkles" href="/api-manual/image-series/nano-banana">
+    Fast image generation with Gemini
+  </Card>
+  <Card title="Video Generation" icon="video" href="/api-manual/video-series/sora-2">
+    Create videos with Sora 2
+  </Card>
+  <Card title="Task Status" icon="list-check" href="/api-manual/task-management/status">
+    Learn about task management
+  </Card>
+  <Card title="Quick Start" icon="rocket" href="/guides/getting-started/quickstart">
+    Back to Quick Start guide
+  </Card>
+</CardGroup>

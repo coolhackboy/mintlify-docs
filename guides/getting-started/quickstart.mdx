@@ -1,0 +1,366 @@
+---
+title: "Quick Start"
+description: "Get started with PoYo AI in minutes"
+openapi: "POST /api/generate/submit"
+---
+
+## Welcome to PoYo AI
+
+PoYo AI provides powerful image and video generation APIs that enable you to integrate state-of-the-art AI models into your applications. This guide will help you get started in just a few minutes.
+
+## Authentication
+
+### Get Your API Key
+
+1. Visit the [PoYo AI Console](https://poyo.ai/dashboard/api-key)
+2. Sign in or create an account
+3. Navigate to the API Key Management page
+4. Generate a new API key
+5. **Important**: Copy and securely store your API key - it will only be displayed once
+
+### Using Your API Key
+
+Include your API key in the `Authorization` header of all API requests:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+## Available Models
+
+PoYo AI offers a comprehensive suite of image and video generation models:
+
+### Image Generation Models
+
+<CardGroup cols={2}>
+  <Card title="GPT-4o Image" icon="image">
+    High-quality image generation with text-to-image, image-to-image, and editing capabilities
+  </Card>
+  <Card title="Nano Banana" icon="sparkles">
+    Fast image generation powered by Gemini 2.5 Flash
+  </Card>
+</CardGroup>
+
+**Supported Models:**
+- `gpt-4o-image` - Text-to-image and image-to-image generation
+- `gpt-4o-image-edit` - Image editing with masks
+- `nano-banana` - Fast text-to-image generation
+- `nano-banana-edit` - Fast image editing
+
+### Video Generation Models
+
+<CardGroup cols={2}>
+  <Card title="Sora 2" icon="video">
+    Professional video generation with multiple quality tiers
+  </Card>
+  <Card title="VEO 3.1" icon="film">
+    Fast video generation with Google's VEO technology
+  </Card>
+</CardGroup>
+
+**Supported Models:**
+- `sora-2` - Standard quality video generation
+- `sora-2-pro` - Professional quality with extended duration
+- `sora-2-private` - Private standard quality
+- `sora-2-pro-private` - Private professional quality
+- `veo3.1-fast` - Fast video generation
+
+## Quick Examples
+
+### Generate an Image
+
+Here's how to generate an image using the GPT-4o Image model:
+
+```python
+import requests
+
+url = "https://api.poyo.ai/api/generate/submit"
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+
+payload = {
+    "model": "gpt-4o-image",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+        "prompt": "A serene mountain landscape at sunset with vibrant colors",
+        "size": "1:1",
+        "n": 1
+    }
+}
+
+response = requests.post(url, json=payload, headers=headers)
+result = response.json()
+task_id = result["data"]["task_id"]
+print(f"Task ID: {task_id}")
+```
+
+```javascript
+const response = await fetch('https://api.poyo.ai/api/generate/submit', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'gpt-4o-image',
+    callback_url: 'https://your-domain.com/callback',
+    input: {
+      prompt: 'A serene mountain landscape at sunset with vibrant colors',
+      size: '1:1',
+      n: 1
+    }
+  })
+});
+
+const result = await response.json();
+const taskId = result.data.task_id;
+console.log(`Task ID: ${taskId}`);
+```
+
+```bash
+curl -X POST https://api.poyo.ai/api/generate/submit \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o-image",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+      "prompt": "A serene mountain landscape at sunset with vibrant colors",
+      "size": "1:1",
+      "n": 1
+    }
+  }'
+```
+
+### Generate a Video
+
+Here's how to generate a video using the Sora 2 model:
+
+```python
+import requests
+
+url = "https://api.poyo.ai/api/generate/submit"
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+
+payload = {
+    "model": "sora-2",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+        "prompt": "A time-lapse of a bustling city street transitioning from day to night",
+        "duration": 10,
+        "aspect_ratio": "16:9"
+    }
+}
+
+response = requests.post(url, json=payload, headers=headers)
+result = response.json()
+task_id = result["data"]["task_id"]
+print(f"Task ID: {task_id}")
+```
+
+```javascript
+const response = await fetch('https://api.poyo.ai/api/generate/submit', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'sora-2',
+    callback_url: 'https://your-domain.com/callback',
+    input: {
+      prompt: 'A time-lapse of a bustling city street transitioning from day to night',
+      duration: 10,
+      aspect_ratio: '16:9'
+    }
+  })
+});
+
+const result = await response.json();
+const taskId = result.data.task_id;
+console.log(`Task ID: ${taskId}`);
+```
+
+```bash
+curl -X POST https://api.poyo.ai/api/generate/submit \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "sora-2",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+      "prompt": "A time-lapse of a bustling city street transitioning from day to night",
+      "duration": 10,
+      "aspect_ratio": "16:9"
+    }
+  }'
+```
+
+## Asynchronous Processing
+
+All generation requests in PoYo AI are processed asynchronously. This means:
+
+1. **Submit Request**: When you submit a generation request, you receive a `task_id` immediately
+2. **Check Status**: Use the task ID to query the generation status
+3. **Retrieve Results**: Once complete, the status endpoint returns the generated content
+
+### Check Task Status
+
+```python
+import requests
+import time
+
+task_id = "task-unified-1757165031-uyujaw3d"
+url = f"https://api.poyo.ai/api/generate/status/{task_id}"
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY"
+}
+
+# Poll until complete
+while True:
+    response = requests.get(url, headers=headers)
+    result = response.json()
+    task = result["data"]
+
+    status = task['status']
+    progress = task.get('progress', 0)
+
+    print(f"Status: {status}, Progress: {progress}%")
+
+    if status == 'finished':
+        print(f"Files: {task['files']}")
+        break
+    elif status == 'failed':
+        print(f"Error: {task['error_message']}")
+        break
+
+    time.sleep(2)  # Wait 2 seconds before next check
+```
+
+```javascript
+const taskId = 'task-unified-1757165031-uyujaw3d';
+
+async function checkStatus() {
+  while (true) {
+    const response = await fetch(
+      `https://api.poyo.ai/api/generate/status/${taskId}`,
+      {
+        headers: {
+          'Authorization': 'Bearer YOUR_API_KEY'
+        }
+      }
+    );
+
+    const result = await response.json();
+    const task = result.data;
+    const { status, progress, files, error_message } = task;
+
+    console.log(`Status: ${status}, Progress: ${progress}%`);
+
+    if (status === 'finished') {
+      console.log('Files:', files);
+      break;
+    } else if (status === 'failed') {
+      console.log('Error:', error_message);
+      break;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  }
+}
+
+checkStatus();
+```
+
+```bash
+curl -X GET https://api.poyo.ai/api/generate/status/task-unified-1757165031-uyujaw3d \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+**Example Response - Image Generation:**
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "finished",
+    "progress": 100,
+    "files": [
+      {
+        "file_url": "https://storage.poyo.ai/generated/image-abc123.jpg",
+        "file_type": "image"
+      }
+    ],
+    "created_time": "2025-11-12T10:30:00",
+    "credits_amount": 5,
+    "error_message": null
+  }
+}
+```
+
+**Example Response - Video Generation:**
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165211-xyz789",
+    "status": "finished",
+    "progress": 100,
+    "files": [
+      {
+        "file_url": "https://storage.poyo.ai/generated/video-xyz789.mp4",
+        "file_type": "video"
+      }
+    ],
+    "created_time": "2025-11-12T10:30:00",
+    "credits_amount": 50,
+    "error_message": null
+  }
+}
+```
+
+<Note>
+  **Image Validity**: Generated image links are valid for 24 hours. Please download and save them promptly.
+
+  **Video Validity**: Generated video links are valid for 24 hours. Please download and save them promptly.
+</Note>
+
+## Next Steps
+
+Now that you understand the basics, explore the detailed API documentation:
+
+<CardGroup cols={2}>
+  <Card title="Image Series" icon="image" href="/api-manual/image-series/gpt-4o-image">
+    Learn about image generation models and advanced features
+  </Card>
+  <Card title="Video Series" icon="video" href="/api-manual/video-series/sora-2">
+    Explore video generation capabilities
+  </Card>
+  <Card title="Task Management" icon="list-check" href="/api-manual/task-management/status">
+    Master asynchronous task handling
+  </Card>
+  <Card title="API Overview" icon="book" href="/api-manual/overview">
+    Complete API reference
+  </Card>
+</CardGroup>
+
+## Rate Limits and Quotas
+
+<Info>
+  API rate limits and quotas vary by account type. Check your [console dashboard](https://poyo.ai) for your current limits.
+</Info>
+
+## Support
+
+Need help? We're here to assist:
+
+- **Email**: [support@poyo.ai](mailto:support@poyo.ai)
+- **Console**: [api.poyo.ai/console](https://poyo.ai)
+- **Documentation**: Browse the API Manual for detailed guides

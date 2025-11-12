@@ -1,0 +1,604 @@
+---
+title: "Nano Banana Image Generation"
+description: "Fast image generation powered by Gemini 2.5 Flash"
+openapi: "POST /api/generate/submit"
+---
+
+# Nano Banana Image Generation
+
+Fast and efficient image generation powered by Google's Gemini 2.5 Flash model. Ideal for quick iterations and high-throughput applications.
+
+## Available Models
+
+- `nano-banana` - Fast text-to-image and image-to-image generation
+- `nano-banana-edit` - Fast image editing
+
+## Endpoint
+
+```http
+POST https://api.poyo.ai/api/generate/submit
+```
+
+## Authentication
+
+All requests require Bearer token authentication:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+<Card title="Get API Key" icon="key" href="https://poyo.ai/dashboard/api-key">
+  Generate your API key from the console
+</Card>
+
+## Request Parameters
+
+### Required Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `model` | string | Model identifier: `nano-banana` or `nano-banana-edit` |
+| `prompt` | string | Description of the desired image or editing instructions (max 1000 characters) |
+
+### Optional Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `size` | string | `auto` | Aspect ratio: `auto`, `1:1`, `2:3`, `3:2`, `4:3`, `3:4`, `16:9`, `9:16` |
+| `image_urls` | array | - | Reference image URLs for image-to-image or editing (max 5 images) |
+| `callback_url` | string | - | HTTPS webhook URL for task completion notifications (max 2048 chars) |
+
+### Image Requirements
+
+- **Supported formats**: `.jpeg`, `.jpg`, `.png`, `.webp`
+- **Maximum size**: 10MB per image
+- **Maximum images**: 5 images in `image_urls` array
+
+## Generation Modes
+
+### Text-to-Image
+
+Generate images from text descriptions only.
+
+```json
+{
+  "model": "nano-banana",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "A majestic lion standing on a cliff at sunset",
+    "size": "16:9"
+  }
+}
+```
+
+### Image-to-Image
+
+Transform existing images based on a text prompt.
+
+```json
+{
+  "model": "nano-banana",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "Transform this photo into a watercolor painting",
+    "image_urls": [
+      "https://example.com/source-photo.jpg"
+    ],
+    "size": "1:1"
+  }
+}
+```
+
+### Image Editing
+
+Edit and modify existing images.
+
+```json
+{
+  "model": "nano-banana-edit",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "Add colorful flowers in the foreground",
+    "image_urls": [
+      "https://example.com/landscape.jpg"
+    ],
+    "size": "16:9"
+  }
+}
+```
+
+## Response Format
+
+### Success Response (200)
+
+The API returns a task object immediately:
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "not_started",
+    "created_time": "2025-11-12T10:30:00"
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique task identifier |
+| `status` | string | Task status: `pending`, `processing`, `completed`, `failed` |
+| `progress` | integer | Completion percentage (0-100) |
+| `created` | integer | Unix timestamp of task creation |
+| `task_info.estimated_time` | integer | Estimated completion time in seconds (typically 15-45s) |
+| `task_info.can_cancel` | boolean | Whether the task can be cancelled |
+| `usage.credits_reserved` | number | Estimated cost in credits |
+| `files[].file_url` | string | URL to the generated image (valid for 24 hours) |
+| `files[].file_type` | string | Type of file (always "image" for this endpoint) |
+
+## Retrieving Results
+
+Check task status and retrieve results:
+
+```bash
+GET https://api.poyo.ai/api/generate/status/{task_id}
+```
+
+### Completed Task Response
+
+```json
+{
+  "code": 200,
+  "data": {
+    "id": "task-unified-1757165031-uyujaw3d",
+    "status": "completed",
+    "progress": 100,
+    "created": 1757165031,
+    "completed": 1757165046,
+    "model": "nano-banana",
+    "files": [
+      {
+        "file_url": "https://storage.poyo.ai/generated/nano-image-1.jpg",
+        "file_type": "image"
+      }
+    ],
+    "usage": {
+      "credits_used": 1.6
+    }
+  }
+}
+```
+
+<Warning>
+  **Image Validity**: Generated image links are valid for **24 hours**. Please download and save them promptly.
+</Warning>
+
+## Code Examples
+
+### Python
+
+```python
+import requests
+import time
+
+API_KEY = "your-api-key-here"
+BASE_URL = "https://api.poyo.ai"
+
+headers = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json"
+}
+
+# Submit generation request
+payload = {
+    "model": "nano-banana",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+        "prompt": "A cyberpunk street scene with neon signs and rain",
+        "size": "16:9"
+    }
+}
+
+response = requests.post(
+    f"{BASE_URL}/api/generate/submit",
+    json=payload,
+    headers=headers
+)
+result = response.json()
+task = result["data"]
+task_id = task["id"]
+
+print(f"Task submitted: {task_id}")
+print(f"Estimated time: {task['task_info']['estimated_time']} seconds")
+
+# Poll for completion
+while True:
+    status_response = requests.get(
+        f"{BASE_URL}/api/generate/status/{task_id}",
+        headers=headers
+    )
+    result = status_response.json()
+    task_status = result["data"]
+
+    print(f"Status: {task_status['status']}, Progress: {task_status['progress']}%")
+
+    if task_status["status"] == "completed":
+        image_url = task_status["files"][0]["file_url"]
+        print(f"Image generated: {image_url}")
+
+        # Download the image
+        img_response = requests.get(image_url)
+        with open("generated_image.jpg", "wb") as f:
+            f.write(img_response.content)
+        print("Image saved as generated_image.jpg")
+        break
+    elif task_status["status"] == "failed":
+        print(f"Generation failed: {task_status['error']['message']}")
+        break
+
+    time.sleep(2)
+```
+
+### JavaScript / Node.js
+
+```javascript
+const API_KEY = 'your-api-key-here';
+const BASE_URL = 'https://api.poyo.ai';
+
+const headers = {
+  'Authorization': `Bearer ${API_KEY}`,
+  'Content-Type': 'application/json'
+};
+
+async function generateImage() {
+  // Submit generation request
+  const response = await fetch(`${BASE_URL}/api/generate/submit`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify({
+      model: 'nano-banana',
+      callback_url: 'https://your-domain.com/callback',
+      input: {
+        prompt: 'A cyberpunk street scene with neon signs and rain',
+        size: '16:9'
+      }
+    })
+  });
+
+  const result = await response.json();
+  const task = result.data;
+  const taskId = task.id;
+
+  console.log(`Task submitted: ${taskId}`);
+  console.log(`Estimated time: ${task.task_info.estimated_time} seconds`);
+
+  // Poll for completion
+  while (true) {
+    const statusResponse = await fetch(
+      `${BASE_URL}/api/generate/status/${taskId}`,
+      { headers }
+    );
+    const result = await statusResponse.json();
+    const taskStatus = result.data;
+
+    console.log(`Status: ${taskStatus.status}, Progress: ${taskStatus.progress}%`);
+
+    if (taskStatus.status === 'completed') {
+      console.log(`Image generated: ${taskStatus.files[0].file_url}`);
+      return taskStatus.files[0].file_url;
+    } else if (taskStatus.status === 'failed') {
+      throw new Error(`Generation failed: ${taskStatus.error.message}`);
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  }
+}
+
+generateImage()
+  .then(url => console.log('Success:', url))
+  .catch(err => console.error('Error:', err));
+```
+
+### cURL
+
+```bash
+# Submit generation request
+curl -X POST https://api.poyo.ai/api/generate/submit \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "nano-banana",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+      "prompt": "A cyberpunk street scene with neon signs and rain",
+      "size": "16:9"
+    }
+  }'
+
+# Check task status (replace TASK_ID with actual task ID)
+curl -X GET https://api.poyo.ai/api/generate/status/TASK_ID \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Go
+
+```go
+package main
+
+import (
+    "bytes"
+    "encoding/json"
+    "fmt"
+    "io"
+    "net/http"
+    "time"
+)
+
+const (
+    APIKey  = "your-api-key-here"
+    BaseURL = "https://api.poyo.ai"
+)
+
+type SubmitRequest struct {
+    Model       string `json:"model"`
+    CallbackURL string `json:"callback_url"`
+    Input       struct {
+        Prompt string `json:"prompt"`
+        Size   string `json:"size"`
+    } `json:"input"`
+}
+
+type APIResponse struct {
+    Code int          `json:"code"`
+    Data TaskResponse `json:"data"`
+}
+
+type TaskResponse struct {
+    ID       string `json:"id"`
+    Status   string `json:"status"`
+    Progress int    `json:"progress"`
+    TaskInfo struct {
+        EstimatedTime int `json:"estimated_time"`
+    } `json:"task_info"`
+    Files []struct {
+        FileURL  string `json:"file_url"`
+        FileType string `json:"file_type"`
+    } `json:"files"`
+}
+
+func main() {
+    client := &http.Client{}
+
+    // Submit request
+    submitData := SubmitRequest{
+        Model:       "nano-banana",
+        CallbackURL: "https://your-domain.com/callback",
+    }
+    submitData.Input.Prompt = "A cyberpunk street scene with neon signs and rain"
+    submitData.Input.Size = "16:9"
+
+    jsonData, _ := json.Marshal(submitData)
+    req, _ := http.NewRequest("POST", BaseURL+"/api/generate/submit", bytes.NewBuffer(jsonData))
+    req.Header.Set("Authorization", "Bearer "+APIKey)
+    req.Header.Set("Content-Type", "application/json")
+
+    resp, _ := client.Do(req)
+    defer resp.Body.Close()
+
+    var apiResp APIResponse
+    json.NewDecoder(resp.Body).Decode(&apiResp)
+    task := apiResp.Data
+
+    fmt.Printf("Task submitted: %s\n", task.ID)
+    fmt.Printf("Estimated time: %d seconds\n", task.TaskInfo.EstimatedTime)
+
+    // Poll for completion
+    for {
+        req, _ = http.NewRequest("GET", BaseURL+"/api/generate/status/"+task.ID, nil)
+        req.Header.Set("Authorization", "Bearer "+APIKey)
+
+        resp, _ = client.Do(req)
+        json.NewDecoder(resp.Body).Decode(&apiResp)
+        resp.Body.Close()
+        task = apiResp.Data
+
+        fmt.Printf("Status: %s, Progress: %d%%\n", task.Status, task.Progress)
+
+        if task.Status == "completed" {
+            fmt.Printf("Image generated: %s\n", task.Files[0].FileURL)
+            break
+        } else if task.Status == "failed" {
+            fmt.Println("Generation failed")
+            break
+        }
+
+        time.Sleep(2 * time.Second)
+    }
+}
+```
+
+## Image-to-Image Example
+
+```python
+import requests
+
+API_KEY = "your-api-key-here"
+headers = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json"
+}
+
+# Transform existing image
+payload = {
+    "model": "nano-banana",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+        "prompt": "Convert this photo to anime style with vibrant colors",
+        "image_urls": [
+            "https://example.com/portrait-photo.jpg"
+        ],
+        "size": "1:1"
+    }
+}
+
+response = requests.post(
+    "https://api.poyo.ai/api/generate/submit",
+    json=payload,
+    headers=headers
+)
+
+result = response.json()
+task = result["data"]
+print(f"Image-to-image task submitted: {task['id']}")
+```
+
+## Webhook Callbacks
+
+Receive automatic notifications when generation completes:
+
+```json
+{
+  "model": "nano-banana",
+  "callback_url": "https://your-domain.com/webhook/nano-complete",
+  "input": {
+    "prompt": "A peaceful zen garden with cherry blossoms",
+    "size": "16:9"
+  }
+}
+```
+
+### Callback Payload
+
+```json
+{
+  "code": 200,
+  "data": {
+    "id": "task-unified-1757165031-uyujaw3d",
+    "status": "completed",
+    "files": [
+      {
+        "file_url": "https://storage.poyo.ai/generated/nano-image-1.jpg",
+        "file_type": "image"
+      }
+    ]
+  }
+}
+```
+
+### Callback Requirements
+
+- HTTPS URL only
+- Maximum 2048 characters
+- Timeout: 10 seconds
+- Retries: Maximum 3 attempts (after 1, 2, and 4 seconds)
+- Internal IP addresses not allowed
+
+## Error Handling
+
+### Error Response Format
+
+```json
+{
+  "code": 400,
+  "error": {
+    "message": "Invalid parameter: size must be one of auto, 1:1, 2:3, 3:2, 4:3, 3:4, 16:9, 9:16",
+    "type": "invalid_request_error",
+    "param": "size"
+  }
+}
+```
+
+### Common Error Codes
+
+| Code | Error Type | Description |
+|------|------------|-------------|
+| 400 | `invalid_request_error` | Invalid parameters in request |
+| 401 | `authentication_error` | Invalid or missing API key |
+| 402 | `insufficient_quota` | Account has insufficient credits |
+| 403 | `permission_denied` | No access to this model |
+| 413 | `file_too_large` | Image exceeds 10MB limit |
+| 429 | `rate_limit_exceeded` | Too many requests |
+| 500 | `server_error` | Internal server error |
+| 502 | `service_unavailable` | Service temporarily unavailable |
+| 503 | `service_unavailable` | Service under maintenance |
+
+## Aspect Ratios
+
+Nano Banana supports flexible aspect ratios:
+
+| Size | Ratio | Common Use Case |
+|------|-------|-----------------|
+| `auto` | Automatic | Best fit for content |
+| `1:1` | Square | Social media posts |
+| `2:3` | Portrait | Posters, mobile screens |
+| `3:2` | Landscape | Standard photos |
+| `4:3` | Classic | Presentations |
+| `3:4` | Portrait | Mobile content |
+| `16:9` | Widescreen | Desktop wallpapers, videos |
+| `9:16` | Vertical | Mobile stories, TikTok |
+
+## Performance Characteristics
+
+- **Average generation time**: 15-45 seconds
+- **Typical speed**: 2-3x faster than GPT-4o Image
+- **Quality**: High quality, optimized for speed
+- **Best for**: High-volume applications, rapid prototyping
+
+## Best Practices
+
+<Tip>
+  **Speed vs Quality**: Nano Banana prioritizes speed. For maximum quality, consider using GPT-4o Image.
+</Tip>
+
+<Tip>
+  **Aspect Ratio**: Use `auto` to let the model choose the best aspect ratio for your prompt.
+</Tip>
+
+<Tip>
+  **Batch Processing**: Submit multiple requests in parallel for high-throughput applications.
+</Tip>
+
+<Tip>
+  **Prompt Length**: While the limit is 1000 characters, concise prompts (50-200 chars) often work best.
+</Tip>
+
+## Pricing
+
+Nano Banana offers cost-effective pricing:
+
+- **Text-to-Image**: ~1.6 credits per image
+- **Image-to-Image**: ~1.6-2.0 credits per image
+- **Image Editing**: ~2.0-2.5 credits per image
+
+Approximately **40% less expensive** than GPT-4o Image for most use cases.
+
+## Comparison: Nano Banana vs GPT-4o Image
+
+| Feature | Nano Banana | GPT-4o Image |
+|---------|-------------|--------------|
+| Speed | ⚡ Fast (15-45s) | Standard (30-60s) |
+| Quality | High | Very High |
+| Cost | 💰 Lower (~1.6 credits) | Higher (~2.5 credits) |
+| Aspect Ratios | 8 options | 3 options |
+| Image Count | 1 per request | 1, 2, or 4 |
+| Mask Support | No | Yes |
+| Best For | Speed, cost efficiency | Maximum quality |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="GPT-4o Image" icon="image" href="/api-manual/image-series/gpt-4o-image">
+    High-quality image generation
+  </Card>
+  <Card title="Video Generation" icon="video" href="/api-manual/video-series/sora-2">
+    Create videos with Sora 2
+  </Card>
+  <Card title="Task Status" icon="list-check" href="/api-manual/task-management/status">
+    Learn about task management
+  </Card>
+  <Card title="Quick Start" icon="rocket" href="/guides/getting-started/quickstart">
+    Back to Quick Start guide
+  </Card>
+</CardGroup>

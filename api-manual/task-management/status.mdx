@@ -1,0 +1,580 @@
+---
+title: "Get Task Status"
+description: "Query task execution status and retrieve generation results"
+openapi: "GET /api/generate/status/{task_id}"
+---
+
+# Get Task Status
+
+Query the execution status of image and video generation tasks and retrieve results when complete.
+
+## Endpoint
+
+```http
+GET https://api.poyo.ai/api/generate/status/{task_id}
+```
+
+## Authentication
+
+All requests require Bearer token authentication:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+<Card title="Get API Key" icon="key" href="https://poyo.ai/dashboard/api-key">
+  Generate your API key from the console
+</Card>
+
+## Parameters
+
+### Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `task_id` | string | Yes | Unique task identifier returned from the submit endpoint |
+
+## Response
+
+### Success Response (200)
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://storage.poyo.ai/generated/image-abc123.jpg",
+        "file_type": "image"
+      }
+    ],
+    "created_time": "2025-11-12T10:30:00",
+    "credits_amount": 2.5,
+    "progress": 100,
+    "error_message": null
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `code` | integer | HTTP status code (200 for success) |
+| `data.task_id` | string | Unique task identifier |
+| `data.status` | string | Task status: `not_started`, `running`, `finished`, `failed` |
+| `data.files` | array | Generated media files (when status is `finished`) |
+| `data.files[].file_url` | string | Direct URL to generated file |
+| `data.files[].file_type` | string | Type of media file: `image` or `video` |
+| `data.created_time` | string | ISO 8601 timestamp of task creation |
+| `data.credits_amount` | number | Credits consumed (0 until finished) |
+| `data.progress` | integer | Completion percentage (0-100) |
+| `data.error_message` | string | Error description (when status is `failed`) |
+
+### Status Values
+
+| Status | Description |
+|--------|-------------|
+| `not_started` | Task is queued, waiting to be processed |
+| `running` | Task is currently being generated |
+| `finished` | Task completed successfully, results available in `files` |
+| `failed` | Task failed, error details in `error_message` |
+
+## Response Examples by Status
+
+### Not Started
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "not_started",
+    "files": [],
+    "created_time": "2025-11-12T10:30:00",
+    "credits_amount": 0,
+    "progress": 0,
+    "error_message": null
+  }
+}
+```
+
+### Running (Image)
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "running",
+    "files": [],
+    "created_time": "2025-11-12T10:30:00",
+    "credits_amount": 0,
+    "progress": 45,
+    "error_message": null
+  }
+}
+```
+
+### Finished (Image)
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://storage.poyo.ai/generated/image-abc123.jpg",
+        "file_type": "image"
+      }
+    ],
+    "created_time": "2025-11-12T10:30:00",
+    "credits_amount": 2.5,
+    "progress": 100,
+    "error_message": null
+  }
+}
+```
+
+### Finished (Video)
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165211-xyz789",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://storage.poyo.ai/generated/video-xyz789.mp4",
+        "file_type": "video"
+      }
+    ],
+    "created_time": "2025-11-12T10:30:00",
+    "credits_amount": 45.0,
+    "progress": 100,
+    "error_message": null
+  }
+}
+```
+
+### Failed
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "failed",
+    "files": [],
+    "created_time": "2025-11-12T10:30:00",
+    "credits_amount": 0,
+    "progress": 0,
+    "error_message": "The prompt violates our content policy"
+  }
+}
+```
+
+## Code Examples
+
+### cURL
+
+```bash
+curl -X GET https://api.poyo.ai/api/generate/status/task-unified-1757165031-uyujaw3d \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Python
+
+```python
+import requests
+
+API_KEY = "your-api-key-here"
+task_id = "task-unified-1757165031-uyujaw3d"
+
+response = requests.get(
+    f"https://api.poyo.ai/api/generate/status/{task_id}",
+    headers={"Authorization": f"Bearer {API_KEY}"}
+)
+
+result = response.json()
+data = result["data"]
+
+print(f"Status: {data['status']}")
+print(f"Progress: {data['progress']}%")
+
+if data["status"] == "finished":
+    for file in data["files"]:
+        print(f"Generated file: {file['file_url']}")
+elif data["status"] == "failed":
+    print(f"Error: {data['error_message']}")
+```
+
+### JavaScript / Node.js
+
+```javascript
+const API_KEY = 'your-api-key-here';
+const taskId = 'task-unified-1757165031-uyujaw3d';
+
+const response = await fetch(
+  `https://api.poyo.ai/api/generate/status/${taskId}`,
+  {
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`
+    }
+  }
+);
+
+const result = await response.json();
+const data = result.data;
+
+console.log(`Status: ${data.status}`);
+console.log(`Progress: ${data.progress}%`);
+
+if (data.status === 'finished') {
+  data.files.forEach(file => {
+    console.log(`Generated file: ${file.file_url}`);
+  });
+} else if (data.status === 'failed') {
+  console.log(`Error: ${data.error_message}`);
+}
+```
+
+### Go
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "io"
+    "net/http"
+)
+
+const (
+    APIKey = "your-api-key-here"
+    BaseURL = "https://api.poyo.ai"
+)
+
+type APIResponse struct {
+    Code int      `json:"code"`
+    Data TaskData `json:"data"`
+}
+
+type TaskData struct {
+    TaskID       string      `json:"task_id"`
+    Status       string      `json:"status"`
+    Files        []MediaFile `json:"files"`
+    CreatedTime  string      `json:"created_time"`
+    CreditsAmount float64    `json:"credits_amount"`
+    Progress     int         `json:"progress"`
+    ErrorMessage *string     `json:"error_message"`
+}
+
+type MediaFile struct {
+    FileURL  string `json:"file_url"`
+    FileType string `json:"file_type"`
+}
+
+func main() {
+    taskID := "task-unified-1757165031-uyujaw3d"
+
+    req, _ := http.NewRequest(
+        "GET",
+        fmt.Sprintf("%s/api/generate/status/%s", BaseURL, taskID),
+        nil,
+    )
+    req.Header.Set("Authorization", "Bearer "+APIKey)
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        panic(err)
+    }
+    defer resp.Body.Close()
+
+    body, _ := io.ReadAll(resp.Body)
+
+    var apiResp APIResponse
+    json.Unmarshal(body, &apiResp)
+
+    data := apiResp.Data
+    fmt.Printf("Status: %s\n", data.Status)
+    fmt.Printf("Progress: %d%%\n", data.Progress)
+
+    if data.Status == "finished" {
+        for _, file := range data.Files {
+            fmt.Printf("Generated file: %s\n", file.FileURL)
+        }
+    } else if data.Status == "failed" {
+        fmt.Printf("Error: %s\n", *data.ErrorMessage)
+    }
+}
+```
+
+### Java
+
+```java
+import java.net.http.*;
+import java.net.URI;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+
+public class PoYoAPI {
+    private static final String API_KEY = "your-api-key-here";
+    private static final String BASE_URL = "https://api.poyo.ai";
+
+    public static void main(String[] args) throws Exception {
+        String taskId = "task-unified-1757165031-uyujaw3d";
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(BASE_URL + "/api/generate/status/" + taskId))
+            .header("Authorization", "Bearer " + API_KEY)
+            .GET()
+            .build();
+
+        HttpResponse<String> response = client.send(
+            request,
+            HttpResponse.BodyHandlers.ofString()
+        );
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(response.body());
+        JsonNode data = root.get("data");
+
+        String status = data.get("status").asText();
+        int progress = data.get("progress").asInt();
+
+        System.out.println("Status: " + status);
+        System.out.println("Progress: " + progress + "%");
+
+        if ("finished".equals(status)) {
+            JsonNode files = data.get("files");
+            files.forEach(file -> {
+                System.out.println("Generated file: " + file.get("file_url").asText());
+            });
+        } else if ("failed".equals(status)) {
+            System.out.println("Error: " + data.get("error_message").asText());
+        }
+    }
+}
+```
+
+### PHP
+
+```php
+<?php
+
+$apiKey = 'your-api-key-here';
+$taskId = 'task-unified-1757165031-uyujaw3d';
+$baseUrl = 'https://api.poyo.ai';
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "$baseUrl/api/generate/status/$taskId");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Authorization: Bearer $apiKey"
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$result = json_decode($response, true);
+$data = $result['data'];
+
+echo "Status: {$data['status']}\n";
+echo "Progress: {$data['progress']}%\n";
+
+if ($data['status'] === 'finished') {
+    foreach ($data['files'] as $file) {
+        echo "Generated file: {$file['file_url']}\n";
+    }
+} elseif ($data['status'] === 'failed') {
+    echo "Error: {$data['error_message']}\n";
+}
+```
+
+### Ruby
+
+```ruby
+require 'net/http'
+require 'json'
+require 'uri'
+
+api_key = 'your-api-key-here'
+task_id = 'task-unified-1757165031-uyujaw3d'
+base_url = 'https://api.poyo.ai'
+
+uri = URI("#{base_url}/api/generate/status/#{task_id}")
+request = Net::HTTP::Get.new(uri)
+request['Authorization'] = "Bearer #{api_key}"
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+
+result = JSON.parse(response.body)
+data = result['data']
+
+puts "Status: #{data['status']}"
+puts "Progress: #{data['progress']}%"
+
+if data['status'] == 'finished'
+  data['files'].each do |file|
+    puts "Generated file: #{file['file_url']}"
+  end
+elsif data['status'] == 'failed'
+  puts "Error: #{data['error_message']}"
+end
+```
+
+## Polling Best Practices
+
+When polling for task completion, follow these recommendations:
+
+<Tip>
+  **Poll Interval**: Check status every 2-5 seconds. Avoid polling more frequently to prevent rate limiting.
+</Tip>
+
+<Tip>
+  **Timeout**: Implement timeouts to avoid infinite loops. Typical generation times:
+  - Images: 15-60 seconds
+  - Videos: 90-300 seconds
+</Tip>
+
+<Tip>
+  **Exponential Backoff**: On rate limit (429) or server errors (5xx), implement exponential backoff (wait 1s, 2s, 4s, 8s...).
+</Tip>
+
+### Complete Polling Example
+
+```python
+import requests
+import time
+
+API_KEY = "your-api-key-here"
+BASE_URL = "https://api.poyo.ai"
+
+def wait_for_completion(task_id, timeout=600, poll_interval=2):
+    """
+    Wait for task completion with timeout
+
+    Args:
+        task_id: Task identifier
+        timeout: Maximum wait time in seconds
+        poll_interval: Seconds between checks
+
+    Returns:
+        Task data when complete
+
+    Raises:
+        TimeoutError: If timeout exceeded
+        RuntimeError: If task failed
+    """
+    start_time = time.time()
+    headers = {"Authorization": f"Bearer {API_KEY}"}
+
+    while True:
+        # Check timeout
+        if time.time() - start_time > timeout:
+            raise TimeoutError(f"Task did not complete within {timeout}s")
+
+        # Get status
+        response = requests.get(
+            f"{BASE_URL}/api/generate/status/{task_id}",
+            headers=headers
+        )
+
+        if response.status_code == 429:
+            # Rate limited - wait longer
+            time.sleep(poll_interval * 2)
+            continue
+
+        response.raise_for_status()
+        result = response.json()
+        data = result["data"]
+
+        # Log progress
+        elapsed = int(time.time() - start_time)
+        print(f"[{elapsed}s] Status: {data['status']}, Progress: {data['progress']}%")
+
+        # Check completion
+        if data["status"] == "finished":
+            print(f"✓ Task completed successfully")
+            return data
+        elif data["status"] == "failed":
+            raise RuntimeError(f"Task failed: {data['error_message']}")
+
+        time.sleep(poll_interval)
+
+# Usage
+try:
+    task_id = "task-unified-1757165031-uyujaw3d"
+    result = wait_for_completion(task_id)
+
+    for file in result["files"]:
+        print(f"Download: {file['file_url']}")
+
+except TimeoutError as e:
+    print(f"Timeout: {e}")
+except RuntimeError as e:
+    print(f"Error: {e}")
+```
+
+## Error Responses
+
+### HTTP Error Codes
+
+| Code | Description | Action |
+|------|-------------|--------|
+| 401 | Unauthorized | Check your API key |
+| 403 | Forbidden | Task belongs to another user |
+| 404 | Not Found | Task ID does not exist |
+| 429 | Too Many Requests | Reduce polling frequency, implement backoff |
+| 500 | Server Error | Retry with exponential backoff |
+| 502 | Bad Gateway | Service temporarily unavailable, retry |
+
+### Error Response Format
+
+```json
+{
+  "detail": "Task not found"
+}
+```
+
+## Important Notes
+
+<Warning>
+  **Content Validity**: Generated images and videos are accessible for **24 hours** after creation. Download and save your content promptly.
+</Warning>
+
+<Info>
+  **Credits**: Credits are only deducted when the task status becomes `finished`. Failed tasks do not consume credits.
+</Info>
+
+<Tip>
+  **Webhooks**: Instead of polling, you can provide a `callback_url` when submitting tasks to receive automatic notifications. See the [Quick Start guide](/guides/getting-started/quickstart#webhook-callbacks).
+</Tip>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Submit Task" icon="upload" href="/api-manual/overview">
+    Learn how to submit generation tasks
+  </Card>
+  <Card title="Image Generation" icon="image" href="/api-manual/image-series/gpt-4o-image">
+    Generate images with GPT-4o
+  </Card>
+  <Card title="Video Generation" icon="video" href="/api-manual/video-series/sora-2">
+    Create videos with Sora 2
+  </Card>
+  <Card title="Quick Start" icon="rocket" href="/guides/getting-started/quickstart">
+    Complete integration guide
+  </Card>
+</CardGroup>

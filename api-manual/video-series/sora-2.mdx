@@ -1,0 +1,660 @@
+---
+title: "Sora 2 Video Generation"
+description: "Professional video generation with OpenAI's Sora 2"
+openapi: "POST /api/generate/submit"
+---
+
+# Sora 2 Video Generation
+
+Generate professional-quality videos using OpenAI's Sora 2 model. Supports text-to-video and image-to-video generation with multiple quality tiers.
+
+## Available Models
+
+- `sora-2` - Standard quality video generation (10-15 seconds)
+- `sora-2-pro` - Professional quality with extended duration (15-25 seconds, HD)
+- `sora-2-private` - Private standard quality
+- `sora-2-pro-private` - Private professional quality
+
+## Endpoint
+
+```http
+POST https://api.poyo.ai/api/generate/submit
+```
+
+## Authentication
+
+All requests require Bearer token authentication:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+<Card title="Get API Key" icon="key" href="https://poyo.ai/dashboard/api-key">
+  Generate your API key from the console
+</Card>
+
+## Request Parameters
+
+### Required Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `model` | string | Model identifier: `sora-2`, `sora-2-pro`, `sora-2-private`, or `sora-2-pro-private` |
+| `prompt` | string | Description of the desired video (max 1000 characters) |
+
+### Optional Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `duration` | integer | Model-dependent | Video length in seconds. `sora-2`: `10` or `15`; `sora-2-pro`: `15` or `25` |
+| `aspect_ratio` | string | `16:9` | Video aspect ratio: `16:9` (landscape) or `9:16` (portrait) |
+| `image_urls` | array | - | Reference image URLs for image-to-video generation (max 10MB each) |
+| `watermark` | boolean | `false` | Add Sora watermark to generated video |
+| `thumbnail` | boolean | `false` | Generate preview thumbnail |
+| `callback_url` | string | - | HTTPS webhook URL for task completion notifications |
+
+### Image Requirements (for Image-to-Video)
+
+- **Supported formats**: `.jpeg`, `.jpg`, `.png`, `.webp`
+- **Maximum size**: 10MB per image
+- **Recommended**: High-quality images for best results
+
+## Duration Options
+
+| Model | Available Durations |
+|-------|---------------------|
+| `sora-2` | 10 seconds, 15 seconds |
+| `sora-2-pro` | 15 seconds (HD), 25 seconds |
+| `sora-2-private` | 10 seconds, 15 seconds |
+| `sora-2-pro-private` | 15 seconds (HD), 25 seconds |
+
+## Generation Modes
+
+### Text-to-Video
+
+Generate videos from text descriptions only.
+
+```json
+{
+  "model": "sora-2",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "A time-lapse of a bustling city street transitioning from day to night, with glowing neon signs and streams of traffic",
+    "duration": 15,
+    "aspect_ratio": "16:9"
+  }
+}
+```
+
+### Image-to-Video
+
+Animate an image based on a text prompt.
+
+```json
+{
+  "model": "sora-2-pro",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "Camera slowly zooms out revealing a vast mountain landscape",
+    "image_urls": [
+      "https://example.com/mountain-scene.jpg"
+    ],
+    "duration": 15,
+    "aspect_ratio": "16:9"
+  }
+}
+```
+
+### With Watermark
+
+```json
+{
+  "model": "sora-2",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "Ocean waves crashing on a rocky shore at sunset",
+    "duration": 10,
+    "aspect_ratio": "16:9"
+  },
+  "watermark": true,
+  "thumbnail": true
+}
+```
+
+## Response Format
+
+### Success Response (200)
+
+The API returns a task object immediately:
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "not_started",
+    "created_time": "2025-11-12T10:30:00"
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `task_id` | string | Unique task identifier |
+| `status` | string | Task status: always `not_started` for submit response |
+| `created_time` | string | ISO 8601 timestamp of task creation |
+
+## Retrieving Results
+
+Check task status and retrieve results:
+
+```bash
+GET https://api.poyo.ai/api/generate/status/{task_id}
+```
+
+### Completed Task Response
+
+```json
+{
+  "code": 200,
+  "data": {
+    "id": "task-unified-1757165031-uyujaw3d",
+    "status": "finished",
+    "progress": 100,
+    "created": 1757165031,
+    "completed": 1757165211,
+    "model": "sora-2",
+    "files": [
+      {
+        "file_url": "https://storage.poyo.ai/generated/video-abc123.mp4",
+        "file_type": "video"
+      }
+    ],
+    "usage": {
+      "credits_used": 45.0
+    }
+  }
+}
+```
+
+### Status Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique task identifier |
+| `status` | string | Task status: `not_started`, `processing`, `finished`, or `failed` |
+| `progress` | integer | Completion percentage (0-100) |
+| `created` | integer | Unix timestamp of task creation |
+| `completed` | integer | Unix timestamp of task completion (only when finished) |
+| `model` | string | Model used for generation |
+| `files` | array | Array of generated video files (only when finished) |
+| `files[].file_url` | string | Direct URL to the generated video file |
+| `files[].file_type` | string | File type: `video` |
+| `usage.credits_used` | float | Credits consumed for this generation |
+
+<Warning>
+  **Video Validity**: Generated video links are valid for **24 hours**. Please download and save them promptly.
+</Warning>
+
+## Code Examples
+
+### Python
+
+```python
+import requests
+import time
+
+API_KEY = "your-api-key-here"
+BASE_URL = "https://api.poyo.ai"
+
+headers = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json"
+}
+
+# Submit video generation request
+payload = {
+    "model": "sora-2",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+        "prompt": "A cinematic shot of a lone astronaut walking on Mars, red dust swirling in the wind",
+        "duration": 15,
+        "aspect_ratio": "16:9"
+    },
+    "thumbnail": True
+}
+
+response = requests.post(
+    f"{BASE_URL}/api/generate/submit",
+    json=payload,
+    headers=headers
+)
+result = response.json()
+task = result["data"]
+task_id = task["task_id"]
+
+print(f"Task submitted: {task_id}")
+print(f"Status: {task['status']}")
+
+# Poll for completion
+while True:
+    status_response = requests.get(
+        f"{BASE_URL}/api/generate/status/{task_id}",
+        headers=headers
+    )
+    result = status_response.json()
+    task_status = result["data"]
+
+    print(f"Status: {task_status['status']}, Progress: {task_status['progress']}%")
+
+    if task_status["status"] == "finished":
+        video = task_status["files"][0]
+        print(f"Video generated: {video['file_url']}")
+        print(f"File type: {video['file_type']}")
+
+        # Download the video
+        video_response = requests.get(video['file_url'])
+        with open("generated_video.mp4", "wb") as f:
+            f.write(video_response.content)
+        print("Video saved as generated_video.mp4")
+        break
+    elif task_status["status"] == "failed":
+        print(f"Generation failed: {task_status['error']['message']}")
+        break
+
+    time.sleep(5)  # Poll every 5 seconds for video
+```
+
+### JavaScript / Node.js
+
+```javascript
+const API_KEY = 'your-api-key-here';
+const BASE_URL = 'https://api.poyo.ai';
+
+const headers = {
+  'Authorization': `Bearer ${API_KEY}`,
+  'Content-Type': 'application/json'
+};
+
+async function generateVideo() {
+  // Submit video generation request
+  const response = await fetch(`${BASE_URL}/api/generate/submit`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify({
+      model: 'sora-2',
+      callback_url: 'https://your-domain.com/callback',
+      input: {
+        prompt: 'A cinematic shot of a lone astronaut walking on Mars, red dust swirling in the wind',
+        duration: 15,
+        aspect_ratio: '16:9'
+      },
+      thumbnail: true
+    })
+  });
+
+  const result = await response.json();
+  const task = result.data;
+  const taskId = task.task_id;
+
+  console.log(`Task submitted: ${taskId}`);
+  console.log(`Status: ${task.status}`);
+
+  // Poll for completion
+  while (true) {
+    const statusResponse = await fetch(
+      `${BASE_URL}/api/generate/status/${taskId}`,
+      { headers }
+    );
+    const result = await statusResponse.json();
+    const taskStatus = result.data;
+
+    console.log(`Status: ${taskStatus.status}, Progress: ${taskStatus.progress}%`);
+
+    if (taskStatus.status === 'finished') {
+      const video = taskStatus.files[0];
+      console.log(`Video generated: ${video.file_url}`);
+      console.log(`File type: ${video.file_type}`);
+      return video.file_url;
+    } else if (taskStatus.status === 'failed') {
+      throw new Error(`Generation failed: ${taskStatus.error.message}`);
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 5000)); // Poll every 5 seconds
+  }
+}
+
+generateVideo()
+  .then(url => console.log('Success:', url))
+  .catch(err => console.error('Error:', err));
+```
+
+### cURL
+
+```bash
+# Submit video generation request
+curl -X POST https://api.poyo.ai/api/generate/submit \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "sora-2",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+      "prompt": "A cinematic shot of a lone astronaut walking on Mars, red dust swirling in the wind",
+      "duration": 15,
+      "aspect_ratio": "16:9"
+    },
+    "thumbnail": true
+  }'
+
+# Check task status (replace TASK_ID with actual task ID)
+curl -X GET https://api.poyo.ai/api/generate/status/TASK_ID \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Go
+
+```go
+package main
+
+import (
+    "bytes"
+    "encoding/json"
+    "fmt"
+    "net/http"
+    "time"
+)
+
+const (
+    APIKey  = "your-api-key-here"
+    BaseURL = "https://api.poyo.ai"
+)
+
+type VideoInput struct {
+    Prompt      string `json:"prompt"`
+    Duration    int    `json:"duration"`
+    AspectRatio string `json:"aspect_ratio"`
+}
+
+type VideoSubmitRequest struct {
+    Model       string      `json:"model"`
+    CallbackURL string      `json:"callback_url"`
+    Input       VideoInput  `json:"input"`
+    Thumbnail   bool        `json:"thumbnail"`
+}
+
+type APIResponse struct {
+    Code int          `json:"code"`
+    Data TaskResponse `json:"data"`
+}
+
+type TaskResponse struct {
+    TaskID      string `json:"task_id"`
+    Status      string `json:"status"`
+    CreatedTime string `json:"created_time"`
+    Progress    int    `json:"progress"`
+    Files       []struct {
+        FileURL  string `json:"file_url"`
+        FileType string `json:"file_type"`
+    } `json:"files"`
+}
+
+func main() {
+    client := &http.Client{}
+
+    // Submit request
+    submitData := VideoSubmitRequest{
+        Model:       "sora-2",
+        CallbackURL: "https://your-domain.com/callback",
+        Input: VideoInput{
+            Prompt:      "A cinematic shot of a lone astronaut walking on Mars, red dust swirling in the wind",
+            Duration:    15,
+            AspectRatio: "16:9",
+        },
+        Thumbnail:   true,
+    }
+
+    jsonData, _ := json.Marshal(submitData)
+    req, _ := http.NewRequest("POST", BaseURL+"/api/generate/submit", bytes.NewBuffer(jsonData))
+    req.Header.Set("Authorization", "Bearer "+APIKey)
+    req.Header.Set("Content-Type", "application/json")
+
+    resp, _ := client.Do(req)
+    defer resp.Body.Close()
+
+    var apiResp APIResponse
+    json.NewDecoder(resp.Body).Decode(&apiResp)
+    task := apiResp.Data
+
+    fmt.Printf("Task submitted: %s\n", task.TaskID)
+    fmt.Printf("Status: %s\n", task.Status)
+
+    // Poll for completion
+    for {
+        req, _ = http.NewRequest("GET", BaseURL+"/api/generate/status/"+task.TaskID, nil)
+        req.Header.Set("Authorization", "Bearer "+APIKey)
+
+        resp, _ = client.Do(req)
+        var statusResp APIResponse
+        json.NewDecoder(resp.Body).Decode(&statusResp)
+        resp.Body.Close()
+        task = statusResp.Data
+
+        fmt.Printf("Status: %s, Progress: %d%%\n", task.Status, task.Progress)
+
+        if task.Status == "finished" {
+            video := task.Files[0]
+            fmt.Printf("Video generated: %s\n", video.FileURL)
+            fmt.Printf("File type: %s\n", video.FileType)
+            break
+        } else if task.Status == "failed" {
+            fmt.Println("Generation failed")
+            break
+        }
+
+        time.Sleep(5 * time.Second)
+    }
+}
+```
+
+## Image-to-Video Example
+
+```python
+import requests
+
+API_KEY = "your-api-key-here"
+headers = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json"
+}
+
+# Animate an existing image
+payload = {
+    "model": "sora-2-pro",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+        "prompt": "Camera slowly pans across the landscape as clouds move overhead",
+        "image_urls": [
+            "https://example.com/landscape-photo.jpg"
+        ],
+        "duration": 15,
+        "aspect_ratio": "16:9"
+    }
+}
+
+response = requests.post(
+    "https://api.poyo.ai/api/generate/submit",
+    json=payload,
+    headers=headers
+)
+
+result = response.json()
+task = result["data"]
+print(f"Image-to-video task submitted: {task['task_id']}")
+print(f"Status: {task['status']}")
+```
+
+## Webhook Callbacks
+
+Receive automatic notifications when video generation completes:
+
+```json
+{
+  "model": "sora-2",
+  "callback_url": "https://your-domain.com/webhook/video-complete",
+  "input": {
+    "prompt": "A serene Japanese garden in autumn with falling leaves",
+    "duration": 15,
+    "aspect_ratio": "16:9"
+  }
+}
+```
+
+### Callback Payload
+
+```json
+{
+  "code": 200,
+  "data": {
+    "id": "task-unified-1757165031-uyujaw3d",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://storage.poyo.ai/generated/video-abc123.mp4",
+        "file_type": "video"
+      }
+    ]
+  }
+}
+```
+
+## Error Handling
+
+### Error Response Format
+
+```json
+{
+  "code": 400,
+  "error": {
+    "message": "Invalid parameter: duration must be 10 or 15 for sora-2",
+    "type": "invalid_request_error",
+    "param": "duration"
+  }
+}
+```
+
+### Common Error Codes
+
+| Code | Error Type | Description |
+|------|------------|-------------|
+| 400 | `invalid_request_error` | Invalid parameters provided |
+| 401 | `authentication_error` | Invalid or missing API key |
+| 402 | `insufficient_quota` | Insufficient credits |
+| 403 | `permission_denied` | No access to this model |
+| 413 | `file_too_large` | Image exceeds 10MB limit |
+| 429 | `rate_limit_exceeded` | Too many requests |
+| 500 | `server_error` | Internal server error |
+| 502 | `service_unavailable` | Service temporarily unavailable |
+
+## Model Comparison
+
+| Feature | sora-2 | sora-2-pro |
+|---------|--------|------------|
+| Duration Options | 10s, 15s | 15s, 25s |
+| Quality | Standard HD | Professional HD |
+| Resolution | 1920x1080 | 1920x1080+ |
+| Generation Time | ~2-3 minutes | ~3-5 minutes |
+| Cost | Lower | Higher |
+| Best For | Quick videos | Professional content |
+
+## Best Practices
+
+<Tip>
+  **Detailed Prompts**: Include camera movements, lighting, mood, and scene details for better results.
+</Tip>
+
+<Tip>
+  **Polling Interval**: Poll every 5-10 seconds for videos (longer generation time than images).
+</Tip>
+
+<Tip>
+  **Image Quality**: For image-to-video, use high-resolution source images (1920x1080 or higher).
+</Tip>
+
+<Tip>
+  **Aspect Ratio**: Choose `16:9` for YouTube/desktop content, `9:16` for mobile/social media.
+</Tip>
+
+<Tip>
+  **Model Selection**: Use `sora-2` for testing and iterations, `sora-2-pro` for final production.
+</Tip>
+
+## Prompt Examples
+
+### Good Prompts
+
+✅ **Detailed and Specific**
+```
+"A cinematic drone shot flying through a misty forest at dawn,
+sunbeams filtering through tall pine trees, gentle camera movement forward"
+```
+
+✅ **Camera Movement Described**
+```
+"Close-up of a coffee cup on a wooden table, steam rising,
+camera slowly pulls back to reveal a cozy cafe interior"
+```
+
+✅ **Scene and Mood**
+```
+"Slow motion footage of ocean waves crashing on rocks at sunset,
+golden hour lighting, dramatic and peaceful atmosphere"
+```
+
+### Less Effective Prompts
+
+❌ **Too Vague**
+```
+"A nice forest"
+```
+
+❌ **Too Complex**
+```
+"A forest that transforms into a city while people are dancing and
+flying cars appear with changing weather and seasons"
+```
+
+## Pricing
+
+Video generation pricing is based on duration and model:
+
+### Sora-2
+- **10 seconds**: ~30 credits
+- **15 seconds**: ~45 credits
+
+### Sora-2-Pro
+- **15 seconds HD**: ~75 credits
+- **25 seconds**: ~125 credits
+
+<Info>
+  Actual credit usage may vary based on complexity. Check your [console](https://poyo.ai) for real-time usage.
+</Info>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="VEO 3.1" icon="film" href="/api-manual/video-series/veo3">
+    Fast video generation with Google VEO
+  </Card>
+  <Card title="Image Generation" icon="image" href="/api-manual/image-series/gpt-4o-image">
+    Create images with GPT-4o
+  </Card>
+  <Card title="Task Status" icon="list-check" href="/api-manual/task-management/status">
+    Learn about task management
+  </Card>
+  <Card title="Quick Start" icon="rocket" href="/guides/getting-started/quickstart">
+    Back to Quick Start guide
+  </Card>
+</CardGroup>

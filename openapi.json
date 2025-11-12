@@ -1,0 +1,448 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "PoYo AI API",
+    "description": "Professional Image and Video Generation APIs",
+    "version": "1.0.0",
+    "contact": {
+      "email": "support@poyo.ai"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.poyo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit Generation Task",
+        "description": "Submit an image or video generation task. This endpoint supports multiple models for both image and video generation.",
+        "operationId": "submitGenerationTask",
+        "tags": ["Generation"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "gpt-4o-image": {
+                  "summary": "GPT-4o Image Generation",
+                  "value": {
+                    "model": "gpt-4o-image",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A serene mountain landscape at sunset with vibrant colors",
+                      "size": "1:1",
+                      "n": 1
+                    }
+                  }
+                },
+                "gpt-4o-image-edit": {
+                  "summary": "GPT-4o Image Edit",
+                  "value": {
+                    "model": "gpt-4o-image-edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Replace the sky with a starry night sky",
+                      "image_urls": ["https://example.com/original-image.jpg"],
+                      "mask_url": "https://example.com/mask.png",
+                      "size": "1:1"
+                    }
+                  }
+                },
+                "nano-banana": {
+                  "summary": "Nano Banana Image Generation",
+                  "value": {
+                    "model": "nano-banana",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cyberpunk street scene with neon signs and rain",
+                      "size": "16:9"
+                    }
+                  }
+                },
+                "nano-banana-edit": {
+                  "summary": "Nano Banana Image Edit",
+                  "value": {
+                    "model": "nano-banana-edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Add colorful flowers in the foreground",
+                      "image_urls": ["https://example.com/landscape.jpg"],
+                      "size": "16:9"
+                    }
+                  }
+                },
+                "sora-2": {
+                  "summary": "Sora 2 Video Generation",
+                  "value": {
+                    "model": "sora-2",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A time-lapse of a bustling city street transitioning from day to night",
+                      "duration": 15,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                },
+                "sora-2-pro": {
+                  "summary": "Sora 2 Pro Video Generation",
+                  "value": {
+                    "model": "sora-2-pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic drone shot flying through a misty forest at dawn",
+                      "duration": 25,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                },
+                "veo3.1-fast": {
+                  "summary": "VEO 3.1 Fast Video Generation",
+                  "value": {
+                    "model": "veo3.1-fast",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A peaceful stream flowing through a lush green forest",
+                      "duration": 8,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/generate/status/{task_id}": {
+      "get": {
+        "summary": "Get task status",
+        "description": "Query the status and results of a generation task",
+        "operationId": "getTaskStatus",
+        "tags": ["Task Management"],
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Unique task identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task status retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model identifier",
+            "enum": [
+              "gpt-4o-image",
+              "gpt-4o-image-edit",
+              "nano-banana",
+              "nano-banana-edit",
+              "sora-2",
+              "sora-2-pro",
+              "sora-2-private",
+              "sora-2-pro-private",
+              "veo3.1-fast"
+            ],
+            "example": "gpt-4o-image"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["prompt"],
+            "description": "Input parameters for generation",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Generation prompt describing the desired output",
+                "maxLength": 1000,
+                "example": "A beautiful sunset over the ocean"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "Reference image URLs (for image editing or image-to-video)",
+                "example": []
+              },
+              "size": {
+                "type": "string",
+                "description": "Image size (e.g., '1024x1024') or aspect ratio (e.g., '16:9')",
+                "example": "1024x1024"
+              },
+              "n": {
+                "type": "integer",
+                "description": "Number of images to generate",
+                "minimum": 1,
+                "maximum": 4,
+                "example": 1
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Video duration in seconds",
+                "example": 15
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Video aspect ratio",
+                "example": "16:9"
+              },
+              "mask_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Mask image URL for editing",
+                "example": "https://example.com/mask.png"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "Unique task identifier for status tracking"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started"],
+                "example": "not_started",
+                "description": "Initial task status (always not_started on submit)"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "ISO 8601 timestamp when the task was created"
+              }
+            }
+          }
+        },
+        "example": {
+          "code": 200,
+          "data": {
+            "task_id": "task-unified-1757165031-uyujaw3d",
+            "status": "not_started",
+            "created_time": "2025-11-12T10:30:00"
+          }
+        }
+      },
+      "StatusResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "files", "created_time", "credits_amount", "progress"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "Unique task identifier"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started", "running", "finished", "failed"],
+                "example": "finished",
+                "description": "Current task status"
+              },
+              "files": {
+                "type": "array",
+                "description": "Generated media files (populated when status is finished)",
+                "items": {
+                  "type": "object",
+                  "required": ["file_url", "file_type"],
+                  "properties": {
+                    "file_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://storage.poyo.ai/generated/image-abc123.jpg",
+                      "description": "Direct URL to the generated file (valid for 24 hours)"
+                    },
+                    "file_type": {
+                      "type": "string",
+                      "enum": ["image", "video"],
+                      "example": "image",
+                      "description": "Type of media file: 'image' or 'video'"
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "file_url": "https://storage.poyo.ai/generated/image-abc123.jpg",
+                    "file_type": "image"
+                  }
+                ]
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "ISO 8601 timestamp of task creation"
+              },
+              "credits_amount": {
+                "type": "number",
+                "example": 2.5,
+                "description": "Credits consumed (0 until finished)"
+              },
+              "progress": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "example": 100,
+                "description": "Completion percentage"
+              },
+              "error_message": {
+                "type": "string",
+                "nullable": true,
+                "example": null,
+                "description": "Error description (when status is failed)"
+              }
+            }
+          }
+        },
+        "example": {
+          "code": 200,
+          "data": {
+            "task_id": "task-unified-1757165031-uyujaw3d",
+            "status": "finished",
+            "files": [
+              {
+                "file_url": "https://storage.poyo.ai/generated/image-abc123.jpg",
+                "file_type": "image"
+              }
+            ],
+            "created_time": "2025-11-12T10:30:00",
+            "credits_amount": 2.5,
+            "progress": 100,
+            "error_message": null
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer"
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
