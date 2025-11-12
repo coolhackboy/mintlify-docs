@@ -128,15 +128,10 @@ The API returns a task object immediately:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | string | Unique task identifier |
-| `status` | string | Task status: `pending`, `processing`, `completed`, `failed` |
-| `progress` | integer | Completion percentage (0-100) |
-| `created` | integer | Unix timestamp of task creation |
-| `task_info.estimated_time` | integer | Estimated completion time in seconds (typically 15-45s) |
-| `task_info.can_cancel` | boolean | Whether the task can be cancelled |
-| `usage.credits_reserved` | number | Estimated cost in credits |
-| `files[].file_url` | string | URL to the generated image (valid for 24 hours) |
-| `files[].file_type` | string | Type of file (always "image" for this endpoint) |
+| `code` | integer | HTTP status code (200 for success) |
+| `data.task_id` | string | Unique task identifier for status tracking |
+| `data.status` | string | Task status - always `not_started` for submit response |
+| `data.created_time` | string | ISO 8601 timestamp of task creation |
 
 ## Retrieving Results
 

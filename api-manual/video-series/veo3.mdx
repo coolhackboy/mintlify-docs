@@ -127,9 +127,10 @@ The API returns a task object immediately:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `task_id` | string | Unique task identifier |
-| `status` | string | Task status (always `not_started` for submit response) |
-| `created_time` | string | ISO 8601 timestamp of task creation |
+| `code` | integer | HTTP status code (200 for success) |
+| `data.task_id` | string | Unique task identifier for status tracking |
+| `data.status` | string | Task status - always `not_started` for submit response |
+| `data.created_time` | string | ISO 8601 timestamp of task creation |
 
 ## Retrieving Results
 
