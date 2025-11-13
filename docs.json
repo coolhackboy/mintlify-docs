@@ -73,11 +73,6 @@
     "global": {
       "anchors": [
         {
-          "anchor": "API Console",
-          "href": "https://poyo.ai",
-          "icon": "terminal"
-        },
-        {
           "anchor": "Support",
           "href": "mailto:support@poyo.ai",
           "icon": "envelope"
@@ -110,11 +105,5 @@
      "cursor",
      "vscode"
    ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/poyoai",
-      "github": "https://github.com/poyoai"
-    }
   }
 }
