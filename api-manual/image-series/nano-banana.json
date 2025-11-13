@@ -142,7 +142,8 @@
               },
               "size": {
                 "type": "string",
-                "description": "Image size (e.g., '16:9')",
+                "description": "Image size ratio",
+                "enum": ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"],
                 "example": "16:9"
               }
             }

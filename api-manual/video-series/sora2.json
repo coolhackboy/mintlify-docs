@@ -169,12 +169,14 @@
               },
               "duration": {
                 "type": "integer",
-                "description": "Video duration in seconds",
+                "description": "Video duration in seconds (sora-2/sora-2-private: 10 or 15; sora-2-pro/sora-2-pro-private: 15 or 25)",
+                "enum": [10, 15, 25],
                 "example": 15
               },
               "aspect_ratio": {
                 "type": "string",
                 "description": "Video aspect ratio",
+                "enum": ["16:9", "9:16"],
                 "example": "16:9"
               }
             }

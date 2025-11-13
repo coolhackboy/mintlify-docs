@@ -131,11 +131,13 @@
               "duration": {
                 "type": "integer",
                 "description": "Video duration in seconds (fixed at 8)",
+                "enum": [8],
                 "example": 8
               },
               "aspect_ratio": {
                 "type": "string",
-                "description": "Video aspect ratio (16:9 or 9:16)",
+                "description": "Video aspect ratio",
+                "enum": ["16:9", "9:16"],
                 "example": "16:9"
               }
             }
