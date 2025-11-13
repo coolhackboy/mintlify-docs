@@ -1,22 +1,11 @@
 ---
-title: "Welcome to PoYo AI"
-description: "Powerful Image and Video Generation APIs"
-openapi: "POST /api/generate/submit"
+title: "API Overview"
+description: "Complete API reference and architecture"
 ---
 
-# Welcome to PoYo AI API Documentation
+# PoYo AI API Documentation
 
-PoYo AI provides state-of-the-art image and video generation APIs that enable developers to integrate advanced AI capabilities into their applications with ease.
-
-## What is PoYo AI?
-
-PoYo AI is a comprehensive API platform offering:
-
-- **High-Quality Image Generation**: Create stunning images from text descriptions or transform existing images
-- **Professional Video Generation**: Generate videos from text prompts or animate images
-- **Multiple AI Models**: Choose from industry-leading models including GPT-4o, Sora 2, and VEO 3.1
-- **Asynchronous Processing**: Efficient task management with real-time status updates
-- **Simple Integration**: RESTful API design with comprehensive SDKs and examples
+PoYo AI provides state-of-the-art image and video generation APIs with a unified, asynchronous architecture.
 
 ## Base URL
 
@@ -28,7 +17,7 @@ https://api.poyo.ai
 
 ## Authentication
 
-PoYo AI uses API key authentication. Include your API key in the `Authorization` header of every request:
+PoYo AI uses API key authentication. Include your API key in the `Authorization` header:
 
 ```bash
 Authorization: Bearer YOUR_API_KEY
@@ -38,147 +27,85 @@ Authorization: Bearer YOUR_API_KEY
   Visit the API Console to generate your API key
 </Card>
 
-## API Structure
+## Available Models
 
-The PoYo AI platform is organized into three main categories:
-
-### Image Series
-
-Generate and manipulate images using advanced AI models:
+### Image Generation
 
 <CardGroup cols={2}>
   <Card title="GPT-4o Image" icon="image" href="/api-manual/image-series/gpt-4o-image">
-    High-quality text-to-image, image-to-image, and image editing
+    High-quality text-to-image, image-to-image, and editing
   </Card>
   <Card title="Nano Banana" icon="sparkles" href="/api-manual/image-series/nano-banana">
-    Fast image generation powered by Gemini 2.5 Flash
+    Fast generation powered by Gemini 2.5 Flash
   </Card>
 </CardGroup>
 
-**Available Models:**
+**Models:**
 - `gpt-4o-image` - Premium image generation
-- `gpt-4o-image-edit` - Advanced image editing
-- `nano-banana` - Fast generation
-- `nano-banana-edit` - Quick editing
+- `gpt-4o-image-edit` - Advanced image editing with masks
+- `nano-banana` - Fast text-to-image
+- `nano-banana-edit` - Fast image editing
 
-### Video Series
-
-Create professional videos from text descriptions or images:
+### Video Generation
 
 <CardGroup cols={2}>
   <Card title="Sora 2" icon="video" href="/api-manual/video-series/sora-2">
-    Professional video generation with multiple quality tiers
+    Professional video with multiple quality tiers
   </Card>
   <Card title="VEO 3.1" icon="film" href="/api-manual/video-series/veo3">
-    Fast video generation with Google's VEO technology
+    Fast 8-second videos with Google's VEO
   </Card>
 </CardGroup>
 
-**Available Models:**
-- `sora-2` - Standard quality
-- `sora-2-pro` - Professional quality
-- `sora-2-private` - Private standard
-- `sora-2-pro-private` - Private professional
-- `veo3.1-fast` - Fast generation
+**Models:**
+- `sora-2` - Standard quality (10s, 15s)
+- `sora-2-pro` - Professional quality (15s, 25s)
+- `sora-2-private` - Private standard deployment
+- `sora-2-pro-private` - Private professional deployment
+- `veo3.1-fast` - Fast 8-second generation
 
-### Task Management
+## API Architecture
 
-Monitor and retrieve results from asynchronous generation tasks:
+### Unified Endpoints
 
-<Card title="Task Status" icon="list-check" href="/api-manual/task-management/status">
-  Query task status and retrieve generated content
-</Card>
+PoYo AI uses a simple two-endpoint architecture for all generation types:
 
-## How It Works
-
-PoYo AI uses an asynchronous processing model for optimal performance:
-
-<Steps>
-  <Step title="Submit Task">
-    Send a POST request to `/api/generate/submit` with your generation parameters
-  </Step>
-  <Step title="Receive Task ID">
-    The API immediately returns a unique `task_id` in the response data wrapper
-  </Step>
-  <Step title="Poll Status">
-    Query `/api/generate/status/{task_id}` to check progress (status: not_started, running, finished, or failed)
-  </Step>
-  <Step title="Retrieve Results">
-    Once status is `finished`, the status endpoint returns your generated content in the `files` array
-  </Step>
-</Steps>
-
-## Unified API Endpoints
-
-PoYo AI uses a unified API structure for all generation types:
-
-### Submit Generation Task
-
+#### Submit Task
 ```http
 POST https://api.poyo.ai/api/generate/submit
 ```
 
-Submit image or video generation requests.
+Submit image or video generation requests. Returns immediately with a `task_id`.
 
-### Query Task Status
-
+#### Query Status
 ```http
 GET https://api.poyo.ai/api/generate/status/{task_id}
 ```
 
-Check the status and retrieve results of a generation task.
+Check task progress and retrieve results.
 
-## Quick Start Example
+### Asynchronous Processing
 
-Here's a complete example of generating an image:
+All generation tasks follow this workflow:
 
-```python
-import requests
-import time
-
-# Configuration
-API_KEY = "your-api-key-here"
-BASE_URL = "https://api.poyo.ai"
-headers = {"Authorization": f"Bearer {API_KEY}"}
-
-# Submit generation request
-submit_response = requests.post(
-    f"{BASE_URL}/api/generate/submit",
-    json={
-        "model": "gpt-4o-image",
-        "callback_url": "https://your-domain.com/callback",
-        "input": {
-            "prompt": "A futuristic city skyline at night",
-            "size": "1:1"
-        }
-    },
-    headers=headers
-)
-task_id = submit_response.json()["data"]["task_id"]
-print(f"Task submitted: {task_id}")
-
-# Poll for results
-while True:
-    status_response = requests.get(
-        f"{BASE_URL}/api/generate/status/{task_id}",
-        headers=headers
-    )
-    task = status_response.json()["data"]
-
-    if task["status"] == "finished":
-        print(f"Image URL: {task['files'][0]['file_url']}")
-        break
-    elif task["status"] == "failed":
-        print(f"Generation failed: {task['error_message']}")
-        break
-
-    print(f"Progress: {task['progress']}%")
-    time.sleep(2)
-```
+<Steps>
+  <Step title="Submit Task">
+    POST to `/api/generate/submit` with model and parameters
+  </Step>
+  <Step title="Receive Task ID">
+    API returns `task_id` immediately with status `not_started`
+  </Step>
+  <Step title="Poll or Wait">
+    Either poll `/api/generate/status/{task_id}` or receive webhook callback
+  </Step>
+  <Step title="Retrieve Results">
+    When status is `finished`, get generated files from response
+  </Step>
+</Steps>
 
 ## Response Format
 
-All API endpoints return JSON responses with a consistent structure wrapped in a standard envelope:
+All endpoints return JSON with a consistent structure:
 
 ### Submit Response
 
@@ -186,7 +113,9 @@ All API endpoints return JSON responses with a consistent structure wrapped in a
 {
   "code": 200,
   "data": {
-    "task_id": "task-unified-1757165031-uyujaw3d"
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "not_started",
+    "created_time": "2025-11-12T10:30:00"
   }
 }
 ```
@@ -200,15 +129,14 @@ All API endpoints return JSON responses with a consistent structure wrapped in a
     "task_id": "task-unified-1757165031-uyujaw3d",
     "status": "finished",
     "progress": 100,
-    "created_at": 1757165031,
-    "completed_at": 1757165076,
-    "model": "gpt-4o-image",
     "files": [
       {
         "file_url": "https://storage.poyo.ai/generated/image-abc123.jpg",
         "file_type": "image"
       }
-    ]
+    ],
+    "created_time": "2025-11-12T10:30:00",
+    "error_message": null
   }
 }
 ```
@@ -217,10 +145,10 @@ All API endpoints return JSON responses with a consistent structure wrapped in a
 
 | Status | Description |
 |--------|-------------|
-| `not_started` | Task is queued and waiting to begin processing |
-| `running` | Task is currently being processed |
-| `finished` | Task completed successfully, results available in `files` array |
-| `failed` | Task failed, error details available in `error` field |
+| `not_started` | Task queued, waiting to begin |
+| `running` | Task currently processing |
+| `finished` | Task completed, results available in `files` array |
+| `failed` | Task failed, error details in `error_message` |
 
 ### Error Response
 
@@ -242,53 +170,106 @@ All API endpoints return JSON responses with a consistent structure wrapped in a
 | 400 | Bad Request - Invalid parameters |
 | 401 | Unauthorized - Invalid or missing API key |
 | 402 | Payment Required - Insufficient account balance |
-| 403 | Forbidden - Access denied to requested resource |
+| 403 | Forbidden - Access denied |
 | 429 | Too Many Requests - Rate limit exceeded |
 | 500 | Internal Server Error - Server error occurred |
 | 502 | Bad Gateway - Service temporarily unavailable |
-| 503 | Service Unavailable - Service is down for maintenance |
+| 503 | Service Unavailable - Maintenance mode |
+
+## Task Management Options
+
+### Option 1: Polling (Simple)
+
+Poll the status endpoint periodically:
+
+```python
+import time
+while True:
+    response = requests.get(f"{BASE_URL}/api/generate/status/{task_id}", headers=headers)
+    task = response.json()["data"]
+    if task["status"] in ["finished", "failed"]:
+        break
+    time.sleep(2)
+```
+
+### Option 2: Webhooks (Recommended)
+
+Provide a `callback_url` to receive automatic notifications:
+
+```python
+payload = {
+    "model": "gpt-4o-image",
+    "callback_url": "https://your-domain.com/webhook",  # Receive results here
+    "input": {"prompt": "..."}
+}
+```
+
+<Card title="Webhook Documentation" icon="webhook" href="/api-manual/task-management/webhooks">
+  Learn how to implement webhook callbacks
+</Card>
 
 ## Important Notes
 
 <Warning>
-  **Content Validity**: Generated images and videos are accessible for **24 hours** after creation. Download and save your content promptly.
+  **File Validity**: Generated images and videos are accessible for **24 hours** after creation. Download and save your content promptly.
 </Warning>
 
 <Info>
-  **Rate Limits**: API rate limits vary by account type. Monitor your usage in the [API Console](https://poyo.ai).
+  **Rate Limits**: API rate limits vary by account type. Check your [console dashboard](https://poyo.ai) for current limits.
 </Info>
 
 <Tip>
-  **Callbacks**: You can provide a `callback_url` in your requests to receive automatic notifications when tasks complete, eliminating the need for polling.
+  **Callbacks vs Polling**: Webhooks are more efficient than polling and recommended for production use.
 </Tip>
 
-## Getting Help
+## Quick Example
 
-### Documentation Resources
+```python
+import requests
 
-- [Quick Start Guide](/guides/getting-started/quickstart) - Get up and running quickly
-- [Image Series](/api-manual/image-series/gpt-4o-image) - Image generation documentation
-- [Video Series](/api-manual/video-series/sora-2) - Video generation documentation
-- [Task Management](/api-manual/task-management/status) - Task status documentation
+API_KEY = "your-api-key-here"
+BASE_URL = "https://api.poyo.ai"
+headers = {"Authorization": f"Bearer {API_KEY}"}
 
-### Support Channels
+# Submit task
+response = requests.post(
+    f"{BASE_URL}/api/generate/submit",
+    json={
+        "model": "gpt-4o-image",
+        "callback_url": "https://your-domain.com/callback",
+        "input": {"prompt": "A futuristic city", "size": "1:1"}
+    },
+    headers=headers
+)
+task_id = response.json()["data"]["task_id"]
 
-- **Email**: [support@poyo.ai](mailto:support@poyo.ai)
-- **API Console**: [api.poyo.ai/console](https://poyo.ai)
+# Check status
+status_response = requests.get(
+    f"{BASE_URL}/api/generate/status/{task_id}",
+    headers=headers
+)
+print(status_response.json())
+```
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card title="Quick Start" icon="rocket" href="/guides/getting-started/quickstart">
-    Get started with your first API call
+    Step-by-step tutorial for beginners
   </Card>
-  <Card title="Image Generation" icon="image" href="/api-manual/image-series/gpt-4o-image">
-    Learn about image generation
+  <Card title="Image Models" icon="image" href="/api-manual/image-series/gpt-4o-image">
+    Explore image generation capabilities
   </Card>
-  <Card title="Video Generation" icon="video" href="/api-manual/video-series/sora-2">
-    Explore video creation
+  <Card title="Video Models" icon="video" href="/api-manual/video-series/sora-2">
+    Explore video generation capabilities
   </Card>
-  <Card title="Get API Key" icon="key" href="https://poyo.ai/dashboard/api-key">
-    Generate your API key
+  <Card title="Webhooks" icon="webhook" href="/api-manual/task-management/webhooks">
+    Set up automatic notifications
   </Card>
 </CardGroup>
+
+## Support
+
+- **Email**: [support@poyo.ai](mailto:support@poyo.ai)
+- **Console**: [poyo.ai](https://poyo.ai)
+- **Status**: [Task Management](/api-manual/task-management/status)
