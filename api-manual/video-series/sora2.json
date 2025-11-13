@@ -54,6 +54,30 @@
                       "aspect_ratio": "16:9"
                     }
                   }
+                },
+                "sora-2-private": {
+                  "summary": "Sora 2 Private Video Generation",
+                  "value": {
+                    "model": "sora-2-private",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A peaceful sunset over a calm ocean with gentle waves",
+                      "duration": 15,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                },
+                "sora-2-pro-private": {
+                  "summary": "Sora 2 Pro Private Video Generation",
+                  "value": {
+                    "model": "sora-2-pro-private",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A dramatic aerial view of mountains with storm clouds rolling in",
+                      "duration": 25,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
                 }
               }
             }
