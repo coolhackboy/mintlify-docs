@@ -194,18 +194,26 @@
       },
       "ErrorResponse": {
         "type": "object",
+        "required": ["code", "error"],
         "properties": {
           "code": {
-            "type": "integer"
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP status code"
           },
           "error": {
             "type": "object",
+            "required": ["message", "type"],
             "properties": {
               "message": {
-                "type": "string"
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "Error message describing what went wrong"
               },
               "type": {
-                "type": "string"
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "Error type identifier"
               }
             }
           }
