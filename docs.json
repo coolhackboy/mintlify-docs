@@ -11,7 +11,9 @@
   "api": {
     "baseUrl": "https://api.poyo.ai",
     "auth": {
-      "method": "bearer"
+      "method": "bearer",
+      "name": "Authorization",
+      "inputPlaceholder": "YOUR_API_KEY"
     },
     "playground": {
       "mode": "simple"
