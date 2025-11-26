@@ -6,15 +6,11 @@ openapi: "/api-manual/music-series/query-music-detail.json GET /api/generate/det
 
 ## Usage Guide
 
-- This endpoint retrieves the detailed results and status of a music generation task
-- Use the `task_id` returned from any music generation submission endpoint to query results
-- Optionally filter results by `audio_id` to get a specific audio file
+- All POST submission requests in the Music Series can query their results through this endpoint. Different models will return different [response fields](#response-fields-files-data).
 
 ## Parameter Details
 
 - `task_id` (required): The unique task identifier returned from the music generation submission endpoint
-
-- `audio_id` (optional): Filter results to return only the specified audio file
 
 ## Developer Notes
 
@@ -23,18 +19,75 @@ openapi: "/api-manual/music-series/query-music-detail.json GET /api/generate/det
 - When a task fails, check the `error_message` field for details
 - Multiple audio files may be returned for a single task as variations are generated
 
-## Response Fields
+## Response Fields (files data)
 
-- `status` (string): Current task status
-  - `not_started`: Task is queued but not yet processing
-  - `in_progress`: Task is currently being processed
-  - `finished`: Task completed successfully with results in `files`
-  - `failed`: Task failed, check `error_message` for details
+The `files` array content varies depending on which model created the task.
 
-- `files` (array): Generated audio files with the following properties:
-  - `audio_id`: Unique identifier for the audio file
-  - `audio_url`: Direct download URL for the audio file
-  - `image_url`: Cover image URL for the audio
-  - `title`: Track title
-  - `tags`: Style tags
-  - `duration`: Audio duration in seconds
+| Model | Field | Type | Description |
+|-------|-------|------|-------------|
+| `generate-music`, `extend-music`, `upload-and-cover-audio`, `upload-and-extend-audio`, `add-instrumental`, `add-vocals`, `replace-section` | `audio_id` | string | Unique identifier for the audio file |
+| ↑ | `audio_url` | string | Direct download URL for the audio file |
+| ↑ | `image_url` | string | Cover image URL |
+| ↑ | `title` | string | Track title |
+| ↑ | `tags` | string | Style tags |
+| ↑ | `duration` | number | Audio duration in seconds |
+| ↑ | `prompt` | string | Generation prompt used |
+| `get-timestamped-lyrics` | `timestampe_lyrics` | string | Lyrics with timestamps |
+| `generate-lyrics` | `title` | string | Lyrics title |
+| ↑ | `text` | string | Complete lyrics content |
+| `boost-music-style` | `style` | string | Enhanced music style |
+| `convert-to-wav` | `wav_url` | string | URL to converted WAV file |
+| `separate-vocals` | `vocal_removal` | string (JSON) | JSON string containing separated audio URLs. [See details](#separate-vocals) |
+| `upload-and-separate-vocals` | `vocal_removal` | string (JSON) | JSON string containing separated stem URLs. [See details](#upload-and-separate-vocals) |
+| `stem-split` | `vocal_removal` | string (JSON) | JSON string containing full stem separation URLs. [See details](#stem-split) |
+| `generate-music-cover` | `image_url` | string | Generated cover image URL |
+| `generate-persona` | `persona_id` | string | Generated persona identifier |
+| `generate-midi` | `midi_data` | string (JSON) | JSON string containing MIDI data. [See details](#generate-midi) |
+| `create-music-video` | `video_url` | string | Generated video URL |
+
+### JSON Field Details
+
+#### separate-vocals
+
+`vocal_removal` fields:
+- `vocal_url` - URL to the extracted vocal track
+- `instrumental_url` - URL to the instrumental track
+
+#### upload-and-separate-vocals
+
+`vocal_removal` fields:
+- `bass` - URL to the bass track
+- `drums` - URL to the drums track
+- `piano` - URL to the piano track
+- `guitar` - URL to the guitar track
+- `vocals` - URL to the vocals track
+- `other` - URL to other audio elements
+
+#### stem-split
+
+`vocal_removal` fields:
+- `backing_vocals_url` - URL to backing vocals
+- `bass_url` - URL to bass track
+- `brass_url` - URL to brass instruments
+- `drums_url` - URL to drums track
+- `fx_url` - URL to sound effects
+- `guitar_url` - URL to guitar track
+- `keyboard_url` - URL to keyboard track
+- `percussion_url` - URL to percussion track
+- `strings_url` - URL to strings track
+- `synth_url` - URL to synthesizer track
+- `vocal_url` - URL to main vocals
+- `woodwinds_url` - URL to woodwinds track
+- `piano_url` - URL to piano track
+
+#### generate-midi
+
+`midi_data` fields:
+- `state` - Processing state (e.g., "complete")
+- `instruments` - Array of instrument objects, each containing:
+  - `name` - Instrument name (e.g., "Drums", "Electric Bass (finger)")
+  - `notes` - Array of note objects:
+    - `pitch` - MIDI pitch value
+    - `start` - Note start time in seconds
+    - `end` - Note end time in seconds
+    - `velocity` - Note velocity (0-1)

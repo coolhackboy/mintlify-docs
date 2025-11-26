@@ -33,16 +33,6 @@
             },
             "description": "Unique task identifier returned from the music generation submission endpoint.",
             "example": "8FDN1I7M7Q68DDG8"
-          },
-          {
-            "name": "audio_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Optional audio ID to filter results for a specific audio file.\n\nIf provided, only the matching audio file will be returned in the response.",
-            "example": "62e4542a-73be-44e1-b397-7716ee7505c6"
           }
         ],
         "responses": {
@@ -54,8 +44,8 @@
                   "$ref": "#/components/schemas/DetailResponse"
                 },
                 "examples": {
-                  "finished": {
-                    "summary": "Completed Task",
+                  "generate-music": {
+                    "summary": "Music Generation (generate-music, extend-music, etc.)",
                     "value": {
                       "code": 200,
                       "data": {
@@ -68,7 +58,8 @@
                             "image_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/20251125113628_4DfWp6_tmpz72j05o5_cover_62e4542a-73be-44e1-b397-7716ee7505c6.jpeg",
                             "title": "Peaceful Piano Meditation",
                             "tags": "Classical",
-                            "duration": 240.0
+                            "duration": 240.0,
+                            "prompt": ""
                           },
                           {
                             "audio_id": "8e755734-a840-4c13-beac-b9f1044979ca",
@@ -76,7 +67,196 @@
                             "image_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/20251125113631_3MTe5V_tmp98wzcx2m_cover_8e755734-a840-4c13-beac-b9f1044979ca.jpeg",
                             "title": "Peaceful Piano Meditation",
                             "tags": "Classical",
-                            "duration": 130.0
+                            "duration": 130.0,
+                            "prompt": ""
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "get-timestamped-lyrics": {
+                    "summary": "Timestamped Lyrics",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "timestampe_lyrics": "[00:00.00] First line of lyrics\n[00:05.23] Second line of lyrics"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "generate-lyrics": {
+                    "summary": "Generated Lyrics",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "title": "Peaceful Piano Meditation",
+                            "text": "Peaceful Piano Meditation lyrics content..."
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "boost-music-style": {
+                    "summary": "Music Style Enhancement",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "style": "Enhanced music style result"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "generate-music-cover": {
+                    "summary": "Music Cover Image",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "image_url": "https://storage.poyo.ai/covers/8FDN1I7M7Q68DDG8/cover.jpeg"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "generate-persona": {
+                    "summary": "Generated Persona",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "persona_id": "persona_abc123"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "convert-to-wav": {
+                    "summary": "WAV Conversion",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "wav_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/output.wav"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "separate-vocals": {
+                    "summary": "Vocal Separation",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "vocal_removal": "{\"vocal_url\": \"https://storage.poyo.ai/audio/vocals.mp3\", \"instrumental_url\": \"https://storage.poyo.ai/audio/instrumental.mp3\"}"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "upload-and-separate-vocals": {
+                    "summary": "Upload & Separate Vocals",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "vocal_removal": "{\"bass\": \"https://storage.poyo.ai/audio/bass.mp3\", \"drums\": \"https://storage.poyo.ai/audio/drums.mp3\", \"piano\": \"https://storage.poyo.ai/audio/piano.mp3\", \"guitar\": \"https://storage.poyo.ai/audio/guitar.mp3\", \"vocals\": \"https://storage.poyo.ai/audio/vocals.mp3\", \"other\": \"https://storage.poyo.ai/audio/other.mp3\"}"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "stem-split": {
+                    "summary": "Stem Split (Full Separation)",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "vocal_removal": "{\"backing_vocals_url\": \"\", \"bass_url\": \"\", \"brass_url\": \"\", \"drums_url\": \"\", \"fx_url\": \"\", \"guitar_url\": \"\", \"keyboard_url\": \"\", \"percussion_url\": \"\", \"strings_url\": \"\", \"synth_url\": \"\", \"vocal_url\": \"\", \"woodwinds_url\": \"\", \"piano_url\": \"\"}"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "generate-midi": {
+                    "summary": "MIDI Generation",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "midi_data": "{\"state\": \"complete\", \"instruments\": [{\"name\": \"Drums\", \"notes\": [{\"pitch\": 73, \"start\": 0.036, \"end\": 0.182, \"velocity\": 1}]}, {\"name\": \"Electric Bass (finger)\", \"notes\": [{\"pitch\": 44, \"start\": 7.687, \"end\": 7.911, \"velocity\": 1}]}]}"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "create-music-video": {
+                    "summary": "Music Video Generation",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "video_url": "https://storage.poyo.ai/video/8FDN1I7M7Q68DDG8/music_video.mp4"
                           }
                         ],
                         "created_time": "2025-11-25T08:50:13",
@@ -169,13 +349,13 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started", "in_progress", "finished", "failed"],
+                "enum": ["not_started", "running", "finished", "failed"],
                 "example": "finished",
-                "description": "Current status of the task.\n\n- `not_started`: Task is queued but not yet processing\n- `in_progress`: Task is currently being processed\n- `finished`: Task completed successfully\n- `failed`: Task failed due to an error"
+                "description": "Current status of the task.\n\n- `not_started`: Task is queued but not yet processing\n- `running`: Task is currently being processed\n- `finished`: Task completed successfully\n- `failed`: Task failed due to an error"
               },
               "files": {
                 "type": "array",
-                "description": "Array of generated audio files.\n\nEmpty array when task is not finished or has failed.",
+                "description": "Array of generated files.\n\nThe response fields vary depending on which model created the task. See [Response Fields (files data)](#response-fields-files-data) for details.\n\nEmpty array when task is not finished or has failed.",
                 "items": {
                   "$ref": "#/components/schemas/AudioFile"
                 }
