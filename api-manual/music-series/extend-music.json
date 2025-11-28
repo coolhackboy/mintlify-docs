@@ -146,8 +146,8 @@
               },
               "mv": {
                 "type": "string",
-                "description": "AI model version for music extension.\n\n- **V5**: Superior musical expressiveness with faster generation\n- **V4_5PLUS**: Enhanced tonal richness with new creative approaches, max 8 min duration\n- **V4_5**: Improved prompt intelligence and faster generation, max 8 min duration\n- **V4**: Improved vocal quality, max 4 min duration\n- **V3_5**: Better song structure, max 4 min duration",
-                "enum": ["V3_5", "V4", "V4_5", "V4_5PLUS", "V5"],
+                "description": "AI model version for music extension.\n\n- **V5**: Superior musical expressiveness with faster generation\n- **V4_5PLUS**: Enhanced tonal richness with new creative approaches, max 8 min duration\n- **V4_5**: Improved prompt intelligence and faster generation, max 8 min duration\n- **V4_5ALL**: V4.5ALL enables smarter prompts, faster generations, max 8 min duration\n- **V4**: Improved vocal quality, max 4 min duration",
+                "enum": ["V4", "V4_5", "V4_5ALL", "V4_5PLUS", "V5"],
                 "example": "V5"
               },
               "negative_tags": {
