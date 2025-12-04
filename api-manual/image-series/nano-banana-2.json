@@ -38,7 +38,8 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "A cyberpunk street scene with neon signs and rain",
-                      "size": "16:9"
+                      "size": "16:9",
+                      "resolution": "2K"
                     }
                   }
                 },
@@ -50,7 +51,8 @@
                     "input": {
                       "prompt": "Add colorful flowers in the foreground",
                       "image_urls": ["https://example.com/landscape.jpg"],
-                      "size": "16:9"
+                      "size": "16:9",
+                      "resolution": "2K"
                     }
                   }
                 }
@@ -160,6 +162,13 @@
                 "description": "Image size ratio",
                 "enum": ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"],
                 "example": "16:9"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "Output image resolution",
+                "enum": ["1K", "2K", "4K"],
+                "default": "1K",
+                "example": "1K"
               }
             }
           }
