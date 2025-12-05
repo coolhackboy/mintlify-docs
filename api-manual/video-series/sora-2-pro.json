@@ -167,6 +167,29 @@
                 "description": "Video aspect ratio",
                 "enum": ["16:9", "9:16"],
                 "example": "16:9"
+              },
+              "style": {
+                "type": "string",
+                "description": "Video style",
+                "enum": ["thanksgiving", "comic", "news", "selfie", "nostalgic", "anime"],
+                "example": "anime"
+              },
+              "storyboard": {
+                "type": "boolean",
+                "description": "Whether to use storyboard for finer control over video generation details. true: Enable storyboard feature, false: Do not use storyboard",
+                "example": true
+              },
+              "character_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Reference video URL for character extraction. Used to reuse characters from a reference video in the generated video. Note: When using this parameter, the generated video duration will be reduced by 1 second",
+                "example": "https://example.com/videos/reference-character.mp4"
+              },
+              "character_timestamps": {
+                "type": "string",
+                "description": "Character appearance timestamps. Specifies the time range in the reference video where the character appears, only supports 2-second segments. Format: 'start_second,end_second'. Note: When using this parameter, the generated video duration will be reduced by 1 second",
+                "pattern": "^\\d+,\\d+$",
+                "example": "1,3"
               }
             }
           }
