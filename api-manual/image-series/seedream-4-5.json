@@ -164,8 +164,8 @@
               },
               "size": {
                 "type": "string",
-                "description": "Image aspect ratio",
-                "enum": ["1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "21:9"],
+                "description": "Specify the output image dimensions. Two methods are available, but they cannot be used at the same time.\n\nMethod 1: Specify the resolution of the generated image, and describe its aspect ratio, shape, or purpose in the prompt using natural language. You let the model determine the width and height. Optional values: 2K, 4K\n\nMethod 2: Specify the aspect ratio of the generated image. Optional values: 1:1, 4:3, 3:4, 16:9, 9:16, 3:2, 2:3, 21:9",
+                "enum": ["2K", "4K", "1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "21:9"],
                 "default": "1:1",
                 "example": "16:9"
               },
