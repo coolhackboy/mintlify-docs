@@ -1,0 +1,40 @@
+---
+title: "Query User Balance"
+description: "Query the credit balance of your user account"
+openapi: "/api-manual/account-management/user-balance.json GET /api/user/balance"
+---
+
+# Query User Balance
+
+Query the current credit balance of your user account in real-time.
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Dashboard Display" icon="chart-line">
+    Show real-time account balance in your application dashboard
+  </Card>
+  <Card title="Balance Alerts" icon="bell">
+    Set up notifications when credits fall below a threshold
+  </Card>
+  <Card title="Recharge Reminders" icon="wallet">
+    Prompt users to top up credits before running out
+  </Card>
+  <Card title="Usage Tracking" icon="chart-bar">
+    Monitor credit consumption and track spending patterns
+  </Card>
+</CardGroup>
+
+## Important Notes
+
+<Info>
+  **Real-time Balance**: The balance returned reflects your current credit amount at the time of the request.
+</Info>
+
+<Tip>
+  **Rate Limiting**: Avoid excessive polling. Cache the balance and refresh only when necessary (e.g., after completing a generation task).
+</Tip>
+
+<Warning>
+  **Credit Deduction**: Credits are deducted only when generation tasks complete successfully. Failed tasks do not consume credits.
+</Warning>

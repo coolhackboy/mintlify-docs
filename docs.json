@@ -53,7 +53,8 @@
     "/api-manual/music-series/vocal-remover/stem-split.json",
     "/api-manual/music-series/vocal-remover/upload-and-separate-vocals.json",
     "/api-manual/music-series/create-music-video.json",
-    "/api-manual/music-series/query-music-detail.json"
+    "/api-manual/music-series/query-music-detail.json",
+    "/api-manual/account-management/user-balance.json"
   ],
   "navigation": {
     "tabs": [
@@ -137,6 +138,12 @@
             "pages": [
               "api-manual/task-management/status",
               "api-manual/task-management/webhooks"
+            ]
+          },
+          {
+            "group": "Account Management",
+            "pages": [
+              "api-manual/account-management/user-balance"
             ]
           }
         ]
