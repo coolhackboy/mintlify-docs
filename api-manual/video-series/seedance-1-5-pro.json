@@ -115,7 +115,7 @@
               },
               "aspect_ratio": {
                 "type": "string",
-                "description": "Select the frame dimensions. Default is 1:1.",
+                "description": "Select the frame dimensions.",
                 "enum": ["1:1", "21:9", "4:3", "3:4", "16:9", "9:16"],
                 "example": "1:1"
               },
