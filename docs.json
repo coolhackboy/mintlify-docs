@@ -57,7 +57,10 @@
     "/api-manual/music-series/vocal-remover/upload-and-separate-vocals.json",
     "/api-manual/music-series/create-music-video.json",
     "/api-manual/music-series/query-music-detail.json",
-    "/api-manual/account-management/user-balance.json"
+    "/api-manual/account-management/user-balance.json",
+    "/api-manual/file-series/upload-url.json",
+    "/api-manual/file-series/upload-base64.json",
+    "/api-manual/file-series/upload-stream.json"
   ],
   "navigation": {
     "tabs": [
@@ -126,6 +129,14 @@
               "api-manual/music-series/create-music-video",
               "api-manual/music-series/query-music-detail",
               "api-manual/music-series/music-webhook"
+            ]
+          },
+          {
+            "group": "File Series",
+            "pages": [
+              "api-manual/file-series/upload-url",
+              "api-manual/file-series/upload-base64",
+              "api-manual/file-series/upload-stream"
             ]
           },
           {

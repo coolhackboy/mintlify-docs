@@ -1,0 +1,82 @@
+---
+title: "Upload File from Base64"
+description: "Upload files to PoYo AI using Base64-encoded data or Data URL format"
+openapi: "/api-manual/file-series/upload-base64.json POST /api/common/upload/base64"
+---
+
+## Usage Guide
+
+- This endpoint accepts Base64-encoded file data for upload to PoYo AI storage
+- Supports both Data URL format (with MIME type prefix) and pure Base64 strings
+- Ideal for uploading files that are already Base64-encoded in your application, such as canvas drawings or client-side image manipulations
+- Files are immediately accessible via the returned URL and remain available for 72 hours
+
+## Parameter Details
+
+- **Base64 Data Format**:
+
+  - **Data URL format**: `data:image/png;base64,iVBORw0KGgo...` (recommended)
+
+  - **Pure Base64 string**: `iVBORw0KGgo...` (without MIME type prefix)
+
+  - The Base64 string must not contain any whitespace, newline characters, or formatting
+
+  - Supported file formats: **JPEG, PNG, GIF, WebP** only
+
+  - Maximum upload limit: **1 image per request**
+
+- **Storage Configuration**:
+
+  - All files are automatically stored with a `temp/` prefix in the storage path
+
+  - If you specify `upload_path: "profile-images"`, the actual path will be `temp/profile-images`
+
+  - Files will expire and be automatically deleted **72 hours** after upload
+
+- **File Naming**:
+
+  - If `file_name` is not provided, the system generates a unique name in the format: `{timestamp}_{random}_{extension}`
+
+  - Example auto-generated name: `20251229130857_a8B9cD2e.png`
+
+## Developer Notes
+
+- When to use Base64 upload:
+
+  - Client-side generated images (canvas, screenshots)
+
+  - Images already encoded in Base64 format in your application
+
+  - Small to medium-sized images where encoding overhead is acceptable
+
+- When NOT to use Base64 upload:
+
+  - Large image files (Base64 encoding increases size by ~33%)
+
+  - Files stored on disk (use stream upload instead)
+
+  - Files available via URL (use URL upload instead)
+
+- Ensure your Base64 data is properly formatted without any line breaks or spaces
+
+- For persistent storage needs, download and save the file locally before the 72-hour expiration
+
+## Rate Limits and Quotas
+
+- **Rate Limit**: 5 requests per minute per API key
+
+- When the rate limit is exceeded, you will receive a `429 Too Many Requests` error
+
+- Implement exponential backoff retry logic for handling rate limit errors
+
+## Common Error Scenarios
+
+- **Invalid Base64 Encoding**: The provided Base64 string cannot be decoded
+
+- **Invalid Data URL Format**: The Data URL format is malformed (e.g., missing `data:` prefix or `;base64,` separator)
+
+- **Unsupported File Type**: The decoded file is not in a supported image format (JPEG, PNG, GIF, WebP)
+
+- **Invalid File Data**: The decoded data is empty or corrupted
+
+- **Authentication Error**: Missing or invalid API key in the Authorization header

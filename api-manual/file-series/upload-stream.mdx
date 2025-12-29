@@ -1,0 +1,131 @@
+---
+title: "Upload File Stream"
+description: "Upload files to PoYo AI using multipart/form-data format for direct file uploads"
+openapi: "/api-manual/file-series/upload-stream.json POST /api/common/upload/stream"
+---
+
+## Usage Guide
+
+- This endpoint enables direct file uploads using the standard `multipart/form-data` format
+- Supports uploading files directly from local storage with automatic file type identification
+- Best suited for local file uploads from desktop applications, mobile apps, or web forms
+- Files are immediately accessible via the returned URL and remain available for 72 hours
+
+## Parameter Details
+
+- **File Upload Requirement**:
+
+  - The `file` field must contain binary file data
+
+  - Supported file formats: **JPEG, PNG, GIF, WebP** only
+
+  - Maximum upload limit: **1 image per request**
+
+  - The system automatically identifies the file type from the binary data
+
+- **Parameter Naming Convention**:
+
+  - This endpoint supports both **snake_case** and **camelCase** naming conventions
+
+  - `upload_path` or `uploadPath` - both are accepted
+
+  - `file_name` or `fileName` - both are accepted
+
+  - Use whichever convention matches your application's coding style
+
+- **Storage Configuration**:
+
+  - All files are automatically stored with a `temp/` prefix in the storage path
+
+  - If you specify `upload_path: "photos"`, the actual path will be `temp/photos`
+
+  - Files will expire and be automatically deleted **72 hours** after upload
+
+- **File Naming**:
+
+  - If `file_name` is not provided, the system generates a unique name in the format: `{timestamp}_{random}_{extension}`
+
+  - Example auto-generated name: `20251229130857_a8B9cD2e.png`
+
+## Developer Notes
+
+- When to use file stream upload:
+
+  - Direct file uploads from user's local storage
+
+  - Form-based file uploads from web applications
+
+  - Mobile app file uploads
+
+  - Server-to-server file transfers
+
+- This is the most efficient upload method for files already stored on disk
+
+- The multipart/form-data format is standard across all programming languages and HTTP clients
+
+- For persistent storage needs, download and save the file locally before the 72-hour expiration
+
+## Rate Limits and Quotas
+
+- **Rate Limit**: 5 requests per minute per API key
+
+- When the rate limit is exceeded, you will receive a `429 Too Many Requests` error
+
+- Implement exponential backoff retry logic for handling rate limit errors
+
+## Common Error Scenarios
+
+- **Missing File**: No file was provided in the request body (422 error)
+
+- **Unsupported File Type**: The uploaded file is not in a supported image format (JPEG, PNG, GIF, WebP)
+
+- **Empty File**: The uploaded file has zero bytes or is corrupted
+
+- **Authentication Error**: Missing or invalid API key in the Authorization header
+
+## Example Usage
+
+### cURL Example
+
+```bash
+curl -X POST "https://api.poyo.ai/api/common/upload/stream" \
+  -H "Authorization: Bearer PoYo_API_KEY" \
+  -F "file=@/path/to/image.png" \
+  -F "file_name=my-image.png"
+```
+
+### Python Example
+
+```python
+import requests
+
+url = "https://api.poyo.ai/api/common/upload/stream"
+headers = {"Authorization": "Bearer PoYo_API_KEY"}
+
+files = {"file": open("/path/to/image.png", "rb")}
+data = {"file_name": "my-image.png"}
+
+response = requests.post(url, headers=headers, files=files, data=data)
+print(response.json())
+```
+
+### JavaScript Example (Node.js)
+
+```javascript
+const FormData = require('form-data');
+const fs = require('fs');
+const axios = require('axios');
+
+const form = new FormData();
+form.append('file', fs.createReadStream('/path/to/image.png'));
+form.append('file_name', 'my-image.png');
+
+axios.post('https://api.poyo.ai/api/common/upload/stream', form, {
+  headers: {
+    'Authorization': 'Bearer PoYo_API_KEY',
+    ...form.getHeaders()
+  }
+})
+.then(response => console.log(response.data))
+.catch(error => console.error(error));
+```

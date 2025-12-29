@@ -1,0 +1,284 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "PoYo AI - Upload File from URL",
+    "description": "Upload files to PoYo AI by providing a remote URL. The system automatically downloads and stores the file from the specified location.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.poyo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/common/upload/url": {
+      "post": {
+        "summary": "Upload File from URL",
+        "description": "Upload files by providing a remote URL. The file will be downloaded from the URL and stored in PoYo AI storage.",
+        "operationId": "uploadFileFromUrl",
+        "tags": ["File Upload"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadUrlRequest"
+              },
+              "examples": {
+                "basic-upload": {
+                  "summary": "Basic URL Upload",
+                  "value": {
+                    "file_url": "https://example.com/images/sample.jpg"
+                  }
+                },
+                "custom-naming": {
+                  "summary": "Upload with Custom Filename",
+                  "value": {
+                    "file_url": "https://example.com/images/photo.png",
+                    "file_name": "my-custom-image.png"
+                  }
+                },
+                "custom-path": {
+                  "summary": "Upload with Custom Path and Name",
+                  "value": {
+                    "file_url": "https://example.com/images/avatar.webp",
+                    "upload_path": "avatars",
+                    "file_name": "user-avatar.webp"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "File uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid URL, unsupported file type, or download failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "invalid-url": {
+                    "summary": "Invalid File URL",
+                    "value": {
+                      "detail": "Failed to download file: HTTPSConnectionPool(host='invalid-url.com', port=443): Max retries exceeded"
+                    }
+                  },
+                  "unsupported-type": {
+                    "summary": "Unsupported File Type",
+                    "value": {
+                      "detail": "Unsupported file type: application/pdf"
+                    }
+                  },
+                  "download-failed": {
+                    "summary": "Download Failed",
+                    "value": {
+                      "detail": "Failed to download file: Connection timeout"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Missing or invalid authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "not-authenticated": {
+                    "summary": "Not Authenticated",
+                    "value": {
+                      "detail": "Not authenticated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "rate-limit": {
+                    "summary": "Rate Limit Exceeded",
+                    "value": {
+                      "detail": "Rate limit exceeded"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error - Storage connection or upload failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "server-error": {
+                    "summary": "Server Error",
+                    "value": {
+                      "detail": "Upload failed: Unable to connect to R2 storage"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://poyo.ai/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer PoYo_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "UploadUrlRequest": {
+        "type": "object",
+        "required": ["file_url"],
+        "properties": {
+          "file_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The remote file URL to upload.\n\nMust be a publicly accessible URL using HTTP or HTTPS protocol.\n\n**Supported formats**: JPEG, PNG, GIF, WebP\n\n**Note**: The file will be downloaded from this URL and stored in PoYo AI storage.",
+            "example": "https://example.com/images/sample.jpg"
+          },
+          "upload_path": {
+            "type": "string",
+            "description": "Custom storage directory path.\n\nIf not specified, the system will auto-categorize the file.\n\n**Note**: All files are stored with a `temp/` prefix regardless of the specified path.",
+            "example": "avatars"
+          },
+          "file_name": {
+            "type": "string",
+            "description": "Custom filename for the uploaded file.\n\nIf not specified, the system will generate a unique filename in the format: `{timestamp}_{random}_{extension}`\n\n**Example auto-generated name**: `20251229130857_a8B9cD2e.png`",
+            "example": "my-custom-image.png"
+          }
+        }
+      },
+      "UploadResponse": {
+        "type": "object",
+        "required": ["success", "code", "msg", "data"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates whether the upload was successful"
+          },
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "msg": {
+            "type": "string",
+            "example": "File uploaded successfully",
+            "description": "Response message"
+          },
+          "data": {
+            "type": "object",
+            "required": ["file_id", "file_name", "original_name", "file_size", "mime_type", "upload_path", "file_url", "download_url", "upload_time", "expires_at"],
+            "properties": {
+              "file_id": {
+                "type": "string",
+                "example": "1bdfdbac6ebc2228d0b398d728bf4699",
+                "description": "Unique file identifier (MD5 hash)"
+              },
+              "file_name": {
+                "type": "string",
+                "example": "test-image.png",
+                "description": "The stored filename"
+              },
+              "original_name": {
+                "type": "string",
+                "example": "image-from-url.png",
+                "description": "The original filename from the URL"
+              },
+              "file_size": {
+                "type": "integer",
+                "example": 1419815,
+                "description": "File size in bytes"
+              },
+              "mime_type": {
+                "type": "string",
+                "example": "image/png",
+                "description": "MIME type of the uploaded file"
+              },
+              "upload_path": {
+                "type": "string",
+                "example": "temp/test-uploads",
+                "description": "Storage path (includes temp/ prefix)"
+              },
+              "file_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://storage.poyo.ai/temp/test-uploads/test-image.png",
+                "description": "Direct access URL for the uploaded file"
+              },
+              "download_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://storage.poyo.ai/temp/test-uploads/test-image.png",
+                "description": "Download URL (same as file_url)"
+              },
+              "upload_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-12-29T13:08:57.673515",
+                "description": "Upload timestamp in ISO 8601 format"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-01-01T13:08:57.673515",
+                "description": "Expiration timestamp in ISO 8601 format (72 hours after upload)"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["detail"],
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "Error message describing what went wrong",
+            "example": "Not authenticated"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,332 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "PoYo AI - Upload File Stream",
+    "description": "Upload files to PoYo AI using multipart/form-data format for direct file uploads",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.poyo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/common/upload/stream": {
+      "post": {
+        "summary": "Upload File Stream",
+        "description": "Upload files using multipart/form-data format. Supports direct file uploads from local storage with automatic type identification.",
+        "operationId": "uploadFileStream",
+        "tags": ["File Upload"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadStreamRequest"
+              },
+              "examples": {
+                "basic-upload": {
+                  "summary": "Basic File Upload",
+                  "value": {
+                    "file": "(binary file data)"
+                  }
+                },
+                "custom-naming-snake-case": {
+                  "summary": "Upload with Custom Path and Name (snake_case)",
+                  "value": {
+                    "file": "(binary file data)",
+                    "upload_path": "photos",
+                    "file_name": "vacation-photo.jpg"
+                  }
+                },
+                "custom-naming-camel-case": {
+                  "summary": "Upload with Custom Path and Name (camelCase)",
+                  "value": {
+                    "file": "(binary file data)",
+                    "uploadPath": "documents",
+                    "fileName": "profile-image.png"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "File uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Unsupported file type or empty file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "unsupported-type": {
+                    "summary": "Unsupported File Type",
+                    "value": {
+                      "detail": "Unsupported file type: video/mp4"
+                    }
+                  },
+                  "empty-file": {
+                    "summary": "Empty File",
+                    "value": {
+                      "detail": "File is empty"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Missing or invalid authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "not-authenticated": {
+                    "summary": "Not Authenticated",
+                    "value": {
+                      "detail": "Not authenticated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity - Missing required file field",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                },
+                "examples": {
+                  "missing-file": {
+                    "summary": "Missing File Field",
+                    "value": {
+                      "detail": [
+                        {
+                          "loc": ["body", "file"],
+                          "msg": "field required",
+                          "type": "value_error.missing"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "rate-limit": {
+                    "summary": "Rate Limit Exceeded",
+                    "value": {
+                      "detail": "Rate limit exceeded"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error - Storage connection or upload failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "server-error": {
+                    "summary": "Server Error",
+                    "value": {
+                      "detail": "Upload failed: Failed to write file to storage"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://poyo.ai/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer PoYo_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "UploadStreamRequest": {
+        "type": "object",
+        "required": ["file"],
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "description": "File binary data to upload.\n\n**Supported formats**: JPEG, PNG, GIF, WebP\n\n**Maximum**: 1 image per request\n\n**Note**: The system automatically identifies and categorizes file types."
+          },
+          "upload_path": {
+            "type": "string",
+            "description": "Custom storage directory path.\n\nSupports both naming conventions:\n- **snake_case**: `upload_path`\n- **camelCase**: `uploadPath`\n\nIf not specified, the system will auto-categorize the file.\n\n**Note**: All files are stored with a `temp/` prefix regardless of the specified path.",
+            "example": "photos"
+          },
+          "file_name": {
+            "type": "string",
+            "description": "Custom filename for the uploaded file.\n\nSupports both naming conventions:\n- **snake_case**: `file_name`\n- **camelCase**: `fileName`\n\nIf not specified, the system will generate a unique filename in the format: `{timestamp}_{random}_{extension}`\n\n**Example auto-generated name**: `20251229130857_a8B9cD2e.png`",
+            "example": "photo.png"
+          }
+        }
+      },
+      "UploadResponse": {
+        "type": "object",
+        "required": ["success", "code", "msg", "data"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates whether the upload was successful"
+          },
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "msg": {
+            "type": "string",
+            "example": "File uploaded successfully",
+            "description": "Response message"
+          },
+          "data": {
+            "type": "object",
+            "required": ["file_id", "file_name", "file_size", "mime_type", "file_url", "download_url", "expires_at"],
+            "properties": {
+              "file_id": {
+                "type": "string",
+                "example": "872defd8180ee9c6d32265ef4e8d255b",
+                "description": "Unique file identifier (MD5 hash)"
+              },
+              "file_name": {
+                "type": "string",
+                "example": "test-stream.png",
+                "description": "The stored filename"
+              },
+              "original_name": {
+                "type": "string",
+                "example": "uploaded-file.png",
+                "description": "The original filename from the uploaded file"
+              },
+              "file_size": {
+                "type": "integer",
+                "example": 3242,
+                "description": "File size in bytes"
+              },
+              "mime_type": {
+                "type": "string",
+                "example": "image/png",
+                "description": "MIME type of the uploaded file"
+              },
+              "upload_path": {
+                "type": "string",
+                "example": "temp/test-stream",
+                "description": "Storage path (includes temp/ prefix)"
+              },
+              "file_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://storage.poyo.ai/temp/test-stream/test-stream.png",
+                "description": "Direct access URL for the uploaded file"
+              },
+              "download_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://storage.poyo.ai/temp/test-stream/test-stream.png",
+                "description": "Download URL (same as file_url)"
+              },
+              "upload_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-12-29T13:09:04.731057",
+                "description": "Upload timestamp in ISO 8601 format"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-01-01T13:09:04.731057",
+                "description": "Expiration timestamp in ISO 8601 format (72 hours after upload)"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["detail"],
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "Error message describing what went wrong",
+            "example": "Not authenticated"
+          }
+        }
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "required": ["detail"],
+        "properties": {
+          "detail": {
+            "type": "array",
+            "description": "List of validation errors",
+            "items": {
+              "type": "object",
+              "properties": {
+                "loc": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Location of the validation error"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "Error message"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Error type"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,66 @@
+---
+title: "Upload File from URL"
+description: "Upload files to PoYo AI by providing a remote URL"
+openapi: "/api-manual/file-series/upload-url.json POST /api/common/upload/url"
+---
+
+## Usage Guide
+
+- This endpoint enables uploading files to PoYo AI by providing a remote URL
+- The system automatically downloads the file from the specified URL and stores it in PoYo AI storage
+- Ideal for migrating files from external servers or integrating with third-party file sources
+- Files are returned with a direct access URL and remain available for 72 hours
+
+## Parameter Details
+
+- **File URL Requirement**:
+
+  - The `file_url` must be a publicly accessible URL using HTTP or HTTPS protocol
+
+  - The remote server must allow the file to be downloaded without authentication
+
+  - Supported file formats: **JPEG, PNG, GIF, WebP** only
+
+  - Maximum upload limit: **1 image per request**
+
+- **Storage Configuration**:
+
+  - All files are automatically stored with a `temp/` prefix in the storage path
+
+  - If you specify `upload_path: "avatars"`, the actual path will be `temp/avatars`
+
+  - Files will expire and be automatically deleted **72 hours** after upload
+
+- **File Naming**:
+
+  - If `file_name` is not provided, the system generates a unique name in the format: `{timestamp}_{random}_{extension}`
+
+  - Example auto-generated name: `20251229130857_a8B9cD2e.png`
+
+## Developer Notes
+
+- Ensure your source URL is publicly accessible and does not require authentication or special headers
+
+- The download process may take a few seconds depending on the file size and network conditions
+
+- For persistent storage needs, download and save the file locally before the 72-hour expiration
+
+- The `file_url` and `download_url` in the response are identical and both provide direct access to the uploaded file
+
+## Rate Limits and Quotas
+
+- **Rate Limit**: 5 requests per minute per API key
+
+- When the rate limit is exceeded, you will receive a `429 Too Many Requests` error
+
+- Implement exponential backoff retry logic for handling rate limit errors
+
+## Common Error Scenarios
+
+- **Invalid URL**: The provided URL is malformed or unreachable
+
+- **Download Failure**: Network timeout or connection issues when downloading from the remote URL
+
+- **Unsupported File Type**: The file at the URL is not in a supported image format (JPEG, PNG, GIF, WebP)
+
+- **Authentication Error**: Missing or invalid API key in the Authorization header
