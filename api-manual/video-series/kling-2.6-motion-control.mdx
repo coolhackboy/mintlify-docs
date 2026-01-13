@@ -21,5 +21,19 @@ Transfer motion from reference videos to character images with precise motion co
 
 - **Motion Transfer**: Transfer real human motion, gestures, and expressions from reference videos to character images
 - **Character Animation**: Animate static characters with dynamic motion patterns
-- **Scene Control**: Control scene details and environment through text prompts
+- **Character Orientation Control**: Choose between matching image orientation (max 10s output) or video orientation (max 30s output)
+- **Scene Control**: Control scene details and environment through optional text prompts
 - **Flexible Resolution**: Choose between 720p (standard) or 1080p (high quality) output
+
+## Required Parameters
+
+- **image_urls**: Single character image showing the subject's head, shoulders, and torso
+- **video_urls**: Single reference video (3-30 seconds) for motion transfer
+- **character_orientation**:
+  - `"image"` - Matches the person's orientation in the photograph (maximum 10-second output)
+  - `"video"` - Maintains consistency with character orientation from the reference video (maximum 30-second output)
+- **mode**: Output resolution (`"720p"` or `"1080p"`)
+
+## Optional Parameters
+
+- **prompt**: Text description of the desired output scene (max 2,500 characters)

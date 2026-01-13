@@ -44,7 +44,8 @@
                       "video_urls": [
                         "https://example.com/dance-reference.mp4"
                       ],
-                      "resolution": "1080p"
+                      "character_orientation": "video",
+                      "mode": "1080p"
                     }
                   }
                 }
@@ -109,12 +110,12 @@
           },
           "input": {
             "type": "object",
-            "required": ["prompt", "image_urls", "video_urls", "resolution"],
+            "required": ["image_urls", "video_urls", "character_orientation", "mode"],
             "description": "Input parameters for motion control generation",
             "properties": {
               "prompt": {
                 "type": "string",
-                "description": "Text description of the desired output scene",
+                "description": "Text description of the desired output scene (optional)",
                 "maxLength": 2500,
                 "example": "The cartoon character is dancing gracefully in a studio"
               },
@@ -144,7 +145,13 @@
                   "https://example.com/dance-reference.mp4"
                 ]
               },
-              "resolution": {
+              "character_orientation": {
+                "type": "string",
+                "description": "Character orientation mode: 'image' matches the person's orientation in the photograph (max 10 seconds output), 'video' maintains consistency with character orientation from the reference video (max 30 seconds output)",
+                "enum": ["image", "video"],
+                "example": "video"
+              },
+              "mode": {
                 "type": "string",
                 "description": "Output video resolution. 720p for standard quality, 1080p for higher visual quality",
                 "enum": ["720p", "1080p"],
