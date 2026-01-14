@@ -1,4 +1,4 @@
-# PoYo AI API 文档编写规范
+# Vidgo API 文档编写规范
 
 以 `/api-manual/music-series/generate-music` 为模板，后续新建 API 文档时请遵循以下规则。
 
@@ -29,7 +29,7 @@ api-manual/{series-name}/
 - 示例：`callback_url`, `custom_mode`, `style_weight`
 
 ### 3. API Key 占位符
-- 使用 `PoYo_API_KEY`（不是 `YOUR_API_KEY` 或 `<token>`）
+- 使用 `VIDGO_API_KEY`（不是 `YOUR_API_KEY` 或 `<token>`）
 
 ---
 
@@ -85,11 +85,11 @@ api-manual/{series-name}/
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "PoYo AI - {API Name}",
+    "title": "Vidgo API - {API Name}",
     "description": "{简短描述}",
     "version": "1.0.0"
   },
-  "servers": [{ "url": "https://api.poyo.ai" }],
+  "servers": [{ "url": "https://api.Vidgo API.ai" }],
   "security": [{ "BearerAuth": [] }],
   "paths": { ... },
   "components": { ... }
@@ -233,6 +233,6 @@ openapi: "/api-manual/{series}/{api-name}.json POST /api/generate/submit"
 - [ ] 响应体结构与图片/视频系列一致
 - [ ] JSON 参数描述有换行分段
 - [ ] 没有重复的 Example
-- [ ] API Key 使用 `PoYo_API_KEY`
+- [ ] API Key 使用 `VIDGO_API_KEY`
 - [ ] MDX 包含 Usage Guide、Parameter Details、Developer Notes、Optional parameters
 - [ ] docs.json 已更新 openapi 和 navigation

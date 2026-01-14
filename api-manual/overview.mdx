@@ -3,27 +3,27 @@ title: "API Overview"
 description: "Complete API reference and architecture"
 ---
 
-# PoYo AI API Documentation
+# Vidgo API Documentation
 
-PoYo AI provides state-of-the-art image and video generation APIs with a unified, asynchronous architecture.
+Vidgo API provides state-of-the-art image and video generation APIs with a unified, asynchronous architecture.
 
 ## Base URL
 
 All API requests should be made to:
 
 ```
-https://api.poyo.ai
+https://api.vidgo.ai
 ```
 
 ## Authentication
 
-PoYo AI uses API key authentication. Include your API key in the `Authorization` header:
+Vidgo API uses API key authentication. Include your API key in the `Authorization` header:
 
 ```bash
 Authorization: Bearer YOUR_API_KEY
 ```
 
-<Card title="Get Your API Key" icon="key" href="https://poyo.ai/dashboard/api-key">
+<Card title="Get Your API Key" icon="key" href="https://vidgo.ai/apis/dashboard/api-key">
   Visit the API Console to generate your API key
 </Card>
 
@@ -68,18 +68,18 @@ Authorization: Bearer YOUR_API_KEY
 
 ### Unified Endpoints
 
-PoYo AI uses a simple two-endpoint architecture for all generation types:
+Vidgo API uses a simple two-endpoint architecture for all generation types:
 
 #### Submit Task
 ```http
-POST https://api.poyo.ai/api/generate/submit
+POST https://api.vidgo.ai/api/generate/submit
 ```
 
 Submit image or video generation requests. Returns immediately with a `task_id`.
 
 #### Query Status
 ```http
-GET https://api.poyo.ai/api/generate/status/{task_id}
+GET https://api.vidgo.ai/api/generate/status/{task_id}
 ```
 
 Check task progress and retrieve results.
@@ -131,7 +131,7 @@ All endpoints return JSON with a consistent structure:
     "progress": 100,
     "files": [
       {
-        "file_url": "https://storage.poyo.ai/generated/image-abc123.jpg",
+        "file_url": "https://storage.vidgo.ai/generated/image-abc123.jpg",
         "file_type": "image"
       }
     ],
@@ -211,7 +211,7 @@ payload = {
 </Warning>
 
 <Info>
-  **Rate Limits**: API rate limits vary by account type. Check your [console dashboard](https://poyo.ai) for current limits.
+  **Rate Limits**: API rate limits vary by account type. Check your [console dashboard](https://vidgo.ai/apis) for current limits.
 </Info>
 
 <Tip>
@@ -224,7 +224,7 @@ payload = {
 import requests
 
 API_KEY = "your-api-key-here"
-BASE_URL = "https://api.poyo.ai"
+BASE_URL = "https://api.vidgo.ai"
 headers = {"Authorization": f"Bearer {API_KEY}"}
 
 # Submit task
@@ -266,6 +266,6 @@ print(status_response.json())
 
 ## Support
 
-- **Email**: [support@poyo.ai](mailto:support@poyo.ai)
-- **Console**: [poyo.ai](https://poyo.ai)
+- **Email**: [support@vidgo.ai](mailto:support@vidgo.ai)
+- **Console**: [vidgo.ai](https://vidgo.ai/apis)
 - **Status**: [Task Management](/api-manual/task-management/status)

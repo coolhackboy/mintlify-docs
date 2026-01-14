@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "PoYo AI",
+  "name": "Vidgo API",
   "colors": {
     "primary": "#3B82F6",
     "light": "#60A5FA",
@@ -9,7 +9,7 @@
   },
   "favicon": "/favicon.ico",
   "api": {
-    "baseUrl": "https://api.poyo.ai",
+    "baseUrl": "https://api.vidgo.ai",
     "auth": {
       "method": "bearer",
       "name": "Authorization",
@@ -172,7 +172,7 @@
       "anchors": [
         {
           "anchor": "Support",
-          "href": "mailto:support@poyo.ai",
+          "href": "mailto:support@vidgo.ai",
           "icon": "envelope"
         }
       ]
@@ -183,17 +183,13 @@
     "links": [
       {
         "label": "Console",
-        "href": "https://poyo.ai"
-      },
-      {
-        "label": "Discord",
-        "href": "https://discord.gg/F8JNuUPB3j"
+        "href": "https://vidgo.ai/apis"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Get API Key",
-      "href": "https://poyo.ai/dashboard/api-key"
+      "href": "https://vidgo.ai/apis/dashboard/api-key"
     }
   },
   "contextual": {

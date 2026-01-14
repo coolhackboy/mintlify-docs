@@ -1,13 +1,13 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "PoYo AI - Upload File from Base64",
-    "description": "Upload files to PoYo AI using Base64-encoded data or Data URL format",
+    "title": "Vidgo API - Upload File from Base64",
+    "description": "Upload files to Vidgo API using Base64-encoded data or Data URL format",
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://api.poyo.ai",
+      "url": "https://api.vidgo.ai",
       "description": "Production server"
     }
   ],
@@ -166,7 +166,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://poyo.ai/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer PoYo_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
       }
     },
     "schemas": {
@@ -247,13 +247,13 @@
               "file_url": {
                 "type": "string",
                 "format": "uri",
-                "example": "https://storage.poyo.ai/temp/test-base64/test-base64.png",
+                "example": "https://storage.vidgo.ai/temp/test-base64/test-base64.png",
                 "description": "Direct access URL for the uploaded file"
               },
               "download_url": {
                 "type": "string",
                 "format": "uri",
-                "example": "https://storage.poyo.ai/temp/test-base64/test-base64.png",
+                "example": "https://storage.vidgo.ai/temp/test-base64/test-base64.png",
                 "description": "Download URL (same as file_url)"
               },
               "upload_time": {

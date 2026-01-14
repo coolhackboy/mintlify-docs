@@ -1,13 +1,13 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "PoYo AI - Upload File from URL",
-    "description": "Upload files to PoYo AI by providing a remote URL. The system automatically downloads and stores the file from the specified location.",
+    "title": "Vidgo API - Upload File from URL",
+    "description": "Upload files to Vidgo API by providing a remote URL. The system automatically downloads and stores the file from the specified location.",
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://api.poyo.ai",
+      "url": "https://api.vidgo.ai",
       "description": "Production server"
     }
   ],
@@ -20,7 +20,7 @@
     "/api/common/upload/url": {
       "post": {
         "summary": "Upload File from URL",
-        "description": "Upload files by providing a remote URL. The file will be downloaded from the URL and stored in PoYo AI storage.",
+        "description": "Upload files by providing a remote URL. The file will be downloaded from the URL and stored in Vidgo API storage.",
         "operationId": "uploadFileFromUrl",
         "tags": ["File Upload"],
         "requestBody": {
@@ -161,7 +161,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://poyo.ai/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer PoYo_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
       }
     },
     "schemas": {
@@ -172,7 +172,7 @@
           "file_url": {
             "type": "string",
             "format": "uri",
-            "description": "The remote file URL to upload.\n\nMust be a publicly accessible URL using HTTP or HTTPS protocol.\n\n**Supported formats**: JPEG, PNG, GIF, WebP\n\n**Note**: The file will be downloaded from this URL and stored in PoYo AI storage.",
+            "description": "The remote file URL to upload.\n\nMust be a publicly accessible URL using HTTP or HTTPS protocol.\n\n**Supported formats**: JPEG, PNG, GIF, WebP\n\n**Note**: The file will be downloaded from this URL and stored in Vidgo API storage.",
             "example": "https://example.com/images/sample.jpg"
           },
           "upload_path": {
@@ -243,13 +243,13 @@
               "file_url": {
                 "type": "string",
                 "format": "uri",
-                "example": "https://storage.poyo.ai/temp/test-uploads/test-image.png",
+                "example": "https://storage.vidgo.ai/temp/test-uploads/test-image.png",
                 "description": "Direct access URL for the uploaded file"
               },
               "download_url": {
                 "type": "string",
                 "format": "uri",
-                "example": "https://storage.poyo.ai/temp/test-uploads/test-image.png",
+                "example": "https://storage.vidgo.ai/temp/test-uploads/test-image.png",
                 "description": "Download URL (same as file_url)"
               },
               "upload_time": {

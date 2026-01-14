@@ -1,6 +1,6 @@
 ---
 title: "Upload File Stream"
-description: "Upload files to PoYo AI using multipart/form-data format for direct file uploads"
+description: "Upload files to Vidgo API using multipart/form-data format for direct file uploads"
 openapi: "/api-manual/file-series/upload-stream.json POST /api/common/upload/stream"
 ---
 
@@ -88,8 +88,8 @@ openapi: "/api-manual/file-series/upload-stream.json POST /api/common/upload/str
 ### cURL Example
 
 ```bash
-curl -X POST "https://api.poyo.ai/api/common/upload/stream" \
-  -H "Authorization: Bearer PoYo_API_KEY" \
+curl -X POST "https://api.vidgo.ai/api/common/upload/stream" \
+  -H "Authorization: Bearer VIDGO_API_KEY" \
   -F "file=@/path/to/image.png" \
   -F "file_name=my-image.png"
 ```
@@ -99,8 +99,8 @@ curl -X POST "https://api.poyo.ai/api/common/upload/stream" \
 ```python
 import requests
 
-url = "https://api.poyo.ai/api/common/upload/stream"
-headers = {"Authorization": "Bearer PoYo_API_KEY"}
+url = "https://api.vidgo.ai/api/common/upload/stream"
+headers = {"Authorization": "Bearer VIDGO_API_KEY"}
 
 files = {"file": open("/path/to/image.png", "rb")}
 data = {"file_name": "my-image.png"}
@@ -120,9 +120,9 @@ const form = new FormData();
 form.append('file', fs.createReadStream('/path/to/image.png'));
 form.append('file_name', 'my-image.png');
 
-axios.post('https://api.poyo.ai/api/common/upload/stream', form, {
+axios.post('https://api.vidgo.ai/api/common/upload/stream', form, {
   headers: {
-    'Authorization': 'Bearer PoYo_API_KEY',
+    'Authorization': 'Bearer VIDGO_API_KEY',
     ...form.getHeaders()
   }
 })

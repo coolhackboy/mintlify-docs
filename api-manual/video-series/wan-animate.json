@@ -1,13 +1,13 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "PoYo AI - Wan Animate API",
+    "title": "Vidgo API - Wan Animate API",
     "description": "AI-powered character animation and replacement based on Alibaba's Wan2.2-Animate model",
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://api.poyo.ai",
+      "url": "https://api.vidgo.ai",
       "description": "Production server"
     }
   ],
@@ -84,7 +84,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://poyo.ai/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
       }
     },
     "schemas": {

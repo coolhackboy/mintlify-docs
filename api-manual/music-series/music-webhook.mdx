@@ -10,13 +10,13 @@ Instead of polling the [Query Music Detail](/api-manual/music-series/query-music
 ## How It Works
 
 1. **Submit with callback URL**: Include a `callback_url` parameter in your music generation request
-2. **Task processing**: PoYo AI processes your music generation task
-3. **Receive notification**: When the task status becomes `finished` or `failed`, PoYo AI sends a POST request to your callback URL
+2. **Task processing**: Vidgo API processes your music generation task
+3. **Receive notification**: When the task status becomes `finished` or `failed`, Vidgo API sends a POST request to your callback URL
 4. **Process result**: Your server receives the complete task data including generated files
 
 ## Callback Request
 
-When a task completes, PoYo AI will send a POST request to your callback URL:
+When a task completes, Vidgo API will send a POST request to your callback URL:
 
 ### Request Headers
 
@@ -50,15 +50,15 @@ The `files` array content varies depending on which model created the task.
 | Model | Field | Type | Description |
 |-------|-------|------|-------------|
 | `generate-music`, `extend-music`, `upload-and-cover-audio`, `upload-and-extend-audio`, `add-instrumental`, `add-vocals`, `replace-section` | `audio_id` | string | Unique identifier for the audio file |
-| ↑ | `audio_url` | string | Direct download URL for the audio file |
-| ↑ | `image_url` | string | Cover image URL |
-| ↑ | `title` | string | Track title |
-| ↑ | `tags` | string | Style tags |
-| ↑ | `duration` | number | Audio duration in seconds |
-| ↑ | `prompt` | string | Generation prompt used |
+| 閳?| `audio_url` | string | Direct download URL for the audio file |
+| 閳?| `image_url` | string | Cover image URL |
+| 閳?| `title` | string | Track title |
+| 閳?| `tags` | string | Style tags |
+| 閳?| `duration` | number | Audio duration in seconds |
+| 閳?| `prompt` | string | Generation prompt used |
 | `get-timestamped-lyrics` | `timestampe_lyrics` | string | Lyrics with timestamps |
 | `generate-lyrics` | `title` | string | Lyrics title |
-| ↑ | `text` | string | Complete lyrics content |
+| 閳?| `text` | string | Complete lyrics content |
 | `boost-music-style` | `style` | string | Enhanced music style |
 | `convert-to-wav` | `wav_url` | string | URL to converted WAV file |
 | `separate-vocals` | `separate_vocals` | string (JSON) | JSON string containing separated audio URLs. [See details](#separate-vocals) |
@@ -121,8 +121,8 @@ The `files` array content varies depending on which model created the task.
     "files": [
       {
         "audio_id": "62e4542a-73be-44e1-b397-7716ee7505c6",
-        "audio_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/audio_62e4542a.mp3",
-        "image_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/cover_62e4542a.jpeg",
+        "audio_url": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/audio_62e4542a.mp3",
+        "image_url": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/cover_62e4542a.jpeg",
         "title": "Peaceful Piano Meditation",
         "tags": "Classical",
         "duration": 240.0,
@@ -130,8 +130,8 @@ The `files` array content varies depending on which model created the task.
       },
       {
         "audio_id": "8e755734-a840-4c13-beac-b9f1044979ca",
-        "audio_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/audio_8e755734.mp3",
-        "image_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/cover_8e755734.jpeg",
+        "audio_url": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/audio_8e755734.mp3",
+        "image_url": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/cover_8e755734.jpeg",
         "title": "Peaceful Piano Meditation",
         "tags": "Classical",
         "duration": 130.0,
@@ -212,7 +212,7 @@ The `files` array content varies depending on which model created the task.
     "status": "finished",
     "files": [
       {
-        "wav_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/output.wav"
+        "wav_url": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/output.wav"
       }
     ],
     "created_time": "2025-11-25T08:50:13",
@@ -231,7 +231,7 @@ The `files` array content varies depending on which model created the task.
     "status": "finished",
     "files": [
       {
-        "separate_vocals": "{\"vocal_url\": \"https://storage.poyo.ai/audio/vocals.mp3\", \"instrumental_url\": \"https://storage.poyo.ai/audio/instrumental.mp3\"}"
+        "separate_vocals": "{\"vocal_url\": \"https://storage.vidgo.ai/audio/vocals.mp3\", \"instrumental_url\": \"https://storage.vidgo.ai/audio/instrumental.mp3\"}"
       }
     ],
     "created_time": "2025-11-25T08:50:13",
@@ -250,7 +250,7 @@ The `files` array content varies depending on which model created the task.
     "status": "finished",
     "files": [
       {
-        "vocal_removal": "{\"bass\": \"https://storage.poyo.ai/audio/bass.mp3\", \"drums\": \"https://storage.poyo.ai/audio/drums.mp3\", \"piano\": \"https://storage.poyo.ai/audio/piano.mp3\", \"guitar\": \"https://storage.poyo.ai/audio/guitar.mp3\", \"vocals\": \"https://storage.poyo.ai/audio/vocals.mp3\", \"other\": \"https://storage.poyo.ai/audio/other.mp3\"}"
+        "vocal_removal": "{\"bass\": \"https://storage.vidgo.ai/audio/bass.mp3\", \"drums\": \"https://storage.vidgo.ai/audio/drums.mp3\", \"piano\": \"https://storage.vidgo.ai/audio/piano.mp3\", \"guitar\": \"https://storage.vidgo.ai/audio/guitar.mp3\", \"vocals\": \"https://storage.vidgo.ai/audio/vocals.mp3\", \"other\": \"https://storage.vidgo.ai/audio/other.mp3\"}"
       }
     ],
     "created_time": "2025-11-25T08:50:13",
@@ -288,7 +288,7 @@ The `files` array content varies depending on which model created the task.
     "status": "finished",
     "files": [
       {
-        "generate_cover": "[{\"file_url\": \"https://storage.poyo.ai/audio/cover_1.png\", \"file_type\": \"image\"}, {\"file_url\": \"https://storage.poyo.ai/audio/cover_2.png\", \"file_type\": \"image\"}]"
+        "generate_cover": "[{\"file_url\": \"https://storage.vidgo.ai/audio/cover_1.png\", \"file_type\": \"image\"}, {\"file_url\": \"https://storage.vidgo.ai/audio/cover_2.png\", \"file_type\": \"image\"}]"
       }
     ],
     "created_time": "2025-11-25T08:50:13",
@@ -326,7 +326,7 @@ The `files` array content varies depending on which model created the task.
     "status": "finished",
     "files": [
       {
-        "video_url": "https://storage.poyo.ai/video/8FDN1I7M7Q68DDG8/music_video.mp4"
+        "video_url": "https://storage.vidgo.ai/video/8FDN1I7M7Q68DDG8/music_video.mp4"
       }
     ],
     "created_time": "2025-11-25T08:50:13",
@@ -376,7 +376,7 @@ If all retry attempts fail, you can still retrieve the results by polling the [Q
 ## Security Best Practices
 
 <Tip>
-**Verify requests**: Consider adding a signature verification mechanism to ensure requests are from PoYo AI
+**Verify requests**: Consider adding a signature verification mechanism to ensure requests are from Vidgo API
 </Tip>
 
 <Tip>

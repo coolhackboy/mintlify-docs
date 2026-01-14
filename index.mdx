@@ -1,13 +1,13 @@
 ---
-title: "Welcome to PoYo AI"
+title: "What is Vidgo API"
 description: "Professional Image and Video Generation APIs"
 ---
 
-# Welcome to PoYo AI
+# What is Vidgo API?
 
-PoYo AI provides state-of-the-art image and video generation APIs powered by the latest AI models from OpenAI and Google. Build amazing applications with our simple, unified API.
+Vidgo API delivers stable, low-cost API services. With a single API, you can build any application for AI image, AI video, and AI music.
 
-## Why PoYo AI?
+## Why Vidgo API?
 
 <CardGroup cols={2}>
   <Card title="Powerful Models" icon="sparkles">
@@ -28,7 +28,7 @@ PoYo AI provides state-of-the-art image and video generation APIs powered by the
 
 <Steps>
   <Step title="Get Your API Key">
-    Sign up and generate your API key from the [console](https://poyo.ai/dashboard/api-key)
+    Sign up and generate your API key from the [console](https://vidgo.ai/apis/dashboard/api-key)
   </Step>
   <Step title="Make Your First Request">
     Use our unified API to generate images or videos
@@ -47,54 +47,6 @@ PoYo AI provides state-of-the-art image and video generation APIs powered by the
   Follow our quick start guide to make your first API call in minutes
 </Card>
 
-## Available Models
-
-### Image Generation
-
-<CardGroup cols={2}>
-  <Card title="GPT-4o Image" icon="image" href="/api-manual/image-series/gpt-4o-image">
-    **Premium Quality**
-
-    Text-to-image, image-to-image, and advanced editing with masks
-
-    - Multiple sizes: 1024x1024, 1024x1536, 1536x1024
-    - Batch generation: 1, 2, or 4 images
-    - ~30-60s generation time
-  </Card>
-  <Card title="Nano Banana" icon="sparkles" href="/api-manual/image-series/nano-banana">
-    **Fast & Efficient**
-
-    Powered by Gemini 2.5 Flash for rapid generation
-
-    - 8 aspect ratios including 16:9, 9:16
-    - 40% cost savings
-    - ~15-45s generation time
-  </Card>
-</CardGroup>
-
-### Video Generation
-
-<CardGroup cols={2}>
-  <Card title="Sora 2" icon="video" href="/api-manual/video-series/sora-2">
-    **Professional Quality**
-
-    Multi-tier video generation with extended durations
-
-    - Standard & Pro quality options
-    - 10-25 second durations
-    - Text-to-video & image-to-video
-  </Card>
-  <Card title="VEO 3.1" icon="film" href="/api-manual/video-series/veo3">
-    **Fast Video**
-
-    Google's VEO technology for quick generation
-
-    - 8 second videos
-    - Landscape & portrait support
-    - ~90s generation time
-  </Card>
-</CardGroup>
-
 ## Quick Example
 
 Generate an image in just a few lines of code:
@@ -103,7 +55,7 @@ Generate an image in just a few lines of code:
 import requests
 
 response = requests.post(
-    "https://api.poyo.ai/api/generate/submit",
+    "https://api.vidgo.ai/api/generate/submit",
     headers={"Authorization": "Bearer YOUR_API_KEY"},
     json={
         "model": "gpt-4o-image",
@@ -137,7 +89,7 @@ task_id = response.json()["id"]
   <Card title="Task Management" icon="list-check" href="/api-manual/task-management/status">
     Monitor your tasks
   </Card>
-  <Card title="Get API Key" icon="key" href="https://poyo.ai/dashboard/api-key">
+  <Card title="Get API Key" icon="key" href="https://vidgo.ai/apis/dashboard/api-key">
     Generate your credentials
   </Card>
 </CardGroup>
@@ -162,38 +114,15 @@ Single endpoint for all models:
 
 Switch between models by simply changing the `model` parameter.
 
-### Flexible Parameters
-
-Customize your generations with extensive parameters:
-
-- **Images**: Size, quantity, reference images, masks
-- **Videos**: Duration, aspect ratio, thumbnails, watermarks
-- **Both**: Callbacks, custom parameters per model
-
-## Pricing
-
-Pay only for what you use with transparent credit-based pricing:
-
-| Model Type | Credits per Generation |
-|------------|----------------------|
-| GPT-4o Image | ~2.5 credits |
-| Nano Banana | ~1.6 credits |
-| Sora 2 | ~30-125 credits |
-| VEO 3.1 | ~24 credits |
-
-<Info>
-  Check your current usage and balance in the [API Console](https://poyo.ai)
-</Info>
-
 ## Support
 
 Need help? We're here to assist:
 
 <CardGroup cols={2}>
-  <Card title="Email Support" icon="envelope" href="mailto:support@poyo.ai">
-    support@poyo.ai
+  <Card title="Email Support" icon="envelope" href="mailto:support@vidgo.ai">
+    support@vidgo.ai
   </Card>
-  <Card title="API Console" icon="terminal" href="https://poyo.ai">
+  <Card title="API Console" icon="terminal" href="https://vidgo.ai/apis">
     Manage your account and API keys
   </Card>
 </CardGroup>
@@ -211,7 +140,7 @@ Need help? We're here to assist:
   <Card
     title="Get API Key"
     icon="key"
-    href="https://poyo.ai/dashboard/api-key"
+    href="https://vidgo.ai/apis/dashboard/api-key"
   >
     Generate your credentials now
   </Card>

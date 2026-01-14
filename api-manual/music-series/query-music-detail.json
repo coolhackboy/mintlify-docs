@@ -1,13 +1,13 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "PoYo AI - Query Music Detail API",
+    "title": "Vidgo API - Query Music Detail API",
     "description": "Query detailed results of music generation tasks",
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://api.poyo.ai",
+      "url": "https://api.vidgo.ai",
       "description": "Production server"
     }
   ],
@@ -54,8 +54,8 @@
                         "files": [
                           {
                             "audio_id": "62e4542a-73be-44e1-b397-7716ee7505c6",
-                            "audio_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/20251125113627_QIivN2_tmphb8rgpeb_audio_62e4542a-73be-44e1-b397-7716ee7505c6.mp3",
-                            "image_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/20251125113628_4DfWp6_tmpz72j05o5_cover_62e4542a-73be-44e1-b397-7716ee7505c6.jpeg",
+                            "audio_url": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/20251125113627_QIivN2_tmphb8rgpeb_audio_62e4542a-73be-44e1-b397-7716ee7505c6.mp3",
+                            "image_url": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/20251125113628_4DfWp6_tmpz72j05o5_cover_62e4542a-73be-44e1-b397-7716ee7505c6.jpeg",
                             "title": "Peaceful Piano Meditation",
                             "tags": "Classical",
                             "duration": 240.0,
@@ -63,8 +63,8 @@
                           },
                           {
                             "audio_id": "8e755734-a840-4c13-beac-b9f1044979ca",
-                            "audio_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/20251125113630_x7VTpV_tmpvsijwxa6_audio_8e755734-a840-4c13-beac-b9f1044979ca.mp3",
-                            "image_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/20251125113631_3MTe5V_tmp98wzcx2m_cover_8e755734-a840-4c13-beac-b9f1044979ca.jpeg",
+                            "audio_url": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/20251125113630_x7VTpV_tmpvsijwxa6_audio_8e755734-a840-4c13-beac-b9f1044979ca.mp3",
+                            "image_url": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/20251125113631_3MTe5V_tmp98wzcx2m_cover_8e755734-a840-4c13-beac-b9f1044979ca.jpeg",
                             "title": "Peaceful Piano Meditation",
                             "tags": "Classical",
                             "duration": 130.0,
@@ -137,7 +137,7 @@
                         "status": "finished",
                         "files": [
                           {
-                            "generate_cover": "[{\"file_url\": \"https://storage.poyo.ai/audio/0JQHD119NP7B5KLE/20250825120409_4L9H4h_tmp1_taa0e1_cover_1.png\", \"file_type\": \"image\"}, {\"file_url\": \"https://storage.poyo.ai/audio/0JQHD119NP7B5KLE/20250825120412_8v52pC_tmpwirqh4m6_cover_2.png\", \"file_type\": \"image\"}]"
+                            "generate_cover": "[{\"file_url\": \"https://storage.vidgo.ai/audio/0JQHD119NP7B5KLE/20250825120409_4L9H4h_tmp1_taa0e1_cover_1.png\", \"file_type\": \"image\"}, {\"file_url\": \"https://storage.vidgo.ai/audio/0JQHD119NP7B5KLE/20250825120412_8v52pC_tmpwirqh4m6_cover_2.png\", \"file_type\": \"image\"}]"
                           }
                         ],
                         "created_time": "2025-11-25T08:50:13",
@@ -171,7 +171,7 @@
                         "status": "finished",
                         "files": [
                           {
-                            "wav_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/output.wav"
+                            "wav_url": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/output.wav"
                           }
                         ],
                         "created_time": "2025-11-25T08:50:13",
@@ -205,7 +205,7 @@
                         "status": "finished",
                         "files": [
                           {
-                            "vocal_removal": "{\"bass\": \"https://storage.poyo.ai/audio/bass.mp3\", \"drums\": \"https://storage.poyo.ai/audio/drums.mp3\", \"piano\": \"https://storage.poyo.ai/audio/piano.mp3\", \"guitar\": \"https://storage.poyo.ai/audio/guitar.mp3\", \"vocals\": \"https://storage.poyo.ai/audio/vocals.mp3\", \"other\": \"https://storage.poyo.ai/audio/other.mp3\"}"
+                            "vocal_removal": "{\"bass\": \"https://storage.vidgo.ai/audio/bass.mp3\", \"drums\": \"https://storage.vidgo.ai/audio/drums.mp3\", \"piano\": \"https://storage.vidgo.ai/audio/piano.mp3\", \"guitar\": \"https://storage.vidgo.ai/audio/guitar.mp3\", \"vocals\": \"https://storage.vidgo.ai/audio/vocals.mp3\", \"other\": \"https://storage.vidgo.ai/audio/other.mp3\"}"
                           }
                         ],
                         "created_time": "2025-11-25T08:50:13",
@@ -239,7 +239,7 @@
                         "status": "finished",
                         "files": [
                           {
-                            "video_url": "https://storage.poyo.ai/video/8FDN1I7M7Q68DDG8/music_video.mp4"
+                            "video_url": "https://storage.vidgo.ai/video/8FDN1I7M7Q68DDG8/music_video.mp4"
                           }
                         ],
                         "created_time": "2025-11-25T08:50:13",
@@ -274,7 +274,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://poyo.ai/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer PoYo_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
       }
     },
     "schemas": {
@@ -337,13 +337,13 @@
           "audio_url": {
             "type": "string",
             "format": "uri",
-            "example": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/20251125113627_QIivN2_tmphb8rgpeb_audio_62e4542a-73be-44e1-b397-7716ee7505c6.mp3",
+            "example": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/20251125113627_QIivN2_tmphb8rgpeb_audio_62e4542a-73be-44e1-b397-7716ee7505c6.mp3",
             "description": "Direct URL to download the generated audio file"
           },
           "image_url": {
             "type": "string",
             "format": "uri",
-            "example": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/20251125113628_4DfWp6_tmpz72j05o5_cover_62e4542a-73be-44e1-b397-7716ee7505c6.jpeg",
+            "example": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/20251125113628_4DfWp6_tmpz72j05o5_cover_62e4542a-73be-44e1-b397-7716ee7505c6.jpeg",
             "description": "Direct URL to the cover image for this audio file"
           },
           "title": {

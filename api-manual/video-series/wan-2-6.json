@@ -1,13 +1,13 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "PoYo AI - Wan 2.6 API",
+    "title": "Vidgo API - Wan 2.6 API",
     "description": "Multi-shot 1080p video generation with Alibaba Wan 2.6 models",
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://api.poyo.ai",
+      "url": "https://api.vidgo.ai",
       "description": "Production server"
     }
   ],
@@ -97,7 +97,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://poyo.ai/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
       }
     },
     "schemas": {

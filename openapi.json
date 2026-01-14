@@ -1,16 +1,16 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "PoYo AI API",
+    "title": "Vidgo API",
     "description": "Professional Image and Video Generation APIs",
     "version": "1.0.0",
     "contact": {
-      "email": "support@poyo.ai"
+      "email": "support@vidgo.ai"
     }
   },
   "servers": [
     {
-      "url": "https://api.poyo.ai",
+      "url": "https://api.vidgo.ai",
       "description": "Production server"
     }
   ],
@@ -349,7 +349,7 @@
                     "file_url": {
                       "type": "string",
                       "format": "uri",
-                      "example": "https://storage.poyo.ai/generated/image-abc123.jpg",
+                      "example": "https://storage.vidgo.ai/generated/image-abc123.jpg",
                       "description": "Direct URL to the generated file (valid for 24 hours)"
                     },
                     "file_type": {
@@ -362,7 +362,7 @@
                 },
                 "example": [
                   {
-                    "file_url": "https://storage.poyo.ai/generated/image-abc123.jpg",
+                    "file_url": "https://storage.vidgo.ai/generated/image-abc123.jpg",
                     "file_type": "image"
                   }
                 ]
@@ -396,7 +396,7 @@
             "status": "finished",
             "files": [
               {
-                "file_url": "https://storage.poyo.ai/generated/image-abc123.jpg",
+                "file_url": "https://storage.vidgo.ai/generated/image-abc123.jpg",
                 "file_type": "image"
               }
             ],

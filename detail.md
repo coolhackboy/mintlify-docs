@@ -15,8 +15,8 @@ replace-section
     "files": [
       {
         "audio_id": "62e4542a-73be-44e1-b397-7716ee7505c6",
-        "audio_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/20251125113627_QIivN2_tmphb8rgpeb_audio_62e4542a-73be-44e1-b397-7716ee7505c6.mp3",
-        "image_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/20251125113628_4DfWp6_tmpz72j05o5_cover_62e4542a-73be-44e1-b397-7716ee7505c6.jpeg",
+        "audio_url": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/20251125113627_QIivN2_tmphb8rgpeb_audio_62e4542a-73be-44e1-b397-7716ee7505c6.mp3",
+        "image_url": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/20251125113628_4DfWp6_tmpz72j05o5_cover_62e4542a-73be-44e1-b397-7716ee7505c6.jpeg",
         "title": "Peaceful Piano Meditation",
         "tags": "Classical",
         "duration": 240,
@@ -24,8 +24,8 @@ replace-section
       },
       {
         "audio_id": "8e755734-a840-4c13-beac-b9f1044979ca",
-        "audio_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/20251125113630_x7VTpV_tmpvsijwxa6_audio_8e755734-a840-4c13-beac-b9f1044979ca.mp3",
-        "image_url": "https://storage.poyo.ai/audio/8FDN1I7M7Q68DDG8/20251125113631_3MTe5V_tmp98wzcx2m_cover_8e755734-a840-4c13-beac-b9f1044979ca.jpeg",
+        "audio_url": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/20251125113630_x7VTpV_tmpvsijwxa6_audio_8e755734-a840-4c13-beac-b9f1044979ca.mp3",
+        "image_url": "https://storage.vidgo.ai/audio/8FDN1I7M7Q68DDG8/20251125113631_3MTe5V_tmp98wzcx2m_cover_8e755734-a840-4c13-beac-b9f1044979ca.jpeg",
         "title": "Peaceful Piano Meditation",
         "tags": "Classical",
         "duration": 130,
@@ -49,7 +49,7 @@ get-timestamped-lyrics
     "status": "finished",
     "files": [
       {
-         "timestampe_lyrics" : "获取带时间戳的歌词"
+         "timestampe_lyrics" : "閼惧嘲褰囩敮锔芥闂傚瓨鍩戦惃鍕摃鐠?
       }
     ],
     "created_time": "2025-11-25T08:50:13",
@@ -68,7 +68,7 @@ boost-music-style
     "status": "finished",
     "files": [
       {
-         "style" : "提升音乐风格"
+         "style" : "閹绘劕宕岄棅鍏呯妞嬪孩鐗?
       }
     ],
     "created_time": "2025-11-25T08:50:13",
@@ -87,7 +87,7 @@ generate-music-cover
     "status": "finished",
     "files": [
       {
-         "image_url" : "生成音乐封面"
+         "image_url" : "閻㈢喐鍨氶棅鍏呯鐏忎線娼?
       }
     ],
     "created_time": "2025-11-25T08:50:13",
