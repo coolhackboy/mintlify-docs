@@ -71,7 +71,7 @@
           {
             "group": "Overview",
             "pages": [
-              "api-manual/overview",
+              "api-manual/quickstart",
               "api-manual/error-codes"
             ]
           },
@@ -157,51 +157,39 @@
         ]
       },
       {
-        "tab": "Guides",
+        "tab": "FAQs",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "FAQs",
             "pages": [
-              "guides/getting-started/quickstart"
+              "faqs"
             ]
           }
         ]
       }
     ],
     "global": {
-      "anchors": [
-        {
-          "anchor": "Support",
-          "href": "mailto:support@vidgo.ai",
-          "icon": "envelope"
-        }
-      ]
+      "anchors": []
     }
   },
-  
   "navbar": {
-    "links": [
-      {
-        "label": "Console",
-        "href": "https://vidgo.ai/apis"
-      }
-    ],
+    "links": [],
     "primary": {
       "type": "button",
-      "label": "Get API Key",
+      "label": "Dashboard",
       "href": "https://vidgo.ai/apis/dashboard/api-key"
     }
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   }
 }

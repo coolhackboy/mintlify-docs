@@ -1,0 +1,224 @@
+---
+title: "Quick Start"
+description: "Get started with Vidgo API in minutes"
+---
+
+## Welcome to Vidgo API
+
+Vidgo API provides powerful image and video generation APIs. This guide will help you make your first API call in just a few minutes.
+
+## Step 1: Get Your API Key
+
+1. Visit the [Vidgo API Console](https://vidgo.ai/apis/dashboard/api-key)
+2. Sign in or create an account
+3. Generate a new API key
+4. **Important**: Copy and securely store your API key - it will only be displayed once
+
+## Step 2: Generate Your First Image
+
+All API requests require your API key in the `Authorization` header. Here's a complete example:
+
+```python
+import requests
+
+url = "https://api.vidgo.ai/api/generate/submit"
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+
+payload = {
+    "model": "gpt-4o-image",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+        "prompt": "A serene mountain landscape at sunset with vibrant colors",
+        "size": "1:1",
+        "n": 1
+    }
+}
+
+response = requests.post(url, json=payload, headers=headers)
+result = response.json()
+task_id = result["data"]["task_id"]
+print(f"Task ID: {task_id}")
+```
+
+```javascript
+const response = await fetch('https://api.vidgo.ai/api/generate/submit', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'gpt-4o-image',
+    callback_url: 'https://your-domain.com/callback',
+    input: {
+      prompt: 'A serene mountain landscape at sunset with vibrant colors',
+      size: '1:1',
+      n: 1
+    }
+  })
+});
+
+const result = await response.json();
+const taskId = result.data.task_id;
+console.log(`Task ID: ${taskId}`);
+```
+
+```bash
+curl -X POST https://api.vidgo.ai/api/generate/submit \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o-image",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+      "prompt": "A serene mountain landscape at sunset with vibrant colors",
+      "size": "1:1",
+      "n": 1
+    }
+  }'
+```
+
+## Step 3: Check Task Status
+
+Vidgo API uses asynchronous processing. Poll the status endpoint to get your results:
+
+```python
+import requests
+import time
+
+task_id = "task-unified-1757165031-uyujaw3d"
+url = f"https://api.vidgo.ai/api/generate/status/{task_id}"
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY"
+}
+
+# Poll until complete
+while True:
+    response = requests.get(url, headers=headers)
+    result = response.json()
+    task = result["data"]
+
+    status = task['status']
+    progress = task.get('progress', 0)
+
+    print(f"Status: {status}, Progress: {progress}%")
+
+    if status == 'finished':
+        print(f"Image URL: {task['files'][0]['file_url']}")
+        break
+    elif status == 'failed':
+        print(f"Error: {task['error_message']}")
+        break
+
+    time.sleep(2)  # Wait 2 seconds before next check
+```
+
+```javascript
+const taskId = 'task-unified-1757165031-uyujaw3d';
+
+async function checkStatus() {
+  while (true) {
+    const response = await fetch(
+      `https://api.vidgo.ai/api/generate/status/${taskId}`,
+      {
+        headers: {
+          'Authorization': 'Bearer YOUR_API_KEY'
+        }
+      }
+    );
+
+    const result = await response.json();
+    const task = result.data;
+    const { status, progress, files, error_message } = task;
+
+    console.log(`Status: ${status}, Progress: ${progress}%`);
+
+    if (status === 'finished') {
+      console.log('Image URL:', files[0].file_url);
+      break;
+    } else if (status === 'failed') {
+      console.log('Error:', error_message);
+      break;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  }
+}
+
+checkStatus();
+```
+
+```bash
+curl -X GET https://api.vidgo.ai/api/generate/status/task-unified-1757165031-uyujaw3d \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+**Example Response:**
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "finished",
+    "progress": 100,
+    "files": [
+      {
+        "file_url": "https://storage.vidgo.ai/generated/image-abc123.jpg",
+        "file_type": "image"
+      }
+    ],
+    "created_time": "2025-11-12T10:30:00",
+    "error_message": null
+  }
+}
+```
+
+<Note>
+  **Content Validity**: Generated files are valid for 24 hours. Please download and save them promptly.
+</Note>
+
+## Step 4: Try Video Generation
+
+Generate videos using the same pattern. Just change the model and input parameters:
+
+```python
+payload = {
+    "model": "sora-2",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+        "prompt": "A time-lapse of a bustling city street transitioning from day to night",
+        "duration": 10,
+        "aspect_ratio": "16:9"
+    }
+}
+```
+
+## Step 5: Try Music Generation
+
+Generate music with customizable styles and vocals:
+
+```python
+payload = {
+    "model": "generate-music",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+        "prompt": "A calm and relaxing piano track with soft melodies",
+        "style": "Classical",
+        "title": "Peaceful Piano Meditation",
+        "custom_mode": True,
+        "instrumental": True,
+        "mv": "V5"
+    }
+}
+```
+
+## Support
+
+Need help? We're here to assist:
+
+- **Email**: [support@vidgo.ai](mailto:support@vidgo.ai)
+- **Console**: [vidgo.ai](https://vidgo.ai/apis)
