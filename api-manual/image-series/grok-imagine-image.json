@@ -1,13 +1,13 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Vidgo API - Grok Imagine Image API",
-    "description": "Grok Imagine Image Generation",
+    "title": "PoYo AI - Grok Imagine Image API",
+    "description": "Grok Imagine Image Generation with text-to-image and image-to-image support",
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://api.vidgo.ai",
+      "url": "https://api.poyo.ai",
       "description": "Production server"
     }
   ],
@@ -20,7 +20,7 @@
     "/api/generate/submit": {
       "post": {
         "summary": "Submit Grok Imagine Image Generation Task",
-        "description": "Generate images using Grok Imagine model",
+        "description": "Generate images using Grok Imagine model with text-to-image and image-to-image support",
         "operationId": "submitGrokImagineImageTask",
         "tags": ["Grok Imagine Image"],
         "requestBody": {
@@ -38,6 +38,18 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "A serene mountain landscape at sunset with vibrant colors",
+                      "size": "1:1"
+                    }
+                  }
+                },
+                "grok-imagine-image-to-image": {
+                  "summary": "Grok Imagine Image-to-Image",
+                  "value": {
+                    "model": "grok-imagine-image",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Add warm sunset lighting with golden highlights",
+                      "image_urls": ["https://example.com/reference-image.png"],
                       "size": "1:1"
                     }
                   }
@@ -67,7 +79,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://poyo.ai/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
       }
     },
     "schemas": {
@@ -90,8 +102,8 @@
           },
           "input": {
             "type": "object",
-            "required": ["prompt", "size"],
-            "description": "Input parameters for generation",
+            "required": ["prompt"],
+            "description": "Input parameters for generation. For image-to-image, input.image_urls is required.",
             "properties": {
               "prompt": {
                 "type": "string",
@@ -99,10 +111,20 @@
                 "maxLength": 5000,
                 "example": "A beautiful sunset over the ocean"
               },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "maxItems": 1,
+                "description": "Required for image-to-image.\n\narray(URL)\nAn array containing a single URL string pointing to the reference image.\n\nPlease provide the URL of the uploaded file; Accepted types: image/jpeg, image/png, image/webp; Max size: 10.0MB",
+                "example": ["https://example.com/reference-image.png"]
+              },
               "size": {
                 "type": "string",
-                "description": "Image aspect ratio",
-                "enum": ["1:1", "2:3", "3:2"],
+                "description": "Image aspect ratio (optional)",
+                "enum": ["2:3", "3:2", "1:1", "9:16", "16:9"],
                 "example": "1:1"
               }
             }

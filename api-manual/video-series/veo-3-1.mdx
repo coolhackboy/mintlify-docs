@@ -1,6 +1,6 @@
 ---
 title: "VEO 3.1 Video Generation"
-description: "Fast video generation with Google's VEO 3.1 technology"
+description: "Fast and high-quality 8-second video generation with Google's VEO 3.1"
 openapi: "/api-manual/video-series/veo-3-1.json POST /api/generate/submit"
 ---
 
@@ -11,15 +11,39 @@ openapi: "/api-manual/video-series/veo-3-1.json POST /api/generate/submit"
 
 # VEO 3.1 Video Generation
 
-Generate high-quality videos quickly using Google's VEO 3.1 model. Optimized for speed while maintaining professional quality.
+Generate fast or high-quality 8-second videos with Google's VEO 3.1 model. Supports text-to-video and image-to-video generation.
 
-## Available Model
+## Available Models
 
-- **veo3.1-fast** - Fast 8-second video generation
+- **veo3.1-fast** - Fast 8-second generation
+- **veo3.1-quality** - High-quality 8-second generation
+
+## Duration Options
+
+- **8 seconds** - Fixed duration for all generations
 
 ## Key Features
 
-- **Fixed Duration**: 8 seconds
-- **Fast Generation**: ~90 seconds (2x faster than Sora 2)
-- **Aspect Ratios**: 16:9 (landscape) and 9:16 (portrait)
-- **Modes**: Text-to-video and image-to-video
+- Asynchronous processing that returns a `task_id` for status tracking
+- Supports text-to-video and image-to-video generation
+- Supports up to 4k output resolution
+- Generated video URLs are valid for 24 hours
+
+## Advanced Parameters
+
+### Generation Type
+
+- `frame` - Frame-to-video (two images)
+- `reference` - Reference image video (three images)
+- If omitted, inferred by `image_urls` count: 2 images for `frame`, 3 images for `reference`
+
+### Image URLs
+
+- Supports up to 3 images
+- Frame mode: first image is the start frame, second image is the end frame
+- Maximum file size: 10MB
+- Supported formats: .jpeg, .jpg, .png, .webp
+
+### Resolution
+
+- `720p` (default), `1080p`, or `4k`

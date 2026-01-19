@@ -1,13 +1,13 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Vidgo API - VEO 3.1 API",
-    "description": "Fast Video Generation with Google's VEO 3.1",
+    "title": "PoYo AI - VEO 3.1 API",
+    "description": "Fast and high-quality 8-second video generation with Google's VEO 3.1",
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://api.vidgo.ai",
+      "url": "https://api.poyo.ai",
       "description": "Production server"
     }
   ],
@@ -20,7 +20,7 @@
     "/api/generate/submit": {
       "post": {
         "summary": "Submit VEO 3.1 Video Generation Task",
-        "description": "Fast 8-second video generation using Google's VEO 3.1",
+        "description": "Fast and high-quality 8-second video generation using Google's VEO 3.1",
         "operationId": "submitVEO3Task",
         "tags": ["VEO 3.1"],
         "requestBody": {
@@ -32,14 +32,27 @@
               },
               "examples": {
                 "veo3.1-fast": {
-                  "summary": "VEO 3.1 Fast Video Generation",
+                  "summary": "VEO 3.1 Fast video generation",
                   "value": {
                     "model": "veo3.1-fast",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
-                      "prompt": "A peaceful stream flowing through a lush green forest",
+                      "prompt": "Dolphins jumping in a bright blue ocean",
                       "duration": 8,
                       "aspect_ratio": "16:9"
+                    }
+                  }
+                },
+                "veo3.1-quality": {
+                  "summary": "VEO 3.1 Quality 4k generation",
+                  "value": {
+                    "model": "veo3.1-quality",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A high-detail aerial view of a coastal city at dusk",
+                      "duration": 8,
+                      "aspect_ratio": "16:9",
+                      "resolution": "4k"
                     }
                   }
                 }
@@ -102,7 +115,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://poyo.ai/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer PoYo_API_KEY\n```"
       }
     },
     "schemas": {
@@ -114,7 +127,8 @@
             "type": "string",
             "description": "VEO 3.1 model identifier",
             "enum": [
-              "veo3.1-fast"
+              "veo3.1-fast",
+              "veo3.1-quality"
             ]
           },
           "callback_url": {
@@ -140,12 +154,19 @@
                   "type": "string",
                   "format": "uri"
                 },
-                "description": "Reference image URLs (for image-to-video)",
+                "maxItems": 3,
+                "description": "Reference image URLs for image-to-video. Supports public http/https URLs; maximum 3 images; frame mode: first image is the start frame, second image is the end frame; maximum file size 10MB; supported formats: .jpeg, .jpg, .png, .webp.",
                 "example": []
+              },
+              "generation_type": {
+                "type": "string",
+                "description": "Video generation type. `frame` (Frame-to-video, two images) or `reference` (Reference image video, three images). If omitted, inferred by `image_urls` count: 2 for `frame`, 3 for `reference`.",
+                "enum": ["frame", "reference"],
+                "example": "frame"
               },
               "duration": {
                 "type": "integer",
-                "description": "Video duration in seconds (fixed at 8)",
+                "description": "Video duration in seconds (fixed at 8).",
                 "enum": [8],
                 "example": 8
               },
@@ -154,6 +175,13 @@
                 "description": "Video aspect ratio",
                 "enum": ["16:9", "9:16"],
                 "example": "16:9"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "Output resolution. `720p` (default), `1080p` (Full HD), or `4k` (Ultra HD).",
+                "enum": ["720p", "1080p", "4k"],
+                "default": "720p",
+                "example": "1080p"
               }
             }
           }
