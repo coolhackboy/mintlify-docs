@@ -1,0 +1,19 @@
+---
+title: "Nano Banana 2 (gemini-3.1-flash-image-preview) Image Generation"
+description: "Next-generation AI image generation powered by Gemini 3.1 Flash Image Preview"
+openapi: "/api-manual/image-series/nano-banana-2-new.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+# Nano Banana 2 (gemini-3.1-flash-image-preview) Image Generation
+
+Next-generation AI image generation powered by Google's Gemini 3.1 Flash Image Preview. Delivers native 2K / 4K resolution images with precise multilingual text rendering, chain-of-thought understanding of physical relationships, and support for up to 14 reference images.
+
+## Available Models
+
+- **nano-banana-2-new** - Text-to-image and image-to-image generation
+- **nano-banana-2-new-edit** - Advanced image editing capabilities

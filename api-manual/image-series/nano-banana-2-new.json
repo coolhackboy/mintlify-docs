@@ -1,0 +1,240 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Nano Banana 2 (gemini-3.1-flash-image-preview) API",
+    "description": "Next-generation AI image generation powered by Gemini 3.1 Flash Image Preview",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit Nano Banana 2 (gemini-3.1-flash-image-preview) Generation Task",
+        "description": "Next-generation AI image generation and editing powered by Gemini 3.1 Flash Image Preview with native 2K / 4K resolution",
+        "operationId": "submitNanoBanana2NewTask",
+        "tags": ["Nano Banana 2 (gemini-3.1-flash-image-preview)"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "nano-banana-2-new": {
+                  "summary": "Nano Banana 2 (gemini-3.1-flash-image-preview) Image Generation",
+                  "value": {
+                    "model": "nano-banana-2-new",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cyberpunk street scene with neon signs and rain",
+                      "size": "16:9",
+                      "resolution": "2K"
+                    }
+                  }
+                },
+                "nano-banana-2-new-edit": {
+                  "summary": "Nano Banana 2 (gemini-3.1-flash-image-preview) Image Edit",
+                  "value": {
+                    "model": "nano-banana-2-new-edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Add colorful flowers in the foreground",
+                      "image_urls": ["https://example.com/landscape.jpg"],
+                      "size": "16:9",
+                      "resolution": "2K"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 400,
+                  "error": {
+                    "message": "Invalid request parameters",
+                    "type": "invalid_request_error"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 401,
+                  "error": {
+                    "message": "Unauthorized - Invalid API key",
+                    "type": "authentication_error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Nano Banana 2 (gemini-3.1-flash-image-preview) model identifier",
+            "enum": [
+              "nano-banana-2-new",
+              "nano-banana-2-new-edit"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["prompt"],
+            "description": "Input parameters for generation",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Generation prompt describing the desired output",
+                "maxLength": 1000,
+                "example": "A beautiful sunset over the ocean"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "Reference image URLs (for image editing, supports up to 14 images)",
+                "example": []
+              },
+              "size": {
+                "type": "string",
+                "description": "Image size ratio",
+                "enum": ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"],
+                "example": "16:9"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "Output image resolution",
+                "enum": ["1K", "2K", "4K"],
+                "default": "1K",
+                "example": "1K"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "Unique task identifier for status tracking"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started"],
+                "example": "not_started",
+                "description": "Initial task status"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "ISO 8601 timestamp when the task was created"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP status code"
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "Error message describing what went wrong"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "Error type identifier"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

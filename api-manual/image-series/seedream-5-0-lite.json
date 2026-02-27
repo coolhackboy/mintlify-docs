@@ -1,0 +1,247 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Seedream-5.0-Lite API",
+    "description": "Advanced image generation model with support for text-to-image, image-to-image, and multi-image reference capabilities",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit Seedream-5.0-Lite Generation Task",
+        "description": "Advanced image generation and editing with multi-reference support and up to 3K resolution",
+        "operationId": "submitSeedream50LiteTask",
+        "tags": ["Seedream-5.0-Lite"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "seedream-5-0-lite": {
+                  "summary": "Seedream-5.0-Lite Text-to-Image Generation",
+                  "value": {
+                    "model": "seedream-5.0-lite",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A serene Japanese garden with cherry blossoms and a koi pond",
+                      "size": "16:9",
+                      "n": 1
+                    }
+                  }
+                },
+                "seedream-5-0-lite-edit": {
+                  "summary": "Seedream-5.0-Lite Image Editing with References",
+                  "value": {
+                    "model": "seedream-5.0-lite-edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Transform the scene to a winter wonderland with snow",
+                      "image_urls": [
+                        "https://example.com/reference1.jpg",
+                        "https://example.com/reference2.jpg"
+                      ],
+                      "size": "16:9",
+                      "n": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 400,
+                  "error": {
+                    "message": "Invalid request parameters",
+                    "type": "invalid_request_error"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 401,
+                  "error": {
+                    "message": "Unauthorized - Invalid API key",
+                    "type": "authentication_error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Seedream-5.0-Lite model identifier",
+            "enum": [
+              "seedream-5.0-lite",
+              "seedream-5.0-lite-edit"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["prompt"],
+            "description": "Input parameters for generation",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Generation prompt describing the desired output",
+                "maxLength": 2000,
+                "example": "A beautiful sunset over the ocean"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 10,
+                "description": "Reference image URLs for image-to-image or editing (1-10 images). Required for seedream-5.0-lite-edit model. Supported formats: JPEG, PNG",
+                "example": ["https://example.com/reference1.jpg", "https://example.com/reference2.jpg"]
+              },
+              "size": {
+                "type": "string",
+                "description": "Specify the output image dimensions. Two methods are available, but they cannot be used at the same time.\n\nMethod 1: Specify the resolution of the generated image, and describe its aspect ratio, shape, or purpose in the prompt using natural language. You let the model determine the width and height. Optional values: 2K, 3K\n\nMethod 2: Specify the aspect ratio of the generated image. Optional values: 1:1, 4:3, 3:4, 16:9, 9:16, 3:2, 2:3, 21:9",
+                "enum": ["2K", "3K", "1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "21:9"],
+                "default": "1:1",
+                "example": "16:9"
+              },
+              "n": {
+                "type": "integer",
+                "description": "Number of images to generate (1-15). Credits are pre-deducted based on this count",
+                "minimum": 1,
+                "maximum": 15,
+                "default": 1,
+                "example": 1
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "Unique task identifier for status tracking"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started"],
+                "example": "not_started",
+                "description": "Initial task status"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "ISO 8601 timestamp when the task was created"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP status code"
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "Error message describing what went wrong"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "Error type identifier"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

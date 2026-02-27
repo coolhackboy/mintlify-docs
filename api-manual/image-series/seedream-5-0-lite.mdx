@@ -1,0 +1,19 @@
+---
+title: "Seedream-5.0-Lite Image Generation"
+description: "Advanced image generation model with support for text-to-image, image-to-image, and multi-image reference capabilities"
+openapi: "/api-manual/image-series/seedream-5-0-lite.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+# Seedream-5.0-Lite Image Generation
+
+Seedream-5.0-Lite is an advanced image generation model that supports text-to-image, image-to-image, and image editing with multi-reference capabilities. It delivers high-quality images with flexible aspect ratios and prompt optimization options.
+
+## Available Models
+
+- **seedream-5.0-lite** - High-quality text-to-image and image-to-image generation
+- **seedream-5.0-lite-edit** - Advanced image editing with multi-image reference support (up to 10 images)
