@@ -169,6 +169,11 @@
                 "enum": ["1K", "2K", "4K"],
                 "default": "1K",
                 "example": "1K"
+              },
+              "google_search": {
+                "type": "boolean",
+                "description": "Use Google Web Search grounding to generate images based on real-time information",
+                "example": false
               }
             }
           }
