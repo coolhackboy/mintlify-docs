@@ -1,0 +1,292 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Seedream-4 API",
+    "description": "Image generation model powered by ByteDance Seedream-4 with support for text-to-image and image editing",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Seedream-4"
+        ],
+        "summary": "Submit Seedream-4 Generation Task",
+        "description": "Generate or edit images with ByteDance Seedream-4 through a unified submit endpoint",
+        "operationId": "submitSeedream4Task",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "seedream-4": {
+                  "summary": "Seedream-4 Text-to-Image Generation",
+                  "value": {
+                    "model": "seedream-4",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A minimalist product photo of a ceramic mug on a clean studio background",
+                      "size": "1:1",
+                      "resolution": "1K",
+                      "n": 1
+                    }
+                  }
+                },
+                "seedream-4-edit": {
+                  "summary": "Seedream-4 Image Editing",
+                  "value": {
+                    "model": "seedream-4-edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Transform this scene into a polished ecommerce product photo with clean studio lighting",
+                      "image_urls": [
+                        "https://example.com/reference1.jpg"
+                      ],
+                      "size": "1:1",
+                      "resolution": "1K",
+                      "n": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 400,
+                  "error": {
+                    "message": "Invalid request parameters",
+                    "type": "invalid_request_error"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 401,
+                  "error": {
+                    "message": "Unauthorized - Invalid API key",
+                    "type": "authentication_error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Seedream-4 model identifier",
+            "enum": [
+              "seedream-4",
+              "seedream-4-edit"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "description": "Input parameters for generation",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Generation prompt describing the desired output",
+                "maxLength": 2000,
+                "example": "A beautiful sunset over the ocean"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 10,
+                "description": "Reference image URLs for image editing. Required for seedream-4-edit. The total of image_urls plus n must not exceed 15.",
+                "example": [
+                  "https://example.com/reference1.jpg"
+                ]
+              },
+              "size": {
+                "type": "string",
+                "description": "Output aspect ratio. Supported values: 1:1, 3:4, 4:3, 16:9, 9:16, 3:2, 2:3, 21:9. For text-to-image requests, defaults to 1:1 when omitted.",
+                "enum": [
+                  "1:1",
+                  "3:4",
+                  "4:3",
+                  "16:9",
+                  "9:16",
+                  "3:2",
+                  "2:3",
+                  "21:9"
+                ],
+                "default": "1:1",
+                "example": "16:9"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "Output resolution preset.",
+                "enum": [
+                  "1K",
+                  "2K",
+                  "4K"
+                ],
+                "default": "2K",
+                "example": "1K"
+              },
+              "n": {
+                "type": "integer",
+                "description": "Number of images to generate. Credits are pre-deducted based on this count and partially refunded if the final number of generated images is smaller. The total of image_urls plus n must not exceed 15.",
+                "minimum": 1,
+                "maximum": 15,
+                "default": 1,
+                "example": 1
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "Unique task identifier for status tracking"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "Initial task status"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "ISO 8601 timestamp when the task was created"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "error"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP status code"
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "message",
+              "type"
+            ],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "Error message describing what went wrong"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "Error type identifier"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    }
+  }
+}

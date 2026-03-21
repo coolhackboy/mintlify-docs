@@ -121,8 +121,8 @@
               },
               "resolution": {
                 "type": "string",
-                "description": "Output video resolution",
-                "enum": ["480p", "720p"],
+                "description": "Standard (480p) / High (720p) / Ultra (1080p)",
+                "enum": ["480p", "720p", "1080p"],
                 "example": "720p"
               },
               "duration": {

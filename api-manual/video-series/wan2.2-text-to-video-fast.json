@@ -1,0 +1,189 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Wan 2.2 Text-to-Video Fast API",
+    "description": "Fast text-to-video generation with Alibaba Wan 2.2 Fast",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Wan 2.2 Fast"
+        ],
+        "summary": "Submit Wan 2.2 Text-to-Video Fast Task",
+        "description": "Generate short videos from text prompts with Wan 2.2 Fast",
+        "operationId": "submitWan22TextToVideoFastTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "wan2.2-text-to-video-fast": {
+                  "summary": "Wan 2.2 Text-to-Video Fast",
+                  "value": {
+                    "model": "wan2.2-text-to-video-fast",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic panda walking through neon rain in Shanghai at night",
+                      "aspect_ratio": "16:9",
+                      "resolution": "480p",
+                      "seed": 123
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Wan 2.2 Fast text-to-video model identifier",
+            "enum": [
+              "wan2.2-text-to-video-fast"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "description": "Input parameters for generation",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Text prompt for video generation",
+                "example": "A cinematic video scene"
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Output aspect ratio",
+                "enum": [
+                  "16:9",
+                  "1:1",
+                  "9:16",
+                  "4:3",
+                  "3:4",
+                  "21:9",
+                  "9:21"
+                ],
+                "default": "16:9",
+                "example": "16:9"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "Output video resolution",
+                "enum": [
+                  "480p",
+                  "720p"
+                ],
+                "default": "720p",
+                "example": "480p"
+              },
+              "seed": {
+                "type": "integer",
+                "description": "Optional random seed for reproducibility",
+                "example": 123
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "Unique task identifier for status tracking"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "Initial task status"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "ISO 8601 timestamp when the task was created"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    }
+  }
+}

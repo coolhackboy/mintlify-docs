@@ -1,0 +1,194 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 2.1 API",
+    "description": "Standard and Pro image-to-video generation",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Kling 2.1"
+        ],
+        "summary": "Submit Kling 2.1 Task",
+        "description": "Generate video with Kling 2.1 Standard or Pro",
+        "operationId": "submitKling21Task",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "kling-2-1-standard": {
+                  "summary": "Kling 2.1 Standard",
+                  "value": {
+                    "model": "kling-2.1/standard",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "a woman takes her hands out her pockets and gestures to the words with both hands, she is excited, behind her it is raining",
+                      "duration": 5,
+                      "start_image_url": "https://cdn.doculator.org/kling-2.1/start-image.png?v=20260310-2040"
+                    }
+                  }
+                },
+                "kling-2-1-pro": {
+                  "summary": "Kling 2.1 Pro",
+                  "value": {
+                    "model": "kling-2.1/pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "a woman takes her hands out her pockets and gestures to the words with both hands, she is excited, behind her it is raining",
+                      "duration": 5,
+                      "start_image_url": "https://cdn.doculator.org/kling-2.1/start-image.png?v=20260310-2040"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Kling 2.1 public model identifier",
+            "enum": [
+              "kling-2.1/standard",
+              "kling-2.1/pro"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt",
+              "start_image_url"
+            ],
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Text prompt for generation",
+                "example": "a woman takes her hands out her pockets and gestures to the words with both hands, she is excited, behind her it is raining"
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Output duration in seconds",
+                "enum": [
+                  5,
+                  10
+                ],
+                "default": 5,
+                "example": 5
+              },
+              "start_image_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Required first frame image URL",
+                "example": "https://cdn.doculator.org/kling-2.1/start-image.png?v=20260310-2040"
+              },
+              "end_image_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Optional last frame image URL. Only supported by kling-2.1/pro",
+                "example": "https://example.com/end-image.png"
+              },
+              "negative_prompt": {
+                "type": "string",
+                "description": "Optional negative prompt",
+                "example": "low quality, blur"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    }
+  }
+}

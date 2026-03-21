@@ -1,0 +1,29 @@
+---
+title: "Wan 2.5 Text-to-Video"
+description: "Text-to-video generation with Alibaba Wan 2.5"
+openapi: "/api-manual/video-series/wan2.5-text-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+  1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+  2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+# Wan 2.5 Text-to-Video
+
+`wan2.5-text-to-video` is the text-only branch of the Wan 2.5 video family and supports multiple size presets with 5s and 10s generation lengths.
+
+## Available Model
+
+* **wan2.5-text-to-video** - Generate a video clip from a text prompt
+
+## Key Parameters
+
+* **Aspect Ratio**: `832*480`, `480*832`, `1280*720`, `720*1280`, `1920*1080`, `1080*1920`
+* **Duration**: `5` or `10` seconds
+* **Optional Controls**: `audio` string, `negative_prompt`, `seed`
+
+## Notes
+
+* If `audio` is provided, it must be a string. Do not send a boolean value.
+

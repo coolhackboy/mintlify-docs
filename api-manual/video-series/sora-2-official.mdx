@@ -1,0 +1,33 @@
+---
+title: "Sora 2 Official"
+description: "Text-to-video and optional image-guided video generation"
+openapi: "/api-manual/video-series/sora-2-official.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+# Sora 2 Official
+
+`sora-2-official` supports text-to-video generation and optional single-image guided generation with fixed 4s, 8s, 12s, 16s, and 20s durations.
+
+## Available Model
+
+- **sora-2-official** - Text-to-video with optional reference image
+
+## Required Parameters
+
+- **prompt**: Text prompt for video generation
+
+## Optional Parameters
+
+- **duration**: `4`, `8`, `12`, `16`, or `20`. Default is `4`
+- **aspect_ratio**: `16:9` or `9:16`. Default is `16:9`
+- **image_urls**: Optional reference image array. Maximum `1` image
+
+## Notes
+
+- `image_urls` is optional. If provided, only one image is supported.
+- This page only describes the unified submit request. Query status through the standard task status API.

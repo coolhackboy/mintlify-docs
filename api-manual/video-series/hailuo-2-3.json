@@ -1,0 +1,185 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Hailuo 2.3 API",
+    "description": "Text-to-video and optional first-frame guided generation",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Hailuo 2.3"
+        ],
+        "summary": "Submit Hailuo 2.3 Task",
+        "description": "Generate video with Hailuo 2.3",
+        "operationId": "submitHailuo23Task",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "hailuo-2-3": {
+                  "summary": "Hailuo 2.3",
+                  "value": {
+                    "model": "hailuo-2.3",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "a tiktok dancer is dancing on a small drone, doing flips and tricks",
+                      "duration": 6,
+                      "resolution": "768p",
+                      "prompt_optimizer": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Hailuo 2.3 model identifier",
+            "enum": [
+              "hailuo-2.3"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Text prompt for generation",
+                "example": "a tiktok dancer is dancing on a small drone, doing flips and tricks"
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Output duration in seconds",
+                "enum": [
+                  6,
+                  10
+                ],
+                "default": 6,
+                "example": 6
+              },
+              "resolution": {
+                "type": "string",
+                "description": "Output resolution",
+                "enum": [
+                  "768p",
+                  "1080p"
+                ],
+                "default": "768p",
+                "example": "768p"
+              },
+              "start_image_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Optional first-frame image URL",
+                "example": "https://example.com/start-image.png"
+              },
+              "prompt_optimizer": {
+                "type": "boolean",
+                "description": "Optional prompt optimizer switch",
+                "example": true
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    }
+  }
+}

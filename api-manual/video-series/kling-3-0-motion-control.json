@@ -1,0 +1,205 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 3.0 Motion Control API",
+    "description": "Reference image and reference video motion transfer",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Kling 3.0 Motion Control"
+        ],
+        "summary": "Submit Kling 3.0 Motion Control Task",
+        "description": "Transfer motion from a reference video to a reference image",
+        "operationId": "submitKling30MotionControlTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "kling-3-0-motion-control": {
+                  "summary": "Kling 3.0 Motion Control",
+                  "value": {
+                    "model": "kling-3.0-motion-control",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "image_urls": [
+                        "https://storage.poyo.ai/kling-3.0-motion-control/reference-image-new.png"
+                      ],
+                      "video_urls": [
+                        "https://storage.poyo.ai/kling-3.0-motion-control/reference-video-new.mp4"
+                      ],
+                      "character_orientation": "image",
+                      "resolution": "720p"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Kling 3.0 Motion Control model identifier",
+            "enum": [
+              "kling-3.0-motion-control"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "image_urls",
+              "video_urls",
+              "character_orientation"
+            ],
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Optional prompt for scene details",
+                "example": "Keep the character movement smooth and natural"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 1,
+                "description": "Reference image URL array. Only one image is supported. Supports JPG, JPEG, PNG, max 10MB",
+                "example": [
+                  "https://storage.poyo.ai/kling-3.0-motion-control/reference-image-new.png"
+                ]
+              },
+              "video_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 1,
+                "description": "Reference video URL array. Only one video is supported. Supports MP4, MOV, max 100MB",
+                "example": [
+                  "https://storage.poyo.ai/kling-3.0-motion-control/reference-video-new.mp4"
+                ]
+              },
+              "character_orientation": {
+                "type": "string",
+                "description": "Character orientation mode",
+                "enum": [
+                  "image",
+                  "video"
+                ],
+                "example": "image"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "Output resolution",
+                "enum": [
+                  "720p",
+                  "1080p"
+                ],
+                "default": "720p",
+                "example": "720p"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    }
+  }
+}

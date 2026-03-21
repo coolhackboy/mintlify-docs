@@ -1,0 +1,35 @@
+---
+title: "Hailuo 2.3"
+description: "Text-to-video and optional first-frame guided generation"
+openapi: "/api-manual/video-series/hailuo-2-3.json POST /api/generate/submit"
+---
+
+<Tip>
+  1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+  2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+# Hailuo 2.3
+
+`hailuo-2.3` supports prompt-only generation and optional first-frame guided generation.
+
+## Available Model
+
+* **hailuo-2.3** - Text-to-video with optional `start_image_url`
+
+## Required Parameters
+
+* **prompt**: Text prompt for video generation
+
+## Optional Parameters
+
+* **duration**: `6` or `10`. Default is `6`
+* **resolution**: `768p` or `1080p`. Default is `768p`
+* **start_image_url**: Optional first-frame image
+* **prompt_optimizer**: Optional boolean switch
+
+## Notes
+
+* `end_image_url` is not supported
+* `1080p` only supports `duration=6`
+

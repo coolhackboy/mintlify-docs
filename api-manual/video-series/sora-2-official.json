@@ -1,0 +1,189 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Sora 2 Official API",
+    "description": "Text-to-video and optional image-guided video generation",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Sora 2 Official"
+        ],
+        "summary": "Submit Sora 2 Official Task",
+        "description": "Generate videos with Sora 2 Official",
+        "operationId": "submitSora2OfficialTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "sora-2-official": {
+                  "summary": "Sora 2 Official",
+                  "value": {
+                    "model": "sora-2-official",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "An astronaut riding a horse across the surface of Mars, red dust blowing in the wind, dramatic sunset on the horizon, cinematic wide shot, slow motion, ultra realistic textures, detailed space suit reflections, epic atmosphere, 8k cinematic film, volumetric lighting, smooth camera tracking.",
+                      "duration": 20,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Sora 2 Official model identifier",
+            "enum": [
+              "sora-2-official"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Generation prompt describing the desired video",
+                "example": "An astronaut riding a horse across the surface of Mars, red dust blowing in the wind, dramatic sunset on the horizon, cinematic wide shot, slow motion, ultra realistic textures, detailed space suit reflections, epic atmosphere, 8k cinematic film, volumetric lighting, smooth camera tracking."
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Output duration in seconds",
+                "enum": [
+                  4,
+                  8,
+                  12,
+                  16,
+                  20
+                ],
+                "default": 4,
+                "example": 20
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Video aspect ratio",
+                "enum": [
+                  "16:9",
+                  "9:16"
+                ],
+                "default": "16:9",
+                "example": "16:9"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 1,
+                "description": "Optional reference image URLs. Only one image is supported",
+                "example": [
+                  "https://example.com/reference-image.png"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    }
+  }
+}

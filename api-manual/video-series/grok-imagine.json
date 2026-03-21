@@ -39,6 +39,7 @@
                     "input": {
                       "prompt": "A couple of doors open sequentially, revealing living rooms, kitchens, bedrooms, and offices with residents inside",
                       "aspect_ratio": "16:9",
+                      "duration": 6,
                       "mode": "normal"
                     }
                   }
@@ -51,6 +52,7 @@
                     "input": {
                       "prompt": "The camera slowly zooms in on the scene",
                       "image_urls": ["https://example.com/image.jpg"],
+                      "duration": 6,
                       "mode": "normal"
                     }
                   }
@@ -127,6 +129,12 @@
                 "description": "Video aspect ratio (text-to-video only)",
                 "enum": ["1:1", "2:3", "3:2"],
                 "example": "2:3"
+              },
+              "duration": {
+                "type": "integer",
+                "description": "The duration of the generated video in seconds",
+                "enum": [6, 10],
+                "example": 6
               },
               "mode": {
                 "type": "string",

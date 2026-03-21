@@ -1,0 +1,305 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 3.0 API",
+    "description": "Next-generation Video Generation with Kling 3.0",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Kling 3.0"
+        ],
+        "summary": "Submit Kling 3.0 Video Generation Task",
+        "description": "Generate high-quality videos using Kling 3.0 with standard and pro resolution options",
+        "operationId": "submitKling30Task",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "kling-3.0/standard": {
+                  "summary": "Kling 3.0 Standard - Text to Video",
+                  "value": {
+                    "model": "kling-3.0/standard",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A chef carefully plating a gourmet dish in a modern kitchen, steam rising from the food under warm lighting",
+                      "multi_shots": false,
+                      "duration": 5,
+                      "sound": true,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                },
+                "kling-3.0/pro": {
+                  "summary": "Kling 3.0 Pro - Text to Video",
+                  "value": {
+                    "model": "kling-3.0/pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A vintage train traveling through a misty valley at dawn, golden light breaking through the clouds above rolling green hills",
+                      "multi_shots": false,
+                      "duration": 10,
+                      "sound": true,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Kling 3.0 model identifier. Use `kling-3.0/standard` for HD resolution (~720p/1K) or `kling-3.0/pro` for Full HD resolution (1080p/2K) with sharper and more detailed output",
+            "enum": [
+              "kling-3.0/standard",
+              "kling-3.0/pro"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "image_urls",
+              "duration",
+              "multi_shots",
+              "sound"
+            ],
+            "description": "Input parameters for generation",
+            "properties": {
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "Array of image URLs. For single shot mode (multi_shots: false), provide start and end frame URLs. For multi-shot mode (multi_shots: true), provide only the start frame URL. **Required** when `kling_elements` is provided",
+                "example": [
+                  "https://example.com/start-frame.png"
+                ]
+              },
+              "prompt": {
+                "type": "string",
+                "description": "Video generation prompt. Required when multi_shots is false. You can reference elements using @element_name syntax (e.g., @element_dog)",
+                "maxLength": 2500,
+                "example": "A street musician playing violin on a rainy evening, reflections shimmering on wet cobblestones"
+              },
+              "multi_prompt": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "prompt",
+                    "duration"
+                  ],
+                  "properties": {
+                    "prompt": {
+                      "type": "string",
+                      "description": "Prompt text for this shot",
+                      "maxLength": 2500
+                    },
+                    "duration": {
+                      "type": "integer",
+                      "description": "Duration in seconds for this shot (1-12)",
+                      "minimum": 1,
+                      "maximum": 12
+                    }
+                  }
+                },
+                "description": "Array of prompt objects for multi-shot mode. Required when multi_shots is true. Each object contains a prompt and duration. Total duration of all shots cannot exceed 15 seconds",
+                "example": [
+                  {
+                    "prompt": "A surfer paddling out into the ocean as waves build on the horizon",
+                    "duration": 4
+                  },
+                  {
+                    "prompt": "The surfer catches a massive wave and rides it toward the shore at sunset",
+                    "duration": 5
+                  }
+                ]
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Video duration in seconds. For single shot mode, duration can be 3-15 seconds. For multi-shot mode, duration is the total duration of all shots",
+                "minimum": 3,
+                "maximum": 15,
+                "example": 5
+              },
+              "multi_shots": {
+                "type": "boolean",
+                "description": "Enable multi-shot mode. When true, use multi_prompt array instead of prompt string. When false, use prompt string. Default is false",
+                "default": false,
+                "example": false
+              },
+              "sound": {
+                "type": "boolean",
+                "description": "Whether to enable sound effects. true enables sound effects, false disables them. When multi_shots is true, this field must be true.",
+                "default": true,
+                "example": true
+              },
+              "kling_elements": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "name"
+                  ],
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Element name used in @element_name references"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Element description"
+                    },
+                    "element_input_urls": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "description": "Array of 2-4 image URLs (JPG/PNG, max 10MB each)"
+                    },
+                    "element_input_video_urls": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "description": "Array with 1 video URL (MP4/MOV, max 50MB)"
+                    }
+                  }
+                },
+                "description": "Array of element objects that can be referenced in prompts using @element_name syntax. Elements can be defined using images (2-4 images) or a single video. When provided, `image_urls` is required",
+                "example": [
+                  {
+                    "name": "element_robot",
+                    "description": "robot character",
+                    "element_input_urls": [
+                      "https://example.com/robot-front.jpeg",
+                      "https://example.com/robot-side.png"
+                    ]
+                  },
+                  {
+                    "name": "element_dancer",
+                    "description": "dancer reference motion",
+                    "element_input_video_urls": [
+                      "https://example.com/dancer-motion.mp4"
+                    ]
+                  }
+                ]
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Video aspect ratio. When the input does not contain reference images (image_urls), the default is 1:1 if the aspect_ratio parameter is not passed; when the input contains the first frame image, the aspect_ratio parameter will be ignored, and the output will use the aspect ratio of the first frame image",
+                "enum": [
+                  "1:1",
+                  "16:9",
+                  "9:16"
+                ],
+                "example": "1:1"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "Unique task identifier for status tracking"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "Initial task status"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "ISO 8601 timestamp when the task was created"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    }
+  }
+}

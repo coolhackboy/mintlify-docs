@@ -1,0 +1,194 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Runway Gen-4.5 API",
+    "description": "Text-to-video generation with optional reference image, 5s and 10s durations",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Runway Gen-4.5"
+        ],
+        "summary": "Submit Runway Gen-4.5 Task",
+        "description": "Generate video with Runway Gen-4.5",
+        "operationId": "submitRunwayGen45Task",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "runway-gen-4-5": {
+                  "summary": "Runway Gen-4.5",
+                  "value": {
+                    "model": "runway-gen-4.5",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A dense, verdant jungle world made up of small lego-like pieces. We see a rainbow chameleon running through the 3D world, the camera in and out of focus.",
+                      "duration": 5,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Runway Gen-4.5 model identifier",
+            "enum": [
+              "runway-gen-4.5"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Text prompt for generation",
+                "example": "A dense, verdant jungle world made up of small lego-like pieces. We see a rainbow chameleon running through the 3D world, the camera in and out of focus."
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Output duration in seconds",
+                "enum": [
+                  5,
+                  10
+                ],
+                "default": 5,
+                "example": 5
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Optional aspect ratio",
+                "enum": [
+                  "16:9",
+                  "9:16",
+                  "4:3",
+                  "3:4",
+                  "1:1",
+                  "21:9"
+                ],
+                "default": "16:9",
+                "example": "16:9"
+              },
+              "image_urls": {
+                "type": "array",
+                "description": "Optional reference image list. Supports at most one image URL",
+                "maxItems": 1,
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "example": [
+                  "https://your-image-domain.com/reference-image.png"
+                ]
+              },
+              "seed": {
+                "type": "integer",
+                "description": "Optional integer seed",
+                "example": 123
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    }
+  }
+}

@@ -1,0 +1,212 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Wan 2.5 Image-to-Video API",
+    "description": "Image-to-video generation with Alibaba Wan 2.5",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Wan 2.5"
+        ],
+        "summary": "Submit Wan 2.5 Image-to-Video Task",
+        "description": "Animate a single reference image with Wan 2.5",
+        "operationId": "submitWan25ImageToVideoTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "wan2.5-image-to-video": {
+                  "summary": "Wan 2.5 Image-to-Video",
+                  "value": {
+                    "model": "wan2.5-image-to-video",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A warm, cinematic zoom-in on the subject with gentle camera motion.",
+                      "image_urls": [
+                        "https://example.com/image.jpg"
+                      ],
+                      "resolution": "720p",
+                      "duration": 5,
+                      "seed": 225
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Wan 2.5 image-to-video model identifier",
+            "enum": [
+              "wan2.5-image-to-video"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt",
+              "image_urls"
+            ],
+            "description": "Input parameters for generation",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Text prompt for the motion and scene",
+                "example": "A cinematic video scene"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 1,
+                "description": "Reference image URLs for image-to-video. Only 1 image is supported.",
+                "example": [
+                  "https://example.com/image.jpg"
+                ]
+              },
+              "resolution": {
+                "type": "string",
+                "description": "Output video resolution",
+                "enum": [
+                  "480p",
+                  "720p",
+                  "1080p"
+                ],
+                "default": "720p",
+                "example": "720p"
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Video duration in seconds",
+                "enum": [
+                  5,
+                  10
+                ],
+                "default": 5,
+                "example": 5
+              },
+              "audio": {
+                "type": "string",
+                "description": "Optional audio setting string accepted by the upstream model",
+                "example": "background_music"
+              },
+              "negative_prompt": {
+                "type": "string",
+                "description": "Optional negative prompt",
+                "example": "blurry, low quality"
+              },
+              "seed": {
+                "type": "integer",
+                "description": "Optional random seed for reproducibility",
+                "example": 225
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "Unique task identifier for status tracking"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "Initial task status"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "ISO 8601 timestamp when the task was created"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    }
+  }
+}

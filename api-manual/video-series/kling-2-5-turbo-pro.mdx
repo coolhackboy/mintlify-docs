@@ -1,0 +1,36 @@
+---
+title: "Kling 2.5 Turbo Pro"
+description: "Prompt-based video generation with optional start and end frame guidance"
+openapi: "/api-manual/video-series/kling-2-5-turbo-pro.json POST /api/generate/submit"
+---
+
+<Tip>
+  1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+  2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+# Kling 2.5 Turbo Pro
+
+`kling-2.5-turbo-pro` supports prompt-only generation and optional start/end frame guidance in the same request format.
+
+## Available Model
+
+* **kling-2.5-turbo-pro** - Text-to-video with optional frame guidance
+
+## Required Parameters
+
+* **prompt**: Text prompt for generation
+
+## Optional Parameters
+
+* **duration**: `5` or `10`. Default is `5`
+* **start_image_url**: Optional first frame image
+* **end_image_url**: Optional last frame image
+* **aspect_ratio**: Optional string value
+* **negative_prompt**: Optional negative prompt
+
+## Notes
+
+* You can submit prompt-only requests
+* You can also provide `start_image_url`, `end_image_url`, or both
+

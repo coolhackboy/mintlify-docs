@@ -1,0 +1,30 @@
+---
+title: "Flux Kontext Image Generation"
+description: "Image generation and image editing models powered by Black Forest Labs Flux Kontext"
+openapi: "/api-manual/image-series/flux-kontext.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+# Flux Kontext Image Generation
+
+Flux Kontext is powered by Black Forest Labs. It supports both text-to-image generation and image editing through the same unified submit endpoint.
+
+## Available Models
+
+- **flux-kontext-pro** - Flux Kontext Pro text-to-image generation
+- **flux-kontext-pro-edit** - Flux Kontext Pro image editing, `image_urls` is required
+- **flux-kontext-max** - Flux Kontext Max text-to-image generation
+- **flux-kontext-max-edit** - Flux Kontext Max image editing, `image_urls` is required
+
+## Notes
+
+- `size` supports `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `21:9`, `16:21`
+- `output_format` supports `png`, `jpg`
+- `image_urls` is required for edit models
+- Only `image_urls[0]` is used as the input image
+- Other downstream fields are not exposed in the current API and use system defaults
+- Credits are charged directly according to the configured model price

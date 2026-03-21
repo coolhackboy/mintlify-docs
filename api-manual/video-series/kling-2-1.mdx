@@ -1,0 +1,36 @@
+---
+title: "Kling 2.1"
+description: "Standard and Pro image-to-video generation"
+openapi: "/api-manual/video-series/kling-2-1.json POST /api/generate/submit"
+---
+
+<Tip>
+  1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+  2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+# Kling 2.1
+
+Kling 2.1 provides two public models under the same request format: `kling-2.1/standard` and `kling-2.1/pro`.
+
+## Available Models
+
+* **kling-2.1/standard** - Start-frame guided image-to-video
+* **kling-2.1/pro** - Start-frame guided image-to-video with optional end frame
+
+## Required Parameters
+
+* **prompt**: Text prompt for generation
+* **start_image_url**: Required first frame image
+
+## Optional Parameters
+
+* **duration**: `5` or `10`. Default is `5`
+* **end_image_url**: Optional, only supported by `kling-2.1/pro`
+* **negative_prompt**: Optional negative prompt
+
+## Notes
+
+* `kling-2.1/standard` does not support `end_image_url`
+* `kling-2.1/pro` supports both start image and optional end image
+

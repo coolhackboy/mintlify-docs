@@ -1,0 +1,25 @@
+---
+title: "Kling 3.0 Video Generation"
+description: "Next-generation video generation with standard and pro resolution"
+openapi: "/api-manual/video-series/kling-3-0.json POST /api/generate/submit"
+---
+
+<Tip>
+  1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+  2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+## Available Models
+
+* **kling-3.0/standard** - HD resolution (~720p/1K)
+* **kling-3.0/pro** - Full HD resolution (1080p/2K), sharper and more detailed output
+
+## Key Features
+
+* **Native Audio**: Controlled by `input.sound`. Set `true` to enable sound effects and `false` to disable them. When `multi_shots` is `true`, `sound` must be `true`
+* **Flexible Duration**: 3 to 15 seconds
+* **Aspect Ratios**: 1:1 (square), 16:9 (landscape), and 9:16 (portrait)
+* **Modes**: Text-to-video and image-to-video (start and end frames)
+* **Multi-Shot**: Multi-shot storytelling with per-shot prompts and durations
+* **Element References**: Define reusable elements (via images or video) and reference them in prompts using `@element_name` syntax. `image_urls` is required when using element references
+

@@ -1,0 +1,308 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Flux Kontext API",
+    "description": "Image generation and image editing models powered by Black Forest Labs Flux Kontext",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Flux Kontext"
+        ],
+        "summary": "Submit Flux Kontext Generation Task",
+        "description": "Generate or edit images with Flux Kontext models through the unified submit endpoint",
+        "operationId": "submitFluxKontextTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "flux-kontext-pro": {
+                  "summary": "Flux Kontext Pro Image Generation",
+                  "value": {
+                    "model": "flux-kontext-pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A luxury perfume bottle on a reflective marble surface, premium studio lighting",
+                      "size": "16:9",
+                      "output_format": "png"
+                    }
+                  }
+                },
+                "flux-kontext-pro-edit": {
+                  "summary": "Flux Kontext Pro Image Edit",
+                  "value": {
+                    "model": "flux-kontext-pro-edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Replace the background with a clean warm gradient studio backdrop",
+                      "image_urls": [
+                        "https://example.com/reference.jpg"
+                      ],
+                      "size": "1:1",
+                      "output_format": "jpg"
+                    }
+                  }
+                },
+                "flux-kontext-max": {
+                  "summary": "Flux Kontext Max Image Generation",
+                  "value": {
+                    "model": "flux-kontext-max",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A premium wristwatch product photo with dramatic soft shadows and metallic highlights",
+                      "size": "4:3",
+                      "output_format": "png"
+                    }
+                  }
+                },
+                "flux-kontext-max-edit": {
+                  "summary": "Flux Kontext Max Image Edit",
+                  "value": {
+                    "model": "flux-kontext-max-edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Change the background into a minimal teal studio scene",
+                      "image_urls": [
+                        "https://example.com/reference.jpg"
+                      ],
+                      "size": "1:1",
+                      "output_format": "jpg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 400,
+                  "error": {
+                    "message": "Invalid request parameters",
+                    "type": "invalid_request_error"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 401,
+                  "error": {
+                    "message": "Unauthorized - Invalid API key",
+                    "type": "authentication_error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Flux Kontext model identifier",
+            "enum": [
+              "flux-kontext-pro",
+              "flux-kontext-pro-edit",
+              "flux-kontext-max",
+              "flux-kontext-max-edit"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "description": "Input parameters for generation",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Generation or editing prompt describing the desired output",
+                "maxLength": 2000,
+                "example": "A beautiful sunset over the ocean"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 1,
+                "description": "Input image URLs. Required for edit models\n(flux-kontext-pro-edit, flux-kontext-max-edit). Only the first\nimage is used.",
+                "example": [
+                  "https://example.com/reference.jpg"
+                ]
+              },
+              "size": {
+                "type": "string",
+                "description": "Output aspect ratio. Defaults to 1:1 when omitted.",
+                "enum": [
+                  "1:1",
+                  "4:3",
+                  "3:4",
+                  "16:9",
+                  "9:16",
+                  "21:9",
+                  "16:21"
+                ],
+                "default": "1:1",
+                "example": "16:9"
+              },
+              "output_format": {
+                "type": "string",
+                "description": "Output image format.",
+                "enum": [
+                  "png",
+                  "jpg"
+                ],
+                "example": "png"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "Unique task identifier for status tracking"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "Initial task status"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "ISO 8601 timestamp when the task was created"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "error"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP status code"
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "message",
+              "type"
+            ],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "Error message describing what went wrong"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "Error type identifier"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    }
+  }
+}
