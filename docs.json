@@ -33,18 +33,6 @@
     "/api-manual/image-series/seedream-5-0-lite.json",
     "/api-manual/image-series/z-image.json",
     "/api-manual/image-series/grok-imagine-image.json",
-    "/api-manual/video-series/grok-imagine.json",
-    "/api-manual/video-series/hailuo-2-3.json",
-    "/api-manual/video-series/hailuo-02.json",
-    "/api-manual/video-series/kling-3-0.json",
-    "/api-manual/video-series/kling-3-0-motion-control.json",
-    "/api-manual/video-series/kling-2-6.json",
-    "/api-manual/video-series/kling-2.6-motion-control.json",
-    "/api-manual/video-series/kling-2-5-turbo-pro.json",
-    "/api-manual/video-series/kling-2-1.json",
-    "/api-manual/video-series/runway-gen-4-5.json",
-    "/api-manual/video-series/seedance-1-5-pro.json",
-    "/api-manual/video-series/seedance-1.0-pro.json",
     "/api-manual/video-series/sora-2-official.json",
     "/api-manual/video-series/sora-2-pro.json",
     "/api-manual/video-series/sora-2.json",
@@ -55,6 +43,18 @@
     "/api-manual/video-series/wan2.2-text-to-video-fast.json",
     "/api-manual/video-series/wan2.2-image-to-video-fast.json",
     "/api-manual/video-series/wan-animate.json",
+    "/api-manual/video-series/kling-3-0.json",
+    "/api-manual/video-series/kling-3-0-motion-control.json",
+    "/api-manual/video-series/kling-2-6.json",
+    "/api-manual/video-series/kling-2.6-motion-control.json",
+    "/api-manual/video-series/kling-2-5-turbo-pro.json",
+    "/api-manual/video-series/kling-2-1.json",
+    "/api-manual/video-series/grok-imagine.json",
+    "/api-manual/video-series/hailuo-2-3.json",
+    "/api-manual/video-series/hailuo-02.json",
+    "/api-manual/video-series/runway-gen-4-5.json",
+    "/api-manual/video-series/seedance-1-5-pro.json",
+    "/api-manual/video-series/seedance-1.0-pro.json",
     "/api-manual/music-series/generate-music.json",
     "/api-manual/music-series/extend-music.json",
     "/api-manual/music-series/upload-and-cover-audio.json",
@@ -93,45 +93,115 @@
           {
             "group": "Image Series",
             "pages": [
-              "api-manual/image-series/gpt-4o-image",
-              "api-manual/image-series/gpt-image-1.5",
-              "api-manual/image-series/nano-banana",
-              "api-manual/image-series/nano-banana-2",
-              "api-manual/image-series/nano-banana-2-new",
-              "api-manual/image-series/flux-2",
-              "api-manual/image-series/flux-kontext",
-              "api-manual/image-series/seedream-4",
-              "api-manual/image-series/seedream-4-5",
-              "api-manual/image-series/seedream-5-0-lite",
-              "api-manual/image-series/z-image",
-              "api-manual/image-series/grok-imagine-image"
+              {
+                "group": "OpenAI",
+                "pages": [
+                  "api-manual/image-series/gpt-4o-image",
+                  "api-manual/image-series/gpt-image-1.5"
+                ]
+              },
+              {
+                "group": "Google",
+                "pages": [
+                  "api-manual/image-series/nano-banana",
+                  "api-manual/image-series/nano-banana-2",
+                  "api-manual/image-series/nano-banana-2-new"
+                ]
+              },
+              {
+                "group": "Flux",
+                "pages": [
+                  "api-manual/image-series/flux-2",
+                  "api-manual/image-series/flux-kontext"
+                ]
+              },
+              {
+                "group": "Seedream",
+                "pages": [
+                  "api-manual/image-series/seedream-4",
+                  "api-manual/image-series/seedream-4-5",
+                  "api-manual/image-series/seedream-5-0-lite"
+                ]
+              },
+              {
+                "group": "Z-Image",
+                "pages": [
+                  "api-manual/image-series/z-image"
+                ]
+              },
+              {
+                "group": "Grok (xAI)",
+                "pages": [
+                  "api-manual/image-series/grok-imagine-image"
+                ]
+              }
             ]
           },
           {
             "group": "Video Series",
             "pages": [
-              "api-manual/video-series/grok-imagine",
-              "api-manual/video-series/hailuo-2-3",
-              "api-manual/video-series/hailuo-02",
-              "api-manual/video-series/kling-3-0",
-              "api-manual/video-series/kling-3-0-motion-control",
-              "api-manual/video-series/kling-2-6",
-              "api-manual/video-series/kling-2.6-motion-control",
-              "api-manual/video-series/kling-2-5-turbo-pro",
-              "api-manual/video-series/kling-2-1",
-              "api-manual/video-series/runway-gen-4-5",
-              "api-manual/video-series/seedance-1-5-pro",
-              "api-manual/video-series/seedance-1.0-pro",
-              "api-manual/video-series/sora-2-official",
-              "api-manual/video-series/sora-2-pro",
-              "api-manual/video-series/sora-2",
-              "api-manual/video-series/veo-3-1",
-              "api-manual/video-series/wan-2-6",
-              "api-manual/video-series/wan2.5-text-to-video",
-              "api-manual/video-series/wan2.5-image-to-video",
-              "api-manual/video-series/wan2.2-text-to-video-fast",
-              "api-manual/video-series/wan2.2-image-to-video-fast",
-              "api-manual/video-series/wan-animate"
+              {
+                "group": "OpenAI",
+                "pages": [
+                  "api-manual/video-series/sora-2-official",
+                  "api-manual/video-series/sora-2-pro",
+                  "api-manual/video-series/sora-2"
+                ]
+              },
+              {
+                "group": "Google",
+                "pages": [
+                  "api-manual/video-series/veo-3-1"
+                ]
+              },
+              {
+                "group": "Wan",
+                "pages": [
+                  "api-manual/video-series/wan-2-6",
+                  "api-manual/video-series/wan2.5-text-to-video",
+                  "api-manual/video-series/wan2.5-image-to-video",
+                  "api-manual/video-series/wan2.2-text-to-video-fast",
+                  "api-manual/video-series/wan2.2-image-to-video-fast",
+                  "api-manual/video-series/wan-animate"
+                ]
+              },
+              {
+                "group": "Kling",
+                "pages": [
+                  "api-manual/video-series/kling-3-0",
+                  "api-manual/video-series/kling-3-0-motion-control",
+                  "api-manual/video-series/kling-2-6",
+                  "api-manual/video-series/kling-2.6-motion-control",
+                  "api-manual/video-series/kling-2-5-turbo-pro",
+                  "api-manual/video-series/kling-2-1"
+                ]
+              },
+              {
+                "group": "Grok (xAI)",
+                "pages": [
+                  "api-manual/video-series/grok-imagine"
+                ]
+              },
+              {
+                "group": "Hailuo",
+                "pages": [
+                  "api-manual/video-series/hailuo-2-3",
+                  "api-manual/video-series/hailuo-02"
+                ]
+              },
+              {
+                "group": "Runway",
+                "pages": [
+                  "api-manual/video-series/runway-gen-4-5"
+                ]
+              },
+              {
+                "group": "Seedance",
+                "pages": [
+                  "api-manual/video-series/seedance-1-5-pro",
+                  "api-manual/video-series/seedance-1.0-pro"
+                ]
+              }
             ]
           },
           {
