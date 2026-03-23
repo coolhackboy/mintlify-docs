@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API - Seedance 1.5 Pro API",
-    "description": "High-quality Image-to-Video Generation with Seedance 1.5 Pro",
+    "description": "High-quality text-to-video and image-to-video generation with Seedance 1.5 Pro",
     "version": "1.0.0"
   },
   "servers": [
@@ -20,9 +20,11 @@
     "/api/generate/submit": {
       "post": {
         "summary": "Submit Seedance 1.5 Pro Video Generation Task",
-        "description": "Generate high-quality videos from images using Seedance 1.5 Pro",
+        "description": "Generate high-quality videos from text prompts or reference images using Seedance 1.5 Pro",
         "operationId": "submitSeedance15ProTask",
-        "tags": ["Seedance 1.5 Pro"],
+        "tags": [
+          "Seedance 1.5 Pro"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -31,14 +33,31 @@
                 "$ref": "#/components/schemas/SubmitRequest"
               },
               "examples": {
-                "seedance-1.5-pro": {
+                "seedance-1.5-pro-text-to-video": {
+                  "summary": "Seedance 1.5 Pro Text-to-Video",
+                  "value": {
+                    "model": "seedance-1.5-pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "slow zoom, sunset glow",
+                      "aspect_ratio": "16:9",
+                      "resolution": "720p",
+                      "duration": 4,
+                      "fixed_lens": false,
+                      "generate_audio": true
+                    }
+                  }
+                },
+                "seedance-1.5-pro-image-to-video": {
                   "summary": "Seedance 1.5 Pro Image-to-Video",
                   "value": {
                     "model": "seedance-1.5-pro",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "slow zoom, sunset glow",
-                      "image_urls": ["https://example.com/image.jpg"],
+                      "image_urls": [
+                        "https://example.com/image.jpg"
+                      ],
                       "aspect_ratio": "16:9",
                       "resolution": "720p",
                       "duration": 4,
@@ -78,7 +97,9 @@
     "schemas": {
       "SubmitRequest": {
         "type": "object",
-        "required": ["model"],
+        "required": [
+          "model"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -95,7 +116,11 @@
           },
           "input": {
             "type": "object",
-            "required": ["prompt", "aspect_ratio", "duration"],
+            "required": [
+              "prompt",
+              "aspect_ratio",
+              "duration"
+            ],
             "description": "Input parameters for generation",
             "properties": {
               "prompt": {
@@ -109,26 +134,43 @@
                   "type": "string",
                   "format": "uri"
                 },
-                "maxItems": 1,
-                "description": "Reference image URL for video generation. File URL after upload, not file content; Accepted types: image/jpeg, image/png, image/webp; Max size: 10.0MB",
-                "example": ["https://example.com/image.jpg"]
+                "maxItems": 2,
+                "description": "Optional reference image URL for image-to-video generation. File URL after upload, not file content; Accepted types: image/jpeg, image/png, image/webp; Max size: 10.0MB",
+                "example": [
+                  "https://example.com/image.jpg"
+                ]
               },
               "aspect_ratio": {
                 "type": "string",
                 "description": "Select the frame dimensions.",
-                "enum": ["1:1", "21:9", "4:3", "3:4", "16:9", "9:16"],
+                "enum": [
+                  "1:1",
+                  "21:9",
+                  "4:3",
+                  "3:4",
+                  "16:9",
+                  "9:16"
+                ],
                 "example": "1:1"
               },
               "resolution": {
                 "type": "string",
                 "description": "Standard (480p) / High (720p) / Ultra (1080p)",
-                "enum": ["480p", "720p", "1080p"],
+                "enum": [
+                  "480p",
+                  "720p",
+                  "1080p"
+                ],
                 "example": "720p"
               },
               "duration": {
                 "type": "integer",
                 "description": "Video duration in seconds",
-                "enum": [4, 8, 12],
+                "enum": [
+                  4,
+                  8,
+                  12
+                ],
                 "example": 4
               },
               "fixed_lens": {
@@ -147,7 +189,10 @@
       },
       "SubmitResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -156,7 +201,11 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "created_time"],
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -165,7 +214,9 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started"],
+                "enum": [
+                  "not_started"
+                ],
                 "example": "not_started",
                 "description": "Initial task status"
               },
@@ -181,7 +232,10 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["code", "error"],
+        "required": [
+          "code",
+          "error"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -190,7 +244,10 @@
           },
           "error": {
             "type": "object",
-            "required": ["message", "type"],
+            "required": [
+              "message",
+              "type"
+            ],
             "properties": {
               "message": {
                 "type": "string",
