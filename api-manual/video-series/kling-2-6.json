@@ -110,9 +110,15 @@
                 "description": "Reference image URLs (for image-to-video)",
                 "example": []
               },
+              "end_image_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Optional URL of the image to use as the last frame (image-to-video only)",
+                "example": "https://your-domain.com/end-frame.png"
+              },
               "sound": {
                 "type": "boolean",
-                "description": "When true: generated video contains sound",
+                "description": "When true: generated video contains sound; must be false when end_image_url has a value",
                 "example": true
               },
               "aspect_ratio": {
