@@ -104,12 +104,7 @@
                 "description": "Output aspect ratio",
                 "enum": [
                   "16:9",
-                  "1:1",
-                  "9:16",
-                  "4:3",
-                  "3:4",
-                  "21:9",
-                  "9:21"
+                  "9:16"
                 ],
                 "default": "16:9",
                 "example": "16:9"
