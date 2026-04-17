@@ -1,0 +1,290 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Seedance 2 API",
+    "description": "Multimodal video generation with Seedance 2 and Seedance 2 Fast, including text-to-video, first and last frame control, and reference image, video, or audio guidance.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit Seedance 2 Video Generation Task",
+        "description": "Generate videos with Seedance 2 or Seedance 2 Fast using text prompts, start and end frames, or multimodal references.",
+        "operationId": "submitSeedance2Task",
+        "tags": [
+          "Seedance 2"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "seedance-2-text-to-video": {
+                  "summary": "Seedance 2 Text-to-Video",
+                  "value": {
+                    "model": "seedance-2",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic city reveal after rain, smooth dolly shot, reflective streets, natural ambience.",
+                      "resolution": "720p",
+                      "duration": 5,
+                      "aspect_ratio": "16:9",
+                      "generate_audio": true,
+                      "seed": 42
+                    }
+                  }
+                },
+                "seedance-2-fast-multimodal": {
+                  "summary": "Seedance 2 Fast Multimodal Reference",
+                  "value": {
+                    "model": "seedance-2-fast",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Keep the athlete identity, match the reference pacing, and preserve the synth soundtrack mood.",
+                      "resolution": "480p",
+                      "duration": 6,
+                      "aspect_ratio": "9:16",
+                      "reference_image_urls": [
+                        "https://example.com/reference-athlete.png"
+                      ],
+                      "reference_video_urls": [
+                        "https://example.com/reference-motion.mp4"
+                      ],
+                      "reference_audio_urls": [
+                        "https://example.com/reference-audio.mp3"
+                      ]
+                    }
+                  }
+                },
+                "seedance-2-first-last-frame": {
+                  "summary": "Seedance 2 First and Last Frame",
+                  "value": {
+                    "model": "seedance-2",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Animate a premium perfume bottle from the opening macro shot to the final hero frame with elegant motion.",
+                      "resolution": "720p",
+                      "duration": 4,
+                      "aspect_ratio": "1:1",
+                      "image_urls": [
+                        "https://example.com/start-frame.png",
+                        "https://example.com/end-frame.png"
+                      ],
+                      "generate_audio": false
+                    }
+                  }
+                },
+                "seedance-2-fast-video-reference": {
+                  "summary": "Seedance 2 Fast with Video Reference",
+                  "value": {
+                    "model": "seedance-2-fast",
+                    "input": {
+                      "prompt": "Use the reference motion to drive the camera movement while keeping the scene consistent.",
+                      "resolution": "720p",
+                      "duration": 8,
+                      "reference_video_urls": [
+                        "https://example.com/reference-video.mp4"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Seedance 2 model identifier",
+            "enum": [
+              "seedance-2",
+              "seedance-2-fast"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional webhook callback URL for result notifications.",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt",
+              "resolution",
+              "duration"
+            ],
+            "description": "Input parameters for Seedance 2 generation. `image_urls` cannot be combined with any `reference_*_urls` field.",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Text prompt describing the target video.",
+                "example": "A cinematic drone shot crossing a futuristic skyline at blue hour."
+              },
+              "resolution": {
+                "type": "string",
+                "description": "Output resolution.",
+                "enum": [
+                  "480p",
+                  "720p"
+                ],
+                "example": "720p"
+              },
+              "duration": {
+                "type": "integer",
+                "minimum": 4,
+                "maximum": 15,
+                "description": "Video duration in seconds. Seedance 2 accepts integer values from 4 to 15.",
+                "example": 5
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "maxItems": 2,
+                "description": "Optional first and last frame image URLs. When two values are supplied, the first is the start frame and the second is the end frame. Do not use together with `reference_image_urls`, `reference_video_urls`, or `reference_audio_urls`."
+              },
+              "reference_image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "Optional reference image URLs for multimodal guidance. Mutually exclusive with `image_urls`."
+              },
+              "reference_video_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "Optional reference video URLs for multimodal guidance. Mutually exclusive with `image_urls`."
+              },
+              "reference_audio_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "Optional reference audio URLs for multimodal guidance. Mutually exclusive with `image_urls`."
+              },
+              "generate_audio": {
+                "type": "boolean",
+                "description": "Whether to generate native audio with the video output.",
+                "example": true
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Optional output aspect ratio.",
+                "enum": [
+                  "1:1",
+                  "21:9",
+                  "4:3",
+                  "3:4",
+                  "16:9",
+                  "9:16"
+                ],
+                "example": "16:9"
+              },
+              "seed": {
+                "type": "integer",
+                "description": "Optional random seed for more repeatable results.",
+                "example": 42
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "Unique task identifier for status tracking"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "Initial task status"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-04-17T10:30:00",
+                "description": "ISO 8601 timestamp when the task was created"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
