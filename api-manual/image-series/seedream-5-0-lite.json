@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API - Seedream-5.0-Lite API",
-    "description": "Advanced image generation model with support for text-to-image, image-to-image, and multi-image reference capabilities",
+    "description": "Seedream 5.0 Lite image generation and editing with preset sizes, custom dimensions, and up to 10 reference images",
     "version": "1.0.0"
   },
   "servers": [
@@ -20,7 +20,7 @@
     "/api/generate/submit": {
       "post": {
         "summary": "Submit Seedream-5.0-Lite Generation Task",
-        "description": "Advanced image generation and editing with multi-reference support and up to 3K resolution",
+        "description": "Submit text-to-image or image editing tasks with preset sizes, custom size strings, or structured width and height objects",
         "operationId": "submitSeedream50LiteTask",
         "tags": ["Seedream-5.0-Lite"],
         "requestBody": {
@@ -38,7 +38,7 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "A serene Japanese garden with cherry blossoms and a koi pond",
-                      "size": "16:9",
+                      "size": "2K",
                       "n": 1
                     }
                   }
@@ -54,7 +54,22 @@
                         "https://example.com/reference1.jpg",
                         "https://example.com/reference2.jpg"
                       ],
-                      "size": "16:9",
+                      "size": "2304x1728",
+                      "n": 1
+                    }
+                  }
+                },
+                "seedream-5-0-lite-custom-object-size": {
+                  "summary": "Seedream-5.0-Lite with Structured Size Object",
+                  "value": {
+                    "model": "seedream-5.0-lite",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A futuristic bookstore interior with clean bilingual wayfinding and soft blue-hour lighting",
+                      "size": {
+                        "width": 2304,
+                        "height": 1728
+                      },
                       "n": 1
                     }
                   }
@@ -70,6 +85,13 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SubmitResponse"
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "KC9IIO8MLOAN18JX",
+                    "created_time": "2026-04-16T18:36:35"
+                  }
                 }
               }
             }
@@ -82,11 +104,7 @@
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "code": 400,
-                  "error": {
-                    "message": "Invalid request parameters",
-                    "type": "invalid_request_error"
-                  }
+                  "detail": "prompt is required"
                 }
               }
             }
@@ -99,11 +117,7 @@
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "code": 401,
-                  "error": {
-                    "message": "Unauthorized - Invalid API key",
-                    "type": "authentication_error"
-                  }
+                  "detail": "Invalid API key"
                 }
               }
             }
@@ -123,16 +137,30 @@
     },
     "schemas": {
       "SubmitRequest": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/LiteSubmitRequest"
+          },
+          {
+            "$ref": "#/components/schemas/LiteEditSubmitRequest"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "model",
+          "mapping": {
+            "seedream-5.0-lite": "#/components/schemas/LiteSubmitRequest",
+            "seedream-5.0-lite-edit": "#/components/schemas/LiteEditSubmitRequest"
+          }
+        }
+      },
+      "LiteSubmitRequest": {
         "type": "object",
         "required": ["model", "input"],
         "properties": {
           "model": {
             "type": "string",
-            "description": "Seedream-5.0-Lite model identifier",
-            "enum": [
-              "seedream-5.0-lite",
-              "seedream-5.0-lite-edit"
-            ]
+            "enum": ["seedream-5.0-lite"],
+            "description": "Seedream-5.0-Lite text-to-image model identifier"
           },
           "callback_url": {
             "type": "string",
@@ -141,45 +169,138 @@
             "example": "https://your-domain.com/callback"
           },
           "input": {
-            "type": "object",
-            "required": ["prompt"],
-            "description": "Input parameters for generation",
-            "properties": {
-              "prompt": {
-                "type": "string",
-                "description": "Generation prompt describing the desired output",
-                "maxLength": 2000,
-                "example": "A beautiful sunset over the ocean"
-              },
-              "image_urls": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "uri"
-                },
-                "minItems": 1,
-                "maxItems": 10,
-                "description": "Reference image URLs for image-to-image or editing (1-10 images). Required for seedream-5.0-lite-edit model. Supported formats: JPEG, PNG",
-                "example": ["https://example.com/reference1.jpg", "https://example.com/reference2.jpg"]
-              },
-              "size": {
-                "type": "string",
-                "description": "Specify the output image dimensions. Two methods are available, but they cannot be used at the same time.\n\nMethod 1: Specify the resolution of the generated image, and describe its aspect ratio, shape, or purpose in the prompt using natural language. You let the model determine the width and height. Optional values: 2K, 3K\n\nMethod 2: Specify the aspect ratio of the generated image. Optional values: 1:1, 4:3, 3:4, 16:9, 9:16, 3:2, 2:3, 21:9",
-                "enum": ["2K", "3K", "1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "21:9"],
-                "default": "1:1",
-                "example": "16:9"
-              },
-              "n": {
-                "type": "integer",
-                "description": "Number of images to generate (1-15). Credits are pre-deducted based on this count",
-                "minimum": 1,
-                "maximum": 15,
-                "default": 1,
-                "example": 1
-              }
-            }
+            "$ref": "#/components/schemas/LiteInput"
           }
         }
+      },
+      "LiteEditSubmitRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "enum": ["seedream-5.0-lite-edit"],
+            "description": "Seedream-5.0-Lite edit model identifier"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "$ref": "#/components/schemas/LiteEditInput"
+          }
+        }
+      },
+      "LiteInput": {
+        "type": "object",
+        "required": ["prompt"],
+        "description": "Input parameters for Seedream-5.0-Lite text-to-image or image-to-image generation",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Generation prompt describing the desired output",
+            "maxLength": 2000,
+            "example": "A beautiful sunset over the ocean"
+          },
+          "image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "minItems": 1,
+            "maxItems": 10,
+            "description": "Optional reference image URLs for image-to-image generation on seedream-5.0-lite. Supported formats: JPEG, PNG",
+            "example": ["https://example.com/reference1.jpg"]
+          },
+          "size": {
+            "$ref": "#/components/schemas/SizeParameter"
+          },
+          "n": {
+            "type": "integer",
+            "description": "Number of images to generate (1-15). Credits are pre-deducted based on this count",
+            "minimum": 1,
+            "maximum": 15,
+            "default": 1,
+            "example": 1
+          }
+        }
+      },
+      "LiteEditInput": {
+        "type": "object",
+        "required": ["prompt", "image_urls"],
+        "description": "Input parameters for Seedream-5.0-Lite edit generation",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Editing prompt describing the desired transformation",
+            "maxLength": 2000,
+            "example": "Transform the scene to a winter wonderland with snow"
+          },
+          "image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "minItems": 1,
+            "maxItems": 10,
+            "description": "Reference image URLs for edit mode. Required for seedream-5.0-lite-edit. Supported formats: JPEG, PNG",
+            "example": ["https://example.com/reference1.jpg", "https://example.com/reference2.jpg"]
+          },
+          "size": {
+            "$ref": "#/components/schemas/SizeParameter"
+          },
+          "n": {
+            "type": "integer",
+            "description": "Number of images to generate (1-15). Credits are pre-deducted based on this count",
+            "minimum": 1,
+            "maximum": 15,
+            "default": 1,
+            "example": 1
+          }
+        }
+      },
+      "SizeParameter": {
+        "description": "Optional output size. Supports resolution presets, ratio presets, custom WIDTHxHEIGHT strings, or a JSON object with width and height.",
+        "oneOf": [
+          {
+            "type": "string",
+            "description": "Resolution preset or aspect-ratio preset",
+            "enum": ["2K", "3K", "1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "21:9"],
+            "example": "16:9"
+          },
+          {
+            "type": "string",
+            "description": "Custom dimensions as WIDTHxHEIGHT",
+            "pattern": "^\\d+[xX]\\d+$",
+            "example": "2304x1728"
+          },
+          {
+            "type": "object",
+            "description": "Structured custom dimensions",
+            "required": ["width", "height"],
+            "properties": {
+              "width": {
+                "type": "integer",
+                "minimum": 1,
+                "example": 2304
+              },
+              "height": {
+                "type": "integer",
+                "minimum": 1,
+                "example": 1728
+              }
+            },
+            "additionalProperties": false,
+            "example": {
+              "width": 2304,
+              "height": 1728
+            }
+          }
+        ]
       },
       "SubmitResponse": {
         "type": "object",
@@ -192,18 +313,12 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "created_time"],
+            "required": ["task_id", "created_time"],
             "properties": {
               "task_id": {
                 "type": "string",
                 "example": "task-unified-1757165031-uyujaw3d",
                 "description": "Unique task identifier for status tracking"
-              },
-              "status": {
-                "type": "string",
-                "enum": ["not_started"],
-                "example": "not_started",
-                "description": "Initial task status"
               },
               "created_time": {
                 "type": "string",
@@ -217,28 +332,12 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["code", "error"],
+        "required": ["detail"],
         "properties": {
-          "code": {
-            "type": "integer",
-            "example": 400,
-            "description": "HTTP status code"
-          },
-          "error": {
-            "type": "object",
-            "required": ["message", "type"],
-            "properties": {
-              "message": {
-                "type": "string",
-                "example": "Invalid request parameters",
-                "description": "Error message describing what went wrong"
-              },
-              "type": {
-                "type": "string",
-                "example": "invalid_request_error",
-                "description": "Error type identifier"
-              }
-            }
+          "detail": {
+            "type": "string",
+            "example": "prompt is required",
+            "description": "Error message describing what went wrong"
           }
         }
       }

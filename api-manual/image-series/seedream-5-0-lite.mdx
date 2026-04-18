@@ -1,6 +1,6 @@
 ---
 title: "Seedream-5.0-Lite Image Generation"
-description: "Advanced image generation model with support for text-to-image, image-to-image, and multi-image reference capabilities"
+description: "Seedream 5.0 Lite image generation and editing with preset sizes, custom dimensions, and up to 10 reference images"
 openapi: "/api-manual/image-series/seedream-5-0-lite.json POST /api/generate/submit"
 ---
 
@@ -11,9 +11,73 @@ openapi: "/api-manual/image-series/seedream-5-0-lite.json POST /api/generate/sub
 
 # Seedream-5.0-Lite Image Generation
 
-Seedream-5.0-Lite is an advanced image generation model that supports text-to-image, image-to-image, and image editing with multi-reference capabilities. It delivers high-quality images with flexible aspect ratios and prompt optimization options.
+Seedream-5.0-Lite is an image generation and editing model for async production workflows. It supports text-to-image, reference-based editing, flexible preset sizes, and custom dimensions through the same unified Vidgo API submit and status endpoints.
 
 ## Available Models
 
-- **seedream-5.0-lite** - High-quality text-to-image and image-to-image generation
-- **seedream-5.0-lite-edit** - Advanced image editing with multi-image reference support (up to 10 images)
+- **seedream-5.0-lite** - Text-to-image and image-to-image generation with preset or custom output sizes
+- **seedream-5.0-lite-edit** - Image editing with 1 to 10 JPEG or PNG reference images
+
+## Request Notes
+
+- `model` must be `seedream-5.0-lite` or `seedream-5.0-lite-edit`
+- `input.prompt` is required and supports up to 2000 characters
+- `input.n` accepts integers from `1` to `15`
+- `input.image_urls` is optional for `seedream-5.0-lite` image-to-image requests and required for `seedream-5.0-lite-edit`; both accept `1` to `10` URLs
+- successful submit responses return `task_id` and `created_time`; query final task state through the unified status endpoint
+
+## Size Parameter
+
+`input.size` supports four accepted forms:
+
+1. Resolution presets such as `2K` and `3K`
+2. Ratio presets such as `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, and `21:9`
+3. Custom size strings such as `2304x1728`
+4. Structured JSON objects such as `{ "width": 2304, "height": 1728 }`
+
+Object-style `size` is supported for both `seedream-5.0-lite` and `seedream-5.0-lite-edit`.
+
+Use preset sizes when you want quick resolution or aspect-ratio control. Use custom strings or objects when your workflow needs exact dimensions.
+
+## Custom Size Example
+
+```json
+{
+  "model": "seedream-5.0-lite",
+  "input": {
+    "prompt": "A cinematic bookstore interior with clean bilingual signage and soft blue-hour light",
+    "size": {
+      "width": 2304,
+      "height": 1728
+    },
+    "n": 1
+  }
+}
+```
+
+## Edit Mode Example
+
+```json
+{
+  "model": "seedream-5.0-lite-edit",
+  "input": {
+    "prompt": "Keep the composition and convert the scene into a snowy evening with warmer storefront light",
+    "image_urls": [
+      "https://example.com/reference1.jpg",
+      "https://example.com/reference2.jpg"
+    ],
+    "size": "2304x1728",
+    "n": 1
+  }
+}
+```
+
+## Error Response Shape
+
+Validation and authentication failures follow the unified Vidgo API error shape:
+
+```json
+{
+  "detail": "prompt is required"
+}
+```

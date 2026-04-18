@@ -53,6 +53,7 @@
     "/api-manual/video-series/hailuo-2-3.json",
     "/api-manual/video-series/hailuo-02.json",
     "/api-manual/video-series/runway-gen-4-5.json",
+    "/api-manual/video-series/seedance-2.json",
     "/api-manual/video-series/seedance-1-5-pro.json",
     "/api-manual/video-series/seedance-1.0-pro.json",
     "/api-manual/music-series/generate-music.json",
@@ -198,6 +199,7 @@
               {
                 "group": "Seedance",
                 "pages": [
+                  "api-manual/video-series/seedance-2",
                   "api-manual/video-series/seedance-1-5-pro",
                   "api-manual/video-series/seedance-1.0-pro"
                 ]

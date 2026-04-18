@@ -1,0 +1,39 @@
+---
+title: "Seedance 2 Video Generation"
+description: "Text-to-video, first and last frame, and multimodal reference generation with Seedance 2 and Seedance 2 Fast"
+openapi: "/api-manual/video-series/seedance-2.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` is returned immediately. If you provide a `callback_url`, Vidgo sends a POST request to that URL when the task reaches `finished` or `failed`.
+2. You can always fetch the latest task result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+# Seedance 2 Video Generation
+
+Seedance 2 is ByteDance's multimodal video family for API-based generation. On Vidgo API, you can choose between **seedance-2** for higher fidelity and **seedance-2-fast** for lower-latency generation, while keeping a single submit and status workflow.
+
+## Available Models
+
+- **seedance-2**: Higher-quality video generation with multimodal references and native audio support
+- **seedance-2-fast**: Faster generation path with the same submit schema and lower per-second pricing
+
+## Supported Workflows
+
+- **Text to Video**: Generate directly from a prompt
+- **First and Last Frame**: Guide motion between one or two frame anchors via `image_urls`
+- **Multimodal Reference**: Add reference images, videos, and audio through `reference_image_urls`, `reference_video_urls`, and `reference_audio_urls`
+
+## Input Rules
+
+- `resolution` supports `480p` and `720p`
+- `duration` accepts integer values from `4` to `15`
+- `image_urls` supports up to `2` items
+- `image_urls` is mutually exclusive with all `reference_*_urls` fields
+- `aspect_ratio` supports `1:1`, `21:9`, `4:3`, `3:4`, `16:9`, and `9:16`
+
+## Seedance 2 vs Seedance 1.5 Pro vs Seedance 1.0 Pro
+
+- **Seedance 2** adds multimodal reference image, video, and audio guidance with first and last frame control in one API shape.
+- **Seedance 1.5 Pro** focuses on high-quality text-to-video and image-to-video generation with optional audio but without the same multimodal reference set.
+- **Seedance 1.0 Pro** remains a strong option for earlier Seedance workflows, but Seedance 2 expands creative control and API flexibility for newer production pipelines.
