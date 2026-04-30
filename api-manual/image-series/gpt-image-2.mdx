@@ -1,0 +1,125 @@
+---
+title: "GPT Image 2 Generation"
+description: "Generate and edit images with GPT Image 2"
+openapi: "/api-manual/image-series/gpt-image-2.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` is returned. If you provide a `callback_url`, Vidgo API sends a POST request when the task becomes `finished` or `failed`.
+2. You can always retrieve the result with the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+# GPT Image 2 Generation
+
+## Overview
+
+Use Vidgo API to generate a single image from a prompt or edit one or more reference images with natural-language instructions. GPT Image 2 supports explicit quality tiers, ratio presets, custom dimensions, and `1K`, `2K`, or `4K` resolution control.
+
+## Available Models
+
+- **gpt-image-2** - Text-to-image generation from a prompt.
+- **gpt-image-2-edit** - Image editing based on one or more `image_urls` and a text instruction.
+
+## Notes
+
+- `input.prompt` is required and supports up to `4000` characters.
+- `input.quality` is optional: `low`, `medium`, or `high`. Default: `low`.
+- `input.size` is optional. Supported values are `auto`, `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `16:9`, `9:16`, `21:9`, or a custom `WIDTHxHEIGHT` value.
+- `input.resolution` is optional: `1K`, `2K`, or `4K`.
+- `gpt-image-2-edit` requires `input.image_urls`.
+- `gpt-image-2` does not accept `input.image_urls`.
+- Each request returns one image.
+- `n` is not supported for GPT Image 2 requests.
+
+## Resolution
+
+The `resolution` parameter controls the effective output resolution and credits cost.
+
+| Resolution | Credits multiplier | Description |
+| --- | ---: | --- |
+| `1K` | 1x | Standard resolution |
+| `2K` | 2x | High resolution |
+| `4K` | 4x | Ultra-high resolution for true 4K-supported sizes |
+
+### Billing by Quality
+
+| Quality | 1K | 2K | 4K |
+| --- | ---: | ---: | ---: |
+| Low | 2 credits | 4 credits | 8 credits |
+| Medium | 3 credits | 6 credits | 12 credits |
+| High | 12 credits | 24 credits | 48 credits |
+
+## Resolution Rules
+
+- If `size` is omitted or set to `auto`, the request is processed and billed as `1K`, even if `resolution` is provided.
+- Custom `WIDTHxHEIGHT` sizes require `resolution` `2K` or `4K`.
+- `4K` billing applies only to `16:9`, `9:16`, `21:9`, or custom sizes with a `3840`-pixel edge.
+- A `4K` request that does not meet the true 4K rule is billed at the effective `2K` tier.
+- A custom size whose longest edge is `3840` must use `resolution: "4K"`.
+
+## Custom Size Constraints
+
+Custom sizes use `WIDTHxHEIGHT` format, for example `2304x1536`, and must satisfy all of the following:
+
+- Width and height must both be divisible by `16`.
+- The maximum edge length is `3840` pixels.
+- The aspect ratio must not exceed `3:1`.
+- Total pixel count must stay between `655,360` and `8,294,400`.
+
+## Request Examples
+
+```bash
+### Generate Image
+
+```bash
+curl --request POST \
+  --url https://api.vidgo.ai/api/generate/submit \
+  --header "Authorization: Bearer VIDGO_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "model": "gpt-image-2",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+      "prompt": "A premium product photo of a silver espresso machine on a clean white studio background, realistic lighting, high detail",
+      "quality": "low",
+      "size": "1:1",
+      "resolution": "1K"
+    }
+  }'
+```
+
+### Edit Image
+
+```bash
+curl --request POST \
+  --url https://api.vidgo.ai/api/generate/submit \
+  --header "Authorization: Bearer VIDGO_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "model": "gpt-image-2-edit",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+      "prompt": "Replace the background with a clean white studio backdrop and add a soft natural shadow while preserving the product shape",
+      "quality": "medium",
+      "size": "1:1",
+      "resolution": "2K",
+      "image_urls": [
+        "https://example.com/reference-product.jpg"
+      ]
+    }
+  }'
+```
+
+## Response Flow
+
+The submit endpoint returns a `task_id`, `status`, and `created_time`. If you provide `callback_url`, Vidgo API sends a POST request when the task reaches `finished` or `failed`.
+
+Use the unified status endpoint to retrieve the final result:
+
+```bash
+curl --request GET \
+  --url https://api.vidgo.ai/api/generate/status/task-unified-1757165031-uyujaw3d \
+  --header "Authorization: Bearer VIDGO_API_KEY"
+```
+
+When the task is `finished`, the status response includes generated image file URLs in `data.files`. If the task fails, the status payload returns the failure details for troubleshooting.

@@ -23,6 +23,7 @@
     "/openapi.json",
     "/api-manual/image-series/gpt-4o-image.json",
     "/api-manual/image-series/gpt-image-1.5.json",
+    "/api-manual/image-series/gpt-image-2.json",
     "/api-manual/image-series/nano-banana.json",
     "/api-manual/image-series/nano-banana-2.json",
     "/api-manual/image-series/nano-banana-2-new.json",
@@ -98,7 +99,8 @@
                 "group": "OpenAI",
                 "pages": [
                   "api-manual/image-series/gpt-4o-image",
-                  "api-manual/image-series/gpt-image-1.5"
+                  "api-manual/image-series/gpt-image-1.5",
+                  "api-manual/image-series/gpt-image-2"
                 ]
               },
               {
