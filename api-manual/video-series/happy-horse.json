@@ -1,0 +1,279 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Happy Horse API",
+    "description": "Alibaba Happy Horse video generation and editing with text-to-video, image-to-video, reference-to-video, and video-edit workflows.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit Happy Horse Video Task",
+        "description": "Generate or edit videos with Happy Horse through the unified submit endpoint. Billing depends on the selected workflow, output resolution, and billable video duration; check the Vidgo pricing page or dashboard for the current rate.",
+        "operationId": "submitHappyHorseTask",
+        "tags": [
+          "Happy Horse"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "text-to-video": {
+                  "summary": "Text to Video",
+                  "value": {
+                    "model": "happy-horse",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic tracking shot through a neon city street after rain, reflective pavement, soft ambient audio, realistic motion.",
+                      "resolution": "1080p",
+                      "duration": 5,
+                      "aspect_ratio": "16:9",
+                      "seed": 42,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "image-to-video": {
+                  "summary": "Image to Video",
+                  "value": {
+                    "model": "happy-horse",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/first-frame.png"
+                      ],
+                      "prompt": "Animate the scene with a slow push-in camera move and natural wind motion.",
+                      "resolution": "1080p",
+                      "duration": 5
+                    }
+                  }
+                },
+                "reference-to-video": {
+                  "summary": "Reference to Video",
+                  "value": {
+                    "model": "happy-horse",
+                    "input": {
+                      "prompt": "character1 and character2 walk through a bright studio set, keeping identity and outfit details consistent.",
+                      "reference_image_urls": [
+                        "https://example.com/character1.png",
+                        "https://example.com/character2.png"
+                      ],
+                      "resolution": "720p",
+                      "duration": 6,
+                      "aspect_ratio": "9:16"
+                    }
+                  }
+                },
+                "video-edit": {
+                  "summary": "Video Edit",
+                  "value": {
+                    "model": "happy-horse",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Change the background into a cyberpunk street while preserving the subject movement and camera timing.",
+                      "video_url": "https://example.com/source-video.mp4",
+                      "reference_image_urls": [
+                        "https://example.com/style-reference.png"
+                      ],
+                      "resolution": "1080p",
+                      "audio_setting": "auto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Happy Horse model identifier.",
+            "enum": [
+              "happy-horse"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional webhook callback URL for result notifications.",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "description": "Input parameters for Happy Horse. Workflow is selected from the supplied media fields.",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Generation or edit prompt. Required for text-to-video, reference-to-video, and video-edit; optional for image-to-video.",
+                "example": "A cinematic street scene with realistic character motion."
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "maxItems": 1,
+                "description": "Single first-frame image URL for image-to-video. Do not combine with reference_image_urls or video_url."
+              },
+              "reference_image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "Reference images. Use 1-9 images for reference-to-video, or up to 5 optional images for video-edit."
+              },
+              "video_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Source video URL for video-edit. Source video must be 3-60 seconds."
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Output aspect ratio for text-to-video and reference-to-video.",
+                "enum": [
+                  "16:9",
+                  "9:16",
+                  "1:1",
+                  "4:3",
+                  "3:4"
+                ],
+                "default": "16:9",
+                "example": "16:9"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "Output resolution. Billing may vary by resolution and workflow; check the Vidgo pricing page or dashboard for the current rate.",
+                "enum": [
+                  "720p",
+                  "1080p"
+                ],
+                "default": "1080p",
+                "example": "1080p"
+              },
+              "duration": {
+                "type": "integer",
+                "minimum": 3,
+                "maximum": 15,
+                "description": "Duration in seconds for text-to-video, image-to-video, and reference-to-video. Ignored for video-edit, where source video duration is probed and capped at the maximum billable duration for this workflow.",
+                "default": 5,
+                "example": 5
+              },
+              "audio_setting": {
+                "type": "string",
+                "description": "Video-edit audio handling mode.",
+                "enum": [
+                  "auto",
+                  "origin"
+                ],
+                "default": "auto",
+                "example": "auto"
+              },
+              "seed": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "description": "Optional integer seed for repeatable generation.",
+                "example": 42
+              },
+              "enable_safety_checker": {
+                "type": "boolean",
+                "description": "Optional safety checker toggle.",
+                "example": true
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "Unique task identifier for status tracking"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "Initial task status"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-05-11T10:30:00",
+                "description": "ISO 8601 timestamp when the task was created"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
