@@ -1,0 +1,347 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - VEO 3.1 Official API",
+    "description": "Official VEO 3.1 video generation with duration, audio control, and image-guided modes",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "VEO 3.1 Official"
+        ],
+        "summary": "Submit VEO 3.1 Official Task",
+        "description": "Submit an async official VEO 3.1 video generation task. Use Fast, Lite, or Quality variants with text-to-video, image-to-video, first/last-frame, or reference generation workflows.",
+        "operationId": "submitVeo31OfficialTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "fast": {
+                  "summary": "veo3.1-fast-official",
+                  "value": {
+                    "model": "veo3.1-fast-official",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic close-up of a paper boat drifting through a neon-lit canal",
+                      "duration": 6,
+                      "aspect_ratio": "16:9",
+                      "resolution": "1080p",
+                      "sound": true
+                    }
+                  }
+                },
+                "lite": {
+                  "summary": "veo3.1-lite-official",
+                  "value": {
+                    "model": "veo3.1-lite-official",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A warm handheld shot of a ceramic coffee cup on a windowsill as morning light moves across the steam",
+                      "image_urls": [
+                        "https://example.com/veo31-official-lite-source.png"
+                      ],
+                      "duration": 8,
+                      "aspect_ratio": "16:9",
+                      "resolution": "1080p",
+                      "sound": true
+                    }
+                  }
+                },
+                "quality": {
+                  "summary": "veo3.1-quality-official",
+                  "value": {
+                    "model": "veo3.1-quality-official",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A high-detail aerial view of a futuristic coastal city at dusk, cinematic camera movement, realistic lighting, crisp architectural detail",
+                      "image_urls": [
+                        "https://example.com/veo31-official-reference-character.png",
+                        "https://example.com/veo31-official-reference-environment.png",
+                        "https://example.com/veo31-official-reference-detail.png"
+                      ],
+                      "generation_type": "reference",
+                      "duration": 8,
+                      "aspect_ratio": "16:9",
+                      "resolution": "4k",
+                      "sound": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1780000000-veo31official",
+                    "status": "not_started",
+                    "created_time": "2026-05-20T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "lite-4k": {
+                    "summary": "Lite does not support 4K",
+                    "value": {
+                      "code": 400,
+                      "message": "veo3.1-lite-official does not support 4k resolution"
+                    }
+                  },
+                  "lite-reference": {
+                    "summary": "Lite does not support reference generation",
+                    "value": {
+                      "code": 400,
+                      "message": "veo3.1-lite-official does not support reference mode"
+                    }
+                  },
+                  "reference-duration": {
+                    "summary": "Reference generation requires 8 seconds",
+                    "value": {
+                      "code": 400,
+                      "message": "reference mode supports 8s duration only"
+                    }
+                  },
+                  "auto-aspect-ratio": {
+                    "summary": "auto aspect ratio requires one or two images",
+                    "value": {
+                      "code": 400,
+                      "message": "aspect_ratio auto is supported only with one or two image_urls"
+                    }
+                  },
+                  "prompt-too-long": {
+                    "summary": "Prompt length exceeds limit",
+                    "value": {
+                      "code": 400,
+                      "message": "prompt must be 1000 characters or fewer for veo-3.1-official"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 401,
+                  "message": "Unauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "VEO 3.1 official model identifier",
+            "enum": [
+              "veo3.1-fast-official",
+              "veo3.1-lite-official",
+              "veo3.1-quality-official"
+            ],
+            "example": "veo3.1-fast-official"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "description": "Input parameters for generation",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "maxLength": 1000,
+                "description": "Required text prompt describing the desired video. Maximum 1000 characters.",
+                "example": "A cinematic close-up of a paper boat drifting through a neon-lit canal."
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 3,
+                "description": "Optional image URL array. No images creates text-to-video, one image creates image-to-video, two images create first/last-frame generation, and three images require reference generation. Lite supports at most two images."
+              },
+              "generation_type": {
+                "type": "string",
+                "enum": [
+                  "frame",
+                  "reference"
+                ],
+                "description": "Optional generation mode. Use frame for two image URLs and reference for three image URLs. If omitted, the mode is inferred from image_urls."
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Output duration in seconds. Supports 4, 6, or 8. Defaults to 8. Reference generation and Lite 1080p support 8 only.",
+                "enum": [
+                  4,
+                  6,
+                  8
+                ],
+                "default": 8,
+                "example": 8
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Video aspect ratio. auto is supported only for one-image and two-image workflows.",
+                "enum": [
+                  "auto",
+                  "16:9",
+                  "9:16"
+                ],
+                "default": "16:9",
+                "example": "16:9"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "Output resolution. Lite does not support 4k.",
+                "enum": [
+                  "720p",
+                  "1080p",
+                  "4k"
+                ],
+                "default": "1080p",
+                "example": "1080p"
+              },
+              "sound": {
+                "type": "boolean",
+                "description": "Generate native audio. Defaults to true; set false for silent output.",
+                "default": true,
+                "example": true
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "Response code",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "description": "Submitted task metadata",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "description": "Unique task identifier for status tracking",
+                "example": "task-unified-1780000000-veo31official"
+              },
+              "status": {
+                "type": "string",
+                "description": "Initial task status",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "description": "ISO 8601 timestamp when the task was created",
+                "example": "2026-05-20T10:30:00"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "Error code",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message describing what went wrong",
+            "example": "duration must be one of [4, 6, 8] for veo-3.1-official"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    }
+  }
+}

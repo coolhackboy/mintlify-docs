@@ -37,6 +37,7 @@
     "/api-manual/video-series/sora-2-official.json",
     "/api-manual/video-series/sora-2-pro.json",
     "/api-manual/video-series/sora-2.json",
+    "/api-manual/video-series/veo-3-1-official.json",
     "/api-manual/video-series/veo-3-1.json",
     "/api-manual/video-series/wan-2-6.json",
     "/api-manual/video-series/wan2.5-text-to-video.json",
@@ -155,6 +156,7 @@
               {
                 "group": "Google",
                 "pages": [
+                  "api-manual/video-series/veo-3-1-official",
                   "api-manual/video-series/veo-3-1"
                 ]
               },

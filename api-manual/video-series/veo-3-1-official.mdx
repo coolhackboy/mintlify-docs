@@ -1,0 +1,44 @@
+---
+title: "VEO 3.1 Official Video Generation"
+description: "Official VEO 3.1 video generation with duration, audio control, and image-guided modes"
+openapi: "/api-manual/video-series/veo-3-1-official.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+# VEO 3.1 Official Video Generation
+
+Generate videos with the official VEO 3.1 model family through one async API. The generation models support text-to-video, image-to-video, first/last-frame video, and three-image reference generation depending on the selected model and input.
+
+## Available Models
+
+- **veo3.1-fast-official** - Fast official generation with `4`, `6`, or `8` second duration options
+- **veo3.1-lite-official** - Lightweight official generation with lower per-second pricing
+- **veo3.1-quality-official** - Higher-quality official generation with 4K support
+
+## Input Modes
+
+- No `image_urls`: text-to-video
+- One image: image-to-video
+- Two images: first/last-frame video. The first image is the start frame and the second image is the end frame
+- Three images: reference generation. Use `generation_type: "reference"` and `duration: 8`
+- `veo3.1-lite-official` supports at most two images and does not support `generation_type: "reference"`
+
+## Parameters
+
+- **model**: Required model identifier. Use `veo3.1-fast-official`, `veo3.1-lite-official`, or `veo3.1-quality-official`
+- **prompt**: Required text prompt for video generation, up to `1000` characters
+- **image_urls**: Optional image URL array. Supports up to `3` public image URLs
+- **generation_type**: Optional `frame` or `reference`. If omitted, the mode is inferred from `image_urls`
+- **duration**: `4`, `6`, or `8`. Default is `8`. Reference generation and `veo3.1-lite-official` with `resolution: "1080p"` support `8` only
+- **aspect_ratio**: `16:9` or `9:16`. `auto` is also supported for one-image and two-image workflows. Default is `16:9`
+- **resolution**: `720p`, `1080p`, or `4k`. Default is `1080p`. `veo3.1-lite-official` does not support `4k`
+- **sound**: Boolean audio switch. Default is `true`; set `false` for silent output
+- **callback_url**: Optional webhook URL for completion or failure notifications
+
+## Pricing
+
+Pricing is charged per generated second and varies by model, resolution, and whether audio is generated. See the model page for the current credit table.
