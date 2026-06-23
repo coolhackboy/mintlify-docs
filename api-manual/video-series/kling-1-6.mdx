@@ -1,0 +1,56 @@
+---
+title: "Kling 1.6 Video Generation"
+description: "Kling 1.6 Standard and Pro video generation through the Vidgo API"
+icon: "video"
+openapi: "/api-manual/video-series/kling-1-6.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, Vidgo sends a POST request when the task becomes `finished` or `failed`.
+2. You can always retrieve the result through the unified Query Task Status endpoint.
+</Tip>
+
+## Available Models
+
+- **kling-1.6/standard** - Cost-effective Kling 1.6 video generation at 9 credits per second.
+- **kling-1.6/pro** - Higher-quality Kling 1.6 video generation at 15 credits per second.
+
+## Input Routing
+
+Vidgo does not require a public `mode`, `type`, or `task_type` field for Kling 1.6.
+All Kling 1.6 requests require `prompt` and `duration`.
+
+- Provide no image fields to generate text-to-video.
+- Provide `start_image_url` to generate image-to-video.
+- Provide `start_image_url` and `end_image_url` with `kling-1.6/pro` to control both the first and last frame.
+- Provide `image_urls` with 1 to 4 reference images to generate Elements.
+
+`image_urls` cannot be used together with `start_image_url`, `end_image_url`, or `cfg_scale`.
+
+## Parameter Compatibility
+
+| Model and workflow | How Vidgo detects it | Supported parameters |
+| --- | --- | --- |
+| Text to Video (`standard` or `pro`) | No image fields | `prompt`, `duration`, `aspect_ratio`, `negative_prompt`, `cfg_scale` |
+| Standard Image to Video | `kling-1.6/standard` with `start_image_url` | `prompt`, `duration`, `start_image_url`, `negative_prompt`, `cfg_scale` |
+| Pro Image to Video | `kling-1.6/pro` with `start_image_url` and optional `end_image_url` | `prompt`, `duration`, `aspect_ratio`, `start_image_url`, `end_image_url`, `negative_prompt`, `cfg_scale` |
+| Elements (`standard` or `pro`) | `image_urls` | `prompt`, `duration`, `aspect_ratio`, `negative_prompt`, `image_urls` |
+
+Notes:
+
+- `end_image_url` requires `start_image_url` and is only supported by `kling-1.6/pro`.
+- `kling-1.6/standard` image-to-video does not support `aspect_ratio`.
+- Elements supports 1 to 4 `image_urls` and does not support `cfg_scale`.
+- `prompt` and `negative_prompt` support up to 2500 characters.
+- `cfg_scale` must be between 0 and 1 when provided.
+
+## Response and Status
+
+The submit endpoint returns a Vidgo `task_id`. Use it with the unified Query Task Status endpoint to retrieve the final video URL.
+
+Initial submit responses include `status`, which is usually `running` after the upstream video task has been created. If submission fails during upstream task creation, the status may be `failed` and the task can be inspected through the status endpoint.
+
+## Pricing
+
+- **kling-1.6/standard**: 9 credits per second.
+- **kling-1.6/pro**: 15 credits per second.

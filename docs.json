@@ -51,6 +51,7 @@
     "/api-manual/video-series/kling-2.6-motion-control.json",
     "/api-manual/video-series/kling-2-5-turbo-pro.json",
     "/api-manual/video-series/kling-2-1.json",
+    "/api-manual/video-series/kling-1-6.json",
     "/api-manual/video-series/grok-imagine.json",
     "/api-manual/video-series/happy-horse.json",
     "/api-manual/video-series/hailuo-2-3.json",
@@ -179,7 +180,8 @@
                   "api-manual/video-series/kling-2-6",
                   "api-manual/video-series/kling-2.6-motion-control",
                   "api-manual/video-series/kling-2-5-turbo-pro",
-                  "api-manual/video-series/kling-2-1"
+                  "api-manual/video-series/kling-2-1",
+                  "api-manual/video-series/kling-1-6"
                 ]
               },
               {
