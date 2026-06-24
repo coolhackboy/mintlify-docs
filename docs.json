@@ -35,6 +35,7 @@
     "/api-manual/image-series/z-image.json",
     "/api-manual/image-series/grok-imagine-image.json",
     "/api-manual/video-series/sora-2-official.json",
+    "/api-manual/video-series/sora-2-pro-official.json",
     "/api-manual/video-series/sora-2-pro.json",
     "/api-manual/video-series/sora-2.json",
     "/api-manual/video-series/veo-3-1-official.json",
@@ -150,6 +151,7 @@
                 "group": "OpenAI",
                 "pages": [
                   "api-manual/video-series/sora-2-official",
+                  "api-manual/video-series/sora-2-pro-official",
                   "api-manual/video-series/sora-2-pro",
                   "api-manual/video-series/sora-2"
                 ]
