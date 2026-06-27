@@ -1,0 +1,260 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Sora 2 Pro Official API",
+    "description": "Pro text-to-video and image-guided video generation with resolution-based billing",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Sora 2 Pro Official"
+        ],
+        "summary": "Submit Sora 2 Pro Official Task",
+        "description": "Generate videos with Sora 2 Pro Official",
+        "operationId": "submitSora2ProOfficialTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "text-to-video": {
+                  "summary": "Text to Video",
+                  "value": {
+                    "model": "sora-2-pro-official",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic drone shot flying through a misty forest at dawn, sun rays cutting through the trees, realistic motion, natural ambience.",
+                      "duration": 8,
+                      "aspect_ratio": "16:9",
+                      "resolution": "1024p"
+                    }
+                  }
+                },
+                "image-to-video": {
+                  "summary": "Image to Video",
+                  "value": {
+                    "model": "sora-2-pro-official",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Animate this scene with slow cinematic camera movement and realistic atmospheric lighting.",
+                      "image_urls": [
+                        "https://example.com/reference-image.png"
+                      ],
+                      "duration": 4,
+                      "aspect_ratio": "auto",
+                      "resolution": "720p"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Sora 2 Pro Official model identifier",
+            "enum": [
+              "sora-2-pro-official"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Generation prompt describing the desired video",
+                "example": "A cinematic video scene"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 1,
+                "description": "Optional reference image URLs. Only one image is supported",
+                "example": [
+                  "https://example.com/reference-image.png"
+                ]
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Output duration in seconds",
+                "enum": [
+                  4,
+                  8,
+                  12,
+                  16,
+                  20
+                ],
+                "default": 4,
+                "example": 8
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Video aspect ratio. `auto` is only supported when `image_urls` is provided.",
+                "enum": [
+                  "auto",
+                  "16:9",
+                  "9:16"
+                ],
+                "default": "16:9",
+                "example": "16:9"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "Output resolution. Billing is calculated based on resolution and duration.",
+                "enum": [
+                  "720p",
+                  "1024p",
+                  "1080p"
+                ],
+                "default": "1024p",
+                "example": "1024p"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    }
+  }
+}

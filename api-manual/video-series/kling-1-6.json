@@ -1,0 +1,290 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 1.6",
+    "description": "Kling 1.6 Standard and Pro video generation through the Vidgo API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit Kling 1.6 Video Generation Task",
+        "description": "Generate videos with Kling 1.6 Standard or Pro. Vidgo automatically selects text-to-video, image-to-video, or Elements based on the input image fields.",
+        "operationId": "submitKling16Task",
+        "tags": ["Kling 1.6"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "kling-1-6-standard-text": {
+                  "summary": "Kling 1.6 Standard - Text to Video",
+                  "value": {
+                    "model": "kling-1.6/standard",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A quiet city street after rain, soft reflections on the pavement as the camera moves forward with cinematic natural motion",
+                      "duration": 5,
+                      "aspect_ratio": "16:9",
+                      "negative_prompt": "blur, low quality, distorted hands",
+                      "cfg_scale": 0.5
+                    }
+                  }
+                },
+                "kling-1-6-standard-image": {
+                  "summary": "Kling 1.6 Standard - Image to Video",
+                  "value": {
+                    "model": "kling-1.6/standard",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A landscape photograph comes alive as mist drifts across a quiet mountain lake at sunrise",
+                      "duration": 5,
+                      "start_image_url": "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1r4_atdw7v3gmp.webp",
+                      "negative_prompt": "blur, flicker, distorted scenery",
+                      "cfg_scale": 0.45
+                    }
+                  }
+                },
+                "kling-1-6-standard-elements": {
+                  "summary": "Kling 1.6 Standard - Elements",
+                  "value": {
+                    "model": "kling-1.6/standard",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic product lifestyle video featuring the same young woman walking into a modern studio, picking up silver wireless headphones, placing them on her head, and smiling toward camera. Keep the character identity, outfit colors, headphone design, desk plant, and warm studio lighting consistent.",
+                      "duration": 5,
+                      "aspect_ratio": "16:9",
+                      "negative_prompt": "blurry, distorted hands, extra fingers, deformed face, inconsistent product design, changing outfit, changing identity, warped headphones, text, watermark, logo, low quality",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1qm_4x13kew7voe.webp",
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1r4_atdw7v3gmp.webp",
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1ro_4wevnv01ds4.webp",
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov2eq_5yw6idr10ni.webp"
+                      ]
+                    }
+                  }
+                },
+                "kling-1-6-pro-text": {
+                  "summary": "Kling 1.6 Pro - Text to Video",
+                  "value": {
+                    "model": "kling-1.6/pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A premium fashion editorial shot in a bright studio, the camera slowly pushes in as fabric moves naturally in soft wind",
+                      "duration": 5,
+                      "aspect_ratio": "9:16",
+                      "negative_prompt": "blur, low quality, unnatural motion",
+                      "cfg_scale": 0.5
+                    }
+                  }
+                },
+                "kling-1-6-pro-image": {
+                  "summary": "Kling 1.6 Pro - Image to Video with End Frame",
+                  "value": {
+                    "model": "kling-1.6/pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A still indoor scene gently animates as warm afternoon light moves across the room",
+                      "duration": 5,
+                      "aspect_ratio": "16:9",
+                      "start_image_url": "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1r4_atdw7v3gmp.webp",
+                      "end_image_url": "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov2eq_5yw6idr10ni.webp",
+                      "negative_prompt": "warped face, flicker, artifacts",
+                      "cfg_scale": 0.4
+                    }
+                  }
+                },
+                "kling-1-6-pro-elements": {
+                  "summary": "Kling 1.6 Pro - Elements",
+                  "value": {
+                    "model": "kling-1.6/pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A polished commercial video where the same model, headphones, studio, and desk plant remain consistent while the camera makes a smooth dolly-in movement",
+                      "duration": 5,
+                      "aspect_ratio": "16:9",
+                      "negative_prompt": "blurry, distorted hands, extra fingers, inconsistent identity, warped product, text, watermark",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1qm_4x13kew7voe.webp",
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1r4_atdw7v3gmp.webp",
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1ro_4wevnv01ds4.webp",
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov2eq_5yw6idr10ni.webp"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                },
+                "examples": {
+                  "submitted": {
+                    "summary": "Task submitted",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "task-unified-1757165031-uyujaw3d",
+                        "status": "running",
+                        "created_time": "2026-06-23T10:30:00"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication. Add it to the request header as `Authorization: Bearer VIDGO_API_KEY`."
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Kling 1.6 public model identifier",
+            "enum": ["kling-1.6/standard", "kling-1.6/pro"]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["prompt", "duration"],
+            "description": "Input parameters for generation. Vidgo selects the workflow from the provided image fields.",
+            "additionalProperties": false,
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Text prompt for video generation. Required for every Kling 1.6 workflow",
+                "maxLength": 2500,
+                "example": "A cinematic product lifestyle video with smooth camera movement"
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Output duration in seconds",
+                "enum": [5, 10],
+                "example": 5
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Video aspect ratio. Supported for text-to-video, Elements, and Pro image-to-video. Standard image-to-video does not support aspect_ratio",
+                "enum": ["1:1", "16:9", "9:16"],
+                "example": "16:9"
+              },
+              "negative_prompt": {
+                "type": "string",
+                "description": "Optional negative prompt describing unwanted visual artifacts or motion",
+                "maxLength": 2500,
+                "example": "blur, low quality, artifacts"
+              },
+              "cfg_scale": {
+                "type": "number",
+                "description": "Prompt guidance scale for text-to-video and image-to-video. Must be between 0 and 1. Not supported when image_urls is provided",
+                "minimum": 0,
+                "maximum": 1,
+                "example": 0.5
+              },
+              "start_image_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "First frame image URL for image-to-video. Cannot be used with image_urls",
+                "example": "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1r4_atdw7v3gmp.webp"
+              },
+              "end_image_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Last frame image URL for Pro image-to-video. Requires start_image_url and kling-1.6/pro. Cannot be used with image_urls",
+                "example": "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov2eq_5yw6idr10ni.webp"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "1 to 4 reference image URLs for Elements. Cannot be used with start_image_url, end_image_url, or cfg_scale",
+                "minItems": 1,
+                "maxItems": 4,
+                "example": [
+                  "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1qm_4x13kew7voe.webp",
+                  "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1r4_atdw7v3gmp.webp"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "Unique task identifier for status tracking"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started", "running", "failed"],
+                "example": "running",
+                "description": "Initial task status returned by the submit endpoint"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "Task creation timestamp"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
