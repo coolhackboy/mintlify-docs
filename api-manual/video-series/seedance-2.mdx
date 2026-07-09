@@ -26,11 +26,15 @@ Seedance 2 is ByteDance's multimodal video family for API-based generation. On V
 
 ## Input Rules
 
-- `resolution` supports `480p` and `720p`
+- `resolution`: `seedance-2` supports `480p`, `720p`, `1080p`, and `4k`; `seedance-2-fast` supports `480p` and `720p`
 - `duration` accepts integer values from `4` to `15`
 - `image_urls` supports up to `2` items
 - `image_urls` is mutually exclusive with all `reference_*_urls` fields
-- `aspect_ratio` supports `1:1`, `21:9`, `4:3`, `3:4`, `16:9`, and `9:16`
+- `reference_image_urls` supports up to `9` items; `reference_video_urls` and `reference_audio_urls` each support up to `3` items
+- `reference_audio_urls` requires at least one `reference_image_urls` or `reference_video_urls` item
+- Total reference inputs across image, video, and audio fields can contain at most `12` files
+- `aspect_ratio` supports `auto`, `1:1`, `21:9`, `4:3`, `3:4`, `16:9`, and `9:16`
+- `generate_audio`, `return_last_frame`, and `web_search` are optional boolean controls
 
 ## Seedance 2 vs Seedance 1.5 Pro vs Seedance 1.0 Pro
 
