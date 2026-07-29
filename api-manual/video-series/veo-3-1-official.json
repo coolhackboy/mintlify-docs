@@ -206,8 +206,7 @@
             "properties": {
               "prompt": {
                 "type": "string",
-                "maxLength": 1000,
-                "description": "Required text prompt describing the desired video. Maximum 1000 characters.",
+                "description": "Required text prompt describing the desired video.",
                 "example": "A cinematic close-up of a paper boat drifting through a neon-lit canal."
               },
               "image_urls": {
