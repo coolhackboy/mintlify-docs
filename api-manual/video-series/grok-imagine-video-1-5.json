@@ -1,0 +1,80 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Vidgo API - Grok Imagine Video 1.5 API",
+    "description": "Text, image, and reference-to-video generation with Grok Imagine Video 1.5",
+    "version": "1.0.0"
+  },
+  "servers": [{ "url": "https://api.vidgo.ai" }],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit Grok Imagine Video 1.5 task",
+        "operationId": "submitGrokImagineVideo15Task",
+        "tags": ["Grok Imagine Video 1.5"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SubmitRequest" },
+              "examples": {
+                "text-to-video": { "summary": "Text to video", "value": { "model": "grok-imagine-video-1.5", "input": { "prompt": "A cinematic city at sunrise", "resolution": "1080p", "duration": 6, "aspect_ratio": "16:9" } } },
+                "image-to-video": { "summary": "First-frame image to video", "value": { "model": "grok-imagine-video-1.5", "input": { "prompt": "The camera slowly pushes forward", "image_urls": ["https://example.com/first-frame.webp"], "resolution": "720p", "duration": 6 } } },
+                "reference-to-video": { "summary": "Reference images to video", "value": { "model": "grok-imagine-video-1.5", "input": { "prompt": "<IMAGE_0> walks through the setting in <IMAGE_1>", "reference_image_urls": ["https://example.com/character.webp", "https://example.com/location.webp"], "resolution": "720p", "duration": 8, "aspect_ratio": "16:9" } } }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SubmitResponse" } } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": { "BearerAuth": { "type": "http", "scheme": "bearer" } },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": { "type": "string", "enum": ["grok-imagine-video-1.5"] },
+          "input": { "$ref": "#/components/schemas/VideoInput" },
+          "callback_url": { "type": "string", "format": "uri" }
+        }
+      },
+      "VideoInput": {
+        "type": "object",
+        "required": ["prompt"],
+        "properties": {
+          "prompt": { "type": "string", "maxLength": 4096 },
+          "image_urls": { "type": "array", "minItems": 1, "maxItems": 1, "items": { "type": "string", "format": "uri" } },
+          "reference_image_urls": { "type": "array", "minItems": 1, "maxItems": 7, "items": { "type": "string", "format": "uri" } },
+          "resolution": { "type": "string", "enum": ["480p", "720p", "1080p"], "default": "720p" },
+          "duration": { "type": "integer", "minimum": 1, "maximum": 15 },
+          "aspect_ratio": { "type": "string", "enum": ["16:9", "4:3", "3:2", "1:1", "2:3", "3:4", "9:16"] }
+        },
+        "description": "Omit image fields for text-to-video. image_urls and reference_image_urls are mutually exclusive. Reference mode does not support 1080p; first-frame image mode does not support aspect_ratio."
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "example": 200 },
+          "message": { "type": "string" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "task_id": { "type": "string" },
+              "status": { "type": "string" },
+              "created_time": { "type": "string", "format": "date-time" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

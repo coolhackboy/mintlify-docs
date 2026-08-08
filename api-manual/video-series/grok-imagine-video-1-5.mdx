@@ -1,0 +1,37 @@
+---
+title: "Grok Imagine Video 1.5"
+description: "Text, image, and reference-to-video generation with Grok Imagine Video 1.5"
+openapi: "/api-manual/video-series/grok-imagine-video-1-5.json POST /api/generate/submit"
+---
+
+# Grok Imagine Video 1.5
+
+Create 1–15 second videos from text, a single first-frame image, or up to seven reference images.
+
+<Info>
+After submission, use the returned `task_id` with the video status endpoint, or provide `callback_url` to receive the completed result.
+</Info>
+
+## Generation modes
+
+- **Text to video:** omit both image fields. Supports `480p`, `720p`, and `1080p`.
+- **Image to video:** provide exactly one URL in `image_urls`. Supports `480p`, `720p`, and `1080p`.
+- **Reference to video:** provide 1–7 URLs in `reference_image_urls` and refer to them as `<IMAGE_0>`, `<IMAGE_1>`, and so on. Supports `480p` and `720p`.
+
+`image_urls` and `reference_image_urls` cannot be used together. `aspect_ratio` is available for text and reference modes, but not first-frame image-to-video.
+
+## Parameters
+
+- `prompt` (required): up to 4,096 characters.
+- `resolution`: `480p`, `720p`, or `1080p`. Default: `720p`.
+- `duration`: integer from `1` to `15`. Default: `6` for text/image mode and `8` for reference mode.
+- `aspect_ratio`: `16:9`, `4:3`, `3:2`, `1:1`, `2:3`, `3:4`, or `9:16`. Default: `16:9` where supported.
+- `callback_url`: optional HTTPS completion webhook.
+
+## Billing
+
+Video output is billed per second by resolution: 14.5 credits at 480p, 25 credits at 720p, and 45 credits at 1080p. Each submitted input or reference image adds 2 credits.
+
+<Tip>
+Use public HTTPS image URLs or upload images through the playground before submitting.
+</Tip>

@@ -54,6 +54,7 @@
     "/api-manual/video-series/kling-2-1.json",
     "/api-manual/video-series/kling-1-6.json",
     "/api-manual/video-series/grok-imagine.json",
+    "/api-manual/video-series/grok-imagine-video-1-5.json",
     "/api-manual/video-series/happy-horse.json",
     "/api-manual/video-series/hailuo-2-3.json",
     "/api-manual/video-series/hailuo-02.json",
@@ -189,7 +190,8 @@
               {
                 "group": "Grok (xAI)",
                 "pages": [
-                  "api-manual/video-series/grok-imagine"
+                  "api-manual/video-series/grok-imagine",
+                  "api-manual/video-series/grok-imagine-video-1-5"
                 ]
               },
               {
