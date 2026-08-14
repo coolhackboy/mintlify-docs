@@ -1,0 +1,14 @@
+---
+title: "Chat Completions"
+openapi: "POST /v1/chat/completions"
+description: "OpenAI-compatible chat completions for Kimi K3 and Claude 5"
+---
+
+Use `kimi-k3`, `claude-sonnet-5`, or `claude-opus-5`. Set `stream: true` for an SSE response.
+
+```bash
+curl https://api.vidgo.ai/v1/chat/completions \
+  -H "Authorization: Bearer $VIDGO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"kimi-k3","messages":[{"role":"user","content":"Hello"}]}'
+```

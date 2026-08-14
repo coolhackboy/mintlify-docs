@@ -1,0 +1,35 @@
+{
+  "openapi": "3.1.0",
+  "info": {"title": "Vidgo Claude Messages", "version": "1.0.0"},
+  "servers": [{"url": "https://api.vidgo.ai"}],
+  "paths": {
+    "/v1/messages": {
+      "post": {
+        "summary": "Create a Claude message",
+        "security": [{"bearerAuth": []}, {"apiKeyAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {
+            "type": "object",
+            "required": ["model", "messages", "max_tokens"],
+            "properties": {
+              "model": {"type": "string", "enum": ["claude-sonnet-5", "claude-opus-5"]},
+              "messages": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+              "max_tokens": {"type": "integer"},
+              "stream": {"type": "boolean", "default": false}
+            },
+            "additionalProperties": true
+          }}}
+        },
+        "responses": {
+          "200": {"description": "Message or SSE stream"},
+          "400": {"description": "Unsupported model or protocol"}
+        }
+      }
+    }
+  },
+  "components": {"securitySchemes": {
+    "bearerAuth": {"type": "http", "scheme": "bearer"},
+    "apiKeyAuth": {"type": "apiKey", "in": "header", "name": "x-api-key"}
+  }}
+}

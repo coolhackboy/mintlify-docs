@@ -1,0 +1,14 @@
+---
+title: "Responses"
+openapi: "POST /v1/responses"
+description: "OpenAI Responses-compatible API for GPT 5.6"
+---
+
+Use `gpt-5-6-luna`, `gpt-5-6-terra`, or `gpt-5-6-sol`. Set `stream: true` for SSE.
+
+```bash
+curl https://api.vidgo.ai/v1/responses \
+  -H "Authorization: Bearer $VIDGO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"gpt-5-6-luna","input":"Explain Decimal arithmetic briefly."}'
+```

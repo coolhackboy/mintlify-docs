@@ -1,0 +1,15 @@
+---
+title: "Claude Messages"
+openapi: "POST /v1/messages"
+description: "Anthropic-compatible Messages API for Claude 5"
+---
+
+Use `claude-sonnet-5` or `claude-opus-5`. `Authorization: Bearer` and `x-api-key` authentication are both accepted.
+
+```bash
+curl https://api.vidgo.ai/v1/messages \
+  -H "x-api-key: $VIDGO_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"claude-sonnet-5","max_tokens":512,"messages":[{"role":"user","content":"Hello"}]}'
+```

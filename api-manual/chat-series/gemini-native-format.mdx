@@ -1,0 +1,9 @@
+---
+title: "Gemini Native Format"
+openapi: "POST /v1beta/models/{model}:generateContent"
+description: "Gemini-compatible generateContent and streaming endpoints"
+---
+
+The native Gemini routes are implemented for compatible models. The current GPT 5.6, Kimi K3, and Claude 5 model set does not support this protocol; using one of those model IDs returns a Gemini-formatted unsupported-model error.
+
+For streaming, call `POST /v1beta/models/{model}:streamGenerateContent` and consume the SSE response.

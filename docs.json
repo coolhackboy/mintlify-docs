@@ -21,6 +21,10 @@
   },
   "openapi": [
     "/openapi.json",
+    "/api-manual/chat-series/chat-completions.json",
+    "/api-manual/chat-series/responses.json",
+    "/api-manual/chat-series/claude-messages.json",
+    "/api-manual/chat-series/gemini-native-format.json",
     "/api-manual/image-series/gpt-4o-image.json",
     "/api-manual/image-series/gpt-image-1.5.json",
     "/api-manual/image-series/gpt-image-2.json",
@@ -95,6 +99,16 @@
             "pages": [
               "api-manual/quickstart",
               "api-manual/error-codes"
+            ]
+          },
+          {
+            "group": "Chat Series",
+            "pages": [
+              "api-manual/chat-series/overview",
+              "api-manual/chat-series/chat-completions",
+              "api-manual/chat-series/responses",
+              "api-manual/chat-series/claude-messages",
+              "api-manual/chat-series/gemini-native-format"
             ]
           },
           {

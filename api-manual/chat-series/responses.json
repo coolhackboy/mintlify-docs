@@ -1,0 +1,31 @@
+{
+  "openapi": "3.1.0",
+  "info": {"title": "Vidgo Responses", "version": "1.0.0"},
+  "servers": [{"url": "https://api.vidgo.ai"}],
+  "paths": {
+    "/v1/responses": {
+      "post": {
+        "summary": "Create a response",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {
+            "type": "object",
+            "required": ["model", "input"],
+            "properties": {
+              "model": {"type": "string", "enum": ["gpt-5-6-luna", "gpt-5-6-terra", "gpt-5-6-sol"]},
+              "input": {},
+              "stream": {"type": "boolean", "default": false}
+            },
+            "additionalProperties": true
+          }}}
+        },
+        "responses": {
+          "200": {"description": "Response or SSE stream"},
+          "400": {"description": "Unsupported model or protocol"}
+        }
+      }
+    }
+  },
+  "components": {"securitySchemes": {"bearerAuth": {"type": "http", "scheme": "bearer"}}}
+}

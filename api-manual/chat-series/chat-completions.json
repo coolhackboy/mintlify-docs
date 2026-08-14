@@ -1,0 +1,31 @@
+{
+  "openapi": "3.1.0",
+  "info": {"title": "Vidgo Chat Completions", "version": "1.0.0"},
+  "servers": [{"url": "https://api.vidgo.ai"}],
+  "paths": {
+    "/v1/chat/completions": {
+      "post": {
+        "summary": "Create a chat completion",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {
+            "type": "object",
+            "required": ["model", "messages"],
+            "properties": {
+              "model": {"type": "string", "enum": ["kimi-k3", "claude-sonnet-5", "claude-opus-5"]},
+              "messages": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+              "stream": {"type": "boolean", "default": false}
+            },
+            "additionalProperties": true
+          }}}
+        },
+        "responses": {
+          "200": {"description": "Completion or SSE stream"},
+          "400": {"description": "Unsupported model or protocol"}
+        }
+      }
+    }
+  },
+  "components": {"securitySchemes": {"bearerAuth": {"type": "http", "scheme": "bearer"}}}
+}
