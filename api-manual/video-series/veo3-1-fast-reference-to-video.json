@@ -1,0 +1,200 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Veo 3.1 Fast Reference to Video",
+    "description": "Veo 3.1 Fast Reference to Video through the Vidgo unified generation API.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit Veo 3.1 Fast Reference to Video Task",
+        "operationId": "submitVeo31FastReferenceToVideoTask",
+        "tags": [
+          "Veo 3.1 Fast Reference to Video"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "default": {
+                  "summary": "Veo 3.1 Fast Reference to Video",
+                  "value": {
+                    "model": "veo3.1-fast/reference-to-video",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic scene with natural lighting and coherent motion",
+                      "duration": 8,
+                      "resolution": "720p",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/examples/reference-1.jpg",
+                        "https://cdn.vidgo.ai/examples/reference-2.jpg",
+                        "https://cdn.vidgo.ai/examples/reference-3.jpg"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "Use `Authorization: Bearer VIDGO_API_KEY`."
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Vidgo public model identifier.",
+            "enum": [
+              "veo3.1-fast/reference-to-video"
+            ],
+            "example": "veo3.1-fast/reference-to-video"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional webhook callback URL."
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt",
+              "image_urls"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Prompt describing the target video."
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Veo 3.1 output duration is fixed at 8 seconds.",
+                "enum": [
+                  8
+                ],
+                "default": 8
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Output aspect ratio.",
+                "enum": [
+                  "16:9",
+                  "9:16"
+                ]
+              },
+              "resolution": {
+                "type": "string",
+                "description": "Output resolution.",
+                "enum": [
+                  "720p",
+                  "1080p",
+                  "4k"
+                ],
+                "default": "720p"
+              },
+              "image_urls": {
+                "type": "array",
+                "description": "Exactly three reference images.",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started",
+                  "running",
+                  "failed"
+                ]
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

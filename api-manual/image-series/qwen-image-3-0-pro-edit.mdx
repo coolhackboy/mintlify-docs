@@ -1,0 +1,48 @@
+---
+title: "Qwen Image 3.0 Pro Image Edit"
+description: "Qwen Image 3 higher-quality reference-image editing model with 1K and 2K output"
+icon: "image"
+openapi: "/api-manual/image-series/qwen-image-3-0-pro-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. Retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint or provide `callback_url` for a completion notification.
+</Tip>
+
+# Qwen Image 3.0 Pro Image Edit
+
+This model supports reference-image editing for posters, product visuals, typography, and natural-language creative tasks.
+
+## Available Models
+
+- **qwen-image-3.0-pro/edit** - Higher-quality reference-image editing with 1K and 2K output
+
+## Parameters
+
+- `prompt` is required and supports up to 5,000 characters.
+- `size` supports `1:1`, `3:2`, `2:3`, `4:3`, `3:4`, `16:9`, `9:16`, and `21:9`.
+- `resolution` supports `1K` and `2K`.
+- `output_format` supports `png` and `jpeg`.
+- `prompt_extend` controls automatic prompt enhancement.
+- `negative_prompt` describes content that should not appear in the output.
+- `seed` accepts values from 0 to 2,147,483,647.
+- `enable_safety_checker` controls content safety checking.
+- `image_urls` is required and reference-video or reference-audio fields are not accepted.
+- Billing is per output image; resolution and the number of input images can affect the current model price.
+
+## Reference-Image Example
+
+```json
+{
+  "model": "qwen-image-3.0-pro/edit",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "A cinematic scene with natural lighting and coherent motion",
+    "resolution": "1K",
+    "size": "1:1",
+    "image_urls": [
+      "https://cdn.vidgo.ai/examples/reference-1.jpg"
+    ]
+  }
+}
+```

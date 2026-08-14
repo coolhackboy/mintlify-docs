@@ -1,0 +1,54 @@
+---
+title: "Seedream 5.0 Pro Image Edit"
+description: "Flagship Seedream image editing model with precise prompt following and multi-image reference control"
+icon: "image"
+openapi: "/api-manual/image-series/seedream-v5-0-pro-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. If `callback_url` is provided, Vidgo sends the result after the task finishes or fails.
+2. You can always retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+# Seedream 5.0 Pro Image Edit
+
+Seedream 5.0 Pro Edit applies controlled changes using up to ten reference images while preserving requested visual details.
+
+## Available Models
+
+- **seedream-v5.0-pro/edit** - Image editing with multi-image reference support
+
+## Size Parameter
+
+`input.size` controls the output aspect ratio and defaults to `1:1`:
+
+- Ratio presets: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `2:3`, `3:2`, `21:9`
+
+## Resolution Parameter
+
+`input.resolution` controls output resolution and defaults to `1K`:
+
+- Resolution presets: `1K`, `2K`
+
+## Pricing
+
+Each request generates one image and uses the current Seedream 5.0 Pro model price.
+
+## How to Call
+
+Use the unified submit endpoint: `POST /api/generate/submit`
+
+```json
+{
+  "model": "seedream-v5.0-pro/edit",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "A cinematic scene with natural lighting and coherent motion",
+    "resolution": "1K",
+    "size": "1:1",
+    "image_urls": [
+      "https://cdn.vidgo.ai/examples/reference-1.jpg"
+    ]
+  }
+}
+```

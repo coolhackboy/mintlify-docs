@@ -1,0 +1,43 @@
+---
+title: "Veo 3.1 Lite Text to Video"
+description: "Google Veo 3.1 Lite text to video model with fixed 8-second output"
+icon: "video"
+openapi: "/api-manual/video-series/veo3-1-lite-text-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. If `callback_url` is provided, Vidgo sends the result after the task finishes or fails.
+2. You can always retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+# Veo 3.1 Lite Text to Video
+
+Generate an 8-second video with the Google Veo 3.1 Lite model.
+
+## Available Models
+
+- **veo3.1-lite/text-to-video** - Veo 3.1 Lite text to video generation
+
+## Duration Options
+
+- **8 seconds** - Fixed duration for this model.
+
+## Key Features
+
+- Generate directly from a text prompt without image input.
+- Supports up to `4k` output resolution.
+- Generated video URLs are temporary and should be downloaded promptly.
+
+## Advanced Parameters
+
+### Generation Type
+
+- The model ID fixes generation to `text-to-video`; do not send a separate `generation_type` field.
+
+### Resolution
+
+- `720p` (default), `1080p`, or `4k`.
+
+## Pricing
+
+Pricing varies by model variant and resolution. Check the Vidgo dashboard for the current rate.

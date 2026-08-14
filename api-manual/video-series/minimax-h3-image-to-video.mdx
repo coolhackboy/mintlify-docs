@@ -1,0 +1,37 @@
+---
+title: "MiniMax H3 Image to Video"
+description: "MiniMax H3 image to video model with fixed 2K output"
+icon: "video"
+openapi: "/api-manual/video-series/minimax-h3-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. If `callback_url` is provided, Vidgo sends the result after the task finishes or fails.
+2. You can always retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+## Available Models
+
+- **minimax/h3/image-to-video** - MiniMax H3 image to video generation with 2K output
+
+## Capabilities
+
+- **Image To Video**: Generate from one starting frame and an optional ending frame.
+- **2K Output**: Output resolution is fixed at `2K`.
+
+## Input Modes
+
+- `image_urls` is required and cannot be combined with reference-media fields.
+- All media URLs must be publicly accessible and directly downloadable.
+
+## Parameter Notes
+
+- `prompt` is required and accepts up to 2,000 characters.
+- `duration` accepts an integer from `5` through `15` seconds and defaults to `5`.
+- `resolution` accepts only `2K`.
+- `aspect_ratio` is not accepted because output follows the first image.
+- `image_urls` accepts one starting frame and one optional ending frame.
+
+## Billing
+
+Video generation is billed by output duration.

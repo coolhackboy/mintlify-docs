@@ -1,0 +1,29 @@
+---
+title: "Seedance 2.5 Image to Video"
+description: "Seedance 2.5 image to video model with native audio and precise motion control"
+icon: "video"
+openapi: "/api-manual/video-series/seedance-2-5-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. Retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint or provide `callback_url` for a completion notification.
+</Tip>
+
+## Available Models
+
+- **seedance-2.5/image-to-video** - Seedance 2.5 image to video generation
+
+## Input modes
+
+- This model uses one starting frame and an optional ending frame through `image_urls`.
+- `image_urls` is required and cannot be combined with reference-media fields.
+
+## Important notes
+
+- `prompt`, `duration`, and `resolution` are required.
+- `duration` accepts integer values from 4 to 30 seconds.
+- `resolution` accepts `480p` or `720p`.
+- `aspect_ratio` accepts `auto`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, or `9:16`.
+- `image_urls` accepts one starting frame and one optional ending frame.
+- All media URLs must be publicly accessible and directly downloadable.
+- Usage is billed by output duration and selected resolution.

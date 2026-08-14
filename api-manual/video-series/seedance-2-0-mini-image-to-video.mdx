@@ -1,0 +1,31 @@
+---
+title: "Seedance 2.0 Mini Image to Video"
+description: "Seedance 2.0 Mini image to video model optimized for fast video generation"
+icon: "video"
+openapi: "/api-manual/video-series/seedance-2-0-mini-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. If `callback_url` is provided, Vidgo sends the result after the task finishes or fails.
+2. You can always retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+## Available Models
+
+- **seedance-2.0-mini/image-to-video** - Fast Seedance 2.0 Mini image to video generation
+
+## Key Features
+
+- **Image To Video**: Use up to two images as the starting and optional ending frames.
+- **Optional Audio**: Request generated audio together with the video.
+
+## Important Notes
+
+- `prompt` and `duration` are required.
+- `duration` supports integer values from `4` to `15`.
+- `resolution` supports `480p` and `720p` and defaults to `720p`.
+- `aspect_ratio` accepts `auto`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, or `9:16`.
+- `image_urls` accepts one starting frame and one optional ending frame; reference fields are not accepted.
+- `image_urls` is required and cannot be combined with reference-media fields.
+- Usage is billed by generated video duration and selected resolution.
+- All remote URLs must be publicly accessible and directly downloadable.

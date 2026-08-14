@@ -1,0 +1,188 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - MiniMax H3 Text to Video",
+    "description": "MiniMax H3 Text to Video through the Vidgo unified generation API.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit MiniMax H3 Text to Video Task",
+        "operationId": "submitMinimaxH3TextToVideoTask",
+        "tags": [
+          "MiniMax H3 Text to Video"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "default": {
+                  "summary": "MiniMax H3 Text to Video",
+                  "value": {
+                    "model": "minimax/h3/text-to-video",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic scene with natural lighting and coherent motion",
+                      "duration": 5,
+                      "resolution": "2K"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "Use `Authorization: Bearer VIDGO_API_KEY`."
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Vidgo public model identifier.",
+            "enum": [
+              "minimax/h3/text-to-video"
+            ],
+            "example": "minimax/h3/text-to-video"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional webhook callback URL."
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Prompt describing the target video.",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Output duration in seconds.",
+                "minimum": 5,
+                "maximum": 15,
+                "default": 5
+              },
+              "resolution": {
+                "type": "string",
+                "description": "Output resolution is fixed at 2K.",
+                "enum": [
+                  "2K"
+                ],
+                "default": "2K"
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Output aspect ratio. Not accepted for image-to-video.",
+                "enum": [
+                  "adaptive",
+                  "21:9",
+                  "16:9",
+                  "4:3",
+                  "1:1",
+                  "3:4",
+                  "9:16"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started",
+                  "running",
+                  "failed"
+                ]
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

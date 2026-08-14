@@ -1,0 +1,39 @@
+---
+title: "Seedance 2.0 Reference to Video"
+description: "Seedance 2.0 reference to video model with multimodal generation and optional audio"
+icon: "video"
+openapi: "/api-manual/video-series/seedance-2-0-reference-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. If `callback_url` is provided, Vidgo sends the result after the task finishes or fails.
+2. You can always retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+## Available Models
+
+- **seedance-2.0/reference-to-video** - Seedance 2.0 reference to video generation
+
+## Key Features
+
+- **Reference To Video**: Guide generation with reference images, videos, and optional audio.
+- **Optional Audio**: Request generated audio together with the video.
+
+## Variant Notes
+
+- This public model ID uses the `seedance-2` provider variant.
+- Supported resolutions are `480p`, `720p`, `1080p`, and `4k`.
+
+## Important Notes
+
+- `prompt` is required and accepts up to 20,000 characters.
+- `duration` supports integer values from `4` to `15`.
+- Reference input supports up to 9 images, 3 videos, and 3 audio files, with at most 12 files in total. Reference audio requires at least one reference image or reference video.
+- `aspect_ratio` accepts `auto`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, or `9:16`.
+- Provide at least one reference image or reference video. Reference audio cannot be used alone.
+- All remote URLs must be publicly accessible and directly downloadable.
+
+## Credits Reference
+
+- Usage is calculated from selected resolution and billed duration. Each reference-video duration, rounded down separately, is added to output duration.
+- Check the Vidgo dashboard for the current model rate before submitting production traffic.
