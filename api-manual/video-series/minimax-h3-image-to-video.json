@@ -132,19 +132,6 @@
                 ],
                 "default": "2K"
               },
-              "aspect_ratio": {
-                "type": "string",
-                "description": "Output aspect ratio. Not accepted for image-to-video.",
-                "enum": [
-                  "adaptive",
-                  "21:9",
-                  "16:9",
-                  "4:3",
-                  "1:1",
-                  "3:4",
-                  "9:16"
-                ]
-              },
               "image_urls": {
                 "type": "array",
                 "description": "Starting frame and optional ending frame.",

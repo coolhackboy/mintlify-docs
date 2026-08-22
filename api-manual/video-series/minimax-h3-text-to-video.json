@@ -130,9 +130,8 @@
               },
               "aspect_ratio": {
                 "type": "string",
-                "description": "Output aspect ratio. Not accepted for image-to-video.",
+                "description": "Output aspect ratio. Supports six fixed ratios; adaptive is not accepted.",
                 "enum": [
-                  "adaptive",
                   "21:9",
                   "16:9",
                   "4:3",

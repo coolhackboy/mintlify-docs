@@ -15,24 +15,20 @@ Instead of polling the status endpoint, you can provide a callback URL when subm
 
 ## Callback Request
 
-When a task completes, Vidgo API will send a POST request to your callback URL with the same structure as the [status endpoint response](/api-manual/task-management/status):
+When a task reaches `finished` or `failed`, Vidgo API sends a flat task object to your callback URL. Unlike the [status endpoint response](/api-manual/task-management/status), the callback body is not wrapped in `code` and `data`:
 
 ```json
 {
-  "code": 200,
-  "data": {
-    "task_id": "task-unified-1757165031-uyujaw3d",
-    "status": "finished",
-    "files": [
-      {
-        "file_url": "https://storage.vidgo.ai/generated/image-abc123.jpg",
-        "file_type": "image"
-      }
-    ],
-    "created_time": "2025-11-12T10:30:00",
-    "progress": 100,
-    "error_message": null
-  }
+  "task_id": "task-unified-1757165031-uyujaw3d",
+  "status": "finished",
+  "files": [
+    {
+      "file_url": "https://storage.vidgo.ai/generated/image-abc123.jpg",
+      "file_type": "image"
+    }
+  ],
+  "created_time": "2025-11-12T10:30:00",
+  "error_message": null
 }
 ```
 
@@ -40,15 +36,11 @@ When a task completes, Vidgo API will send a POST request to your callback URL w
 
 ```json
 {
-  "code": 200,
-  "data": {
-    "task_id": "task-unified-1757165031-uyujaw3d",
-    "status": "failed",
-    "files": [],
-    "created_time": "2025-11-12T10:30:00",
-    "progress": 0,
-    "error_message": "The prompt violates our content policy"
-  }
+  "task_id": "task-unified-1757165031-uyujaw3d",
+  "status": "failed",
+  "files": [],
+  "created_time": "2025-11-12T10:30:00",
+  "error_message": "The prompt violates our content policy"
 }
 ```
 
@@ -56,20 +48,18 @@ When a task completes, Vidgo API will send a POST request to your callback URL w
 
 Your callback endpoint must meet the following requirements:
 
-- **HTTPS only**: Must use HTTPS protocol (HTTP not supported)
-- **Maximum URL length**: 2048 characters
-- **Response timeout**: Must respond within 10 seconds
+- **Public endpoint**: Use a publicly reachable HTTP(S) URL
+- **Response timeout**: Respond within 30 seconds
 - **Success response**: Should return HTTP 200-299 status code
-- **No internal IPs**: Cannot use private/internal IP addresses (e.g., 192.168.x.x, 10.x.x.x)
-- **Public accessibility**: Must be publicly accessible from the internet
 
 ## Retry Policy
 
-If your callback endpoint fails to respond or returns an error:
+If delivery times out, encounters a network error, or receives a `5xx` response:
 
-- **Retry attempts**: 3 automatic retries
-- **Retry delays**: After 1 second, 2 seconds, and 4 seconds
-- **Final failure**: After 3 failed attempts, no further retries are made
+- **Retry attempts**: Up to 5 automatic retries
+- **Retry delays**: Exponential backoff with jitter, capped at 10 minutes between attempts
+- **Final failure**: After all retries are exhausted, no further callback attempts are made
+- **Client errors**: `4xx` responses are recorded and are not retried
 
 <Warning>
   If all retry attempts fail, you can still retrieve the results by polling the [status endpoint](/api-manual/task-management/status).
@@ -87,8 +77,7 @@ app = Flask(__name__)
 @app.route('/webhook/generation-complete', methods=['POST'])
 def handle_generation_complete():
     # Parse the callback payload
-    data = request.json
-    task_data = data.get('data', {})
+    task_data = request.get_json(silent=True) or {}
 
     task_id = task_data.get('task_id')
     status = task_data.get('status')
@@ -123,8 +112,7 @@ const app = express();
 app.use(express.json());
 
 app.post('/webhook/generation-complete', (req, res) => {
-  const { data } = req.body;
-  const { task_id, status, files, error_message } = data;
+  const { task_id, status, files = [], error_message } = req.body;
 
   if (status === 'finished') {
     // Task completed successfully
@@ -167,17 +155,11 @@ import (
     "net/http"
 )
 
-type CallbackPayload struct {
-    Code int      `json:"code"`
-    Data TaskData `json:"data"`
-}
-
 type TaskData struct {
     TaskID       string      `json:"task_id"`
     Status       string      `json:"status"`
     Files        []MediaFile `json:"files"`
     CreatedTime  string      `json:"created_time"`
-    Progress     int         `json:"progress"`
     ErrorMessage *string     `json:"error_message"`
 }
 
@@ -187,14 +169,12 @@ type MediaFile struct {
 }
 
 func handleWebhook(w http.ResponseWriter, r *http.Request) {
-    var payload CallbackPayload
+    var taskData TaskData
 
-    if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+    if err := json.NewDecoder(r.Body).Decode(&taskData); err != nil {
         http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
-
-    taskData := payload.Data
 
     if taskData.Status == "finished" {
         // Task completed successfully
@@ -205,7 +185,11 @@ func handleWebhook(w http.ResponseWriter, r *http.Request) {
         }
     } else if taskData.Status == "failed" {
         // Task failed
-        fmt.Printf("Task %s failed: %s\n", taskData.TaskID, *taskData.ErrorMessage)
+        errorMessage := "unknown error"
+        if taskData.ErrorMessage != nil {
+            errorMessage = *taskData.ErrorMessage
+        }
+        fmt.Printf("Task %s failed: %s\n", taskData.TaskID, errorMessage)
         // Handle the failure
     }
 
