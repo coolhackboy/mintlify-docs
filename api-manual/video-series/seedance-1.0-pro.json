@@ -53,7 +53,7 @@
                     "input": {
                       "prompt": "slow zoom, sunset glow",
                       "image_urls": [
-                        "https://example.com/image.jpg"
+                        "https://cdn.vidgo.ai/temp/image.jpg"
                       ],
                       "resolution": "720p",
                       "duration": 5
@@ -130,7 +130,7 @@
                 "maxItems": 1,
                 "description": "Optional reference image URL for image-to-video generation",
                 "example": [
-                  "https://example.com/image.jpg"
+                  "https://cdn.vidgo.ai/temp/image.jpg"
                 ]
               },
               "resolution": {

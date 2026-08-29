@@ -37,7 +37,7 @@
                     "model": "add-vocals",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
-                      "upload_url": "https://storage.example.com/instrumental.mp3",
+                      "upload_url": "https://cdn.vidgo.ai/temp/instrumental.mp3",
                       "prompt": "A heartfelt ballad about love and memories",
                       "title": "Memories of You",
                       "style": "Pop Ballad",
@@ -51,7 +51,7 @@
                     "model": "add-vocals",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
-                      "upload_url": "https://storage.example.com/instrumental.mp3",
+                      "upload_url": "https://cdn.vidgo.ai/temp/instrumental.mp3",
                       "mv": "V5",
                       "prompt": "Upbeat lyrics about summer adventures and freedom",
                       "title": "Summer Freedom",
@@ -118,7 +118,7 @@
                 "type": "string",
                 "format": "uri",
                 "description": "URL of the instrumental audio file to add vocals to.",
-                "example": "https://storage.example.com/instrumental.mp3"
+                "example": "https://cdn.vidgo.ai/temp/instrumental.mp3"
               },
               "prompt": {
                 "type": "string",

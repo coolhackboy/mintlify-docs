@@ -50,8 +50,8 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "Replace the sky with a starry night sky",
-                      "image_urls": ["https://example.com/original-image.jpg"],
-                      "mask_url": "https://example.com/mask.png",
+                      "image_urls": ["https://cdn.vidgo.ai/temp/original-image.jpg"],
+                      "mask_url": "https://cdn.vidgo.ai/temp/mask.png",
                       "size": "1:1"
                     }
                   }
@@ -173,7 +173,7 @@
                 "type": "string",
                 "format": "uri",
                 "description": "Mask image URL for editing",
-                "example": "https://example.com/mask.png"
+                "example": "https://cdn.vidgo.ai/temp/mask.png"
               }
             }
           }

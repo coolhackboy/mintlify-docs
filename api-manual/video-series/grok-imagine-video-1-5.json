@@ -20,8 +20,8 @@
               "schema": { "$ref": "#/components/schemas/SubmitRequest" },
               "examples": {
                 "text-to-video": { "summary": "Text to video", "value": { "model": "grok-imagine-video-1.5", "input": { "prompt": "A cinematic city at sunrise", "resolution": "1080p", "duration": 6, "aspect_ratio": "16:9" } } },
-                "image-to-video": { "summary": "First-frame image to video", "value": { "model": "grok-imagine-video-1.5", "input": { "prompt": "The camera slowly pushes forward", "image_urls": ["https://example.com/first-frame.webp"], "resolution": "720p", "duration": 6 } } },
-                "reference-to-video": { "summary": "Reference images to video", "value": { "model": "grok-imagine-video-1.5", "input": { "prompt": "<IMAGE_0> walks through the setting in <IMAGE_1>", "reference_image_urls": ["https://example.com/character.webp", "https://example.com/location.webp"], "resolution": "720p", "duration": 8, "aspect_ratio": "16:9" } } }
+                "image-to-video": { "summary": "First-frame image to video", "value": { "model": "grok-imagine-video-1.5", "input": { "prompt": "The camera slowly pushes forward", "image_urls": ["https://cdn.vidgo.ai/temp/first-frame.webp"], "resolution": "720p", "duration": 6 } } },
+                "reference-to-video": { "summary": "Reference images to video", "value": { "model": "grok-imagine-video-1.5", "input": { "prompt": "<IMAGE_0> walks through the setting in <IMAGE_1>", "reference_image_urls": ["https://cdn.vidgo.ai/temp/character.webp", "https://cdn.vidgo.ai/temp/location.webp"], "resolution": "720p", "duration": 8, "aspect_ratio": "16:9" } } }
               }
             }
           }

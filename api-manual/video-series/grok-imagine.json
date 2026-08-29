@@ -51,7 +51,7 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "The camera slowly zooms in on the scene",
-                      "image_urls": ["https://example.com/image.jpg"],
+                      "image_urls": ["https://cdn.vidgo.ai/temp/image.jpg"],
                       "duration": 6,
                       "mode": "normal"
                     }

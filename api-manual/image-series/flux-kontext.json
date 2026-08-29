@@ -53,7 +53,7 @@
                     "input": {
                       "prompt": "Replace the background with a clean warm gradient studio backdrop",
                       "image_urls": [
-                        "https://example.com/reference.jpg"
+                        "https://cdn.vidgo.ai/temp/reference.jpg"
                       ],
                       "size": "1:1",
                       "output_format": "jpg"
@@ -80,7 +80,7 @@
                     "input": {
                       "prompt": "Change the background into a minimal teal studio scene",
                       "image_urls": [
-                        "https://example.com/reference.jpg"
+                        "https://cdn.vidgo.ai/temp/reference.jpg"
                       ],
                       "size": "1:1",
                       "output_format": "jpg"
@@ -188,7 +188,7 @@
                 "maxItems": 1,
                 "description": "Input image URLs. Required for edit models\n(flux-kontext-pro-edit, flux-kontext-max-edit). Only the first\nimage is used.",
                 "example": [
-                  "https://example.com/reference.jpg"
+                  "https://cdn.vidgo.ai/temp/reference.jpg"
                 ]
               },
               "size": {

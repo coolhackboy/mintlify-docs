@@ -54,7 +54,7 @@
                     "input": {
                       "prompt": "Transform this scene into a polished ecommerce product photo with clean studio lighting",
                       "image_urls": [
-                        "https://example.com/reference1.jpg"
+                        "https://cdn.vidgo.ai/temp/reference1.jpg"
                       ],
                       "size": "1:1",
                       "resolution": "1K",
@@ -161,7 +161,7 @@
                 "maxItems": 10,
                 "description": "Reference image URLs for image editing. Required for seedream-4-edit. The total of image_urls plus n must not exceed 15.",
                 "example": [
-                  "https://example.com/reference1.jpg"
+                  "https://cdn.vidgo.ai/temp/reference1.jpg"
                 ]
               },
               "size": {

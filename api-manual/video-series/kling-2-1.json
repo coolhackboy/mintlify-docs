@@ -41,7 +41,7 @@
                     "input": {
                       "prompt": "a woman takes her hands out her pockets and gestures to the words with both hands, she is excited, behind her it is raining",
                       "duration": 5,
-                      "start_image_url": "https://cdn.doculator.org/kling-2.1/start-image.png?v=20260310-2040"
+                      "start_image_url": "https://cdn.vidgo.ai/temp/kling-2.1/start-image.png?v=20260310-2040"
                     }
                   }
                 },
@@ -53,7 +53,7 @@
                     "input": {
                       "prompt": "a woman takes her hands out her pockets and gestures to the words with both hands, she is excited, behind her it is raining",
                       "duration": 5,
-                      "start_image_url": "https://cdn.doculator.org/kling-2.1/start-image.png?v=20260310-2040"
+                      "start_image_url": "https://cdn.vidgo.ai/temp/kling-2.1/start-image.png?v=20260310-2040"
                     }
                   }
                 }
@@ -125,13 +125,13 @@
                 "type": "string",
                 "format": "uri",
                 "description": "Required first frame image URL",
-                "example": "https://cdn.doculator.org/kling-2.1/start-image.png?v=20260310-2040"
+                "example": "https://cdn.vidgo.ai/temp/kling-2.1/start-image.png?v=20260310-2040"
               },
               "end_image_url": {
                 "type": "string",
                 "format": "uri",
                 "description": "Optional last frame image URL. Only supported by kling-2.1/pro",
-                "example": "https://example.com/end-image.png"
+                "example": "https://cdn.vidgo.ai/temp/end-image.png"
               },
               "negative_prompt": {
                 "type": "string",

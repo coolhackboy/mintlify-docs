@@ -51,7 +51,7 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "A warm, cinematic zoom-in on the subject with gentle camera motion.",
-                      "image_urls": ["https://example.com/image.jpg"],
+                      "image_urls": ["https://cdn.vidgo.ai/temp/image.jpg"],
                       "duration": 5,
                       "resolution": "1080p",
                       "multi_shots": false
@@ -65,7 +65,7 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "Restyle the clip into a dreamy, pastel-toned aesthetic with soft lighting.",
-                      "video_urls": ["https://example.com/video.mp4"],
+                      "video_urls": ["https://cdn.vidgo.ai/temp/video.mp4"],
                       "duration": 5,
                       "resolution": "1080p",
                       "multi_shots": false
@@ -140,7 +140,7 @@
                 "minItems": 1,
                 "maxItems": 1,
                 "description": "Reference image URLs for image-to-video (wan2.6-image-to-video only). Max 1 image; supported formats: .jpeg, .jpg, .png, .webp; max size 10MB",
-                "example": ["https://example.com/image.jpg"]
+                "example": ["https://cdn.vidgo.ai/temp/image.jpg"]
               },
               "video_urls": {
                 "type": "array",
@@ -151,7 +151,7 @@
                 "minItems": 1,
                 "maxItems": 3,
                 "description": "Reference video URLs for video-to-video (wan2.6-video-to-video only). Max 3 videos; supported formats: .mp4, .mov, .mkv; max size 10MB",
-                "example": ["https://example.com/video.mp4"]
+                "example": ["https://cdn.vidgo.ai/temp/video.mp4"]
               },
               "duration": {
                 "type": "integer",

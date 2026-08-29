@@ -41,7 +41,7 @@
                     "input": {
                       "prompt": "A cinematic panda walking through neon rain in Shanghai at night",
                       "image_urls": [
-                        "https://example.com/start-image.jpg"
+                        "https://cdn.vidgo.ai/temp/start-image.jpg"
                       ],
                       "resolution": "480p",
                       "seed": 224
@@ -112,7 +112,7 @@
                 "maxItems": 2,
                 "description": "Reference image URLs. The first image is required; the optional second image is used as the last frame.",
                 "example": [
-                  "https://example.com/start-image.jpg"
+                  "https://cdn.vidgo.ai/temp/start-image.jpg"
                 ]
               },
               "resolution": {

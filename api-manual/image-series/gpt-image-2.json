@@ -94,7 +94,7 @@
                       "size": "1:1",
                       "resolution": "2K",
                       "image_urls": [
-                        "https://example.com/reference-product.jpg"
+                        "https://cdn.vidgo.ai/temp/reference-product.jpg"
                       ]
                     }
                   }
@@ -292,7 +292,7 @@
                   "type": "string",
                   "format": "uri"
                 },
-                "example": ["https://example.com/reference-product.jpg"]
+                "example": ["https://cdn.vidgo.ai/temp/reference-product.jpg"]
               }
             }
           }

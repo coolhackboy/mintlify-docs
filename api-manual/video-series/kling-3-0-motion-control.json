@@ -40,10 +40,10 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "image_urls": [
-                        "https://storage.poyo.ai/kling-3.0-motion-control/reference-image-new.png"
+                        "https://cdn.vidgo.ai/temp/kling-3.0-motion-control/reference-image-new.png"
                       ],
                       "video_urls": [
-                        "https://storage.poyo.ai/kling-3.0-motion-control/reference-video-new.mp4"
+                        "https://cdn.vidgo.ai/temp/kling-3.0-motion-control/reference-video-new.mp4"
                       ],
                       "character_orientation": "image",
                       "resolution": "720p"
@@ -114,7 +114,7 @@
                 "maxItems": 1,
                 "description": "Reference image URL array. Only one image is supported. Supports JPG, JPEG, PNG, max 10MB",
                 "example": [
-                  "https://storage.poyo.ai/kling-3.0-motion-control/reference-image-new.png"
+                  "https://cdn.vidgo.ai/temp/kling-3.0-motion-control/reference-image-new.png"
                 ]
               },
               "video_urls": {
@@ -127,7 +127,7 @@
                 "maxItems": 1,
                 "description": "Reference video URL array. Only one video is supported. Supports MP4, MOV, max 100MB",
                 "example": [
-                  "https://storage.poyo.ai/kling-3.0-motion-control/reference-video-new.mp4"
+                  "https://cdn.vidgo.ai/temp/kling-3.0-motion-control/reference-video-new.mp4"
                 ]
               },
               "character_orientation": {

@@ -37,7 +37,7 @@
                     "model": "upload-and-extend-audio",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
-                      "upload_url": "https://storage.example.com/audio.mp3",
+                      "upload_url": "https://cdn.vidgo.ai/temp/audio.mp3",
                       "default_param_flag": true,
                       "instrumental": true,
                       "continue_at": 60,
@@ -51,7 +51,7 @@
                     "model": "upload-and-extend-audio",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
-                      "upload_url": "https://storage.example.com/audio.mp3",
+                      "upload_url": "https://cdn.vidgo.ai/temp/audio.mp3",
                       "default_param_flag": false,
                       "instrumental": false,
                       "prompt": "Extend the music with more relaxing notes",
@@ -71,7 +71,7 @@
                     "model": "upload-and-extend-audio",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
-                      "upload_url": "https://storage.example.com/instrumental.mp3",
+                      "upload_url": "https://cdn.vidgo.ai/temp/instrumental.mp3",
                       "default_param_flag": false,
                       "instrumental": true,
                       "style": "Cinematic, Orchestral",
@@ -137,7 +137,7 @@
                 "type": "string",
                 "format": "uri",
                 "description": "The URL for uploading audio files, required regardless of whether `default_param_flag` is true or false.\n\nEnsure the uploaded audio does not exceed 8 minutes in length.\n\n**Note**: For the V4_5ALL model, the uploaded audio must not exceed 1 minute in length.",
-                "example": "https://storage.example.com/audio.mp3"
+                "example": "https://cdn.vidgo.ai/temp/audio.mp3"
               },
               "default_param_flag": {
                 "type": "boolean",

@@ -51,8 +51,8 @@
                     "input": {
                       "prompt": "Transform the scene to a winter wonderland with snow",
                       "image_urls": [
-                        "https://example.com/reference1.jpg",
-                        "https://example.com/reference2.jpg"
+                        "https://cdn.vidgo.ai/temp/reference1.jpg",
+                        "https://cdn.vidgo.ai/temp/reference2.jpg"
                       ],
                       "size": "2304x1728",
                       "n": 1
@@ -213,7 +213,7 @@
             "minItems": 1,
             "maxItems": 10,
             "description": "Optional reference image URLs for image-to-image generation on seedream-5.0-lite. Supported formats: JPEG, PNG",
-            "example": ["https://example.com/reference1.jpg"]
+            "example": ["https://cdn.vidgo.ai/temp/reference1.jpg"]
           },
           "size": {
             "$ref": "#/components/schemas/SizeParameter"
@@ -248,7 +248,7 @@
             "minItems": 1,
             "maxItems": 10,
             "description": "Reference image URLs for edit mode. Required for seedream-5.0-lite-edit. Supported formats: JPEG, PNG",
-            "example": ["https://example.com/reference1.jpg", "https://example.com/reference2.jpg"]
+            "example": ["https://cdn.vidgo.ai/temp/reference1.jpg", "https://cdn.vidgo.ai/temp/reference2.jpg"]
           },
           "size": {
             "$ref": "#/components/schemas/SizeParameter"

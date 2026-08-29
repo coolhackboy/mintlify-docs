@@ -55,7 +55,7 @@
                     "input": {
                       "prompt": "A warm handheld shot of a ceramic coffee cup on a windowsill as morning light moves across the steam",
                       "image_urls": [
-                        "https://example.com/veo31-official-lite-source.png"
+                        "https://cdn.vidgo.ai/temp/veo31-official-lite-source.png"
                       ],
                       "duration": 8,
                       "aspect_ratio": "16:9",
@@ -72,9 +72,9 @@
                     "input": {
                       "prompt": "A high-detail aerial view of a futuristic coastal city at dusk, cinematic camera movement, realistic lighting, crisp architectural detail",
                       "image_urls": [
-                        "https://example.com/veo31-official-reference-character.png",
-                        "https://example.com/veo31-official-reference-environment.png",
-                        "https://example.com/veo31-official-reference-detail.png"
+                        "https://cdn.vidgo.ai/temp/veo31-official-reference-character.png",
+                        "https://cdn.vidgo.ai/temp/veo31-official-reference-environment.png",
+                        "https://cdn.vidgo.ai/temp/veo31-official-reference-detail.png"
                       ],
                       "generation_type": "reference",
                       "duration": 8,

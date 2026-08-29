@@ -39,10 +39,10 @@
                     "input": {
                       "prompt": "The cartoon character is dancing gracefully in a studio",
                       "image_urls": [
-                        "https://example.com/character-image.jpg"
+                        "https://cdn.vidgo.ai/temp/character-image.jpg"
                       ],
                       "video_urls": [
-                        "https://example.com/dance-reference.mp4"
+                        "https://cdn.vidgo.ai/temp/dance-reference.mp4"
                       ],
                       "character_orientation": "video",
                       "mode": "1080p"
@@ -129,7 +129,7 @@
                 "maxItems": 1,
                 "description": "Single character image URL (JPEG, PNG, WEBP, max 10MB). Must clearly show the subject's head, shoulders, and torso",
                 "example": [
-                  "https://example.com/character-image.jpg"
+                  "https://cdn.vidgo.ai/temp/character-image.jpg"
                 ]
               },
               "video_urls": {
@@ -142,7 +142,7 @@
                 "maxItems": 1,
                 "description": "Single reference video URL for motion transfer (MP4, MOV, MKV, max 100MB, 3-30 seconds). Must clearly show the subject's head, shoulders, and torso",
                 "example": [
-                  "https://example.com/dance-reference.mp4"
+                  "https://cdn.vidgo.ai/temp/dance-reference.mp4"
                 ]
               },
               "character_orientation": {

@@ -54,7 +54,7 @@
                     "input": {
                       "prompt": "Animate this scene with slow cinematic camera movement and realistic atmospheric lighting.",
                       "image_urls": [
-                        "https://example.com/reference-image.png"
+                        "https://cdn.vidgo.ai/temp/reference-image.png"
                       ],
                       "duration": 4,
                       "aspect_ratio": "auto",
@@ -144,7 +144,7 @@
                 "maxItems": 1,
                 "description": "Optional reference image URLs. Only one image is supported",
                 "example": [
-                  "https://example.com/reference-image.png"
+                  "https://cdn.vidgo.ai/temp/reference-image.png"
                 ]
               },
               "duration": {

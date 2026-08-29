@@ -61,13 +61,13 @@
                       "duration": 6,
                       "aspect_ratio": "9:16",
                       "reference_image_urls": [
-                        "https://example.com/reference-athlete.png"
+                        "https://cdn.vidgo.ai/temp/reference-athlete.png"
                       ],
                       "reference_video_urls": [
-                        "https://example.com/reference-motion.mp4"
+                        "https://cdn.vidgo.ai/temp/reference-motion.mp4"
                       ],
                       "reference_audio_urls": [
-                        "https://example.com/reference-audio.mp3"
+                        "https://cdn.vidgo.ai/temp/reference-audio.mp3"
                       ]
                     }
                   }
@@ -83,8 +83,8 @@
                       "duration": 4,
                       "aspect_ratio": "1:1",
                       "image_urls": [
-                        "https://example.com/start-frame.png",
-                        "https://example.com/end-frame.png"
+                        "https://cdn.vidgo.ai/temp/start-frame.png",
+                        "https://cdn.vidgo.ai/temp/end-frame.png"
                       ],
                       "generate_audio": false
                     }
@@ -99,7 +99,7 @@
                       "resolution": "720p",
                       "duration": 8,
                       "reference_video_urls": [
-                        "https://example.com/reference-video.mp4"
+                        "https://cdn.vidgo.ai/temp/reference-video.mp4"
                       ]
                     }
                   }

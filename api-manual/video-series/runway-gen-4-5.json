@@ -130,7 +130,7 @@
                   "format": "uri"
                 },
                 "example": [
-                  "https://your-image-domain.com/reference-image.png"
+                  "https://cdn.vidgo.ai/temp/reference-image.png"
                 ]
               },
               "seed": {

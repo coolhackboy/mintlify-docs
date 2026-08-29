@@ -37,7 +37,7 @@
                     "model": "upload-and-cover-audio",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
-                      "upload_url": "https://example.com/audio/my-track.mp3",
+                      "upload_url": "https://cdn.vidgo.ai/temp/audio/my-track.mp3",
                       "prompt": "Transform into an upbeat electronic dance version",
                       "style": "EDM, Electronic",
                       "title": "Dance Remix",
@@ -55,7 +55,7 @@
                     "model": "upload-and-cover-audio",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
-                      "upload_url": "https://example.com/audio/my-track.mp3",
+                      "upload_url": "https://cdn.vidgo.ai/temp/audio/my-track.mp3",
                       "prompt": "Create a jazz version of this track",
                       "custom_mode": false,
                       "instrumental": false,
@@ -69,7 +69,7 @@
                     "model": "upload-and-cover-audio",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
-                      "upload_url": "https://example.com/audio/my-track.mp3",
+                      "upload_url": "https://cdn.vidgo.ai/temp/audio/my-track.mp3",
                       "prompt": "Epic orchestral transformation",
                       "style": "Orchestral, Cinematic",
                       "title": "Epic Orchestra Version",
@@ -133,7 +133,7 @@
                 "type": "string",
                 "format": "uri",
                 "description": "The URL for uploading audio files, required regardless of whether `custom_mode` and `instrumental` are true or false.\n\nEnsure the uploaded audio does not exceed 8 minutes in length.\n\n**Note**: For the V4_5ALL model, the uploaded audio must not exceed 1 minute in length.",
-                "example": "https://example.com/audio/my-track.mp3"
+                "example": "https://cdn.vidgo.ai/temp/audio/my-track.mp3"
               },
               "prompt": {
                 "type": "string",

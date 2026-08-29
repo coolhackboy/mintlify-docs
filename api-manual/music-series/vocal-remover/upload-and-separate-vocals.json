@@ -38,7 +38,7 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "title": "My Audio Track",
-                      "audio_url": "https://example.com/audio/my-track.mp3",
+                      "audio_url": "https://cdn.vidgo.ai/temp/audio/my-track.mp3",
                       "model_name": "base",
                       "output_type": "general"
                     }
@@ -51,7 +51,7 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "title": "My Audio Track",
-                      "audio_url": "https://example.com/audio/my-track.mp3",
+                      "audio_url": "https://cdn.vidgo.ai/temp/audio/my-track.mp3",
                       "model_name": "enhanced",
                       "output_type": "vocals"
                     }
@@ -64,7 +64,7 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "title": "My Audio Track",
-                      "audio_url": "https://example.com/audio/my-track.mp3",
+                      "audio_url": "https://cdn.vidgo.ai/temp/audio/my-track.mp3",
                       "model_name": "instrumental",
                       "output_type": "drums"
                     }
@@ -146,7 +146,7 @@
                 "type": "string",
                 "format": "uri",
                 "description": "URL of the audio file to upload and separate.\n\nMust be a publicly accessible URL to the audio file.",
-                "example": "https://example.com/audio/my-track.mp3"
+                "example": "https://cdn.vidgo.ai/temp/audio/my-track.mp3"
               },
               "model_name": {
                 "type": "string",

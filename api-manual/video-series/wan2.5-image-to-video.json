@@ -41,7 +41,7 @@
                     "input": {
                       "prompt": "A warm, cinematic zoom-in on the subject with gentle camera motion.",
                       "image_urls": [
-                        "https://example.com/image.jpg"
+                        "https://cdn.vidgo.ai/temp/image.jpg"
                       ],
                       "resolution": "720p",
                       "duration": 5,
@@ -113,7 +113,7 @@
                 "maxItems": 1,
                 "description": "Reference image URLs for image-to-video. Only 1 image is supported.",
                 "example": [
-                  "https://example.com/image.jpg"
+                  "https://cdn.vidgo.ai/temp/image.jpg"
                 ]
               },
               "resolution": {

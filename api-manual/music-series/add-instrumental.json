@@ -37,7 +37,7 @@
                     "model": "add-instrumental",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
-                      "upload_url": "https://storage.example.com/vocals.mp3",
+                      "upload_url": "https://cdn.vidgo.ai/temp/vocals.mp3",
                       "title": "Relaxing Piano",
                       "tags": "relaxing, piano, soothing",
                       "negative_tags": "heavy metal, fast drums"
@@ -50,7 +50,7 @@
                     "model": "add-instrumental",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
-                      "upload_url": "https://storage.example.com/vocals.mp3",
+                      "upload_url": "https://cdn.vidgo.ai/temp/vocals.mp3",
                       "mv": "V5",
                       "title": "Epic Orchestral Background",
                       "tags": "orchestral, cinematic, epic",
@@ -116,7 +116,7 @@
                 "type": "string",
                 "format": "uri",
                 "description": "URL of the audio file (typically vocals or melody) for processing.",
-                "example": "https://storage.example.com/vocals.mp3"
+                "example": "https://cdn.vidgo.ai/temp/vocals.mp3"
               },
               "title": {
                 "type": "string",

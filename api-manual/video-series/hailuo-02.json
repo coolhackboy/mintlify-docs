@@ -50,8 +50,8 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "Epic aerial shot: samurai stands atop mountain peak as storm of sakura petals sweeps across wind",
-                      "image_urls": ["https://example.com/image.png"],
-                      "end_image_url": "https://example.com/end_image.png",
+                      "image_urls": ["https://cdn.vidgo.ai/temp/image.png"],
+                      "end_image_url": "https://cdn.vidgo.ai/temp/end_image.png",
                       "duration": 10,
                       "resolution": "768P",
                       "prompt_optimizer": true
@@ -76,8 +76,8 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "The camera slowly pans across the landscape",
-                      "image_urls": ["https://example.com/image.png"],
-                      "end_image_url": "https://example.com/end_image.png",
+                      "image_urls": ["https://cdn.vidgo.ai/temp/image.png"],
+                      "end_image_url": "https://cdn.vidgo.ai/temp/end_image.png",
                       "prompt_optimizer": true
                     }
                   }
@@ -154,7 +154,7 @@
                 "type": "string",
                 "format": "uri",
                 "description": "Optional URL of the image to use as the last frame (image-to-video only)",
-                "example": "https://example.com/end_image.png"
+                "example": "https://cdn.vidgo.ai/temp/end_image.png"
               },
               "duration": {
                 "type": "integer",

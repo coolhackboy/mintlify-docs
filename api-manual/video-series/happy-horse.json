@@ -54,7 +54,7 @@
                     "model": "happy-horse",
                     "input": {
                       "image_urls": [
-                        "https://example.com/first-frame.png"
+                        "https://cdn.vidgo.ai/temp/first-frame.png"
                       ],
                       "prompt": "Animate the scene with a slow push-in camera move and natural wind motion.",
                       "resolution": "1080p",
@@ -69,8 +69,8 @@
                     "input": {
                       "prompt": "character1 and character2 walk through a bright studio set, keeping identity and outfit details consistent.",
                       "reference_image_urls": [
-                        "https://example.com/character1.png",
-                        "https://example.com/character2.png"
+                        "https://cdn.vidgo.ai/temp/character1.png",
+                        "https://cdn.vidgo.ai/temp/character2.png"
                       ],
                       "resolution": "720p",
                       "duration": 6,
@@ -85,9 +85,9 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "Change the background into a cyberpunk street while preserving the subject movement and camera timing.",
-                      "video_url": "https://example.com/source-video.mp4",
+                      "video_url": "https://cdn.vidgo.ai/temp/source-video.mp4",
                       "reference_image_urls": [
-                        "https://example.com/style-reference.png"
+                        "https://cdn.vidgo.ai/temp/style-reference.png"
                       ],
                       "resolution": "1080p",
                       "audio_setting": "auto"

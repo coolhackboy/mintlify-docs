@@ -120,7 +120,7 @@
                 },
                 "description": "Array of image URLs. For single shot mode (multi_shots: false), provide start and end frame URLs. For multi-shot mode (multi_shots: true), provide only the start frame URL. **Required** when `kling_elements` is provided",
                 "example": [
-                  "https://example.com/start-frame.png"
+                  "https://cdn.vidgo.ai/temp/start-frame.png"
                 ]
               },
               "prompt": {
@@ -222,15 +222,15 @@
                     "name": "element_robot",
                     "description": "robot character",
                     "element_input_urls": [
-                      "https://example.com/robot-front.jpeg",
-                      "https://example.com/robot-side.png"
+                      "https://cdn.vidgo.ai/temp/robot-front.jpeg",
+                      "https://cdn.vidgo.ai/temp/robot-side.png"
                     ]
                   },
                   {
                     "name": "element_dancer",
                     "description": "dancer reference motion",
                     "element_input_video_urls": [
-                      "https://example.com/dancer-motion.mp4"
+                      "https://cdn.vidgo.ai/temp/dancer-motion.mp4"
                     ]
                   }
                 ]
