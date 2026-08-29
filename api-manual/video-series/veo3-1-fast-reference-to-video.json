@@ -42,9 +42,9 @@
                       "duration": 8,
                       "resolution": "720p",
                       "image_urls": [
-                        "https://cdn.vidgo.ai/examples/reference-1.jpg",
-                        "https://cdn.vidgo.ai/examples/reference-2.jpg",
-                        "https://cdn.vidgo.ai/examples/reference-3.jpg"
+                        "https://cdn.vidgo.ai/temp/reference-1.jpg",
+                        "https://cdn.vidgo.ai/temp/reference-2.jpg",
+                        "https://cdn.vidgo.ai/temp/reference-3.jpg"
                       ]
                     }
                   }

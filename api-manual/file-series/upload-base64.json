@@ -247,13 +247,13 @@
               "file_url": {
                 "type": "string",
                 "format": "uri",
-                "example": "https://storage.vidgo.ai/temp/test-base64/test-base64.png",
+                "example": "https://cdn.vidgo.ai/temp/test-base64/test-base64.png",
                 "description": "Direct access URL for the uploaded file"
               },
               "download_url": {
                 "type": "string",
                 "format": "uri",
-                "example": "https://storage.vidgo.ai/temp/test-base64/test-base64.png",
+                "example": "https://cdn.vidgo.ai/temp/test-base64/test-base64.png",
                 "description": "Download URL (same as file_url)"
               },
               "upload_time": {

@@ -1,6 +1,7 @@
 ---
-title: "Seedance 2 Legacy IDs"
-description: "Compatibility reference for the legacy seedance-2 and seedance-2-fast model IDs"
+title: "Seedance 2 Video Generation"
+description: "Text-to-video, first and last frame, and multimodal reference generation with Seedance 2 and Seedance 2 Fast"
+icon: "video"
 openapi: "/api-manual/video-series/seedance-2.json POST /api/generate/submit"
 ---
 
@@ -9,11 +10,7 @@ openapi: "/api-manual/video-series/seedance-2.json POST /api/generate/submit"
 2. You can always fetch the latest task result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Seedance 2 Legacy IDs
-
-<Warning>
-This page documents legacy model IDs kept for compatibility. New integrations should use the model-specific Seedance 2.0 public model pages in the navigation.
-</Warning>
+# Seedance 2 Video Generation
 
 Seedance 2 is ByteDance's multimodal video family for API-based generation. On Vidgo API, you can choose between **seedance-2** for higher fidelity and **seedance-2-fast** for lower-latency generation, while keeping a single submit and status API.
 

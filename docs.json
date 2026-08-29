@@ -213,13 +213,13 @@
                 "group": "Google",
                 "pages": [
                   "api-manual/video-series/veo-3-1-official",
+                  "api-manual/video-series/veo-3-1",
                   "api-manual/video-series/veo3-1-fast-text-to-video",
                   "api-manual/video-series/veo3-1-fast-image-to-video",
                   "api-manual/video-series/veo3-1-fast-reference-to-video",
                   "api-manual/video-series/veo3-1-lite-text-to-video",
                   "api-manual/video-series/veo3-1-text-to-video",
-                  "api-manual/video-series/veo3-1-image-to-video",
-                  "api-manual/video-series/veo-3-1"
+                  "api-manual/video-series/veo3-1-image-to-video"
                 ]
               },
               {
@@ -277,6 +277,7 @@
               {
                 "group": "Seedance",
                 "pages": [
+                  "api-manual/video-series/seedance-2",
                   "api-manual/video-series/seedance-2-5-text-to-video",
                   "api-manual/video-series/seedance-2-5-image-to-video",
                   "api-manual/video-series/seedance-2-5-reference-to-video",
@@ -290,8 +291,7 @@
                   "api-manual/video-series/seedance-2-0-mini-image-to-video",
                   "api-manual/video-series/seedance-2-0-mini-reference-to-video",
                   "api-manual/video-series/seedance-1-5-pro",
-                  "api-manual/video-series/seedance-1.0-pro",
-                  "api-manual/video-series/seedance-2"
+                  "api-manual/video-series/seedance-1.0-pro"
                 ]
               }
             ]

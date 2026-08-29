@@ -1,10 +1,11 @@
 ---
 title: "Claude Messages"
 openapi: "POST /v1/messages"
-description: "Anthropic-compatible Messages API for Claude 5"
+description: "Anthropic-compatible Messages API"
+icon: "message"
 ---
 
-Use `claude-sonnet-5` or `claude-opus-5`. `Authorization: Bearer` and `x-api-key` authentication are both accepted.
+Use a model that supports the Messages protocol. `Authorization: Bearer` and `x-api-key` authentication are both accepted.
 
 ```bash
 curl https://api.vidgo.ai/v1/messages \

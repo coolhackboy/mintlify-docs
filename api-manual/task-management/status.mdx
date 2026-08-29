@@ -1,6 +1,7 @@
 ---
 title: "Get Task Status"
 description: "Query task execution status and retrieve generation results"
+icon: "list-check"
 openapi: "GET /api/generate/status/{task_id}"
 ---
 
@@ -46,7 +47,7 @@ Authorization: Bearer YOUR_API_KEY
     "status": "finished",
     "files": [
       {
-        "file_url": "https://storage.vidgo.ai/generated/image-abc123.jpg",
+        "file_url": "https://file.goseaapp.com/images/image-abc123.jpg",
         "file_type": "image"
       }
     ],
@@ -124,7 +125,7 @@ Authorization: Bearer YOUR_API_KEY
     "status": "finished",
     "files": [
       {
-        "file_url": "https://storage.vidgo.ai/generated/image-abc123.jpg",
+        "file_url": "https://file.goseaapp.com/images/image-abc123.jpg",
         "file_type": "image"
       }
     ],
@@ -145,7 +146,7 @@ Authorization: Bearer YOUR_API_KEY
     "status": "finished",
     "files": [
       {
-        "file_url": "https://storage.vidgo.ai/generated/video-xyz789.mp4",
+        "file_url": "https://file.goseaapp.com/videos/video-xyz789.mp4",
         "file_type": "video"
       }
     ],

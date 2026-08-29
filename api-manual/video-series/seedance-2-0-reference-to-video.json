@@ -42,7 +42,7 @@
                       "duration": 5,
                       "resolution": "480p",
                       "reference_image_urls": [
-                        "https://cdn.vidgo.ai/examples/reference-1.jpg"
+                        "https://cdn.vidgo.ai/temp/reference-1.jpg"
                       ]
                     }
                   }

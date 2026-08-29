@@ -42,7 +42,7 @@
                       "duration": 5,
                       "resolution": "2K",
                       "reference_image_urls": [
-                        "https://cdn.vidgo.ai/examples/reference-1.jpg"
+                        "https://cdn.vidgo.ai/temp/reference-1.jpg"
                       ]
                     }
                   }
@@ -58,6 +58,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SubmitResponse"
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1787970600-abcd1234",
+                    "status": "not_started",
+                    "created_time": "2026-08-29T10:30:00Z"
+                  }
                 }
               }
             }

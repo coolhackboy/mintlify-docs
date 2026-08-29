@@ -1,10 +1,11 @@
 ---
 title: "Chat Completions"
 openapi: "POST /v1/chat/completions"
-description: "OpenAI-compatible chat completions for Kimi K3 and Claude 5"
+description: "OpenAI-compatible Chat Completions API"
+icon: "message"
 ---
 
-Use `kimi-k3`, `claude-sonnet-5`, or `claude-opus-5`. Set `stream: true` for an SSE response.
+Use a model that supports the Chat Completions protocol. Set `stream: true` for an SSE response.
 
 ```bash
 curl https://api.vidgo.ai/v1/chat/completions \
