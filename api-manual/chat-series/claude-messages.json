@@ -1,35 +1,154 @@
 {
   "openapi": "3.1.0",
-  "info": {"title": "Vidgo Claude Messages", "version": "1.0.0"},
-  "servers": [{"url": "https://api.vidgo.ai"}],
+  "info": {
+    "title": "Vidgo Claude Messages",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
   "paths": {
     "/v1/messages": {
       "post": {
         "summary": "Create a Claude message",
-        "security": [{"bearerAuth": []}, {"apiKeyAuth": []}],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
-          "content": {"application/json": {"schema": {
-            "type": "object",
-            "required": ["model", "messages", "max_tokens"],
-            "properties": {
-              "model": {"type": "string", "enum": ["claude-sonnet-5", "claude-opus-5"]},
-              "messages": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
-              "max_tokens": {"type": "integer"},
-              "stream": {"type": "boolean", "default": false}
-            },
-            "additionalProperties": true
-          }}}
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "messages",
+                  "max_tokens"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "enum": [
+                      "claude-sonnet-5",
+                      "claude-opus-5",
+                      "anthropic/claude-fable-5.1",
+                      "anthropic/claude-opus-4.8",
+                      "anthropic/claude-sonnet-4.6",
+                      "anthropic/claude-opus-4.6"
+                    ]
+                  },
+                  "messages": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": true
+                    },
+                    "minItems": 1
+                  },
+                  "max_tokens": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "stream": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "additionalProperties": true
+              },
+              "examples": {
+                "workflow": {
+                  "summary": "Vidgo workflow example",
+                  "value": {
+                    "model": "anthropic/claude-fable-5.1",
+                    "messages": [
+                      {
+                        "role": "user",
+                        "content": "Hello"
+                      }
+                    ],
+                    "max_tokens": 64
+                  }
+                }
+              }
+            }
+          }
         },
         "responses": {
-          "200": {"description": "Message or SSE stream"},
-          "400": {"description": "Unsupported model or protocol"}
-        }
+          "200": {
+            "description": "Message or SSE stream",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsupported model or protocol"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          },
+          "402": {
+            "description": "Insufficient credits"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Vendor context not found"
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body"
+          },
+          "429": {
+            "description": "Upstream rate limit exceeded"
+          },
+          "502": {
+            "description": "Upstream connection or response error"
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        },
+        "description": "Uses the native protocol request body, without a generation input wrapper. JSON and SSE response bodies are forwarded from the upstream; returned model names may differ from the Vidgo public ID. Authentication errors may use a detail field; protocol errors use the protocol error shape."
       }
     }
   },
-  "components": {"securitySchemes": {
-    "bearerAuth": {"type": "http", "scheme": "bearer"},
-    "apiKeyAuth": {"type": "apiKey", "in": "header", "name": "x-api-key"}
-  }}
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    }
+  }
 }

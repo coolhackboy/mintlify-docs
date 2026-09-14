@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API",
-    "description": "Professional Image and Video Generation APIs",
+    "description": "Image, video, audio, and 3D generation APIs.",
     "version": "1.0.0",
     "contact": {
       "email": "support@vidgo.ai"
@@ -23,9 +23,11 @@
     "/api/generate/submit": {
       "post": {
         "summary": "Submit Generation Task",
-        "description": "Submit an image or video generation task. This endpoint supports multiple models for both image and video generation.",
+        "description": "Submit an image, video, audio, or 3D generation task with model and input. Parameters and limits depend on the selected workflow.",
         "operationId": "submitGenerationTask",
-        "tags": ["Generation"],
+        "tags": [
+          "Generation"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -53,7 +55,9 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "Replace the sky with a starry night sky",
-                      "image_urls": ["https://cdn.vidgo.ai/temp/original-image.jpg"],
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/original-image.jpg"
+                      ],
                       "mask_url": "https://cdn.vidgo.ai/temp/mask.png",
                       "size": "1:1"
                     }
@@ -77,7 +81,9 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "Add colorful flowers in the foreground",
-                      "image_urls": ["https://cdn.vidgo.ai/temp/landscape.jpg"],
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/landscape.jpg"
+                      ],
                       "size": "16:9"
                     }
                   }
@@ -134,22 +140,283 @@
             }
           },
           "400": {
-            "description": "Invalid request parameters",
+            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized - Invalid API key",
+            "description": "Invalid credentials",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
                 }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or disabled model",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate or API key credit limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unable to create the upstream generation task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Model configuration or capability is not approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
               }
             }
           }
@@ -161,7 +428,9 @@
         "summary": "Get task status",
         "description": "Query the status and results of a generation task",
         "operationId": "getTaskStatus",
-        "tags": ["Task Management"],
+        "tags": [
+          "Task Management"
+        ],
         "parameters": [
           {
             "name": "task_id",
@@ -194,7 +463,8 @@
               }
             }
           }
-        }
+        },
+        "security": []
       }
     }
   },
@@ -209,73 +479,34 @@
     "schemas": {
       "SubmitRequest": {
         "type": "object",
-        "required": ["model"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
-            "description": "Model identifier for image or video generation"
+            "description": "Vidgo public model ID or an existing feature code belonging to your vendor."
           },
           "callback_url": {
             "type": "string",
-            "format": "uri",
-            "description": "Webhook callback URL for result notifications",
-            "example": "https://your-domain.com/callback"
+            "description": "Optional public HTTP(S) callback endpoint; HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks.",
+            "example": "https://your-domain.com/callback",
+            "nullable": true
           },
           "input": {
             "type": "object",
-            "required": ["prompt"],
-            "description": "Input parameters for generation",
-            "properties": {
-              "prompt": {
-                "type": "string",
-                "description": "Generation prompt describing the desired output",
-                "maxLength": 1000,
-                "example": "A beautiful sunset over the ocean"
-              },
-              "image_urls": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "uri"
-                },
-                "description": "Reference image URLs (for image editing or image-to-video)",
-                "example": []
-              },
-              "size": {
-                "type": "string",
-                "description": "Image size (e.g., '1:1')",
-                "example": "1:1"
-              },
-              "n": {
-                "type": "integer",
-                "description": "Number of images to generate",
-                "minimum": 1,
-                "maximum": 4,
-                "example": 1
-              },
-              "duration": {
-                "type": "integer",
-                "description": "Video duration in seconds",
-                "example": 15
-              },
-              "aspect_ratio": {
-                "type": "string",
-                "description": "Video aspect ratio",
-                "example": "16:9"
-              },
-              "mask_url": {
-                "type": "string",
-                "format": "uri",
-                "description": "Mask image URL for editing",
-                "example": "https://cdn.vidgo.ai/temp/mask.png"
-              }
-            }
+            "additionalProperties": true,
+            "description": "Workflow-specific input. Required fields, limits, and defaults are defined on the selected model page; prompt is not required by every model."
           }
         }
       },
       "SubmitResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -284,7 +515,11 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "created_time"],
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -293,9 +528,14 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started"],
+                "enum": [
+                  "not_started",
+                  "running",
+                  "finished",
+                  "failed"
+                ],
                 "example": "not_started",
-                "description": "Initial task status (always not_started on submit)"
+                "description": "Task status when the submit response is produced. New PoYo workflows normally return running."
               },
               "created_time": {
                 "type": "string",
@@ -317,7 +557,10 @@
       },
       "StatusResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -326,7 +569,14 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "files", "created_time", "progress"],
+            "required": [
+              "task_id",
+              "status",
+              "files",
+              "created_time",
+              "progress",
+              "error_message"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -335,7 +585,12 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started", "running", "finished", "failed"],
+                "enum": [
+                  "not_started",
+                  "running",
+                  "finished",
+                  "failed"
+                ],
                 "example": "finished",
                 "description": "Current task status"
               },
@@ -344,19 +599,58 @@
                 "description": "Generated media files (populated when status is finished)",
                 "items": {
                   "type": "object",
-                  "required": ["file_url", "file_type"],
+                  "required": [
+                    "file_url",
+                    "file_type"
+                  ],
                   "properties": {
                     "file_url": {
                       "type": "string",
                       "format": "uri",
                       "example": "https://file.goseaapp.com/generated/image-abc123.jpg",
-                      "description": "Direct URL to the generated file (valid for 24 hours)"
+                      "description": "Direct artifact URL. Expiry depends on the storage provider; save outputs that need to be retained."
                     },
                     "file_type": {
                       "type": "string",
-                      "enum": ["image", "video"],
+                      "enum": [
+                        "image",
+                        "video",
+                        "audio",
+                        "lyrics",
+                        "3d",
+                        "other"
+                      ],
                       "example": "image",
-                      "description": "Type of media file: 'image' or 'video'"
+                      "description": "Artifact type: image, video, audio, lyrics, 3d, or other."
+                    },
+                    "label": {
+                      "type": "string",
+                      "description": "Optional label."
+                    },
+                    "format": {
+                      "type": "string",
+                      "description": "Optional format."
+                    },
+                    "content_type": {
+                      "type": "string",
+                      "description": "Optional contenttype."
+                    },
+                    "file_name": {
+                      "type": "string",
+                      "description": "Optional filename."
+                    },
+                    "file_size": {
+                      "type": "integer",
+                      "description": "Optional file size in bytes."
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "description": "Optional artifact metadata."
+                    },
+                    "watermark_url": {
+                      "type": "string",
+                      "description": "Optional watermarked variant."
                     }
                   }
                 },
@@ -378,7 +672,8 @@
                 "minimum": 0,
                 "maximum": 100,
                 "example": 100,
-                "description": "Completion percentage"
+                "description": "Completion percentage",
+                "nullable": true
               },
               "error_message": {
                 "type": "string",
@@ -408,20 +703,24 @@
       },
       "ErrorResponse": {
         "type": "object",
+        "required": [
+          "detail"
+        ],
         "properties": {
-          "code": {
-            "type": "integer"
-          },
-          "error": {
-            "type": "object",
-            "properties": {
-              "message": {
+          "detail": {
+            "oneOf": [
+              {
                 "type": "string"
               },
-              "type": {
-                "type": "string"
+              {
+                "type": "object",
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
               }
-            }
+            ]
           }
         }
       }

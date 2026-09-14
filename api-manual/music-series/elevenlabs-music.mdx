@@ -1,0 +1,29 @@
+---
+title: "ElevenLabs Music"
+description: "Compose songs or instrumentals from a text brief or a section-by-section plan, with control over musical style, lyrics, and arrangement."
+icon: "music"
+openapi: "/api-manual/music-series/elevenlabs-music.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `elevenlabs/music` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Choose one of the supported input forms shown in the request schema.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- Use text or a composition plan, exclusively. Duration and instrumental mode belong to text input; respect_sections_durations belongs to a composition plan. Section durations must total between three and six hundred seconds. Usage is rounded up by started minute. Text without duration uses one started minute.
+- Read every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `text`, `composition_plan`, `duration`, `is_instrumental`, `respect_sections_durations`, `output_format`. See the request schema for accepted values and defaults.

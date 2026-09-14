@@ -29,10 +29,10 @@ After submission, use the returned `task_id` with the video status endpoint, or 
 - `aspect_ratio`: `16:9`, `4:3`, `3:2`, `1:1`, `2:3`, `3:4`, or `9:16`. Default: `16:9` where supported.
 - `callback_url`: optional HTTPS completion webhook.
 
-## Billing
+{/* poyo-20260910:start */}
+## Workflow IDs
 
-Video output is billed per second by resolution: 14.5 credits at 480p, 25 credits at 720p, and 45 credits at 1080p. Each submitted input or reference image adds 2 credits.
+Existing IDs remain available. New integrations can select a dedicated workflow:
 
-<Tip>
-Use public HTTPS image URLs or upload images through the playground before submitting.
-</Tip>
+- [xai/grok-imagine-video-v1.5/image-to-video](/api-manual/video-series/xai-grok-imagine-video-v1-5-image-to-video)
+{/* poyo-20260910:end */}

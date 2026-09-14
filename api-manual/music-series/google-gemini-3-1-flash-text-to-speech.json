@@ -1,0 +1,660 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Gemini 3.1 Flash TTS",
+    "description": "Generate speech with Gemini 3.1 Flash TTS, using style instructions and selectable voices for narration or dialogue with two speakers.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Audio Series"
+        ],
+        "summary": "Gemini 3.1 Flash TTS",
+        "operationId": "submit_google_gemini_3_1_flash_text_to_speech",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nUsage is based on text length plus style instruction length.\n\nMulti-speaker input needs two distinct speaker_id aliases containing only letters, digits, or underscores. Omit the single voice field when speakers are provided.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "enum": [
+                      "google/gemini-3.1-flash/text-to-speech"
+                    ],
+                    "example": "google/gemini-3.1-flash/text-to-speech",
+                    "description": "Vidgo public model ID. Must be `google/gemini-3.1-flash/text-to-speech`."
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "text"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 50000,
+                        "description": "Text."
+                      },
+                      "style_instructions": {
+                        "type": "string",
+                        "description": "Style instructions."
+                      },
+                      "voice": {
+                        "type": "string",
+                        "enum": [
+                          "Achernar",
+                          "Achird",
+                          "Algenib",
+                          "Algieba",
+                          "Alnilam",
+                          "Aoede",
+                          "Autonoe",
+                          "Callirrhoe",
+                          "Charon",
+                          "Despina",
+                          "Enceladus",
+                          "Erinome",
+                          "Fenrir",
+                          "Gacrux",
+                          "Iapetus",
+                          "Kore",
+                          "Laomedeia",
+                          "Leda",
+                          "Orus",
+                          "Pulcherrima",
+                          "Puck",
+                          "Rasalgethi",
+                          "Sadachbia",
+                          "Sadaltager",
+                          "Schedar",
+                          "Sulafat",
+                          "Umbriel",
+                          "Vindemiatrix",
+                          "Zephyr",
+                          "Zubenelgenubi"
+                        ],
+                        "default": "Kore",
+                        "description": "Voice."
+                      },
+                      "language_code": {
+                        "type": "string",
+                        "enum": [
+                          "Arabic (Egypt)",
+                          "Bangla (Bangladesh)",
+                          "Dutch (Netherlands)",
+                          "English (India)",
+                          "English (US)",
+                          "French (France)",
+                          "German (Germany)",
+                          "Hindi (India)",
+                          "Indonesian (Indonesia)",
+                          "Italian (Italy)",
+                          "Japanese (Japan)",
+                          "Korean (South Korea)",
+                          "Marathi (India)",
+                          "Polish (Poland)",
+                          "Portuguese (Brazil)",
+                          "Romanian (Romania)",
+                          "Russian (Russia)",
+                          "Spanish (Spain)",
+                          "Tamil (India)",
+                          "Telugu (India)",
+                          "Thai (Thailand)",
+                          "Turkish (Turkey)",
+                          "Ukrainian (Ukraine)",
+                          "Vietnamese (Vietnam)",
+                          "Afrikaans (South Africa)",
+                          "Albanian (Albania)",
+                          "Amharic (Ethiopia)",
+                          "Arabic (World)",
+                          "Armenian (Armenia)",
+                          "Azerbaijani (Azerbaijan)",
+                          "Basque (Spain)",
+                          "Belarusian (Belarus)",
+                          "Bulgarian (Bulgaria)",
+                          "Burmese (Myanmar)",
+                          "Catalan (Spain)",
+                          "Cebuano (Philippines)",
+                          "Chinese Mandarin (China)",
+                          "Chinese Mandarin (Taiwan)",
+                          "Croatian (Croatia)",
+                          "Czech (Czech Republic)",
+                          "Danish (Denmark)",
+                          "English (Australia)",
+                          "English (UK)",
+                          "Estonian (Estonia)",
+                          "Filipino (Philippines)",
+                          "Finnish (Finland)",
+                          "French (Canada)",
+                          "Galician (Spain)",
+                          "Georgian (Georgia)",
+                          "Greek (Greece)",
+                          "Gujarati (India)",
+                          "Haitian Creole (Haiti)",
+                          "Hebrew (Israel)",
+                          "Hungarian (Hungary)",
+                          "Icelandic (Iceland)",
+                          "Javanese (Java)",
+                          "Kannada (India)",
+                          "Konkani (India)",
+                          "Lao (Laos)",
+                          "Latin (Vatican City)",
+                          "Latvian (Latvia)",
+                          "Lithuanian (Lithuania)",
+                          "Luxembourgish (Luxembourg)",
+                          "Macedonian (North Macedonia)",
+                          "Maithili (India)",
+                          "Malagasy (Madagascar)",
+                          "Malay (Malaysia)",
+                          "Malayalam (India)",
+                          "Mongolian (Mongolia)",
+                          "Nepali (Nepal)",
+                          "Norwegian Bokmal (Norway)",
+                          "Norwegian Nynorsk (Norway)",
+                          "Odia (India)",
+                          "Pashto (Afghanistan)",
+                          "Persian (Iran)",
+                          "Portuguese (Portugal)",
+                          "Punjabi (India)",
+                          "Serbian (Serbia)",
+                          "Sindhi (India)",
+                          "Sinhala (Sri Lanka)",
+                          "Slovak (Slovakia)",
+                          "Slovenian (Slovenia)",
+                          "Spanish (Latin America)",
+                          "Spanish (Mexico)",
+                          "Swahili (Kenya)",
+                          "Swedish (Sweden)",
+                          "Urdu (Pakistan)"
+                        ],
+                        "description": "Language code."
+                      },
+                      "speakers": {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "speaker_id"
+                          ],
+                          "additionalProperties": false,
+                          "properties": {
+                            "voice": {
+                              "type": "string",
+                              "enum": [
+                                "Achernar",
+                                "Achird",
+                                "Algenib",
+                                "Algieba",
+                                "Alnilam",
+                                "Aoede",
+                                "Autonoe",
+                                "Callirrhoe",
+                                "Charon",
+                                "Despina",
+                                "Enceladus",
+                                "Erinome",
+                                "Fenrir",
+                                "Gacrux",
+                                "Iapetus",
+                                "Kore",
+                                "Laomedeia",
+                                "Leda",
+                                "Orus",
+                                "Pulcherrima",
+                                "Puck",
+                                "Rasalgethi",
+                                "Sadachbia",
+                                "Sadaltager",
+                                "Schedar",
+                                "Sulafat",
+                                "Umbriel",
+                                "Vindemiatrix",
+                                "Zephyr",
+                                "Zubenelgenubi"
+                              ],
+                              "default": "Kore",
+                              "description": "Voice."
+                            },
+                            "speaker_id": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z0-9_]+$",
+                              "description": "Speaker id."
+                            }
+                          },
+                          "description": "Speakers."
+                        },
+                        "description": "Speakers."
+                      },
+                      "temperature": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 2,
+                        "default": 1,
+                        "description": "Temperature."
+                      },
+                      "output_format": {
+                        "type": "string",
+                        "enum": [
+                          "mp3",
+                          "wav",
+                          "ogg_opus"
+                        ],
+                        "default": "mp3",
+                        "description": "Output format."
+                      }
+                    }
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                  }
+                },
+                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+              },
+              "examples": {
+                "basic": {
+                  "summary": "Basic workflow",
+                  "value": {
+                    "model": "google/gemini-3.1-flash/text-to-speech",
+                    "input": {
+                      "text": "A quiet forest under soft morning light, with natural detail.",
+                      "voice": "Kore",
+                      "temperature": 1,
+                      "output_format": "mp3"
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "Receive a completion callback",
+                  "value": {
+                    "model": "google/gemini-3.1-flash/text-to-speech",
+                    "input": {
+                      "text": "A quiet forest under soft morning light, with natural detail.",
+                      "voice": "Kore",
+                      "temperature": 1,
+                      "output_format": "mp3"
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-example",
+                    "status": "running",
+                    "created_time": "2026-09-10T08:00:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or disabled model",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate or API key credit limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unable to create the upstream generation task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Model configuration or capability is not approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Use VIDGO_API_KEY."
+      }
+    }
+  }
+}

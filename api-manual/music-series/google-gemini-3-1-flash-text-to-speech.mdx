@@ -1,0 +1,30 @@
+---
+title: "Gemini 3.1 Flash TTS"
+description: "Generate speech with Gemini 3.1 Flash TTS, using style instructions and selectable voices for narration or dialogue with two speakers."
+icon: "music"
+openapi: "/api-manual/music-series/google-gemini-3-1-flash-text-to-speech.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `google/gemini-3.1-flash/text-to-speech` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `text`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- Usage is based on text length plus style instruction length.
+- Multi-speaker input needs two distinct speaker_id aliases containing only letters, digits, or underscores. Omit the single voice field when speakers are provided.
+- Read every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `style_instructions`, `voice`, `language_code`, `speakers`, `temperature`, `output_format`. See the request schema for accepted values and defaults.

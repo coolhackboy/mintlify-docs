@@ -58,7 +58,7 @@ Your callback endpoint must meet the following requirements:
 If delivery times out, encounters a network error, or receives a `5xx` response:
 
 - **Retry attempts**: Up to 5 automatic retries
-- **Retry delays**: Exponential backoff with jitter, capped at 10 minutes between attempts
+- **Retry delays**: 60, 120, 240, 480, and 600 seconds between attempts
 - **Final failure**: After all retries are exhausted, no further callback attempts are made
 - **Client errors**: `4xx` responses are recorded and are not retried
 
@@ -272,3 +272,10 @@ ngrok http 3000
     Back to Quick Start guide
   </Card>
 </CardGroup>
+
+{/* poyo-20260910:start */}
+## Additional generated files
+
+Audio and 3D workflows use the same files array. file_type may be audio, 3d, image, or other. The array retains model assets, previews, textures, animation files, and timestamp files. Each item may also include label, format, content_type, file_name, file_size, and metadata. Process every returned file; metadata fields are optional.
+
+{/* poyo-20260910:end */}

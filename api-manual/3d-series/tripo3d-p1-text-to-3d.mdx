@@ -1,0 +1,28 @@
+---
+title: "Tripo3D P1 Text to 3D"
+description: "Create 3D objects from text with Tripo3D P1, with optional textures and a compact mesh budget for props and scene assets."
+icon: "cube"
+openapi: "/api-manual/3d-series/tripo3d-p1-text-to-3d.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `tripo3d/p1/text-to-3d` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `prompt`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- Read every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `face_limit`, `texture`, `model_seed`. See the request schema for accepted values and defaults.

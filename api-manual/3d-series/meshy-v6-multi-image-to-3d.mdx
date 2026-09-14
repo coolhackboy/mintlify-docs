@@ -1,0 +1,29 @@
+---
+title: "Meshy 6 Multi Image to 3D"
+description: "Build a 3D asset from up to four reference images with Meshy 6, with texture, topology, and optional animation controls."
+icon: "cube"
+openapi: "/api-manual/3d-series/meshy-v6-multi-image-to-3d.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `meshy/v6/multi-image-to-3d` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `image_urls`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- Animation requires rigging. Texture prompt and texture image are mutually exclusive. Text-only options are unavailable for image workflows.
+- Read every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `topology`, `target_polycount`, `should_remesh`, `symmetry_mode`, `should_texture`, `enable_pbr`, `pose_mode`, `texture_prompt`, `texture_image_url`, `enable_rigging`, `rigging_height_meters`, `enable_animation`, `animation_action_id`, `enable_safety_checker`. See the request schema for accepted values and defaults.

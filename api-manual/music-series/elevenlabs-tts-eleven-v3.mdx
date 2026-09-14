@@ -1,0 +1,29 @@
+---
+title: "ElevenLabs V3 TTS"
+description: "Turn text into spoken audio with ElevenLabs V3, with selectable voices, language control, and optional timestamps for narration and dialogue."
+icon: "music"
+openapi: "/api-manual/music-series/elevenlabs-tts-eleven-v3.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `elevenlabs/tts/eleven-v3` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `text`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- Usage is based on text length.
+- Read every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `voice`, `stability`, `timestamps`, `language_code`, `apply_text_normalization`. See the request schema for accepted values and defaults.

@@ -1,0 +1,28 @@
+---
+title: "Kling 3.0 Turbo Standard Image to Video"
+description: "Bring reference images into motion with Kling 3.0 Turbo Standard, using text and shot prompts to guide a video sequence."
+icon: "video"
+openapi: "/api-manual/video-series/kwaivgi-kling-v3-turbo-std-image-to-video.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `kwaivgi/kling-v3-turbo-std/image-to-video` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `image_urls`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- Each multi_prompt shot needs a nonblank prompt and positive integer duration. Shot durations must sum to the requested duration. When multi_shots is available, enable it with multi_prompt; multi_shots=true also requires multi_prompt.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `prompt`, `multi_prompt`, `duration`, `aspect_ratio`. See the request schema for accepted values and defaults.

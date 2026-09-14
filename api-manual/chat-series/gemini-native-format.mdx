@@ -8,3 +8,12 @@ icon: "message"
 Use a model that supports the Gemini native protocol. Unsupported model IDs return a Gemini-formatted error response.
 
 For streaming, call `POST /v1beta/models/{model}:streamGenerateContent` and consume the SSE response.
+
+{/* poyo-20260910:start */}
+## Additional supported models
+
+- `google/gemini-3.7-flash`
+- `google/gemini-3.5-flash`
+
+Use the complete public ID in the URL, including the provider slash. For example: `/v1beta/models/google/gemini-3.7-flash:generateContent`. Send a non-empty contents array. Streaming uses `:streamGenerateContent?alt=sse`.
+{/* poyo-20260910:end */}

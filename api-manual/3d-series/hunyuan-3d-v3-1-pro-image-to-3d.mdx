@@ -1,0 +1,29 @@
+---
+title: "Hunyuan 3D v3.1 Pro Image to 3D"
+description: "Reconstruct 3D objects with Hunyuan 3D v3.1 Pro using a primary image and additional views, with support for PBR materials."
+icon: "cube"
+openapi: "/api-manual/3d-series/hunyuan-3d-v3-1-pro-image-to-3d.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `hunyuan-3d/v3.1/pro/image-to-3d` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `image_urls`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- Extra views and PBR can affect usage. PBR cannot be combined with Geometry generation. Only the default face_count is accepted.
+- Read every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `prompt`, `generate_type`, `enable_pbr`, `face_count`, `back_image_url`, `left_image_url`, `right_image_url`, `top_image_url`, `bottom_image_url`, `left_front_image_url`, `right_front_image_url`. See the request schema for accepted values and defaults.

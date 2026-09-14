@@ -1,0 +1,29 @@
+---
+title: "Wan 2.7 Video Edit"
+description: "Rework existing footage with Wan 2.7 using text and an optional reference image to guide changes to the scene."
+icon: "video"
+openapi: "/api-manual/video-series/alibaba-wan-2-7-video-edit.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `alibaba/wan-2.7/video-edit` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `video_url`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- duration=0 detects and rounds up source duration; the source must be between two and ten seconds. An explicit duration selects the output length instead.
+- Media inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB when duration=0.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `prompt`, `reference_image_url`, `aspect_ratio`, `resolution`, `duration`, `multi_shots`, `audio_setting`, `seed`, `enable_safety_checker`. See the request schema for accepted values and defaults.

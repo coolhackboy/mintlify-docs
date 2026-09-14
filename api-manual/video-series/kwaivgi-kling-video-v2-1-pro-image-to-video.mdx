@@ -1,0 +1,27 @@
+---
+title: "Kling 2.1 Pro Image to Video"
+description: "Bring a starting image into motion with Kling 2.1 Pro, using text direction and an optional closing frame to shape the shot."
+icon: "video"
+openapi: "/api-manual/video-series/kwaivgi-kling-video-v2-1-pro-image-to-video.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `kwaivgi/kling-video/v2.1/pro/image-to-video` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `prompt`, `start_image_url`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `duration`, `end_image_url`, `negative_prompt`. See the request schema for accepted values and defaults.

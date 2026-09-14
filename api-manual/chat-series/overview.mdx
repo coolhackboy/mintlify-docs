@@ -4,7 +4,7 @@ description: "Supported LLM models, compatible protocols, and streaming"
 icon: "message"
 ---
 
-All Chat Series endpoints use `https://api.vidgo.ai` and a Vidgo API key. Send the key as `Authorization: Bearer YOUR_API_KEY`. Claude clients may also use `x-api-key`; Gemini clients may use `x-goog-api-key`.
+All Chat Series endpoints use `https://api.vidgo.ai` and a Vidgo API key. Send the key as `Authorization: Bearer VIDGO_API_KEY`. Claude clients may also use `x-api-key`; Gemini clients may use `x-goog-api-key`.
 
 ## Model protocol support
 
@@ -17,6 +17,27 @@ All Chat Series endpoints use `https://api.vidgo.ai` and a Vidgo API key. Send t
 | `claude-sonnet-5` | — | Yes | Yes | — |
 | `claude-opus-5` | — | Yes | Yes | — |
 
-The Gemini-compatible endpoints are available for future Gemini-capable models. None of the six models above currently supports that protocol.
+The legacy IDs above keep their existing protocol support. Gemini workflows are listed below.
 
 Both normal JSON responses and SSE streaming are supported.
+
+{/* poyo-20260910:start */}
+## Additional model protocol support
+
+| Model | Chat Completions | Responses | Claude Messages | Gemini native |
+|---|:---:|:---:|:---:|:---:|
+| `openai/gpt-6-astra` | Yes | Yes | — | — |
+| `anthropic/claude-fable-5.1` | Yes | — | Yes | — |
+| `xai/grok-4.6` | Yes | Yes | — | — |
+| `google/gemini-3.7-flash` | Yes | — | — | Yes |
+| `google/gemini-3.5-flash` | Yes | — | — | Yes |
+| `anthropic/claude-opus-4.8` | Yes | — | Yes | — |
+| `openai/gpt-5.5` | Yes | Yes | — | — |
+| `openai/gpt-5.4` | Yes | Yes | — | — |
+| `openai/gpt-5.2` | Yes | Yes | — | — |
+| `anthropic/claude-sonnet-4.6` | Yes | — | Yes | — |
+| `anthropic/claude-opus-4.6` | Yes | — | Yes | — |
+
+Response bodies and SSE events retain the upstream protocol format. A returned model name may be the upstream name rather than the Vidgo public ID.
+
+{/* poyo-20260910:end */}

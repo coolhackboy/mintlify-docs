@@ -1,0 +1,28 @@
+---
+title: "FLUX 3 Extend Video"
+description: "Continue an existing video with FLUX 3, using a text prompt to guide the next part of the scene with optional sound."
+icon: "video"
+openapi: "/api-manual/video-series/blackforestlabs-flux-3-extend-video.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `blackforestlabs/flux-3/extend-video` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `prompt`, `video_url`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- Extension requires an MP4 of at most 50 MiB and shorter than fifteen seconds.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `duration`, `resolution`, `aspect_ratio`, `sound`. See the request schema for accepted values and defaults.

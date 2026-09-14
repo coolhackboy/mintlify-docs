@@ -1,31 +1,134 @@
 {
   "openapi": "3.1.0",
-  "info": {"title": "Vidgo Responses", "version": "1.0.0"},
-  "servers": [{"url": "https://api.vidgo.ai"}],
+  "info": {
+    "title": "Vidgo Responses",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
   "paths": {
     "/v1/responses": {
       "post": {
         "summary": "Create a response",
-        "security": [{"bearerAuth": []}],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
-          "content": {"application/json": {"schema": {
-            "type": "object",
-            "required": ["model", "input"],
-            "properties": {
-              "model": {"type": "string", "enum": ["gpt-5-6-luna", "gpt-5-6-terra", "gpt-5-6-sol"]},
-              "input": {},
-              "stream": {"type": "boolean", "default": false}
-            },
-            "additionalProperties": true
-          }}}
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "enum": [
+                      "gpt-5-6-luna",
+                      "gpt-5-6-terra",
+                      "gpt-5-6-sol",
+                      "openai/gpt-6-astra",
+                      "xai/grok-4.6",
+                      "openai/gpt-5.5",
+                      "openai/gpt-5.4",
+                      "openai/gpt-5.2"
+                    ]
+                  },
+                  "input": {
+                    "minLength": 1,
+                    "minItems": 1,
+                    "description": "Non-empty protocol input. Other protocol fields are forwarded to the upstream."
+                  },
+                  "stream": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "additionalProperties": true
+              },
+              "examples": {
+                "workflow": {
+                  "summary": "Vidgo workflow example",
+                  "value": {
+                    "model": "openai/gpt-6-astra",
+                    "input": "Hello"
+                  }
+                }
+              }
+            }
+          }
         },
         "responses": {
-          "200": {"description": "Response or SSE stream"},
-          "400": {"description": "Unsupported model or protocol"}
-        }
+          "200": {
+            "description": "Response or SSE stream",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsupported model or protocol"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          },
+          "402": {
+            "description": "Insufficient credits"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Vendor context not found"
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body"
+          },
+          "429": {
+            "description": "Upstream rate limit exceeded"
+          },
+          "502": {
+            "description": "Upstream connection or response error"
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        },
+        "description": "Uses the native protocol request body, without a generation input wrapper. JSON and SSE response bodies are forwarded from the upstream; returned model names may differ from the Vidgo public ID. Authentication errors may use a detail field; protocol errors use the protocol error shape."
       }
     }
   },
-  "components": {"securitySchemes": {"bearerAuth": {"type": "http", "scheme": "bearer"}}}
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
 }

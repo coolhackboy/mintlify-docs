@@ -114,7 +114,150 @@
     "/api-manual/account-management/user-balance.json",
     "/api-manual/file-series/upload-url.json",
     "/api-manual/file-series/upload-base64.json",
-    "/api-manual/file-series/upload-stream.json"
+    "/api-manual/file-series/upload-stream.json",
+    "/api-manual/video-series/google-gemini-omni-1-1-flash-text-to-video.json",
+    "/api-manual/video-series/google-gemini-omni-1-1-flash-image-to-video.json",
+    "/api-manual/video-series/google-gemini-omni-1-1-flash-reference-to-video.json",
+    "/api-manual/video-series/google-gemini-omni-1-1-flash-video-edit.json",
+    "/api-manual/video-series/alibaba-wan-3-0-text-to-video.json",
+    "/api-manual/video-series/alibaba-wan-3-0-image-to-video.json",
+    "/api-manual/video-series/alibaba-wan-3-0-reference-to-video.json",
+    "/api-manual/video-series/alibaba-wan-3-0-prime-text-to-video.json",
+    "/api-manual/video-series/alibaba-wan-3-0-prime-image-to-video.json",
+    "/api-manual/video-series/alibaba-wan-3-0-prime-reference-to-video.json",
+    "/api-manual/video-series/blackforestlabs-flux-3-text-to-video.json",
+    "/api-manual/video-series/blackforestlabs-flux-3-image-to-video.json",
+    "/api-manual/video-series/blackforestlabs-flux-3-first-last-frame-to-video.json",
+    "/api-manual/video-series/blackforestlabs-flux-3-extend-video.json",
+    "/api-manual/video-series/blackforestlabs-flux-3-keyframes-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-v3-turbo-std-text-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-v3-turbo-std-image-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-v3-turbo-pro-text-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-v3-turbo-pro-image-to-video.json",
+    "/api-manual/video-series/google-gemini-omni-flash-text-to-video.json",
+    "/api-manual/video-series/google-gemini-omni-flash-image-to-video.json",
+    "/api-manual/video-series/google-gemini-omni-flash-reference-to-video.json",
+    "/api-manual/video-series/google-gemini-omni-flash-video-edit.json",
+    "/api-manual/video-series/kwaivgi-kling-video-ai-avatar-v2-standard.json",
+    "/api-manual/video-series/kwaivgi-kling-video-ai-avatar-v2-pro.json",
+    "/api-manual/video-series/alibaba-happyhorse-1-1-text-to-video.json",
+    "/api-manual/video-series/alibaba-happyhorse-1-1-image-to-video.json",
+    "/api-manual/video-series/alibaba-happyhorse-1-1-reference-to-video.json",
+    "/api-manual/video-series/alibaba-wan-2-7-text-to-video.json",
+    "/api-manual/video-series/alibaba-wan-2-7-image-to-video.json",
+    "/api-manual/video-series/alibaba-wan-2-7-reference-to-video.json",
+    "/api-manual/video-series/alibaba-wan-2-7-video-edit.json",
+    "/api-manual/video-series/kwaivgi-kling-video-o3-std-text-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-video-o3-std-image-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-video-o3-pro-text-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-video-o3-pro-image-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-video-o3-4k-text-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-video-o3-4k-image-to-video.json",
+    "/api-manual/video-series/google-veo3-1-text-to-video.json",
+    "/api-manual/video-series/google-veo3-1-image-to-video.json",
+    "/api-manual/video-series/google-veo3-1-fast-text-to-video.json",
+    "/api-manual/video-series/google-veo3-1-fast-image-to-video.json",
+    "/api-manual/video-series/google-veo3-1-lite-text-to-video.json",
+    "/api-manual/video-series/google-veo3-1-lite-image-to-video.json",
+    "/api-manual/video-series/alibaba-happyhorse-1-0-text-to-video.json",
+    "/api-manual/video-series/alibaba-happyhorse-1-0-image-to-video.json",
+    "/api-manual/video-series/alibaba-happyhorse-1-0-reference-to-video.json",
+    "/api-manual/video-series/alibaba-happyhorse-1-0-video-edit.json",
+    "/api-manual/video-series/openai-sora-2-text-to-video.json",
+    "/api-manual/video-series/openai-sora-2-image-to-video.json",
+    "/api-manual/video-series/openai-sora-2-pro-text-to-video.json",
+    "/api-manual/video-series/openai-sora-2-pro-image-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-v3-0-std-motion-control.json",
+    "/api-manual/video-series/kwaivgi-kling-v3-0-pro-motion-control.json",
+    "/api-manual/video-series/kwaivgi-kling-v2-6-std-motion-control.json",
+    "/api-manual/video-series/kwaivgi-kling-v2-6-pro-motion-control.json",
+    "/api-manual/video-series/alibaba-wan-2-6-text-to-video.json",
+    "/api-manual/video-series/alibaba-wan-2-6-image-to-video.json",
+    "/api-manual/video-series/alibaba-wan-2-6-reference-to-video.json",
+    "/api-manual/video-series/minimax-hailuo-02-standard-text-to-video.json",
+    "/api-manual/video-series/minimax-hailuo-02-standard-image-to-video.json",
+    "/api-manual/video-series/minimax-hailuo-02-pro-text-to-video.json",
+    "/api-manual/video-series/minimax-hailuo-02-pro-image-to-video.json",
+    "/api-manual/video-series/bytedance-seedance-v1-pro-text-to-video.json",
+    "/api-manual/video-series/bytedance-seedance-v1-pro-image-to-video.json",
+    "/api-manual/video-series/alibaba-wan-v2-2-14b-animate-move.json",
+    "/api-manual/video-series/alibaba-wan-v2-2-14b-animate-replace.json",
+    "/api-manual/video-series/minimax-hailuo-2-3-standard-text-to-video.json",
+    "/api-manual/video-series/minimax-hailuo-2-3-standard-image-to-video.json",
+    "/api-manual/video-series/minimax-hailuo-2-3-pro-text-to-video.json",
+    "/api-manual/video-series/minimax-hailuo-2-3-pro-image-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-video-v1-6-standard-text-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-video-v1-6-standard-image-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-video-v1-6-pro-text-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-video-v1-6-pro-image-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-video-v2-1-standard-image-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-video-v2-1-pro-image-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-text-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-image-to-video.json",
+    "/api-manual/video-series/alibaba-wan-2-5-text-to-video.json",
+    "/api-manual/video-series/alibaba-wan-2-5-image-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-v3-0-std-text-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-v3-0-std-image-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-v3-0-pro-text-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-v3-0-pro-image-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-v3-0-4k-text-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-v3-0-4k-image-to-video.json",
+    "/api-manual/video-series/bytedance-seedance-v1-5-pro-text-to-video.json",
+    "/api-manual/video-series/bytedance-seedance-v1-5-pro-image-to-video.json",
+    "/api-manual/video-series/xai-grok-imagine-video-v1-5-image-to-video.json",
+    "/api-manual/image-series/xai-grok-imagine-image-text-to-image.json",
+    "/api-manual/image-series/xai-grok-imagine-image-edit.json",
+    "/api-manual/video-series/xai-grok-imagine-video-text-to-video.json",
+    "/api-manual/video-series/xai-grok-imagine-video-image-to-video.json",
+    "/api-manual/image-series/xai-grok-imagine-image-v2-0-text-to-image.json",
+    "/api-manual/image-series/xai-grok-imagine-image-v2-0-edit.json",
+    "/api-manual/image-series/google-nano-banana-2-lite-text-to-image.json",
+    "/api-manual/image-series/google-nano-banana-2-lite-edit.json",
+    "/api-manual/image-series/kwaivgi-kling-image-o3-text-to-image.json",
+    "/api-manual/image-series/kwaivgi-kling-image-o3-edit.json",
+    "/api-manual/image-series/kwaivgi-kling-image-o1.json",
+    "/api-manual/image-series/alibaba-wan-2-7-text-to-image.json",
+    "/api-manual/image-series/alibaba-wan-2-7-image-edit.json",
+    "/api-manual/image-series/alibaba-wan-2-7-text-to-image-pro.json",
+    "/api-manual/image-series/alibaba-wan-2-7-image-edit-pro.json",
+    "/api-manual/image-series/xai-grok-imagine-image-quality-text-to-image.json",
+    "/api-manual/image-series/xai-grok-imagine-image-quality-edit.json",
+    "/api-manual/image-series/openai-gpt-image-1-5-text-to-image.json",
+    "/api-manual/image-series/openai-gpt-image-1-5-edit.json",
+    "/api-manual/image-series/bytedance-seedream-v4-5-text-to-image.json",
+    "/api-manual/image-series/bytedance-seedream-v4-5-edit.json",
+    "/api-manual/image-series/bytedance-seedream-v5-lite-text-to-image.json",
+    "/api-manual/image-series/bytedance-seedream-v5-lite-edit.json",
+    "/api-manual/image-series/blackforestlabs-flux-2-pro-text-to-image.json",
+    "/api-manual/image-series/blackforestlabs-flux-2-pro-edit.json",
+    "/api-manual/image-series/blackforestlabs-flux-2-flex-text-to-image.json",
+    "/api-manual/image-series/blackforestlabs-flux-2-flex-edit.json",
+    "/api-manual/image-series/google-nano-banana-text-to-image.json",
+    "/api-manual/image-series/google-nano-banana-edit.json",
+    "/api-manual/image-series/bytedance-seedream-v4-text-to-image.json",
+    "/api-manual/image-series/bytedance-seedream-v4-edit.json",
+    "/api-manual/image-series/blackforestlabs-flux-kontext-pro-text-to-image.json",
+    "/api-manual/image-series/blackforestlabs-flux-kontext-pro.json",
+    "/api-manual/image-series/blackforestlabs-flux-kontext-max-text-to-image.json",
+    "/api-manual/image-series/blackforestlabs-flux-kontext-max.json",
+    "/api-manual/music-series/elevenlabs-tts-eleven-v3.json",
+    "/api-manual/music-series/elevenlabs-tts-turbo-v2-5.json",
+    "/api-manual/music-series/elevenlabs-music.json",
+    "/api-manual/music-series/google-gemini-3-1-flash-text-to-speech.json",
+    "/api-manual/music-series/xai-tts-v1.json",
+    "/api-manual/music-series/minimax-music-2-6.json",
+    "/api-manual/3d-series/meshy-v6-text-to-3d.json",
+    "/api-manual/3d-series/meshy-v6-image-to-3d.json",
+    "/api-manual/3d-series/meshy-v6-multi-image-to-3d.json",
+    "/api-manual/3d-series/hunyuan-3d-v3-1-pro-text-to-3d.json",
+    "/api-manual/3d-series/hunyuan-3d-v3-1-pro-image-to-3d.json",
+    "/api-manual/3d-series/hunyuan-3d-v3-1-rapid-text-to-3d.json",
+    "/api-manual/3d-series/hunyuan-3d-v3-1-rapid-image-to-3d.json",
+    "/api-manual/3d-series/tripo3d-h3-1-text-to-3d.json",
+    "/api-manual/3d-series/tripo3d-h3-1-image-to-3d.json",
+    "/api-manual/3d-series/tripo3d-h3-1-multiview-to-3d.json",
+    "/api-manual/3d-series/tripo3d-p1-text-to-3d.json",
+    "/api-manual/3d-series/tripo3d-p1-image-to-3d.json"
   ],
   "navigation": {
     "tabs": [
@@ -125,7 +268,8 @@
             "group": "Overview",
             "pages": [
               "api-manual/quickstart",
-              "api-manual/error-codes"
+              "api-manual/error-codes",
+              "api-manual/workflow-guide"
             ]
           },
           {
@@ -193,6 +337,212 @@
                 "group": "Grok (xAI)",
                 "pages": [
                   "api-manual/image-series/grok-imagine-image"
+                ]
+              },
+              {
+                "group": "Grok Imagine",
+                "pages": [
+                  "api-manual/image-series/xai-grok-imagine-image-text-to-image",
+                  "api-manual/image-series/xai-grok-imagine-image-edit"
+                ]
+              },
+              {
+                "group": "Grok Imagine Image 2.0",
+                "pages": [
+                  "api-manual/image-series/xai-grok-imagine-image-v2-0-text-to-image",
+                  "api-manual/image-series/xai-grok-imagine-image-v2-0-edit"
+                ]
+              },
+              {
+                "group": "Nano Banana 2 Lite",
+                "pages": [
+                  "api-manual/image-series/google-nano-banana-2-lite-text-to-image",
+                  "api-manual/image-series/google-nano-banana-2-lite-edit"
+                ]
+              },
+              {
+                "group": "Kling O3 Image",
+                "pages": [
+                  "api-manual/image-series/kwaivgi-kling-image-o3-text-to-image",
+                  "api-manual/image-series/kwaivgi-kling-image-o3-edit"
+                ]
+              },
+              {
+                "group": "Kling O1 Image",
+                "pages": [
+                  "api-manual/image-series/kwaivgi-kling-image-o1"
+                ]
+              },
+              {
+                "group": "Wan 2.7 Image",
+                "pages": [
+                  "api-manual/image-series/alibaba-wan-2-7-text-to-image",
+                  "api-manual/image-series/alibaba-wan-2-7-image-edit",
+                  "api-manual/image-series/alibaba-wan-2-7-text-to-image-pro",
+                  "api-manual/image-series/alibaba-wan-2-7-image-edit-pro"
+                ]
+              },
+              {
+                "group": "Grok Imagine Image Quality",
+                "pages": [
+                  "api-manual/image-series/xai-grok-imagine-image-quality-text-to-image",
+                  "api-manual/image-series/xai-grok-imagine-image-quality-edit"
+                ]
+              },
+              {
+                "group": "GPT Image 1.5",
+                "pages": [
+                  "api-manual/image-series/openai-gpt-image-1-5-text-to-image",
+                  "api-manual/image-series/openai-gpt-image-1-5-edit"
+                ]
+              },
+              {
+                "group": "Seedream 4.5",
+                "pages": [
+                  "api-manual/image-series/bytedance-seedream-v4-5-text-to-image",
+                  "api-manual/image-series/bytedance-seedream-v4-5-edit"
+                ]
+              },
+              {
+                "group": "Seedream 5.0 Lite",
+                "pages": [
+                  "api-manual/image-series/bytedance-seedream-v5-lite-text-to-image",
+                  "api-manual/image-series/bytedance-seedream-v5-lite-edit"
+                ]
+              },
+              {
+                "group": "FLUX.2",
+                "pages": [
+                  "api-manual/image-series/blackforestlabs-flux-2-pro-text-to-image",
+                  "api-manual/image-series/blackforestlabs-flux-2-pro-edit",
+                  "api-manual/image-series/blackforestlabs-flux-2-flex-text-to-image",
+                  "api-manual/image-series/blackforestlabs-flux-2-flex-edit"
+                ]
+              },
+              {
+                "group": "Nano Banana",
+                "pages": [
+                  "api-manual/image-series/google-nano-banana-text-to-image",
+                  "api-manual/image-series/google-nano-banana-edit"
+                ]
+              },
+              {
+                "group": "Seedream 4",
+                "pages": [
+                  "api-manual/image-series/bytedance-seedream-v4-text-to-image",
+                  "api-manual/image-series/bytedance-seedream-v4-edit"
+                ]
+              },
+              {
+                "group": "Flux Kontext",
+                "pages": [
+                  "api-manual/image-series/blackforestlabs-flux-kontext-pro-text-to-image",
+                  "api-manual/image-series/blackforestlabs-flux-kontext-pro",
+                  "api-manual/image-series/blackforestlabs-flux-kontext-max-text-to-image",
+                  "api-manual/image-series/blackforestlabs-flux-kontext-max"
+                ]
+              },
+              {
+                "group": "Grok Imagine Workflows",
+                "pages": [
+                  "api-manual/image-series/xai-grok-imagine-image-text-to-image",
+                  "api-manual/image-series/xai-grok-imagine-image-edit"
+                ]
+              },
+              {
+                "group": "Grok Imagine Image 2.0 Workflows",
+                "pages": [
+                  "api-manual/image-series/xai-grok-imagine-image-v2-0-text-to-image",
+                  "api-manual/image-series/xai-grok-imagine-image-v2-0-edit"
+                ]
+              },
+              {
+                "group": "Nano Banana 2 Lite Workflows",
+                "pages": [
+                  "api-manual/image-series/google-nano-banana-2-lite-text-to-image",
+                  "api-manual/image-series/google-nano-banana-2-lite-edit"
+                ]
+              },
+              {
+                "group": "Kling O3 Image Workflows",
+                "pages": [
+                  "api-manual/image-series/kwaivgi-kling-image-o3-text-to-image",
+                  "api-manual/image-series/kwaivgi-kling-image-o3-edit"
+                ]
+              },
+              {
+                "group": "Kling O1 Image Workflows",
+                "pages": [
+                  "api-manual/image-series/kwaivgi-kling-image-o1"
+                ]
+              },
+              {
+                "group": "Wan 2.7 Image Workflows",
+                "pages": [
+                  "api-manual/image-series/alibaba-wan-2-7-text-to-image",
+                  "api-manual/image-series/alibaba-wan-2-7-image-edit",
+                  "api-manual/image-series/alibaba-wan-2-7-text-to-image-pro",
+                  "api-manual/image-series/alibaba-wan-2-7-image-edit-pro"
+                ]
+              },
+              {
+                "group": "Grok Imagine Image Quality Workflows",
+                "pages": [
+                  "api-manual/image-series/xai-grok-imagine-image-quality-text-to-image",
+                  "api-manual/image-series/xai-grok-imagine-image-quality-edit"
+                ]
+              },
+              {
+                "group": "GPT Image 1.5 Workflows",
+                "pages": [
+                  "api-manual/image-series/openai-gpt-image-1-5-text-to-image",
+                  "api-manual/image-series/openai-gpt-image-1-5-edit"
+                ]
+              },
+              {
+                "group": "Seedream 4.5 Workflows",
+                "pages": [
+                  "api-manual/image-series/bytedance-seedream-v4-5-text-to-image",
+                  "api-manual/image-series/bytedance-seedream-v4-5-edit"
+                ]
+              },
+              {
+                "group": "Seedream 5.0 Lite Workflows",
+                "pages": [
+                  "api-manual/image-series/bytedance-seedream-v5-lite-text-to-image",
+                  "api-manual/image-series/bytedance-seedream-v5-lite-edit"
+                ]
+              },
+              {
+                "group": "FLUX.2 Workflows",
+                "pages": [
+                  "api-manual/image-series/blackforestlabs-flux-2-pro-text-to-image",
+                  "api-manual/image-series/blackforestlabs-flux-2-pro-edit",
+                  "api-manual/image-series/blackforestlabs-flux-2-flex-text-to-image",
+                  "api-manual/image-series/blackforestlabs-flux-2-flex-edit"
+                ]
+              },
+              {
+                "group": "Nano Banana Workflows",
+                "pages": [
+                  "api-manual/image-series/google-nano-banana-text-to-image",
+                  "api-manual/image-series/google-nano-banana-edit"
+                ]
+              },
+              {
+                "group": "Seedream 4 Workflows",
+                "pages": [
+                  "api-manual/image-series/bytedance-seedream-v4-text-to-image",
+                  "api-manual/image-series/bytedance-seedream-v4-edit"
+                ]
+              },
+              {
+                "group": "Flux Kontext Workflows",
+                "pages": [
+                  "api-manual/image-series/blackforestlabs-flux-kontext-pro-text-to-image",
+                  "api-manual/image-series/blackforestlabs-flux-kontext-pro",
+                  "api-manual/image-series/blackforestlabs-flux-kontext-max-text-to-image",
+                  "api-manual/image-series/blackforestlabs-flux-kontext-max"
                 ]
               }
             ]
@@ -293,6 +643,470 @@
                   "api-manual/video-series/seedance-1-5-pro",
                   "api-manual/video-series/seedance-1.0-pro"
                 ]
+              },
+              {
+                "group": "Gemini Omni 1.1 Flash",
+                "pages": [
+                  "api-manual/video-series/google-gemini-omni-1-1-flash-text-to-video",
+                  "api-manual/video-series/google-gemini-omni-1-1-flash-image-to-video",
+                  "api-manual/video-series/google-gemini-omni-1-1-flash-reference-to-video",
+                  "api-manual/video-series/google-gemini-omni-1-1-flash-video-edit"
+                ]
+              },
+              {
+                "group": "Wan 3.0",
+                "pages": [
+                  "api-manual/video-series/alibaba-wan-3-0-text-to-video",
+                  "api-manual/video-series/alibaba-wan-3-0-image-to-video",
+                  "api-manual/video-series/alibaba-wan-3-0-reference-to-video"
+                ]
+              },
+              {
+                "group": "Wan 3.0 Video Prime",
+                "pages": [
+                  "api-manual/video-series/alibaba-wan-3-0-prime-text-to-video",
+                  "api-manual/video-series/alibaba-wan-3-0-prime-image-to-video",
+                  "api-manual/video-series/alibaba-wan-3-0-prime-reference-to-video"
+                ]
+              },
+              {
+                "group": "FLUX 3",
+                "pages": [
+                  "api-manual/video-series/blackforestlabs-flux-3-text-to-video",
+                  "api-manual/video-series/blackforestlabs-flux-3-image-to-video",
+                  "api-manual/video-series/blackforestlabs-flux-3-first-last-frame-to-video",
+                  "api-manual/video-series/blackforestlabs-flux-3-extend-video",
+                  "api-manual/video-series/blackforestlabs-flux-3-keyframes-to-video"
+                ]
+              },
+              {
+                "group": "Kling 3.0 Turbo",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-v3-turbo-std-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-turbo-std-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-turbo-pro-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-turbo-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Omni Flash",
+                "pages": [
+                  "api-manual/video-series/google-gemini-omni-flash-text-to-video",
+                  "api-manual/video-series/google-gemini-omni-flash-image-to-video",
+                  "api-manual/video-series/google-gemini-omni-flash-reference-to-video",
+                  "api-manual/video-series/google-gemini-omni-flash-video-edit"
+                ]
+              },
+              {
+                "group": "Kling Avatar 2.0",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-video-ai-avatar-v2-standard",
+                  "api-manual/video-series/kwaivgi-kling-video-ai-avatar-v2-pro"
+                ]
+              },
+              {
+                "group": "Happy Horse 1.1",
+                "pages": [
+                  "api-manual/video-series/alibaba-happyhorse-1-1-text-to-video",
+                  "api-manual/video-series/alibaba-happyhorse-1-1-image-to-video",
+                  "api-manual/video-series/alibaba-happyhorse-1-1-reference-to-video"
+                ]
+              },
+              {
+                "group": "Wan 2.7 Video",
+                "pages": [
+                  "api-manual/video-series/alibaba-wan-2-7-text-to-video",
+                  "api-manual/video-series/alibaba-wan-2-7-image-to-video",
+                  "api-manual/video-series/alibaba-wan-2-7-reference-to-video",
+                  "api-manual/video-series/alibaba-wan-2-7-video-edit"
+                ]
+              },
+              {
+                "group": "Kling O3",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-video-o3-std-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-std-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-pro-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-pro-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-4k-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-4k-image-to-video"
+                ]
+              },
+              {
+                "group": "Veo 3.1 Official",
+                "pages": [
+                  "api-manual/video-series/google-veo3-1-text-to-video",
+                  "api-manual/video-series/google-veo3-1-image-to-video",
+                  "api-manual/video-series/google-veo3-1-fast-text-to-video",
+                  "api-manual/video-series/google-veo3-1-fast-image-to-video",
+                  "api-manual/video-series/google-veo3-1-lite-text-to-video",
+                  "api-manual/video-series/google-veo3-1-lite-image-to-video"
+                ]
+              },
+              {
+                "group": "Happy Horse",
+                "pages": [
+                  "api-manual/video-series/alibaba-happyhorse-1-0-text-to-video",
+                  "api-manual/video-series/alibaba-happyhorse-1-0-image-to-video",
+                  "api-manual/video-series/alibaba-happyhorse-1-0-reference-to-video",
+                  "api-manual/video-series/alibaba-happyhorse-1-0-video-edit"
+                ]
+              },
+              {
+                "group": "Sora 2 Official",
+                "pages": [
+                  "api-manual/video-series/openai-sora-2-text-to-video",
+                  "api-manual/video-series/openai-sora-2-image-to-video",
+                  "api-manual/video-series/openai-sora-2-pro-text-to-video",
+                  "api-manual/video-series/openai-sora-2-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Kling 3.0 Motion Control",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-v3-0-std-motion-control",
+                  "api-manual/video-series/kwaivgi-kling-v3-0-pro-motion-control"
+                ]
+              },
+              {
+                "group": "Kling 2.6 Motion Control",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-v2-6-std-motion-control",
+                  "api-manual/video-series/kwaivgi-kling-v2-6-pro-motion-control"
+                ]
+              },
+              {
+                "group": "Wan 2.6",
+                "pages": [
+                  "api-manual/video-series/alibaba-wan-2-6-text-to-video",
+                  "api-manual/video-series/alibaba-wan-2-6-image-to-video",
+                  "api-manual/video-series/alibaba-wan-2-6-reference-to-video"
+                ]
+              },
+              {
+                "group": "Hailuo 02",
+                "pages": [
+                  "api-manual/video-series/minimax-hailuo-02-standard-text-to-video",
+                  "api-manual/video-series/minimax-hailuo-02-standard-image-to-video",
+                  "api-manual/video-series/minimax-hailuo-02-pro-text-to-video",
+                  "api-manual/video-series/minimax-hailuo-02-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Seedance 1.0 Pro",
+                "pages": [
+                  "api-manual/video-series/bytedance-seedance-v1-pro-text-to-video",
+                  "api-manual/video-series/bytedance-seedance-v1-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Wan Animate",
+                "pages": [
+                  "api-manual/video-series/alibaba-wan-v2-2-14b-animate-move",
+                  "api-manual/video-series/alibaba-wan-v2-2-14b-animate-replace"
+                ]
+              },
+              {
+                "group": "Hailuo 2.3",
+                "pages": [
+                  "api-manual/video-series/minimax-hailuo-2-3-standard-text-to-video",
+                  "api-manual/video-series/minimax-hailuo-2-3-standard-image-to-video",
+                  "api-manual/video-series/minimax-hailuo-2-3-pro-text-to-video",
+                  "api-manual/video-series/minimax-hailuo-2-3-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Kling 1.6",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-video-v1-6-standard-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-v1-6-standard-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-v1-6-pro-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-v1-6-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Kling 2.1",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-video-v2-1-standard-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-v2-1-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Kling 2.5 Turbo Pro",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Wan 2.5",
+                "pages": [
+                  "api-manual/video-series/alibaba-wan-2-5-text-to-video",
+                  "api-manual/video-series/alibaba-wan-2-5-image-to-video"
+                ]
+              },
+              {
+                "group": "Kling 3.0",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-v3-0-std-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-0-std-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-0-pro-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-0-pro-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-0-4k-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-0-4k-image-to-video"
+                ]
+              },
+              {
+                "group": "Seedance 1.5 Pro",
+                "pages": [
+                  "api-manual/video-series/bytedance-seedance-v1-5-pro-text-to-video",
+                  "api-manual/video-series/bytedance-seedance-v1-5-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Grok Imagine Video 1.5",
+                "pages": [
+                  "api-manual/video-series/xai-grok-imagine-video-v1-5-image-to-video"
+                ]
+              },
+              {
+                "group": "Grok Imagine",
+                "pages": [
+                  "api-manual/video-series/xai-grok-imagine-video-text-to-video",
+                  "api-manual/video-series/xai-grok-imagine-video-image-to-video"
+                ]
+              },
+              {
+                "group": "Gemini Omni 1.1 Flash Workflows",
+                "pages": [
+                  "api-manual/video-series/google-gemini-omni-1-1-flash-text-to-video",
+                  "api-manual/video-series/google-gemini-omni-1-1-flash-image-to-video",
+                  "api-manual/video-series/google-gemini-omni-1-1-flash-reference-to-video",
+                  "api-manual/video-series/google-gemini-omni-1-1-flash-video-edit"
+                ]
+              },
+              {
+                "group": "Wan 3.0 Workflows",
+                "pages": [
+                  "api-manual/video-series/alibaba-wan-3-0-text-to-video",
+                  "api-manual/video-series/alibaba-wan-3-0-image-to-video",
+                  "api-manual/video-series/alibaba-wan-3-0-reference-to-video"
+                ]
+              },
+              {
+                "group": "Wan 3.0 Video Prime Workflows",
+                "pages": [
+                  "api-manual/video-series/alibaba-wan-3-0-prime-text-to-video",
+                  "api-manual/video-series/alibaba-wan-3-0-prime-image-to-video",
+                  "api-manual/video-series/alibaba-wan-3-0-prime-reference-to-video"
+                ]
+              },
+              {
+                "group": "FLUX 3 Workflows",
+                "pages": [
+                  "api-manual/video-series/blackforestlabs-flux-3-text-to-video",
+                  "api-manual/video-series/blackforestlabs-flux-3-image-to-video",
+                  "api-manual/video-series/blackforestlabs-flux-3-first-last-frame-to-video",
+                  "api-manual/video-series/blackforestlabs-flux-3-extend-video",
+                  "api-manual/video-series/blackforestlabs-flux-3-keyframes-to-video"
+                ]
+              },
+              {
+                "group": "Kling 3.0 Turbo Workflows",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-v3-turbo-std-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-turbo-std-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-turbo-pro-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-turbo-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Omni Flash Workflows",
+                "pages": [
+                  "api-manual/video-series/google-gemini-omni-flash-text-to-video",
+                  "api-manual/video-series/google-gemini-omni-flash-image-to-video",
+                  "api-manual/video-series/google-gemini-omni-flash-reference-to-video",
+                  "api-manual/video-series/google-gemini-omni-flash-video-edit"
+                ]
+              },
+              {
+                "group": "Kling Avatar 2.0 Workflows",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-video-ai-avatar-v2-standard",
+                  "api-manual/video-series/kwaivgi-kling-video-ai-avatar-v2-pro"
+                ]
+              },
+              {
+                "group": "Happy Horse 1.1 Workflows",
+                "pages": [
+                  "api-manual/video-series/alibaba-happyhorse-1-1-text-to-video",
+                  "api-manual/video-series/alibaba-happyhorse-1-1-image-to-video",
+                  "api-manual/video-series/alibaba-happyhorse-1-1-reference-to-video"
+                ]
+              },
+              {
+                "group": "Wan 2.7 Video Workflows",
+                "pages": [
+                  "api-manual/video-series/alibaba-wan-2-7-text-to-video",
+                  "api-manual/video-series/alibaba-wan-2-7-image-to-video",
+                  "api-manual/video-series/alibaba-wan-2-7-reference-to-video",
+                  "api-manual/video-series/alibaba-wan-2-7-video-edit"
+                ]
+              },
+              {
+                "group": "Kling O3 Workflows",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-video-o3-std-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-std-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-pro-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-pro-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-4k-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-4k-image-to-video"
+                ]
+              },
+              {
+                "group": "Veo 3.1 Official Workflows",
+                "pages": [
+                  "api-manual/video-series/google-veo3-1-text-to-video",
+                  "api-manual/video-series/google-veo3-1-image-to-video",
+                  "api-manual/video-series/google-veo3-1-fast-text-to-video",
+                  "api-manual/video-series/google-veo3-1-fast-image-to-video",
+                  "api-manual/video-series/google-veo3-1-lite-text-to-video",
+                  "api-manual/video-series/google-veo3-1-lite-image-to-video"
+                ]
+              },
+              {
+                "group": "Happy Horse Workflows",
+                "pages": [
+                  "api-manual/video-series/alibaba-happyhorse-1-0-text-to-video",
+                  "api-manual/video-series/alibaba-happyhorse-1-0-image-to-video",
+                  "api-manual/video-series/alibaba-happyhorse-1-0-reference-to-video",
+                  "api-manual/video-series/alibaba-happyhorse-1-0-video-edit"
+                ]
+              },
+              {
+                "group": "Sora 2 Official Workflows",
+                "pages": [
+                  "api-manual/video-series/openai-sora-2-text-to-video",
+                  "api-manual/video-series/openai-sora-2-image-to-video",
+                  "api-manual/video-series/openai-sora-2-pro-text-to-video",
+                  "api-manual/video-series/openai-sora-2-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Kling 3.0 Motion Control Workflows",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-v3-0-std-motion-control",
+                  "api-manual/video-series/kwaivgi-kling-v3-0-pro-motion-control"
+                ]
+              },
+              {
+                "group": "Kling 2.6 Motion Control Workflows",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-v2-6-std-motion-control",
+                  "api-manual/video-series/kwaivgi-kling-v2-6-pro-motion-control"
+                ]
+              },
+              {
+                "group": "Wan 2.6 Workflows",
+                "pages": [
+                  "api-manual/video-series/alibaba-wan-2-6-text-to-video",
+                  "api-manual/video-series/alibaba-wan-2-6-image-to-video",
+                  "api-manual/video-series/alibaba-wan-2-6-reference-to-video"
+                ]
+              },
+              {
+                "group": "Hailuo 02 Workflows",
+                "pages": [
+                  "api-manual/video-series/minimax-hailuo-02-standard-text-to-video",
+                  "api-manual/video-series/minimax-hailuo-02-standard-image-to-video",
+                  "api-manual/video-series/minimax-hailuo-02-pro-text-to-video",
+                  "api-manual/video-series/minimax-hailuo-02-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Seedance 1.0 Pro Workflows",
+                "pages": [
+                  "api-manual/video-series/bytedance-seedance-v1-pro-text-to-video",
+                  "api-manual/video-series/bytedance-seedance-v1-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Wan Animate Workflows",
+                "pages": [
+                  "api-manual/video-series/alibaba-wan-v2-2-14b-animate-move",
+                  "api-manual/video-series/alibaba-wan-v2-2-14b-animate-replace"
+                ]
+              },
+              {
+                "group": "Hailuo 2.3 Workflows",
+                "pages": [
+                  "api-manual/video-series/minimax-hailuo-2-3-standard-text-to-video",
+                  "api-manual/video-series/minimax-hailuo-2-3-standard-image-to-video",
+                  "api-manual/video-series/minimax-hailuo-2-3-pro-text-to-video",
+                  "api-manual/video-series/minimax-hailuo-2-3-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Kling 1.6 Workflows",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-video-v1-6-standard-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-v1-6-standard-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-v1-6-pro-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-v1-6-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Kling 2.1 Workflows",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-video-v2-1-standard-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-v2-1-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Kling 2.5 Turbo Pro Workflows",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Wan 2.5 Workflows",
+                "pages": [
+                  "api-manual/video-series/alibaba-wan-2-5-text-to-video",
+                  "api-manual/video-series/alibaba-wan-2-5-image-to-video"
+                ]
+              },
+              {
+                "group": "Kling 3.0 Workflows",
+                "pages": [
+                  "api-manual/video-series/kwaivgi-kling-v3-0-std-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-0-std-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-0-pro-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-0-pro-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-0-4k-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v3-0-4k-image-to-video"
+                ]
+              },
+              {
+                "group": "Seedance 1.5 Pro Workflows",
+                "pages": [
+                  "api-manual/video-series/bytedance-seedance-v1-5-pro-text-to-video",
+                  "api-manual/video-series/bytedance-seedance-v1-5-pro-image-to-video"
+                ]
+              },
+              {
+                "group": "Grok Imagine Video 1.5 Workflows",
+                "pages": [
+                  "api-manual/video-series/xai-grok-imagine-video-v1-5-image-to-video"
+                ]
+              },
+              {
+                "group": "Grok Imagine Workflows",
+                "pages": [
+                  "api-manual/video-series/xai-grok-imagine-video-text-to-video",
+                  "api-manual/video-series/xai-grok-imagine-video-image-to-video"
+                ]
               }
             ]
           },
@@ -322,7 +1136,148 @@
               },
               "api-manual/music-series/create-music-video",
               "api-manual/music-series/query-music-detail",
-              "api-manual/music-series/music-webhook"
+              "api-manual/music-series/music-webhook",
+              {
+                "group": "ElevenLabs V3 TTS",
+                "pages": [
+                  "api-manual/music-series/elevenlabs-tts-eleven-v3"
+                ]
+              },
+              {
+                "group": "ElevenLabs TTS Turbo v2.5",
+                "pages": [
+                  "api-manual/music-series/elevenlabs-tts-turbo-v2-5"
+                ]
+              },
+              {
+                "group": "ElevenLabs Music",
+                "pages": [
+                  "api-manual/music-series/elevenlabs-music"
+                ]
+              },
+              {
+                "group": "Gemini 3.1 Flash TTS",
+                "pages": [
+                  "api-manual/music-series/google-gemini-3-1-flash-text-to-speech"
+                ]
+              },
+              {
+                "group": "xAI TTS 1",
+                "pages": [
+                  "api-manual/music-series/xai-tts-v1"
+                ]
+              },
+              {
+                "group": "MiniMax Music 2.6",
+                "pages": [
+                  "api-manual/music-series/minimax-music-2-6"
+                ]
+              },
+              {
+                "group": "ElevenLabs V3 TTS Workflows",
+                "pages": [
+                  "api-manual/music-series/elevenlabs-tts-eleven-v3"
+                ]
+              },
+              {
+                "group": "ElevenLabs TTS Turbo v2.5 Workflows",
+                "pages": [
+                  "api-manual/music-series/elevenlabs-tts-turbo-v2-5"
+                ]
+              },
+              {
+                "group": "ElevenLabs Music Workflows",
+                "pages": [
+                  "api-manual/music-series/elevenlabs-music"
+                ]
+              },
+              {
+                "group": "Gemini 3.1 Flash TTS Workflows",
+                "pages": [
+                  "api-manual/music-series/google-gemini-3-1-flash-text-to-speech"
+                ]
+              },
+              {
+                "group": "xAI TTS 1 Workflows",
+                "pages": [
+                  "api-manual/music-series/xai-tts-v1"
+                ]
+              },
+              {
+                "group": "MiniMax Music 2.6 Workflows",
+                "pages": [
+                  "api-manual/music-series/minimax-music-2-6"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "3D Series",
+            "pages": [
+              {
+                "group": "Meshy 6 3D",
+                "pages": [
+                  "api-manual/3d-series/meshy-v6-text-to-3d",
+                  "api-manual/3d-series/meshy-v6-image-to-3d",
+                  "api-manual/3d-series/meshy-v6-multi-image-to-3d"
+                ]
+              },
+              {
+                "group": "Hunyuan 3D v3.1",
+                "pages": [
+                  "api-manual/3d-series/hunyuan-3d-v3-1-pro-text-to-3d",
+                  "api-manual/3d-series/hunyuan-3d-v3-1-pro-image-to-3d",
+                  "api-manual/3d-series/hunyuan-3d-v3-1-rapid-text-to-3d",
+                  "api-manual/3d-series/hunyuan-3d-v3-1-rapid-image-to-3d"
+                ]
+              },
+              {
+                "group": "Tripo3D H3.1",
+                "pages": [
+                  "api-manual/3d-series/tripo3d-h3-1-text-to-3d",
+                  "api-manual/3d-series/tripo3d-h3-1-image-to-3d",
+                  "api-manual/3d-series/tripo3d-h3-1-multiview-to-3d"
+                ]
+              },
+              {
+                "group": "Tripo3D P1",
+                "pages": [
+                  "api-manual/3d-series/tripo3d-p1-text-to-3d",
+                  "api-manual/3d-series/tripo3d-p1-image-to-3d"
+                ]
+              },
+              {
+                "group": "Meshy 6 3D Workflows",
+                "pages": [
+                  "api-manual/3d-series/meshy-v6-text-to-3d",
+                  "api-manual/3d-series/meshy-v6-image-to-3d",
+                  "api-manual/3d-series/meshy-v6-multi-image-to-3d"
+                ]
+              },
+              {
+                "group": "Hunyuan 3D v3.1 Workflows",
+                "pages": [
+                  "api-manual/3d-series/hunyuan-3d-v3-1-pro-text-to-3d",
+                  "api-manual/3d-series/hunyuan-3d-v3-1-pro-image-to-3d",
+                  "api-manual/3d-series/hunyuan-3d-v3-1-rapid-text-to-3d",
+                  "api-manual/3d-series/hunyuan-3d-v3-1-rapid-image-to-3d"
+                ]
+              },
+              {
+                "group": "Tripo3D H3.1 Workflows",
+                "pages": [
+                  "api-manual/3d-series/tripo3d-h3-1-text-to-3d",
+                  "api-manual/3d-series/tripo3d-h3-1-image-to-3d",
+                  "api-manual/3d-series/tripo3d-h3-1-multiview-to-3d"
+                ]
+              },
+              {
+                "group": "Tripo3D P1 Workflows",
+                "pages": [
+                  "api-manual/3d-series/tripo3d-p1-text-to-3d",
+                  "api-manual/3d-series/tripo3d-p1-image-to-3d"
+                ]
+              }
             ]
           },
           {

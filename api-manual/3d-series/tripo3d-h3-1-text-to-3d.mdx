@@ -1,0 +1,29 @@
+---
+title: "Tripo3D H3.1 Text to 3D"
+description: "Create textured 3D objects from text with Tripo3D H3.1, with control over mesh detail, surface quality, and PBR materials."
+icon: "cube"
+openapi: "/api-manual/3d-series/tripo3d-h3-1-text-to-3d.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `tripo3d/h3.1/text-to-3d` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `prompt`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- Texture quality, detailed geometry, and quad topology affect usage. All returned geometry, previews, textures, and animation artifacts remain in the files array.
+- Read every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `negative_prompt`, `face_limit`, `texture`, `pbr`, `model_seed`, `image_seed`, `texture_seed`, `texture_quality`, `geometry_quality`, `auto_size`, `quad`. See the request schema for accepted values and defaults.

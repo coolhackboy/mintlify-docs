@@ -1,0 +1,27 @@
+---
+title: "Grok Imagine Video 1.5 Image to Video"
+description: "Turn a reference image into a video with Grok Imagine Video 1.5, with output up to 1080p and clips from one to fifteen seconds long."
+icon: "video"
+openapi: "/api-manual/video-series/xai-grok-imagine-video-v1-5-image-to-video.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `xai/grok-imagine-video-v1.5/image-to-video` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `duration`, `image_urls`, `prompt`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `resolution`, `aspect_ratio`. See the request schema for accepted values and defaults.

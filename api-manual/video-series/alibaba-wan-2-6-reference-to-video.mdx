@@ -1,0 +1,27 @@
+---
+title: "Wan 2.6 Reference to Video"
+description: "Use reference videos to guide new scenes with Wan 2.6, with support for multiple shots and video output up to 1080p."
+icon: "video"
+openapi: "/api-manual/video-series/alibaba-wan-2-6-reference-to-video.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `alibaba/wan-2.6/reference-to-video` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `duration`, `prompt`, `resolution`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `video_urls`, `multi_shots`. See the request schema for accepted values and defaults.

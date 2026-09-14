@@ -70,3 +70,14 @@ Text-to-video, image-to-video, and reference-to-video use the requested `duratio
 - `reference_image_urls` selects reference-to-video unless `video_url` is present, in which case it is treated as optional video-edit reference imagery.
 - For text-to-video and reference-to-video, omit `video_url` and use `aspect_ratio`.
 - For video-edit, omit `duration`; the backend probes the source video duration for validation and duration-based billing.
+
+{/* poyo-20260910:start */}
+## Workflow IDs
+
+Existing IDs remain available. New integrations can select a dedicated workflow:
+
+- [alibaba/happyhorse-1.0/text-to-video](/api-manual/video-series/alibaba-happyhorse-1-0-text-to-video)
+- [alibaba/happyhorse-1.0/image-to-video](/api-manual/video-series/alibaba-happyhorse-1-0-image-to-video)
+- [alibaba/happyhorse-1.0/reference-to-video](/api-manual/video-series/alibaba-happyhorse-1-0-reference-to-video)
+- [alibaba/happyhorse-1.0/video-edit](/api-manual/video-series/alibaba-happyhorse-1-0-video-edit)
+{/* poyo-20260910:end */}

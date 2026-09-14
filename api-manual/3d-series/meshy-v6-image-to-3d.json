@@ -1,0 +1,553 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Meshy 6 Image to 3D",
+    "description": "Turn a reference image into a textured 3D asset with Meshy 6, with remeshing, material controls, and optional rigging and animation.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "3D Series"
+        ],
+        "summary": "Meshy 6 Image to 3D",
+        "operationId": "submit_meshy_v6_image_to_3d",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nAnimation requires rigging. Texture prompt and texture image are mutually exclusive. Text-only options are unavailable for image workflows.\n\nRead every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "enum": [
+                      "meshy/v6/image-to-3d"
+                    ],
+                    "example": "meshy/v6/image-to-3d",
+                    "description": "Vidgo public model ID. Must be `meshy/v6/image-to-3d`."
+                  },
+                  "input": {
+                    "type": "object",
+                    "properties": {
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "Image urls."
+                        },
+                        "minItems": 1,
+                        "maxItems": 1,
+                        "description": "Image urls."
+                      },
+                      "topology": {
+                        "type": "string",
+                        "enum": [
+                          "quad",
+                          "triangle"
+                        ],
+                        "default": "triangle",
+                        "description": "Topology."
+                      },
+                      "target_polycount": {
+                        "type": "integer",
+                        "default": 30000,
+                        "minimum": 1,
+                        "description": "Target polycount."
+                      },
+                      "should_remesh": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Should remesh."
+                      },
+                      "symmetry_mode": {
+                        "type": "string",
+                        "enum": [
+                          "off",
+                          "auto",
+                          "on"
+                        ],
+                        "default": "auto",
+                        "description": "Symmetry mode."
+                      },
+                      "should_texture": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Should texture."
+                      },
+                      "enable_pbr": {
+                        "type": "boolean",
+                        "description": "Enable pbr."
+                      },
+                      "pose_mode": {
+                        "type": "string",
+                        "enum": [
+                          "a-pose",
+                          "t-pose",
+                          ""
+                        ],
+                        "default": "",
+                        "description": "Pose mode."
+                      },
+                      "texture_prompt": {
+                        "type": "string",
+                        "description": "Texture prompt."
+                      },
+                      "texture_image_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "Texture image url."
+                      },
+                      "enable_rigging": {
+                        "type": "boolean",
+                        "description": "Enable rigging."
+                      },
+                      "rigging_height_meters": {
+                        "type": "number",
+                        "default": 1.7,
+                        "description": "Rigging height meters."
+                      },
+                      "enable_animation": {
+                        "type": "boolean",
+                        "description": "Enable animation."
+                      },
+                      "animation_action_id": {
+                        "type": "integer",
+                        "default": 1001,
+                        "description": "Animation action id."
+                      },
+                      "enable_safety_checker": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Enable safety checker."
+                      }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                      "image_urls"
+                    ]
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                  }
+                },
+                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+              },
+              "examples": {
+                "basic": {
+                  "summary": "Basic workflow",
+                  "value": {
+                    "model": "meshy/v6/image-to-3d",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/image.png"
+                      ],
+                      "topology": "triangle",
+                      "target_polycount": 30000,
+                      "should_remesh": true,
+                      "symmetry_mode": "auto",
+                      "should_texture": true,
+                      "pose_mode": "",
+                      "rigging_height_meters": 1.7,
+                      "animation_action_id": 1001,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "Receive a completion callback",
+                  "value": {
+                    "model": "meshy/v6/image-to-3d",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/image.png"
+                      ],
+                      "topology": "triangle",
+                      "target_polycount": 30000,
+                      "should_remesh": true,
+                      "symmetry_mode": "auto",
+                      "should_texture": true,
+                      "pose_mode": "",
+                      "rigging_height_meters": 1.7,
+                      "animation_action_id": 1001,
+                      "enable_safety_checker": true
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-example",
+                    "status": "running",
+                    "created_time": "2026-09-10T08:00:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or disabled model",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate or API key credit limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unable to create the upstream generation task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Model configuration or capability is not approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Use VIDGO_API_KEY."
+      }
+    }
+  }
+}

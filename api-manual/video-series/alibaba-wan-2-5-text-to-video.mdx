@@ -1,0 +1,28 @@
+---
+title: "Wan 2.5 Text to Video"
+description: "Create five-second video scenes from text with Wan 2.5, with audio input and prompt controls to shape the look of each clip."
+icon: "video"
+openapi: "/api-manual/video-series/alibaba-wan-2-5-text-to-video.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `alibaba/wan-2.5/text-to-video` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `aspect_ratio`, `prompt`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- This workflow currently accepts five-second outputs; the longer-duration price is awaiting confirmation.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `duration`, `audio`, `negative_prompt`, `seed`. See the request schema for accepted values and defaults.

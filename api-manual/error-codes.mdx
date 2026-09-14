@@ -6,20 +6,20 @@ icon: "triangle-exclamation"
 
 # Error Codes
 
-This page documents all possible API response codes and error types.
+This page describes common response formats for generation and native Chat Series endpoints. Use the HTTP status and the endpoint-specific error body.
 
 ## Response Format
 
 ### Success Response
 
-When a request is successful, the API returns a response with `code: 200`:
+Generation submission returns a response with `code: 200`. Native Chat Series responses use their protocol-specific format:
 
 ```json
 {
   "code": 200,
   "data": {
     "task_id": "task-unified-1757165031-uyujaw3d",
-    "status": "not_started",
+    "status": "running",
     "created_time": "2025-11-12T10:30:00"
   }
 }
@@ -27,17 +27,17 @@ When a request is successful, the API returns a response with `code: 200`:
 
 ### Error Response
 
-When an error occurs, the API returns a response with the corresponding error code:
+Generation endpoints return the HTTP error status with a detail field. They do not wrap errors in code and error:
 
 ```json
 {
-  "code": 400,
-  "error": {
-    "message": "task_id is required",
-    "type": "validation_error"
-  }
+  "detail": "task_id is required"
 }
 ```
+
+### Native Chat Series Errors
+
+Chat Completions and Responses use an error object; Claude Messages adds type=error; Gemini uses error.code, error.message, and error.status. Authentication failures may still use detail. Upstream error status codes and bodies are forwarded unchanged. Successful JSON responses and SSE events are not wrapped in code and data.
 
 ### Task Failed Response
 
@@ -56,52 +56,37 @@ When a task fails during processing, the response includes `status: "failed"` wi
 }
 ```
 
-## Business Status Codes
+## HTTP Status Codes
 
 ### 200 - Success
 
-Request completed successfully. Check the `status` field in the response to determine task state.
+Request completed successfully. For generation endpoints, check `data.status` to determine task state. Native Chat Series returns its JSON response or SSE stream directly.
 
 ### 400 - Bad Request
 
 The request contains invalid parameters or data.
 
-| Type | Description |
-|------|-------------|
-| `validation_error` | Parameter validation error |
-| `content_moderation_error` | Content moderation error |
-| `content_too_long_error` | Content exceeds maximum length |
-| `file_format_error` | Invalid file format |
-
 **Example:**
 
 ```json
 {
-  "code": 400,
-  "error": {
-    "message": "task_id is required",
-    "type": "validation_error"
-  }
+  "detail": "task_id is required"
 }
 ```
 
+### 401 - Unauthorized
+
+Missing or invalid credentials. Authentication errors use a detail field.
+
 ### 402 - Payment Required
 
-Insufficient account balance or credits.
-
-| Type | Description |
-|------|-------------|
-| `insufficient_credits_error` | Insufficient credits |
+Native Chat Series endpoints use HTTP 402 for insufficient credits. Generation submission uses HTTP 400 for insufficient credits.
 
 **Example:**
 
 ```json
 {
-  "code": 402,
-  "error": {
-    "message": "Insufficient credits to complete this request",
-    "type": "insufficient_credits_error"
-  }
+  "error": {"message": "Insufficient credits", "type": "invalid_request_error", "code": null}
 }
 ```
 
@@ -109,19 +94,11 @@ Insufficient account balance or credits.
 
 Access denied due to permission restrictions.
 
-| Type | Description |
-|------|-------------|
-| `permission_denied_error` | Permission denied |
-
 **Example:**
 
 ```json
 {
-  "code": 403,
-  "error": {
-    "message": "You do not have permission to access this resource",
-    "type": "permission_denied_error"
-  }
+  "detail": "You do not have permission to access this resource"
 }
 ```
 
@@ -129,59 +106,37 @@ Access denied due to permission restrictions.
 
 The requested resource does not exist.
 
-| Type | Description |
-|------|-------------|
-| `resource_not_found_error` | Resource not found |
-
 **Example:**
 
 ```json
 {
-  "code": 404,
-  "error": {
-    "message": "Task not found",
-    "type": "resource_not_found_error"
-  }
+  "detail": "Task not found"
 }
 ```
 
 ### 408 - Request Timeout
 
-The request took too long to process.
-
-| Type | Description |
-|------|-------------|
-| `timeout_error` | Request timeout |
+The request timed out before a response was returned. The timeout middleware returns plain text:
 
 **Example:**
 
-```json
-{
-  "code": 408,
-  "error": {
-    "message": "Request timed out",
-    "type": "timeout_error"
-  }
-}
+```text
+Request timeout
 ```
+
+### 422 - Unprocessable Entity
+
+Malformed JSON or a request body that is not an object may be rejected before endpoint handling. The detail field is an array of validation errors.
 
 ### 429 - Too Many Requests
 
 Rate limit exceeded.
 
-| Type | Description |
-|------|-------------|
-| `rate_limit_error` | Rate limit exceeded |
-
 **Example:**
 
 ```json
 {
-  "code": 429,
-  "error": {
-    "message": "Rate limit exceeded. Please try again later.",
-    "type": "rate_limit_error"
-  }
+  "detail": "Rate limit exceeded. Please try again later."
 }
 ```
 
@@ -189,19 +144,11 @@ Rate limit exceeded.
 
 An unexpected server error occurred.
 
-| Type | Description |
-|------|-------------|
-| `internal_error` | Internal server error |
-
 **Example:**
 
 ```json
 {
-  "code": 500,
-  "error": {
-    "message": "An internal error occurred. Please try again later.",
-    "type": "internal_error"
-  }
+  "detail": "An internal error occurred. Please try again later."
 }
 ```
 
@@ -209,46 +156,30 @@ An unexpected server error occurred.
 
 Upstream service error.
 
-| Type | Description |
-|------|-------------|
-| `upstream_error` | Upstream service error |
-
 **Example:**
 
 ```json
 {
-  "code": 502,
-  "error": {
-    "message": "Upstream service unavailable",
-    "type": "upstream_error"
-  }
+  "detail": "Upstream service unavailable"
 }
 ```
 
 ### 503 - Service Unavailable
 
-The service is temporarily unavailable.
-
-| Type | Description |
-|------|-------------|
-| `service_error` | Service unavailable |
+The model capability or billing configuration is not approved. An unknown or disabled public model normally returns HTTP 404.
 
 **Example:**
 
 ```json
 {
-  "code": 503,
-  "error": {
-    "message": "The server is busy. Please try again later.",
-    "type": "service_error"
-  }
+  "detail": "Model billing configuration is not approved"
 }
 ```
 
 ## Error Handling Best Practices
 
 <Tip>
-**Implement retry logic**: For 500, 502, and 503 errors, implement exponential backoff retry logic.
+**Retry transient failures carefully**: For temporary 500 or 502 errors, use exponential backoff. Retrying submission can create another task. An unapproved model configuration reported as 503 requires a configuration update before retrying.
 </Tip>
 
 <Tip>
@@ -260,5 +191,5 @@ The service is temporarily unavailable.
 </Tip>
 
 <Tip>
-**Monitor credits**: Keep track of your credit balance to avoid 402 errors during critical operations.
+**Monitor credits**: Generation submission reports insufficient credits as HTTP 400; native Chat Series reports HTTP 402.
 </Tip>

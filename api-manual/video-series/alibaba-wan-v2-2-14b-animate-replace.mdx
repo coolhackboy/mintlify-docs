@@ -1,0 +1,28 @@
+---
+title: "Wan Animate Replace"
+description: "Replace the character in a source video using a reference image with Wan Animate, adapting the original performance to a new subject."
+icon: "video"
+openapi: "/api-manual/video-series/alibaba-wan-v2-2-14b-animate-replace.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `alibaba/wan/v2.2-14b/animate/replace` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `image_urls`, `video_url`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- Media inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `resolution`. See the request schema for accepted values and defaults.

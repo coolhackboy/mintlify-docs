@@ -1,0 +1,28 @@
+---
+title: "Hailuo 02 Pro Text to Video"
+description: "Create short scenes from text with Hailuo 02 Pro, with optional prompt refinement to develop the visual direction of a clip."
+icon: "video"
+openapi: "/api-manual/video-series/minimax-hailuo-02-pro-text-to-video.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `minimax/hailuo-02/pro/text-to-video` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `prompt`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- This Pro workflow accepts six-second output and does not accept a resolution field.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `duration`, `prompt_optimizer`. See the request schema for accepted values and defaults.

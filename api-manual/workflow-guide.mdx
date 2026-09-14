@@ -1,0 +1,64 @@
+---
+title: "Additional Models and Generated Files"
+description: "Protocol support for additional chat models and file handling for audio and 3D workflows"
+icon: "book-open"
+---
+
+## Chat model protocol support
+
+Use `https://api.vidgo.ai` and send your API key as `Authorization: Bearer VIDGO_API_KEY`. Claude clients may also use `x-api-key`; Gemini clients may use `x-goog-api-key`.
+
+Select the protocol supported by your model:
+
+| Model | Chat Completions | Responses | Claude Messages | Gemini native |
+|---|:---:|:---:|:---:|:---:|
+| `openai/gpt-6-astra` | Yes | Yes | — | — |
+| `anthropic/claude-fable-5.1` | Yes | — | Yes | — |
+| `xai/grok-4.6` | Yes | Yes | — | — |
+| `google/gemini-3.7-flash` | Yes | — | — | Yes |
+| `google/gemini-3.5-flash` | Yes | — | — | Yes |
+| `anthropic/claude-opus-4.8` | Yes | — | Yes | — |
+| `openai/gpt-5.5` | Yes | Yes | — | — |
+| `openai/gpt-5.4` | Yes | Yes | — | — |
+| `openai/gpt-5.2` | Yes | Yes | — | — |
+| `anthropic/claude-sonnet-4.6` | Yes | — | Yes | — |
+| `anthropic/claude-opus-4.6` | Yes | — | Yes | — |
+
+Both normal JSON responses and SSE streaming are supported. Use the exact model ID from the table with the request format for the corresponding endpoint:
+
+- [Chat Completions](/api-manual/chat-series/chat-completions): `POST /v1/chat/completions`
+- [Responses](/api-manual/chat-series/responses): `POST /v1/responses`
+- [Claude Messages](/api-manual/chat-series/claude-messages): `POST /v1/messages`
+- [Gemini Native Format](/api-manual/chat-series/gemini-native-format): `POST /v1beta/models/{model}:generateContent`
+
+### Example request
+
+```bash
+curl https://api.vidgo.ai/v1/chat/completions \
+  -H "Authorization: Bearer $VIDGO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"openai/gpt-6-astra","messages":[{"role":"user","content":"Hello"}]}'
+```
+
+### Gemini model URLs
+
+Use the complete public ID in the URL, including the provider slash. For example: `/v1beta/models/google/gemini-3.7-flash:generateContent`. Streaming uses `:streamGenerateContent?alt=sse`.
+
+## Audio and 3D generated files
+
+Audio and 3D workflows return a `task_id` through the unified submit API. Retrieve the completed results with [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks).
+
+Process every item in the returned `files` array. Depending on the workflow, results can include audio, model assets, previews, textures, animation files, lyrics, and timestamp files.
+
+| Field | Type | Description |
+|---|---|---|
+| `file_url` | string | URL of the returned file. |
+| `file_type` | string | File category: `image`, `video`, `audio`, `lyrics`, `3d`, or `other`. |
+| `label` | string | Optional label identifying the file. |
+| `format` | string | Optional file format. |
+| `content_type` | string | Optional content type. |
+| `file_name` | string | Optional file name. |
+| `file_size` | integer | Optional file size in bytes. |
+| `metadata` | object | Optional file metadata. |
+
+Metadata fields are optional. Retain them when present, and do not assume that all files have the same type or that the first file is the only result.

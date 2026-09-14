@@ -14,3 +14,14 @@ curl https://api.vidgo.ai/v1/messages \
   -H "Content-Type: application/json" \
   -d '{"model":"claude-sonnet-5","max_tokens":512,"messages":[{"role":"user","content":"Hello"}]}'
 ```
+
+{/* poyo-20260910:start */}
+## Additional supported models
+
+- `anthropic/claude-fable-5.1`
+- `anthropic/claude-opus-4.8`
+- `anthropic/claude-sonnet-4.6`
+- `anthropic/claude-opus-4.6`
+
+Send protocol fields at the root, without a generation input wrapper. messages must be a non-empty array. max_tokens must be a positive integer.
+{/* poyo-20260910:end */}

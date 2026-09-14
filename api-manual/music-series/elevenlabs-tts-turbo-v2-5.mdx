@@ -1,0 +1,29 @@
+---
+title: "ElevenLabs TTS Turbo v2.5"
+description: "Create spoken narration with ElevenLabs Turbo v2.5, shaping pacing, vocal style, and voice similarity with optional text alignment."
+icon: "music"
+openapi: "/api-manual/music-series/elevenlabs-tts-turbo-v2-5.json POST /api/generate/submit"
+---
+
+## Usage Guide
+
+Submit `elevenlabs/tts/turbo-v2.5` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+
+The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+
+## Parameter Details
+
+Required input fields: `text`.
+
+- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
+- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- Usage counts trimmed text in UTF-16 code units. Context fields do not add billable characters.
+- Read every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.
+
+## Developer Notes
+
+Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+
+## Optional parameters
+
+Available input fields: `voice`, `stability`, `similarity_boost`, `style`, `speed`, `timestamps`, `previous_text`, `next_text`, `language_code`, `apply_text_normalization`. See the request schema for accepted values and defaults.

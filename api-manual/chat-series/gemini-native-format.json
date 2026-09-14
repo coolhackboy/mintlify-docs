@@ -1,1 +1,274 @@
-{"openapi":"3.1.0","info":{"title":"Vidgo Gemini Native","version":"1.0.0"},"servers":[{"url":"https://api.vidgo.ai"}],"paths":{"/v1beta/models/{model}:generateContent":{"post":{"summary":"Generate Gemini content","security":[{"bearerAuth":[]},{"googleApiKey":[]}],"parameters":[{"name":"model","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}},"responses":{"200":{"description":"Gemini response"},"400":{"description":"Unsupported model or protocol"}}}},"/v1beta/models/{model}:streamGenerateContent":{"post":{"summary":"Stream Gemini content","security":[{"bearerAuth":[]},{"googleApiKey":[]}],"parameters":[{"name":"model","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}},"responses":{"200":{"description":"SSE stream"},"400":{"description":"Unsupported model or protocol"}}}}},"components":{"securitySchemes":{"bearerAuth":{"type":"http","scheme":"bearer"},"googleApiKey":{"type":"apiKey","in":"header","name":"x-goog-api-key"}}}}
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Vidgo Gemini Native",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "paths": {
+    "/v1beta/models/{model}:generateContent": {
+      "post": {
+        "summary": "Generate Gemini content",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "googleApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "google/gemini-3.7-flash",
+                "google/gemini-3.5-flash"
+              ]
+            },
+            "description": "Complete Vidgo public model ID, including the provider slash."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "properties": {
+                  "contents": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                },
+                "required": [
+                  "contents"
+                ]
+              },
+              "examples": {
+                "workflow": {
+                  "summary": "Vidgo workflow example",
+                  "value": {
+                    "contents": [
+                      {
+                        "role": "user",
+                        "parts": [
+                          {
+                            "text": "Hello"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Gemini response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsupported model or protocol"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          },
+          "402": {
+            "description": "Insufficient credits"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Vendor context not found"
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body"
+          },
+          "429": {
+            "description": "Upstream rate limit exceeded"
+          },
+          "502": {
+            "description": "Upstream connection or response error"
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        },
+        "description": "Uses the native protocol request body, without a generation input wrapper. JSON and SSE response bodies are forwarded from the upstream; returned model names may differ from the Vidgo public ID. Authentication errors may use a detail field; protocol errors use the protocol error shape."
+      }
+    },
+    "/v1beta/models/{model}:streamGenerateContent": {
+      "post": {
+        "summary": "Stream Gemini content",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "googleApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "google/gemini-3.7-flash",
+                "google/gemini-3.5-flash"
+              ]
+            },
+            "description": "Complete Vidgo public model ID, including the provider slash."
+          },
+          {
+            "name": "alt",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "sse"
+              ]
+            },
+            "description": "Optional compatibility parameter; Vidgo always requests SSE for this operation."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "properties": {
+                  "contents": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                },
+                "required": [
+                  "contents"
+                ]
+              },
+              "examples": {
+                "workflow": {
+                  "summary": "Vidgo workflow example",
+                  "value": {
+                    "contents": [
+                      {
+                        "role": "user",
+                        "parts": [
+                          {
+                            "text": "Hello"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SSE stream",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsupported model or protocol"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          },
+          "402": {
+            "description": "Insufficient credits"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Vendor context not found"
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body"
+          },
+          "429": {
+            "description": "Upstream rate limit exceeded"
+          },
+          "502": {
+            "description": "Upstream connection or response error"
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        },
+        "description": "Uses the native protocol request body, without a generation input wrapper. JSON and SSE response bodies are forwarded from the upstream; returned model names may differ from the Vidgo public ID. Authentication errors may use a detail field; protocol errors use the protocol error shape."
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "googleApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-goog-api-key"
+      }
+    }
+  }
+}
