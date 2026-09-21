@@ -17,7 +17,7 @@ Required input fields: `prompt`, `video_urls`.
 
 - Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
 - When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Video editing requires one video in video_urls. Omit duration.
+- Video editing requires exactly one video URL in video_urls; missing or empty arrays are rejected. Omit duration. No source-video duration limit is imposed by this workflow.
 
 ## Developer Notes
 

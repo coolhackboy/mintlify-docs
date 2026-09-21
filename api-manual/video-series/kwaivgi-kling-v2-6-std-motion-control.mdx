@@ -16,9 +16,10 @@ The response contains a task_id. Use [Query Task Status](/api-manual/task-manage
 Required input fields: `character_orientation`, `image_urls`, `video_urls`.
 
 - Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- Blank optional prompts are treated as omitted. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
 - This ID fixes `resolution` to `720p`.
-- Input video must be at least three seconds. The maximum is ten seconds with image orientation or thirty seconds with video orientation. Facial elements require video orientation.
+- Input video must be at least three seconds. The maximum is ten seconds with image orientation or thirty seconds with video orientation. Credits equal the detected duration multiplied by the endpoint rate, with the resulting credits rounded up to a whole number. Omit duration. Null, empty, and whitespace-only prompts are treated as omitted; nonempty prompts are trimmed and limited to 2,500 characters.
+- resolution is optional: Standard defaults to 720p and Pro to 1080p. A resolution from the other tier is rejected. kling_elements is not supported.
 - Media inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.
 
 ## Developer Notes

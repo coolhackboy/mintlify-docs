@@ -23,7 +23,7 @@
         ],
         "summary": "Kling 3.0 Turbo Pro Image to Video",
         "operationId": "submit_kwaivgi_kling_v3_turbo_pro_image_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nEach multi_prompt shot needs a nonblank prompt and positive integer duration. Shot durations must sum to the requested duration. When multi_shots is available, enable it with multi_prompt; multi_shots=true also requires multi_prompt.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nBlank optional prompts are treated as omitted. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\naspect_ratio is ignored in image-to-video mode and is not forwarded; the input images determine the aspect ratio.\n\nprompt is optional and cannot be combined with multi_prompt. Supply one to six shots, each with a nonblank prompt and an optional integer duration from one to fifteen seconds (default five). The shot total must not exceed fifteen seconds. An explicit top-level duration must be three to fifteen seconds and equal the shot total. Omit it to use the shot total, including one- or two-second totals. Without multi_prompt, omitted duration defaults to five seconds. Billing uses the shot total when multi_prompt is provided.",
         "requestBody": {
           "required": true,
           "content": {
@@ -72,7 +72,8 @@
                               "type": "integer",
                               "minimum": 1,
                               "maximum": 15,
-                              "description": "Duration."
+                              "default": 5,
+                              "description": "Shot duration from 1 to 15 seconds; defaults to 5 when omitted."
                             }
                           },
                           "additionalProperties": false,
@@ -96,17 +97,11 @@
                         "minimum": 3,
                         "maximum": 15,
                         "default": 5,
-                        "description": "Duration."
+                        "description": "Explicit duration must be 3–15 seconds. With multi_prompt it must equal the shot total. Omit duration to use the shot total (1–15 seconds); without multi_prompt the default is 5 seconds."
                       },
                       "aspect_ratio": {
                         "type": "string",
-                        "enum": [
-                          "16:9",
-                          "9:16",
-                          "1:1"
-                        ],
-                        "default": "16:9",
-                        "description": "Aspect ratio."
+                        "description": "Ignored in image-to-video mode; the input images determine the aspect ratio."
                       }
                     },
                     "additionalProperties": false,
@@ -131,8 +126,7 @@
                       "image_urls": [
                         "https://example.com/image.png"
                       ],
-                      "duration": 5,
-                      "aspect_ratio": "16:9"
+                      "duration": 5
                     }
                   }
                 },
@@ -144,10 +138,30 @@
                       "image_urls": [
                         "https://example.com/image.png"
                       ],
-                      "duration": 5,
-                      "aspect_ratio": "16:9"
+                      "duration": 5
                     },
                     "callback_url": "https://your-domain.com/callback"
+                  }
+                },
+                "multi_shot": {
+                  "summary": "Two shots with omitted total duration (10 seconds)",
+                  "value": {
+                    "model": "kwaivgi/kling-v3-turbo-pro/image-to-video",
+                    "input": {
+                      "multi_prompt": [
+                        {
+                          "prompt": "A wide shot of a forest.",
+                          "duration": 5
+                        },
+                        {
+                          "prompt": "The camera moves toward a sunlit tree.",
+                          "duration": 5
+                        }
+                      ],
+                      "image_urls": [
+                        "https://example.com/image.png"
+                      ]
+                    }
                   }
                 }
               }

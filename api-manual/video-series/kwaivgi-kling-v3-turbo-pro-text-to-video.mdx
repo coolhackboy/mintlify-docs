@@ -13,11 +13,11 @@ The response contains a task_id. Use [Query Task Status](/api-manual/task-manage
 
 ## Parameter Details
 
-Required input fields: `prompt`.
+No input fields are required; use the request schema and rules below to configure the task.
 
 - Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Each multi_prompt shot needs a nonblank prompt and positive integer duration. Shot durations must sum to the requested duration. When multi_shots is available, enable it with multi_prompt; multi_shots=true also requires multi_prompt.
+- Blank optional prompts are treated as omitted. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- prompt is optional and cannot be combined with multi_prompt. Supply one to six shots, each with a nonblank prompt and an optional integer duration from one to fifteen seconds (default five). The shot total must not exceed fifteen seconds. An explicit top-level duration must be three to fifteen seconds and equal the shot total. Omit it to use the shot total, including one- or two-second totals. Without multi_prompt, omitted duration defaults to five seconds. Billing uses the shot total when multi_prompt is provided.
 
 ## Developer Notes
 
@@ -25,4 +25,4 @@ Keep the task_id until the task reaches finished or failed. Failed tasks return 
 
 ## Optional parameters
 
-Available input fields: `multi_prompt`, `duration`, `aspect_ratio`. See the request schema for accepted values and defaults.
+Available input fields: `prompt`, `multi_prompt`, `duration`, `aspect_ratio`. See the request schema for accepted values and defaults.

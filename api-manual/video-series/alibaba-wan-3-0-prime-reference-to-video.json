@@ -23,7 +23,7 @@
         ],
         "summary": "Wan 3.0 Video Prime Reference to Video",
         "operationId": "submit_alibaba_wan_3_0_prime_reference_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nA prompt and at least one image, video, audio, document, or webpage reference are required. Audio can be the only reference type. Document and webpage references cannot be combined.",
         "requestBody": {
           "required": true,
           "content": {
@@ -85,7 +85,7 @@
                           "format": "uri",
                           "description": "Reference audio urls."
                         },
-                        "description": "Reference audio urls."
+                        "description": "One to five public audio URLs. Audio may be the only reference type; prompt is still required."
                       },
                       "reference_file_urls": {
                         "type": "array",
@@ -198,8 +198,26 @@
                                 "minItems": 1
                               }
                             }
+                          },
+                          {
+                            "required": [
+                              "reference_audio_urls"
+                            ],
+                            "properties": {
+                              "reference_audio_urls": {
+                                "minItems": 1
+                              }
+                            }
                           }
                         ]
+                      },
+                      {
+                        "not": {
+                          "required": [
+                            "reference_file_urls",
+                            "reference_link_urls"
+                          ]
+                        }
                       }
                     ],
                     "required": [

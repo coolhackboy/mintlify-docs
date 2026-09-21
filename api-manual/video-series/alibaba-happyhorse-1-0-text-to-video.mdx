@@ -17,6 +17,7 @@ Required input fields: `prompt`.
 
 - Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
 - When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- Credits are deducted on submission and refunded if the task fails. Reference prompts do not require character1 or character2 markers.
 
 ## Developer Notes
 
@@ -24,4 +25,4 @@ Keep the task_id until the task reaches finished or failed. Failed tasks return 
 
 ## Optional parameters
 
-Available input fields: `aspect_ratio`, `resolution`, `duration`, `audio_setting`, `seed`, `enable_safety_checker`. See the request schema for accepted values and defaults.
+Available input fields: `aspect_ratio`, `resolution`, `duration`, `seed`, `enable_safety_checker`. See the request schema for accepted values and defaults.

@@ -23,7 +23,7 @@
         ],
         "summary": "Veo 3.1 Official Image to Video",
         "operationId": "submit_google_veo3_1_image_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nFirst/last-frame input uses one or two images and generation_type=frame.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nSupply one or two images. Omit generation_type for a single starting image. Two images default to generation_type=frame; explicitly specifying frame requires exactly two images.",
         "requestBody": {
           "required": true,
           "content": {
@@ -65,15 +65,14 @@
                         },
                         "maxItems": 2,
                         "minItems": 1,
-                        "description": "Image urls."
+                        "description": "One starting image, or two images for the first and last frames."
                       },
                       "generation_type": {
                         "type": "string",
                         "enum": [
                           "frame"
                         ],
-                        "default": "frame",
-                        "description": "Generation type."
+                        "description": "Optional. Omit with one image. With two images, defaults to frame; explicitly specifying frame requires exactly two images."
                       },
                       "duration": {
                         "type": "integer",
@@ -83,7 +82,7 @@
                           8
                         ],
                         "default": 8,
-                        "description": "Duration."
+                        "description": "Output duration: 4, 6, or 8 seconds."
                       },
                       "aspect_ratio": {
                         "type": "string",
@@ -131,7 +130,6 @@
                         "https://example.com/image.png"
                       ],
                       "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "generation_type": "frame",
                       "duration": 8,
                       "aspect_ratio": "16:9",
                       "resolution": "720p",
@@ -148,7 +146,6 @@
                         "https://example.com/image.png"
                       ],
                       "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "generation_type": "frame",
                       "duration": 8,
                       "aspect_ratio": "16:9",
                       "resolution": "720p",

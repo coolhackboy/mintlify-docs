@@ -23,7 +23,7 @@
         ],
         "summary": "FLUX 3 Extend Video",
         "operationId": "submit_blackforestlabs_flux_3_extend_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nExtension requires an MP4 of at most 50 MiB and shorter than fifteen seconds.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nProvide a publicly accessible HTTP(S) source video URL. The duration field specifies newly generated output, from five to twenty seconds.",
         "requestBody": {
           "required": true,
           "content": {
@@ -95,7 +95,7 @@
                       "video_url": {
                         "type": "string",
                         "format": "uri",
-                        "description": "Video url."
+                        "description": "Source video URL (flux-3/extend-video only, required). Provide a publicly accessible HTTP(S) video URL."
                       }
                     },
                     "additionalProperties": false

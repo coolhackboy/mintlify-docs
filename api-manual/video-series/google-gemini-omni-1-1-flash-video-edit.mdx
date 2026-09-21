@@ -17,7 +17,7 @@ Required input fields: `prompt`, `reference_video_urls`.
 
 - Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
 - When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Video editing requires one video between three and ten seconds and accepts up to five reference images. Output follows the reference video; omit duration.
+- Video editing requires one video between three and ten seconds. Omit reference_image_urls or provide an empty array for no reference images; at most five images are supported. Output follows the reference video; omit duration.
 - Media inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.
 
 ## Developer Notes

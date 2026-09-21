@@ -23,7 +23,7 @@
         ],
         "summary": "Omni Flash Video Edit",
         "operationId": "submit_google_gemini_omni_flash_video_edit",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nVideo editing requires one video in video_urls. Omit duration.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nVideo editing requires exactly one video URL in video_urls; missing or empty arrays are rejected. Omit duration. No source-video duration limit is imposed by this workflow.",
         "requestBody": {
           "required": true,
           "content": {
@@ -59,14 +59,14 @@
                       },
                       "video_urls": {
                         "type": "array",
-                        "minItems": 0,
+                        "minItems": 1,
                         "maxItems": 1,
                         "items": {
                           "type": "string",
                           "format": "uri",
                           "description": "Video urls."
                         },
-                        "description": "Video urls."
+                        "description": "Required: exactly one publicly accessible HTTP(S) source video URL. Missing or empty arrays are rejected. Omit duration; no source-video duration limit is imposed by this workflow."
                       },
                       "resolution": {
                         "type": "string",

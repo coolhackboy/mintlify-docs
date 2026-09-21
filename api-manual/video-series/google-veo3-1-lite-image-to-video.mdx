@@ -17,7 +17,7 @@ Required input fields: `image_urls`, `prompt`.
 
 - Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
 - When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- First/last-frame input uses one or two images and generation_type=frame.
+- Supply one or two images. Omit generation_type for a single starting image. Two images default to generation_type=frame; explicitly specifying frame requires exactly two images.
 - Lite requires an eight-second duration for 1080p or two-frame input.
 
 ## Developer Notes

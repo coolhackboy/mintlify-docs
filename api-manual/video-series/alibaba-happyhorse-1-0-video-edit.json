@@ -23,7 +23,7 @@
         ],
         "summary": "Happy Horse Video Edit",
         "operationId": "submit_alibaba_happyhorse_1_0_video_edit",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nInput video must be between three and sixty seconds. Usage follows detected source duration, rounded up and capped at fifteen seconds. Omit duration.\n\nMedia inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nInput video must be between three and sixty seconds. Credits equal the detected source duration capped at fifteen seconds multiplied by the resolution rate, normalized to six decimal places. A nonblank prompt of at most 2,500 characters is required. Omit duration.\n\nCredits are deducted on submission and refunded if the task fails. Reference prompts do not require character1 or character2 markers.\n\nMedia inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.",
         "requestBody": {
           "required": true,
           "content": {
@@ -49,18 +49,19 @@
                     "properties": {
                       "prompt": {
                         "type": "string",
-                        "maxLength": 5000,
+                        "maxLength": 2500,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Text prompt. Required for text-to-video, reference-to-video, and video-edit. Optional for image-to-video. Maximum length is 2,500 characters."
                       },
                       "reference_image_urls": {
                         "type": "array",
+                        "maxItems": 5,
                         "items": {
                           "type": "string",
                           "format": "uri",
                           "description": "Reference image urls."
                         },
-                        "description": "Reference image urls."
+                        "description": "Reference images: 1–9 for reference-to-video, or up to 5 optional images for video-edit. Describe referenced subjects in the prompt; specific character markers are not required."
                       },
                       "video_url": {
                         "type": "string",
@@ -98,7 +99,8 @@
                     },
                     "additionalProperties": false,
                     "required": [
-                      "video_url"
+                      "video_url",
+                      "prompt"
                     ]
                   },
                   "callback_url": {
@@ -117,7 +119,8 @@
                     "input": {
                       "video_url": "https://example.com/video.mp4",
                       "resolution": "1080p",
-                      "audio_setting": "auto"
+                      "audio_setting": "auto",
+                      "prompt": "Restyle the scene with warm sunset lighting while preserving the original motion."
                     }
                   }
                 },
@@ -128,7 +131,8 @@
                     "input": {
                       "video_url": "https://example.com/video.mp4",
                       "resolution": "1080p",
-                      "audio_setting": "auto"
+                      "audio_setting": "auto",
+                      "prompt": "Restyle the scene with warm sunset lighting while preserving the original motion."
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
