@@ -350,7 +350,16 @@
                   "api-manual/video-series/sora-2-official",
                   "api-manual/video-series/sora-2-pro-official",
                   "api-manual/video-series/sora-2-pro",
-                  "api-manual/video-series/sora-2"
+                  "api-manual/video-series/sora-2",
+                  {
+                    "group": "Sora 2 Official",
+                    "pages": [
+                      "api-manual/video-series/openai-sora-2-text-to-video",
+                      "api-manual/video-series/openai-sora-2-image-to-video",
+                      "api-manual/video-series/openai-sora-2-pro-text-to-video",
+                      "api-manual/video-series/openai-sora-2-pro-image-to-video"
+                    ]
+                  }
                 ]
               },
               {
@@ -363,7 +372,51 @@
                   "api-manual/video-series/veo3-1-fast-reference-to-video",
                   "api-manual/video-series/veo3-1-lite-text-to-video",
                   "api-manual/video-series/veo3-1-text-to-video",
-                  "api-manual/video-series/veo3-1-image-to-video"
+                  "api-manual/video-series/veo3-1-image-to-video",
+                  {
+                    "group": "Gemini Omni 1.1 Flash",
+                    "pages": [
+                      "api-manual/video-series/google-gemini-omni-1-1-flash-text-to-video",
+                      "api-manual/video-series/google-gemini-omni-1-1-flash-image-to-video",
+                      "api-manual/video-series/google-gemini-omni-1-1-flash-reference-to-video",
+                      "api-manual/video-series/google-gemini-omni-1-1-flash-video-edit"
+                    ]
+                  },
+                  {
+                    "group": "Omni Flash",
+                    "pages": [
+                      "api-manual/video-series/google-gemini-omni-flash-text-to-video",
+                      "api-manual/video-series/google-gemini-omni-flash-image-to-video",
+                      "api-manual/video-series/google-gemini-omni-flash-reference-to-video",
+                      "api-manual/video-series/google-gemini-omni-flash-video-edit"
+                    ]
+                  },
+                  {
+                    "group": "Veo 3.1 Official",
+                    "pages": [
+                      "api-manual/video-series/google-veo3-1-text-to-video",
+                      "api-manual/video-series/google-veo3-1-image-to-video",
+                      "api-manual/video-series/google-veo3-1-fast-text-to-video",
+                      "api-manual/video-series/google-veo3-1-fast-image-to-video",
+                      "api-manual/video-series/google-veo3-1-lite-text-to-video",
+                      "api-manual/video-series/google-veo3-1-lite-image-to-video"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Flux",
+                "pages": [
+                  {
+                    "group": "FLUX 3",
+                    "pages": [
+                      "api-manual/video-series/blackforestlabs-flux-3-text-to-video",
+                      "api-manual/video-series/blackforestlabs-flux-3-image-to-video",
+                      "api-manual/video-series/blackforestlabs-flux-3-first-last-frame-to-video",
+                      "api-manual/video-series/blackforestlabs-flux-3-extend-video",
+                      "api-manual/video-series/blackforestlabs-flux-3-keyframes-to-video"
+                    ]
+                  }
                 ]
               },
               {
@@ -374,7 +427,23 @@
                   "api-manual/video-series/wan2.5-image-to-video",
                   "api-manual/video-series/wan2.2-text-to-video-fast",
                   "api-manual/video-series/wan2.2-image-to-video-fast",
-                  "api-manual/video-series/wan-animate"
+                  "api-manual/video-series/wan-animate",
+                  {
+                    "group": "Wan 3.0",
+                    "pages": [
+                      "api-manual/video-series/alibaba-wan-3-0-text-to-video",
+                      "api-manual/video-series/alibaba-wan-3-0-image-to-video",
+                      "api-manual/video-series/alibaba-wan-3-0-reference-to-video"
+                    ]
+                  },
+                  {
+                    "group": "Wan 3.0 Video Prime",
+                    "pages": [
+                      "api-manual/video-series/alibaba-wan-3-0-prime-text-to-video",
+                      "api-manual/video-series/alibaba-wan-3-0-prime-image-to-video",
+                      "api-manual/video-series/alibaba-wan-3-0-prime-reference-to-video"
+                    ]
+                  }
                 ]
               },
               {
@@ -386,7 +455,30 @@
                   "api-manual/video-series/kling-2.6-motion-control",
                   "api-manual/video-series/kling-2-5-turbo-pro",
                   "api-manual/video-series/kling-2-1",
-                  "api-manual/video-series/kling-1-6"
+                  "api-manual/video-series/kling-1-6",
+                  {
+                    "group": "Kling 3.0 Turbo",
+                    "pages": [
+                      "api-manual/video-series/kwaivgi-kling-v3-turbo-std-text-to-video",
+                      "api-manual/video-series/kwaivgi-kling-v3-turbo-std-image-to-video",
+                      "api-manual/video-series/kwaivgi-kling-v3-turbo-pro-text-to-video",
+                      "api-manual/video-series/kwaivgi-kling-v3-turbo-pro-image-to-video"
+                    ]
+                  },
+                  {
+                    "group": "Kling 3.0 Motion Control",
+                    "pages": [
+                      "api-manual/video-series/kwaivgi-kling-v3-0-std-motion-control",
+                      "api-manual/video-series/kwaivgi-kling-v3-0-pro-motion-control"
+                    ]
+                  },
+                  {
+                    "group": "Kling 2.6 Motion Control",
+                    "pages": [
+                      "api-manual/video-series/kwaivgi-kling-v2-6-std-motion-control",
+                      "api-manual/video-series/kwaivgi-kling-v2-6-pro-motion-control"
+                    ]
+                  }
                 ]
               },
               {
@@ -399,7 +491,16 @@
               {
                 "group": "Alibaba",
                 "pages": [
-                  "api-manual/video-series/happy-horse"
+                  "api-manual/video-series/happy-horse",
+                  {
+                    "group": "Happy Horse",
+                    "pages": [
+                      "api-manual/video-series/alibaba-happyhorse-1-0-text-to-video",
+                      "api-manual/video-series/alibaba-happyhorse-1-0-image-to-video",
+                      "api-manual/video-series/alibaba-happyhorse-1-0-reference-to-video",
+                      "api-manual/video-series/alibaba-happyhorse-1-0-video-edit"
+                    ]
+                  }
                 ]
               },
               {
@@ -436,198 +537,6 @@
                   "api-manual/video-series/seedance-2-0-mini-reference-to-video",
                   "api-manual/video-series/seedance-1-5-pro",
                   "api-manual/video-series/seedance-1.0-pro"
-                ]
-              },
-              {
-                "group": "Gemini Omni 1.1 Flash",
-                "pages": [
-                  "api-manual/video-series/google-gemini-omni-1-1-flash-text-to-video",
-                  "api-manual/video-series/google-gemini-omni-1-1-flash-image-to-video",
-                  "api-manual/video-series/google-gemini-omni-1-1-flash-reference-to-video",
-                  "api-manual/video-series/google-gemini-omni-1-1-flash-video-edit"
-                ]
-              },
-              {
-                "group": "Wan 3.0",
-                "pages": [
-                  "api-manual/video-series/alibaba-wan-3-0-text-to-video",
-                  "api-manual/video-series/alibaba-wan-3-0-image-to-video",
-                  "api-manual/video-series/alibaba-wan-3-0-reference-to-video"
-                ]
-              },
-              {
-                "group": "Wan 3.0 Video Prime",
-                "pages": [
-                  "api-manual/video-series/alibaba-wan-3-0-prime-text-to-video",
-                  "api-manual/video-series/alibaba-wan-3-0-prime-image-to-video",
-                  "api-manual/video-series/alibaba-wan-3-0-prime-reference-to-video"
-                ]
-              },
-              {
-                "group": "FLUX 3",
-                "pages": [
-                  "api-manual/video-series/blackforestlabs-flux-3-text-to-video",
-                  "api-manual/video-series/blackforestlabs-flux-3-image-to-video",
-                  "api-manual/video-series/blackforestlabs-flux-3-first-last-frame-to-video",
-                  "api-manual/video-series/blackforestlabs-flux-3-extend-video",
-                  "api-manual/video-series/blackforestlabs-flux-3-keyframes-to-video"
-                ]
-              },
-              {
-                "group": "Kling 3.0 Turbo",
-                "pages": [
-                  "api-manual/video-series/kwaivgi-kling-v3-turbo-std-text-to-video",
-                  "api-manual/video-series/kwaivgi-kling-v3-turbo-std-image-to-video",
-                  "api-manual/video-series/kwaivgi-kling-v3-turbo-pro-text-to-video",
-                  "api-manual/video-series/kwaivgi-kling-v3-turbo-pro-image-to-video"
-                ]
-              },
-              {
-                "group": "Omni Flash",
-                "pages": [
-                  "api-manual/video-series/google-gemini-omni-flash-text-to-video",
-                  "api-manual/video-series/google-gemini-omni-flash-image-to-video",
-                  "api-manual/video-series/google-gemini-omni-flash-reference-to-video",
-                  "api-manual/video-series/google-gemini-omni-flash-video-edit"
-                ]
-              },
-              {
-                "group": "Veo 3.1 Official",
-                "pages": [
-                  "api-manual/video-series/google-veo3-1-text-to-video",
-                  "api-manual/video-series/google-veo3-1-image-to-video",
-                  "api-manual/video-series/google-veo3-1-fast-text-to-video",
-                  "api-manual/video-series/google-veo3-1-fast-image-to-video",
-                  "api-manual/video-series/google-veo3-1-lite-text-to-video",
-                  "api-manual/video-series/google-veo3-1-lite-image-to-video"
-                ]
-              },
-              {
-                "group": "Happy Horse",
-                "pages": [
-                  "api-manual/video-series/alibaba-happyhorse-1-0-text-to-video",
-                  "api-manual/video-series/alibaba-happyhorse-1-0-image-to-video",
-                  "api-manual/video-series/alibaba-happyhorse-1-0-reference-to-video",
-                  "api-manual/video-series/alibaba-happyhorse-1-0-video-edit"
-                ]
-              },
-              {
-                "group": "Sora 2 Official",
-                "pages": [
-                  "api-manual/video-series/openai-sora-2-text-to-video",
-                  "api-manual/video-series/openai-sora-2-image-to-video",
-                  "api-manual/video-series/openai-sora-2-pro-text-to-video",
-                  "api-manual/video-series/openai-sora-2-pro-image-to-video"
-                ]
-              },
-              {
-                "group": "Kling 3.0 Motion Control",
-                "pages": [
-                  "api-manual/video-series/kwaivgi-kling-v3-0-std-motion-control",
-                  "api-manual/video-series/kwaivgi-kling-v3-0-pro-motion-control"
-                ]
-              },
-              {
-                "group": "Kling 2.6 Motion Control",
-                "pages": [
-                  "api-manual/video-series/kwaivgi-kling-v2-6-std-motion-control",
-                  "api-manual/video-series/kwaivgi-kling-v2-6-pro-motion-control"
-                ]
-              },
-              {
-                "group": "Gemini Omni 1.1 Flash Workflows",
-                "pages": [
-                  "api-manual/video-series/google-gemini-omni-1-1-flash-text-to-video",
-                  "api-manual/video-series/google-gemini-omni-1-1-flash-image-to-video",
-                  "api-manual/video-series/google-gemini-omni-1-1-flash-reference-to-video",
-                  "api-manual/video-series/google-gemini-omni-1-1-flash-video-edit"
-                ]
-              },
-              {
-                "group": "Wan 3.0 Workflows",
-                "pages": [
-                  "api-manual/video-series/alibaba-wan-3-0-text-to-video",
-                  "api-manual/video-series/alibaba-wan-3-0-image-to-video",
-                  "api-manual/video-series/alibaba-wan-3-0-reference-to-video"
-                ]
-              },
-              {
-                "group": "Wan 3.0 Video Prime Workflows",
-                "pages": [
-                  "api-manual/video-series/alibaba-wan-3-0-prime-text-to-video",
-                  "api-manual/video-series/alibaba-wan-3-0-prime-image-to-video",
-                  "api-manual/video-series/alibaba-wan-3-0-prime-reference-to-video"
-                ]
-              },
-              {
-                "group": "FLUX 3 Workflows",
-                "pages": [
-                  "api-manual/video-series/blackforestlabs-flux-3-text-to-video",
-                  "api-manual/video-series/blackforestlabs-flux-3-image-to-video",
-                  "api-manual/video-series/blackforestlabs-flux-3-first-last-frame-to-video",
-                  "api-manual/video-series/blackforestlabs-flux-3-extend-video",
-                  "api-manual/video-series/blackforestlabs-flux-3-keyframes-to-video"
-                ]
-              },
-              {
-                "group": "Kling 3.0 Turbo Workflows",
-                "pages": [
-                  "api-manual/video-series/kwaivgi-kling-v3-turbo-std-text-to-video",
-                  "api-manual/video-series/kwaivgi-kling-v3-turbo-std-image-to-video",
-                  "api-manual/video-series/kwaivgi-kling-v3-turbo-pro-text-to-video",
-                  "api-manual/video-series/kwaivgi-kling-v3-turbo-pro-image-to-video"
-                ]
-              },
-              {
-                "group": "Omni Flash Workflows",
-                "pages": [
-                  "api-manual/video-series/google-gemini-omni-flash-text-to-video",
-                  "api-manual/video-series/google-gemini-omni-flash-image-to-video",
-                  "api-manual/video-series/google-gemini-omni-flash-reference-to-video",
-                  "api-manual/video-series/google-gemini-omni-flash-video-edit"
-                ]
-              },
-              {
-                "group": "Veo 3.1 Official Workflows",
-                "pages": [
-                  "api-manual/video-series/google-veo3-1-text-to-video",
-                  "api-manual/video-series/google-veo3-1-image-to-video",
-                  "api-manual/video-series/google-veo3-1-fast-text-to-video",
-                  "api-manual/video-series/google-veo3-1-fast-image-to-video",
-                  "api-manual/video-series/google-veo3-1-lite-text-to-video",
-                  "api-manual/video-series/google-veo3-1-lite-image-to-video"
-                ]
-              },
-              {
-                "group": "Happy Horse Workflows",
-                "pages": [
-                  "api-manual/video-series/alibaba-happyhorse-1-0-text-to-video",
-                  "api-manual/video-series/alibaba-happyhorse-1-0-image-to-video",
-                  "api-manual/video-series/alibaba-happyhorse-1-0-reference-to-video",
-                  "api-manual/video-series/alibaba-happyhorse-1-0-video-edit"
-                ]
-              },
-              {
-                "group": "Sora 2 Official Workflows",
-                "pages": [
-                  "api-manual/video-series/openai-sora-2-text-to-video",
-                  "api-manual/video-series/openai-sora-2-image-to-video",
-                  "api-manual/video-series/openai-sora-2-pro-text-to-video",
-                  "api-manual/video-series/openai-sora-2-pro-image-to-video"
-                ]
-              },
-              {
-                "group": "Kling 3.0 Motion Control Workflows",
-                "pages": [
-                  "api-manual/video-series/kwaivgi-kling-v3-0-std-motion-control",
-                  "api-manual/video-series/kwaivgi-kling-v3-0-pro-motion-control"
-                ]
-              },
-              {
-                "group": "Kling 2.6 Motion Control Workflows",
-                "pages": [
-                  "api-manual/video-series/kwaivgi-kling-v2-6-std-motion-control",
-                  "api-manual/video-series/kwaivgi-kling-v2-6-pro-motion-control"
                 ]
               }
             ]
