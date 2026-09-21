@@ -5,24 +5,72 @@ icon: "video"
 openapi: "/api-manual/video-series/alibaba-wan-3-0-reference-to-video.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `alibaba/wan-3.0/reference-to-video` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Wan 3.0 Reference to Video
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Guide Wan 3.0 video scenes with image, video, and audio references, combining multiple sources into a new visual sequence.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `prompt`.
+- **alibaba/wan-3.0/reference-to-video** - Generate a new video guided by reference material and a prompt.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- A prompt and at least one image, video, audio, document, or webpage reference are required. Audio can be the only reference type. Document and webpage references cannot be combined.
+## Duration Options
 
-## Developer Notes
+- **2-30 seconds** - Set `duration` as an integer. Default: **5 seconds**.
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+## Key Features
 
-## Optional parameters
+- Use image, video, audio, document, or webpage references to guide a new scene.
+- Choose from `480p`, `720p`, `1080p` output resolutions.
+- Control audio generation with `audio`; it defaults to `true`.
 
-Available input fields: `reference_image_urls`, `reference_video_urls`, `reference_audio_urls`, `reference_file_urls`, `reference_link_urls`, `resolution`, `aspect_ratio`, `duration`, `audio`, `seed`, `enable_safety_checker`. See the request schema for accepted values and defaults.
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place the parameters below inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Prompt
+
+- `prompt`: Required. Describe the scene and desired motion.
+- The prompt must not be blank when supplied. Maximum length: **20,000 characters**.
+
+### Reference Inputs
+
+- At least one reference type is required in addition to `prompt`. Audio can be the only reference type.
+- Do not combine `reference_file_urls` with `reference_link_urls`.
+- `reference_image_urls`: Optional; provide 1-10 images.
+- `reference_video_urls`: Optional; provide 1-5 videos.
+- `reference_audio_urls`: Optional; provide 1-5 audio files.
+- `reference_file_urls`: Optional; provide exactly 1 document.
+- `reference_link_urls`: Optional; provide exactly 1 webpage.
+
+### Resolution
+
+- `resolution`: `480p`, `720p`, `1080p`. Default: `720p`.
+
+### Aspect Ratio
+
+- `aspect_ratio`: `adaptive`, `16:9`, `4:3`, `1:1`, `3:4`, `9:16`. Default: `adaptive`.
+
+### Audio
+
+- `audio`: Set to `true` to enable generated audio, or `false` to disable it. Default: `true`.
+
+### Seed
+
+- `seed` is optional. Supply an integer from `0` to `2147483647`.
+
+### Safety Checker
+
+- `enable_safety_checker` is optional. Set it to `true` or `false` to control safety checking. Default: `true`.
+
+## Pricing
+
+Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

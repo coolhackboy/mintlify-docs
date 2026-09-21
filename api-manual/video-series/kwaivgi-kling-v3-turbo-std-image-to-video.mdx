@@ -5,25 +5,63 @@ icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-v3-turbo-std-image-to-video.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `kwaivgi/kling-v3-turbo-std/image-to-video` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Kling 3.0 Turbo Standard Image to Video
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Bring reference images into motion with Kling 3.0 Turbo Standard, using text and shot prompts to guide a video sequence.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `image_urls`.
+- **kwaivgi/kling-v3-turbo-std/image-to-video** - Generate video from image input.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- Blank optional prompts are treated as omitted. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- The output aspect ratio follows the input image; aspect_ratio has no effect on this endpoint.
-- prompt is optional and cannot be combined with multi_prompt. Supply one to six shots, each with a nonblank prompt and an optional integer duration from one to fifteen seconds (default five). The shot total must not exceed fifteen seconds. An explicit top-level duration must be three to fifteen seconds and equal the shot total. Omit it to use the shot total, including one- or two-second totals. Without multi_prompt, omitted duration defaults to five seconds. Billing uses the shot total when multi_prompt is provided.
+## Duration Options
 
-## Developer Notes
+- **3-15 seconds** - Accepted range for an explicit `duration`. Without `multi_prompt`, the default is **5 seconds**.
+- **Multi-shot output** - Each shot accepts `1`-`15` seconds and defaults to `5`. The total must not exceed **15 seconds**.
+- With `multi_prompt`, omit `duration` to use the shot total, including totals of **1 or 2 seconds**. If supplied, `duration` must equal the shot total and remain within `3`-`15` seconds.
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+## Key Features
 
-## Optional parameters
+- Animate a single reference image.
+- Direct one scene with `prompt`, or use `multi_prompt` for up to six shots.
+- The input image determines the output aspect ratio.
 
-Available input fields: `prompt`, `multi_prompt`, `duration`, `aspect_ratio`. See the request schema for accepted values and defaults.
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place the parameters below inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Prompt
+
+- `prompt` is optional and supports up to **2,500 characters**. Blank optional prompts are treated as omitted.
+- Use either `prompt` or `multi_prompt`; do not combine them.
+
+### Image URLs
+
+- `image_urls`: Required. Provide exactly 1 image URL.
+- Images must be publicly accessible and directly downloadable.
+
+### Multi-Prompt
+
+- `multi_prompt` accepts **1-6 shot objects** and cannot be combined with `prompt`.
+- Each shot requires a nonblank `prompt` of at most **2,500 characters**.
+- Each shot can include an integer `duration` from **1 to 15 seconds**; the default is **5 seconds**.
+- The combined shot duration must not exceed **15 seconds**. See Duration Options for the top-level `duration` rules.
+
+### Aspect Ratio
+
+- The output aspect ratio follows the input image.
+- `aspect_ratio` is ignored by this endpoint and can be omitted.
+
+## Pricing
+
+With `multi_prompt`, billing uses the combined shot duration. Otherwise, it uses the requested `duration` or its default.
+
+Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

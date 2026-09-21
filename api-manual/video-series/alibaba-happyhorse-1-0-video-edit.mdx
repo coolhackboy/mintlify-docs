@@ -5,26 +5,73 @@ icon: "video"
 openapi: "/api-manual/video-series/alibaba-happyhorse-1-0-video-edit.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `alibaba/happyhorse-1.0/video-edit` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Happy Horse Video Edit
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Transform existing footage with Happy Horse using text instructions and reference images to guide a new visual direction.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `video_url`, `prompt`.
+- **alibaba/happyhorse-1.0/video-edit** - Edit an existing video using written instructions.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Input video must be between three and sixty seconds. Credits equal the detected source duration capped at fifteen seconds multiplied by the resolution rate, normalized to six decimal places. A nonblank prompt of at most 2,500 characters is required. Omit duration.
-- Credits are deducted on submission and refunded if the task fails. Reference prompts do not require character1 or character2 markers.
-- Media inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.
+## Duration Options
 
-## Developer Notes
+- **Source video: 3-60 seconds** - Duration is read from `video_url`.
+- Do not send `duration` for video editing.
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+## Key Features
 
-## Optional parameters
+- Edit an existing video using written instructions.
+- Optionally add up to five reference images to guide the edit.
+- Choose from `720p`, `1080p` output resolutions.
+- Choose automatic audio handling or preserve the source audio.
 
-Available input fields: `reference_image_urls`, `resolution`, `audio_setting`, `seed`, `enable_safety_checker`. See the request schema for accepted values and defaults.
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place the parameters below inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Prompt
+
+- `prompt`: Required. Describe the requested changes to the video.
+- The prompt must not be blank when supplied. Maximum length: **2,500 characters**.
+
+### Reference Inputs
+
+- `reference_image_urls`: Optional; provide up to 5 images.
+- Describe referenced subjects in the prompt; `character1` and `character2` markers are not required.
+
+### Source Video
+
+- `video_url`: Required. Provide one publicly accessible source video URL.
+- The source video must be directly downloadable over HTTP(S) and no larger than **100 MiB** for duration inspection.
+
+### Resolution
+
+- `resolution`: `720p`, `1080p`. Default: `1080p`.
+
+### Audio
+
+- `audio_setting`: `auto` or `origin`. Default: `auto`.
+- `auto` lets the model determine audio handling; `origin` preserves the original audio.
+
+### Seed
+
+- `seed` is optional. Supply an integer from `0` to `2147483647`.
+
+### Safety Checker
+
+- `enable_safety_checker` is optional. Set it to `true` or `false` to control safety checking.
+
+## Pricing
+
+Credits are calculated from the detected source-video duration, capped at **15 seconds**, multiplied by the selected resolution rate. The result is normalized to six decimal places.
+
+Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

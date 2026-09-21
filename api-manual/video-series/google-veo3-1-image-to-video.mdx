@@ -5,24 +5,67 @@ icon: "video"
 openapi: "/api-manual/video-series/google-veo3-1-image-to-video.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `google/veo3.1/image-to-video` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Veo 3.1 Official Image to Video
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Generate motion from an image or connect opening and closing frames with Veo 3.1, with optional sound and output up to 4K.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `image_urls`, `prompt`.
+- **google/veo3.1/image-to-video** - Generate video from image input.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Supply one or two images. Omit generation_type for a single starting image. Two images default to generation_type=frame; explicitly specifying frame requires exactly two images.
+## Duration Options
 
-## Developer Notes
+- **4, 6, 8 seconds** - Set `duration` to one of these values. Default: **8 seconds**.
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+## Key Features
 
-## Optional parameters
+- Generate motion from one starting image, or connect two images as the first and last frames.
+- Choose from `720p`, `1080p`, `4k` output resolutions.
+- Control audio generation with `sound`; it defaults to `true`.
 
-Available input fields: `generation_type`, `duration`, `aspect_ratio`, `resolution`, `sound`. See the request schema for accepted values and defaults.
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place the parameters below inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Prompt
+
+- `prompt`: Required. Describe the scene and desired motion.
+- The prompt must not be blank when supplied.
+
+### Image URLs
+
+- `image_urls`: Required. Provide 1-2 image URLs.
+- One image is used as the starting frame.
+- With two images, list the starting frame first and the ending frame second.
+- Images must be publicly accessible and directly downloadable.
+
+### Generation Type
+
+- Omit `generation_type` when supplying one image.
+- With two images, `generation_type` defaults to `frame`.
+- If you explicitly set `generation_type: "frame"`, exactly two images are required.
+
+### Resolution
+
+- `resolution`: `720p`, `1080p`, `4k`. Default: `720p`.
+
+### Aspect Ratio
+
+- `aspect_ratio`: `auto`, `16:9`, `9:16`. Default: `16:9`.
+
+### Audio
+
+- `sound`: Set to `true` to enable generated audio, or `false` to disable it. Default: `true`.
+
+## Pricing
+
+Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

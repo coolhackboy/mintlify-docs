@@ -5,23 +5,49 @@ icon: "video"
 openapi: "/api-manual/video-series/openai-sora-2-pro-text-to-video.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `openai/sora-2-pro/text-to-video` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Sora 2 Official Pro Text to Video
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Create video scenes with Sora 2 Pro, with a choice of output resolutions and clips up to twenty seconds long.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `prompt`.
+- **openai/sora-2-pro/text-to-video** - Generate video scenes from text prompts.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+## Duration Options
 
-## Developer Notes
+- **4, 8, 12, 16, 20 seconds** - Set `duration` to one of these values. Default: **4 seconds**.
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+## Key Features
 
-## Optional parameters
+- Generate video scenes from text prompts.
+- Choose from `720p`, `1024p`, `1080p` output resolutions.
 
-Available input fields: `aspect_ratio`, `duration`, `resolution`. See the request schema for accepted values and defaults.
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place the parameters below inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Prompt
+
+- `prompt`: Required. Describe the scene and desired motion.
+- The prompt must not be blank when supplied.
+
+### Resolution
+
+- `resolution`: `720p`, `1024p`, `1080p`. Default: `1024p`.
+
+### Aspect Ratio
+
+- `aspect_ratio`: `auto`, `9:16`, `16:9`. Default: `16:9`.
+
+## Pricing
+
+Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

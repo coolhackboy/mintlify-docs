@@ -5,27 +5,70 @@ icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-v2-6-std-motion-control.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `kwaivgi/kling-v2.6-std/motion-control` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Kling 2.6 Standard Motion Control
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Transfer movement from a reference video to an image subject with Kling 2.6 Standard, with orientation control and 720p output.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `character_orientation`, `image_urls`, `video_urls`.
+- **kwaivgi/kling-v2.6-std/motion-control** - Transfer movement from a reference video to a character in a reference image.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- Blank optional prompts are treated as omitted. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- This ID fixes `resolution` to `720p`.
-- Input video must be at least three seconds. The maximum is ten seconds with image orientation or thirty seconds with video orientation. Credits equal the detected duration multiplied by the endpoint rate, with the resulting credits rounded up to a whole number. Omit duration. Null, empty, and whitespace-only prompts are treated as omitted; nonempty prompts are trimmed and limited to 2,500 characters.
-- resolution is optional: Standard defaults to 720p and Pro to 1080p. A resolution from the other tier is rejected. kling_elements is not supported.
-- Media inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.
+## Duration Options
 
-## Developer Notes
+- **Image orientation** - The reference video must be **3-10 seconds** when `character_orientation` is `image`.
+- **Video orientation** - The reference video must be **3-30 seconds** when `character_orientation` is `video`.
+- The service inspects the reference video duration. Do not send `duration`.
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+## Key Features
 
-## Optional parameters
+- Transfer movement from a reference video to a character in a reference image.
+- Output resolution is fixed to `720p` for this model ID.
 
-Available input fields: `prompt`, `resolution`. See the request schema for accepted values and defaults.
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place the parameters below inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Prompt
+
+- `prompt` is optional. `null`, empty, and whitespace-only values are treated as omitted.
+- Nonempty prompts are trimmed and limited to **2,500 characters**.
+
+### Image URLs
+
+- `image_urls`: Required. Provide exactly 1 image URL.
+- The image provides the target character for motion transfer.
+- Images must be publicly accessible and directly downloadable.
+
+### Source Video
+
+- `video_urls`: Required. Provide an array containing exactly one publicly accessible source video URL.
+- The video provides the movement to transfer. Its duration must match the orientation limits above.
+- The source video must be directly downloadable over HTTP(S) and no larger than **100 MiB** for duration inspection.
+
+### Character Orientation
+
+- `character_orientation` is required: choose `image` or `video`.
+- `image` allows reference videos from **3 to 10 seconds**.
+- `video` allows reference videos from **3 to 30 seconds**.
+
+`kling_elements` is not supported by this Kling 2.6 workflow.
+
+### Resolution
+
+- `resolution`: `720p`. Default: `720p`.
+- This model ID fixes the resolution. Omit the field to use its default; a resolution from the other tier is rejected.
+
+## Pricing
+
+Credits are calculated from the detected reference-video duration multiplied by this endpoint's rate, then rounded up to a whole credit.
+
+Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.
