@@ -5,24 +5,57 @@ icon: "cube"
 openapi: "/api-manual/3d-series/tripo3d-p1-image-to-3d.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `tripo3d/p1/image-to-3d` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Tripo3D P1 Image to 3D
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Turn a reference image into a 3D object with Tripo3D P1, with optional textures and control over polygon count.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `image_urls`.
+- **tripo3d/p1/image-to-3d** - Generate a 3D model from an image.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Read every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.
+## Output Options
 
-## Developer Notes
+### Face Limit
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+- `face_limit`: Optional. Set the face-count limit. Integer from `48` to `20000`.
 
-## Optional parameters
+## Key Features
 
-Available input fields: `face_limit`, `texture`, `model_seed`. See the request schema for accepted values and defaults.
+- Generate a 3D model from an image.
+- Accepts exactly 1 image in `image_urls`.
+- Retrieve model assets and available previews or supporting files from the task result.
+
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Image URLs
+
+- `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
+
+### Texture
+
+- `texture`: Optional. Control texture generation. Use `true` or `false`. Default: `true`.
+
+### Model Seed
+
+- `model_seed`: Optional. Set the model-generation seed. Integer.
+
+## Output Files
+
+- Read every item in the returned `files` array.
+- Model assets use `file_type: "3d"`; previews use `file_type: "image"`.
+- Additional artifacts may use `file_type: "other"`. Retain available textures, animation artifacts, and optional file metadata.
+
+## Pricing
+
+Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

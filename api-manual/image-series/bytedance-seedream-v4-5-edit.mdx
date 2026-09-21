@@ -5,24 +5,59 @@ icon: "image"
 openapi: "/api-manual/image-series/bytedance-seedream-v4-5-edit.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `bytedance/seedream/v4.5/edit` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Seedream 4.5 Edit
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Guide Seedream 4.5 image edits with text and up to ten references, creating multiple variations from an existing visual idea.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `image_urls`, `prompt`.
+- **bytedance/seedream/v4.5/edit** - Edit images using a prompt and image references.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Custom size width and height must both be positive.
+## Output Options
 
-## Developer Notes
+### Image Size
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+- `size`: Optional. Default: `1:1`.
+- Presets: `2K`, `4K`, `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`.
+- For custom dimensions, supply an object with integer `width` and `height`; both must be positive.
+- Custom dimensions also accept a `WIDTHxHEIGHT` string, using `x` or `X` between the positive dimensions.
 
-## Optional parameters
+### Image Count
 
-Available input fields: `size`, `n`, `enable_safety_checker`. See the request schema for accepted values and defaults.
+- `n`: Optional. Number of images to generate. Integer from `1` to `15`. Default: `1`.
+
+## Key Features
+
+- Edit images using a prompt and image references.
+- Accepts 1-10 images in `image_urls`.
+- Control the number of output images with `n`.
+
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Prompt
+
+- `prompt`: Required. Describe the requested changes. Length: **1-3,000 characters**.
+- The value must not be blank when supplied.
+
+### Image URLs
+
+- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-10 items. Each item must be an HTTP(S) URL.
+
+### Safety Checker
+
+- `enable_safety_checker`: Optional. Control safety checking. Use `true` or `false`. Default: `true`.
+
+## Pricing
+
+Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

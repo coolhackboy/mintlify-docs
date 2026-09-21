@@ -5,25 +5,51 @@ icon: "cube"
 openapi: "/api-manual/3d-series/hunyuan-3d-v3-1-rapid-text-to-3d.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `hunyuan-3d/v3.1/rapid/text-to-3d` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Hunyuan 3D v3.1 Rapid Text to 3D
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Turn written object concepts into 3D models with Hunyuan 3D v3.1 Rapid, with an option to generate geometry for further modeling.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `prompt`.
+- **hunyuan-3d/v3.1/rapid/text-to-3d** - Generate a 3D model from a text prompt.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Rapid does not accept PBR, custom face count, or extra views.
-- Read every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.
+## Output Options
 
-## Developer Notes
+### Enable Geometry
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+- `enable_geometry`: Optional. Control geometry generation. Use `true` or `false`.
 
-## Optional parameters
+## Key Features
 
-Available input fields: `enable_geometry`. See the request schema for accepted values and defaults.
+- Generate a 3D model from a text prompt.
+- Retrieve model assets and available previews or supporting files from the task result.
+
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+- Rapid does not accept PBR, a custom face count, or extra views.
+
+### Prompt
+
+- `prompt`: Required. Describe the desired 3D object. Length: **1-200 characters**.
+- The value must not be blank when supplied.
+
+## Output Files
+
+- Read every item in the returned `files` array.
+- Model assets use `file_type: "3d"`; previews use `file_type: "image"`.
+- Additional artifacts may use `file_type: "other"`. Retain available textures, animation artifacts, and optional file metadata.
+
+## Pricing
+
+Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

@@ -5,25 +5,108 @@ icon: "music"
 openapi: "/api-manual/music-series/elevenlabs-music.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `elevenlabs/music` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# ElevenLabs Music
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Compose songs or instrumentals from a text brief or a section-by-section plan, with control over musical style, lyrics, and arrangement.
 
-## Parameter Details
+## Available Models
 
-Choose one of the supported input forms shown in the request schema.
+- **elevenlabs/music** - Generate music from text or a structured composition plan.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Use text or a composition plan, exclusively. Duration and instrumental mode belong to text input; respect_sections_durations belongs to a composition plan. Section durations must total between three and six hundred seconds. Usage is rounded up by started minute. Text without duration uses one started minute.
-- Read every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.
+## Duration Options
 
-## Developer Notes
+- **Text input** - Optional `duration` is a number from **3 to 600 seconds**. Use it only with `text`.
+- **Composition plan** - Each section accepts **3-120 seconds**. The section total must be **3-600 seconds**.
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+## Output Options
 
-## Optional parameters
+### Output Format
 
-Available input fields: `text`, `composition_plan`, `duration`, `is_instrumental`, `respect_sections_durations`, `output_format`. See the request schema for accepted values and defaults.
+- `output_format`: Optional. String. Default: `mp3_44100_128`.
+
+<Accordion title="Supported output format values">
+
+- `mp3_22050_32`
+- `mp3_44100_32`
+- `mp3_44100_64`
+- `mp3_44100_96`
+- `mp3_44100_128`
+- `mp3_44100_192`
+- `pcm_8000`
+- `pcm_16000`
+- `pcm_22050`
+- `pcm_24000`
+- `pcm_44100`
+- `pcm_48000`
+- `ulaw_8000`
+- `alaw_8000`
+- `opus_48000_32`
+- `opus_48000_64`
+- `opus_48000_96`
+- `opus_48000_128`
+- `opus_48000_192`
+
+</Accordion>
+
+## Key Features
+
+- Generate music from text or a structured composition plan.
+- Plan musical sections with their own styles, lyrics, and durations.
+- Choose an output encoding with `output_format`.
+
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+- Provide exactly one of `text` or `composition_plan`.
+- `duration` and `is_instrumental` apply only to `text`. Use `respect_sections_durations` only with `composition_plan`.
+
+### Text
+
+- `text`: Optional. Describe the music to generate. Length: **1-4,100 characters**.
+- The value must not be blank when supplied.
+
+### Composition Plan
+
+- `composition_plan`: Optional. Describe global styles and an ordered list of musical sections. Supply an object with the fields below.
+
+- `composition_plan.positive_global_styles`: Required. Supply an array. Each item must be a string.
+- `composition_plan.negative_global_styles`: Required. Supply an array. Each item must be a string.
+- `composition_plan.sections`: Required. Supply at least 1 item. Each item is an object.
+
+- `composition_plan.sections[].section_name`: Required. Length: **1-100 characters**.
+- `composition_plan.sections[].positive_local_styles`: Required. Supply an array. Each item must be a string.
+- `composition_plan.sections[].negative_local_styles`: Required. Supply an array. Each item must be a string.
+- `composition_plan.sections[].duration`: Required. Duration in seconds. Number from `3` to `120`.
+- `composition_plan.sections[].lines`: Required. Supply an array. Each item must be a string. Each string is limited to **200 characters**.
+- Section durations are measured in seconds. Their total must be **3-600 seconds**.
+
+### Instrumental Mode
+
+- `is_instrumental`: Optional. Request instrumental music. Use `true` or `false`.
+- Use only with `text`.
+
+### Section Timing
+
+- `respect_sections_durations`: Optional. Use only with a composition plan to control adherence to section durations. Use `true` or `false`.
+
+## Output Files
+
+- Read every item in the returned `files` array.
+- Generated audio uses `file_type: "audio"`.
+- Timestamp and alignment files may use `file_type: "other"`. Preserve optional file metadata when present.
+
+## Pricing
+
+Usage is rounded up by started minute. With `text`, use the requested duration; if omitted, usage is one started minute. With `composition_plan`, use the total section duration.
+
+Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

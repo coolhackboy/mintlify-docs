@@ -5,25 +5,67 @@ icon: "music"
 openapi: "/api-manual/music-series/minimax-music-2-6.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `minimax/music-2.6` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# MiniMax Music 2.6
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Create songs from style prompts and lyrics with MiniMax Music 2.6, with support for instrumentals and automatic lyric refinement.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `prompt`.
+- **minimax/music-2.6** - Generate songs from a style prompt and lyrics, or request instrumental music.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Supply lyrics unless instrumental mode or automatic lyrics generation is enabled.
-- Read every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.
+## Output Options
 
-## Developer Notes
+### Audio Settings
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+- `audio_setting`: Optional. Supply an object with the fields below.
 
-## Optional parameters
+- `audio_setting.sample_rate`: Optional. Sample rate in Hz. Accepted values: `16000`, `24000`, `32000`, `44100`. Default: `44100`.
+- `audio_setting.bitrate`: Optional. Bitrate in bits per second. Accepted values: `32000`, `64000`, `128000`, `256000`. Default: `256000`.
+- `audio_setting.format`: Optional. Accepted values: `mp3`, `wav`, `pcm`. Default: `mp3`.
 
-Available input fields: `lyrics`, `lyrics_optimizer`, `is_instrumental`, `audio_setting`. See the request schema for accepted values and defaults.
+## Key Features
+
+- Generate songs from a style prompt and lyrics, or request instrumental music.
+- Supply lyrics or enable automatic lyrics generation with `lyrics_optimizer`.
+
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+- Supply `lyrics` unless `is_instrumental` or `lyrics_optimizer` is enabled.
+
+### Prompt
+
+- `prompt`: Required. Describe the musical style and content. Length: **10-2,000 characters**.
+- The value must not be blank when supplied.
+
+### Lyrics
+
+- `lyrics`: Optional. Supply the lyrics to sing. Maximum length: **3,500 characters**.
+
+### Lyrics Optimizer
+
+- `lyrics_optimizer`: Optional. Enable automatic lyrics generation or refinement. Use `true` or `false`. Default: `false`.
+
+### Instrumental Mode
+
+- `is_instrumental`: Optional. Request instrumental music. Use `true` or `false`. Default: `false`.
+
+## Output Files
+
+- Read every item in the returned `files` array.
+- Generated audio uses `file_type: "audio"`.
+- Timestamp and alignment files may use `file_type: "other"`. Preserve optional file metadata when present.
+
+## Pricing
+
+Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

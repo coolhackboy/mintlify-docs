@@ -5,25 +5,91 @@ icon: "cube"
 openapi: "/api-manual/3d-series/tripo3d-h3-1-multiview-to-3d.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `tripo3d/h3.1/multiview-to-3d` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Tripo3D H3.1 Multiview to 3D
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Reconstruct a 3D asset from multiple views with Tripo3D H3.1, with adjustable geometry, textures, and PBR materials.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `image_urls`.
+- **tripo3d/h3.1/multiview-to-3d** - Generate a 3D model from multiple views.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Texture quality, detailed geometry, and quad topology affect usage. All returned geometry, previews, textures, and animation artifacts remain in the files array.
-- Read every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.
+## Output Options
 
-## Developer Notes
+### Face Limit
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+- `face_limit`: Optional. Set the face-count limit. Integer from `1000` to `2000000`.
 
-## Optional parameters
+### Geometry Quality
 
-Available input fields: `negative_prompt`, `face_limit`, `texture`, `pbr`, `model_seed`, `image_seed`, `texture_seed`, `texture_quality`, `geometry_quality`, `auto_size`, `quad`. See the request schema for accepted values and defaults.
+- `geometry_quality`: Optional. Accepted values: `standard`, `detailed`. Default: `standard`.
+
+## Key Features
+
+- Generate a 3D model from multiple views.
+- Accepts 2-4 images in `image_urls`.
+- Retrieve model assets and available previews or supporting files from the task result.
+
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Negative Prompt
+
+- `negative_prompt`: Optional. Describe content to avoid. Maximum length: **1,024 characters**.
+
+### Image URLs
+
+- `image_urls`: Required. Provide publicly accessible image URLs. Supply 2-4 items. Each item must be an HTTP(S) URL.
+
+### Texture
+
+- `texture`: Optional. Control texture generation. Use `true` or `false`. Default: `true`.
+
+### PBR
+
+- `pbr`: Optional. Control physically based rendering (PBR) materials. Use `true` or `false`.
+
+### Model Seed
+
+- `model_seed`: Optional. Set the model-generation seed. Integer.
+
+### Image Seed
+
+- `image_seed`: Optional. Set the image-generation seed. Integer.
+
+### Texture Seed
+
+- `texture_seed`: Optional. Set the texture-generation seed. Integer.
+
+### Texture Quality
+
+- `texture_quality`: Optional. Accepted values: `standard`, `detailed`. Default: `standard`.
+
+### Auto Size
+
+- `auto_size`: Optional. Control automatic model sizing. Use `true` or `false`.
+
+### Quad
+
+- `quad`: Optional. Request quad topology. Use `true` or `false`. Default: `false`.
+
+## Output Files
+
+- Read every item in the returned `files` array.
+- Model assets use `file_type: "3d"`; previews use `file_type: "image"`.
+- Additional artifacts may use `file_type: "other"`. Retain available textures, animation artifacts, and optional file metadata.
+
+## Pricing
+
+`texture_quality`, detailed `geometry_quality`, and quad topology can affect usage.
+
+Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

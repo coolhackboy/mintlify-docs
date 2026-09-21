@@ -5,24 +5,54 @@ icon: "video"
 openapi: "/api-manual/video-series/minimax-hailuo-2-3-standard-image-to-video.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `minimax/hailuo-2.3/standard/image-to-video` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Hailuo 2.3 Image to Video
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Turn a starting image into a 768p video with Hailuo 2.3 Standard, using text and optional prompt refinement to guide the motion.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `prompt`, `start_image_url`.
+- **minimax/hailuo-2.3/standard/image-to-video** - Generate video from image input.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- This ID fixes `resolution` to `768p`.
+## Duration Options
 
-## Developer Notes
+- **6, 10 seconds** - Set `duration` as an integer. Optional. Default: **6 seconds**.
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+## Key Features
 
-## Optional parameters
+- Generate video from image input.
+- Use `start_image_url` to supply the starting frame.
+- This model ID fixes the output resolution to `768p`.
 
-Available input fields: `duration`, `resolution`, `prompt_optimizer`. See the request schema for accepted values and defaults.
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Prompt
+
+- `prompt`: Required. Describe the scene and desired motion. Length: **1-5,000 characters**.
+- The value must not be blank when supplied.
+
+### Resolution
+
+- `resolution`: Optional. Accepted values: `768p`. Default: `768p`.
+
+### Start Image URL
+
+- `start_image_url`: Required. Provide the starting frame URL. Use a publicly accessible HTTP(S) URL.
+
+### Prompt Optimizer
+
+- `prompt_optimizer`: Optional. Control automatic prompt optimization. Use `true` or `false`.
+
+## Pricing
+
+Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

@@ -5,25 +5,106 @@ icon: "cube"
 openapi: "/api-manual/3d-series/meshy-v6-multi-image-to-3d.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `meshy/v6/multi-image-to-3d` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Meshy 6 Multi Image to 3D
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Build a 3D asset from up to four reference images with Meshy 6, with texture, topology, and optional animation controls.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `image_urls`.
+- **meshy/v6/multi-image-to-3d** - Generate a 3D model from multiple image references.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Animation requires rigging. Texture prompt and texture image are mutually exclusive. Text-only options are unavailable for image workflows.
-- Read every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.
+## Output Options
 
-## Developer Notes
+### Target Polycount
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+- `target_polycount`: Optional. Set the target polygon count. Integer, at least `1`. Default: `30000`.
 
-## Optional parameters
+### Topology
 
-Available input fields: `topology`, `target_polycount`, `should_remesh`, `symmetry_mode`, `should_texture`, `enable_pbr`, `pose_mode`, `texture_prompt`, `texture_image_url`, `enable_rigging`, `rigging_height_meters`, `enable_animation`, `animation_action_id`, `enable_safety_checker`. See the request schema for accepted values and defaults.
+- `topology`: Optional. Select the mesh topology. Accepted values: `quad`, `triangle`. Default: `triangle`.
+
+## Key Features
+
+- Generate a 3D model from multiple image references.
+- Accepts 1-4 images in `image_urls`.
+- Retrieve model assets and available previews or supporting files from the task result.
+- Optionally add textures, rigging, and animation.
+
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+- `enable_animation: true` requires `enable_rigging: true`.
+- `texture_prompt` and `texture_image_url` are mutually exclusive.
+- Text-only options such as `mode`, `seed`, and `enable_prompt_expansion` are not accepted by this image workflow.
+
+### Image URLs
+
+- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-4 items. Each item must be an HTTP(S) URL.
+
+### Remeshing
+
+- `should_remesh`: Optional. Control remeshing. Use `true` or `false`. Default: `true`.
+
+### Symmetry Mode
+
+- `symmetry_mode`: Optional. Select how symmetry is handled. Accepted values: `off`, `auto`, `on`. Default: `auto`.
+
+### Textures
+
+- `should_texture`: Optional. Control texture generation. Use `true` or `false`. Default: `true`.
+
+### PBR
+
+- `enable_pbr`: Optional. Control physically based rendering (PBR) materials. Use `true` or `false`.
+
+### Pose Mode
+
+- `pose_mode`: Optional. Select a pose, or send an empty string for no pose selection. Accepted values: `a-pose`, `t-pose`, `""`. Default: `""`.
+
+### Texture Prompt
+
+- `texture_prompt`: Optional. Describe the desired texture; do not combine with `texture_image_url`.
+
+### Texture Image URL
+
+- `texture_image_url`: Optional. Provide a texture reference URL; do not combine with `texture_prompt`. Use a publicly accessible HTTP(S) URL.
+
+### Rigging
+
+- `enable_rigging`: Optional. Request rigging for the generated model. Use `true` or `false`.
+
+### Rigging Height
+
+- `rigging_height_meters`: Optional. Set the rigging height in meters. Number. Default: `1.7`.
+
+### Animation
+
+- `enable_animation`: Optional. Request animation; rigging must also be enabled. Use `true` or `false`.
+
+### Animation Action ID
+
+- `animation_action_id`: Optional. Select the animation action. Integer. Default: `1001`.
+
+### Safety Checker
+
+- `enable_safety_checker`: Optional. Control safety checking. Use `true` or `false`. Default: `true`.
+
+## Output Files
+
+- Read every item in the returned `files` array.
+- Model assets use `file_type: "3d"`; previews use `file_type: "image"`.
+- Additional artifacts may use `file_type: "other"`. Retain available textures, animation artifacts, and optional file metadata.
+
+## Pricing
+
+Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

@@ -5,24 +5,69 @@ icon: "image"
 openapi: "/api-manual/image-series/kwaivgi-kling-image-o3-edit.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `kwaivgi/kling-image-o3/edit` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Kling O3 Image Edit
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Rework images with Kling O3 using multiple references and subject elements, with output up to 4K and support for visual variations.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `image_urls`, `prompt`.
+- **kwaivgi/kling-image-o3/edit** - Edit images using a prompt and image references.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Each multi_prompt shot needs a nonblank prompt and positive integer duration. Shot durations must sum to the requested duration. When multi_shots is available, enable it with multi_prompt; multi_shots=true also requires multi_prompt.
+## Output Options
 
-## Developer Notes
+### Image Size
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+- `size`: Optional. Accepted values: `auto`, `16:9`, `9:16`, `1:1`, `4:3`, `3:4`, `3:2`, `2:3`, `21:9`. Default: `16:9`.
 
-## Optional parameters
+### Resolution
 
-Available input fields: `elements`, `resolution`, `size`, `output_format`, `n`. See the request schema for accepted values and defaults.
+- `resolution`: Optional. Accepted values: `1K`, `2K`, `4K`. Default: `1K`.
+
+### Image Count
+
+- `n`: Optional. Number of images to generate. Integer from `1` to `9`. Default: `1`.
+
+### Output Format
+
+- `output_format`: Optional. Accepted values: `jpeg`, `png`, `webp`. Default: `png`.
+
+## Key Features
+
+- Edit images using a prompt and image references.
+- Accepts 1-10 images in `image_urls`.
+- Choose from `1K`, `2K`, `4K` output resolutions.
+- Supply additional subject references through `elements`.
+- Control the number of output images with `n`.
+
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Prompt
+
+- `prompt`: Required. Describe the requested changes. Length: **1-2,000 characters**.
+- The value must not be blank when supplied.
+
+### Image URLs
+
+- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-10 items. Each item must be an HTTP(S) URL.
+
+### Subject Elements
+
+- `elements`: Optional. Provide subject-reference objects. Supply an array. Each item is an object.
+
+- `elements[].frontal_image_url`: Optional. Use a publicly accessible HTTP(S) URL.
+- `elements[].reference_image_urls`: Optional. Supply an array. Each item must be an HTTP(S) URL.
+
+## Pricing
+
+Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

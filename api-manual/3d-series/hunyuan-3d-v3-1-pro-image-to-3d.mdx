@@ -5,25 +5,95 @@ icon: "cube"
 openapi: "/api-manual/3d-series/hunyuan-3d-v3-1-pro-image-to-3d.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `hunyuan-3d/v3.1/pro/image-to-3d` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Hunyuan 3D v3.1 Pro Image to 3D
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Reconstruct 3D objects with Hunyuan 3D v3.1 Pro using a primary image and additional views, with support for PBR materials.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `image_urls`.
+- **hunyuan-3d/v3.1/pro/image-to-3d** - Generate a 3D model from an image.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Extra views and PBR can affect usage. PBR cannot be combined with Geometry generation. Only the default face_count is accepted.
-- Read every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.
+## Output Options
 
-## Developer Notes
+### Generate Type
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+- `generate_type`: Optional. Accepted values: `Normal`, `Geometry`.
 
-## Optional parameters
+### Face Count
 
-Available input fields: `prompt`, `generate_type`, `enable_pbr`, `face_count`, `back_image_url`, `left_image_url`, `right_image_url`, `top_image_url`, `bottom_image_url`, `left_front_image_url`, `right_front_image_url`. See the request schema for accepted values and defaults.
+- `face_count`: Optional. Set the target face count. Accepted values: `500000`. Default: `500000`.
+
+## Key Features
+
+- Generate a 3D model from an image.
+- Accepts exactly 1 image in `image_urls`.
+- Retrieve model assets and available previews or supporting files from the task result.
+
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+- Do not enable `enable_pbr` with `generate_type: "Geometry"`.
+- Only `face_count: 500000` is accepted for this workflow.
+
+### Prompt
+
+- `prompt`: Optional. Describe the desired 3D object. Minimum length: **1 character**.
+- The value must not be blank when supplied.
+
+### Image URLs
+
+- `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
+
+### PBR
+
+- `enable_pbr`: Optional. Control physically based rendering (PBR) materials. Use `true` or `false`.
+
+### Back Image URL
+
+- `back_image_url`: Optional. Provide the back view as an image URL. Use a publicly accessible HTTP(S) URL.
+
+### Left Image URL
+
+- `left_image_url`: Optional. Provide the left view as an image URL. Use a publicly accessible HTTP(S) URL.
+
+### Right Image URL
+
+- `right_image_url`: Optional. Provide the right view as an image URL. Use a publicly accessible HTTP(S) URL.
+
+### Top Image URL
+
+- `top_image_url`: Optional. Provide the top view as an image URL. Use a publicly accessible HTTP(S) URL.
+
+### Bottom Image URL
+
+- `bottom_image_url`: Optional. Provide the bottom view as an image URL. Use a publicly accessible HTTP(S) URL.
+
+### Left Front Image URL
+
+- `left_front_image_url`: Optional. Provide the left front view as an image URL. Use a publicly accessible HTTP(S) URL.
+
+### Right Front Image URL
+
+- `right_front_image_url`: Optional. Provide the right front view as an image URL. Use a publicly accessible HTTP(S) URL.
+
+## Output Files
+
+- Read every item in the returned `files` array.
+- Model assets use `file_type: "3d"`; previews use `file_type: "image"`.
+- Additional artifacts may use `file_type: "other"`. Retain available textures, animation artifacts, and optional file metadata.
+
+## Pricing
+
+Additional views and PBR can affect usage.
+
+Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

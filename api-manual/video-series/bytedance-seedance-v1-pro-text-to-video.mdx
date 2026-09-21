@@ -5,23 +5,45 @@ icon: "video"
 openapi: "/api-manual/video-series/bytedance-seedance-v1-pro-text-to-video.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `bytedance/seedance/v1/pro/text-to-video` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Seedance 1.0 Pro Text to Video
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Create five- or ten-second video scenes from written descriptions with Seedance 1.0 Pro, with output up to 1080p.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `prompt`.
+- **bytedance/seedance/v1/pro/text-to-video** - Generate video scenes from text prompts.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+## Duration Options
 
-## Developer Notes
+- **5, 10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**.
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+## Key Features
 
-## Optional parameters
+- Generate video scenes from text prompts.
+- Choose from `720p`, `1080p` output resolutions.
 
-Available input fields: `resolution`, `duration`. See the request schema for accepted values and defaults.
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Prompt
+
+- `prompt`: Required. Describe the scene and desired motion. Length: **1-10,000 characters**.
+- The value must not be blank when supplied.
+
+### Resolution
+
+- `resolution`: Optional. Accepted values: `720p`, `1080p`. Default: `720p`.
+
+## Pricing
+
+Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

@@ -5,25 +5,75 @@ icon: "video"
 openapi: "/api-manual/video-series/alibaba-wan-2-7-video-edit.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `alibaba/wan-2.7/video-edit` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Wan 2.7 Video Edit
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Rework existing footage with Wan 2.7 using text and an optional reference image to guide changes to the scene.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `video_url`.
+- **alibaba/wan-2.7/video-edit** - Edit an existing video using written instructions.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- duration=0 detects and rounds up source duration; the source must be between two and ten seconds. An explicit duration selects the output length instead.
-- Media inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB when duration=0.
+## Duration Options
 
-## Developer Notes
+- **Automatic** - `duration: 0` is the default. The service detects and rounds up the source-video duration; the source must be **2-10 seconds**.
+- **Explicit output length** - Set `duration` to `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `10` seconds.
+- With `duration: 0`, the source must be a publicly reachable HTTP(S) file no larger than **100 MiB**.
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+## Key Features
 
-## Optional parameters
+- Edit an existing video using written instructions.
+- Choose from `720p`, `1080p` output resolutions.
 
-Available input fields: `prompt`, `reference_image_url`, `aspect_ratio`, `resolution`, `duration`, `multi_shots`, `audio_setting`, `seed`, `enable_safety_checker`. See the request schema for accepted values and defaults.
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Prompt
+
+- `prompt`: Optional. Describe the requested changes. Length: **1-5,000 characters**.
+- The value must not be blank when supplied.
+
+### Reference Image URL
+
+- `reference_image_url`: Optional. Provide an image URL to guide the edit. Use a publicly accessible HTTP(S) URL.
+
+### Source Video
+
+- `video_url`: Required. Provide the source video URL. Use a publicly accessible HTTP(S) URL.
+
+### Aspect Ratio
+
+- `aspect_ratio`: Optional. Accepted values: `16:9`, `9:16`, `1:1`, `4:3`, `3:4`. Default: `16:9`.
+
+### Resolution
+
+- `resolution`: Optional. Accepted values: `720p`, `1080p`. Default: `720p`.
+
+### Multi-Shot Generation
+
+- `multi_shots`: Optional. Enable multi-shot generation. Use `true` or `false`.
+
+### Audio Settings
+
+- `audio_setting`: Optional. Supply the audio setting as a string.
+
+### Seed
+
+- `seed`: Optional. Set the generation seed. Integer from `0` to `2147483647`.
+
+### Safety Checker
+
+- `enable_safety_checker`: Optional. Control safety checking. Use `true` or `false`.
+
+## Pricing
+
+Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

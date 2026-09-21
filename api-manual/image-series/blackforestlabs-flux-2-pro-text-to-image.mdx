@@ -5,23 +5,47 @@ icon: "image"
 openapi: "/api-manual/image-series/blackforestlabs-flux-2-pro-text-to-image.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `blackforestlabs/flux-2-pro/text-to-image` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# FLUX.2 Pro Text to Image
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Create detailed images with FLUX.2 Pro, using natural language to direct subjects, composition, and visible text at up to 2K.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `prompt`, `resolution`, `size`.
+- **blackforestlabs/flux-2-pro/text-to-image** - Generate images from text prompts.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+## Output Options
 
-## Developer Notes
+### Image Size
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+- `size`: Required. Accepted values: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `auto`.
 
-## Optional parameters
+### Resolution
 
-No additional input fields are accepted. The root callback_url is optional.
+- `resolution`: Required. Accepted values: `1K`, `2K`.
+
+## Key Features
+
+- Generate images from text prompts.
+- Choose from `1K`, `2K` output resolutions.
+
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Prompt
+
+- `prompt`: Required. Describe the desired image. Length: **3-5,000 characters**.
+- The value must not be blank when supplied.
+
+## Pricing
+
+Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

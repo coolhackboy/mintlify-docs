@@ -5,26 +5,240 @@ icon: "music"
 openapi: "/api-manual/music-series/google-gemini-3-1-flash-text-to-speech.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `google/gemini-3.1-flash/text-to-speech` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Gemini 3.1 Flash TTS
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Generate speech with Gemini 3.1 Flash TTS, using style instructions and selectable voices for narration or dialogue with two speakers.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `text`.
+- **google/gemini-3.1-flash/text-to-speech** - Convert text into speech.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- Usage is based on text length plus style instruction length.
-- Multi-speaker input needs two distinct speaker_id aliases containing only letters, digits, or underscores. Omit the single voice field when speakers are provided.
-- Read every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.
+## Output Options
 
-## Developer Notes
+### Output Format
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+- `output_format`: Optional. Accepted values: `mp3`, `wav`, `ogg_opus`. Default: `mp3`.
 
-## Optional parameters
+## Key Features
 
-Available input fields: `style_instructions`, `voice`, `language_code`, `speakers`, `temperature`, `output_format`. See the request schema for accepted values and defaults.
+- Convert text into speech.
+- Use one voice or two speaker aliases.
+- Control delivery with `style_instructions` and `temperature`.
+- Select a voice with `voice` and specify the spoken language with `language_code`.
+
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+- When supplying `speakers`, provide exactly two distinct `speaker_id` aliases using only letters, digits, and underscores. Omit the top-level `input.voice` field.
+
+### Text
+
+- `text`: Required. Supply the text to speak. Length: **1-50,000 characters**.
+- The value must not be blank when supplied.
+
+### Style Instructions
+
+- `style_instructions`: Optional. Describe how the speech should be delivered.
+
+### Voice
+
+- `voice`: Optional. Select the voice. String. Default: `Kore`.
+
+<Accordion title="Supported voice values">
+
+- `Achernar`
+- `Achird`
+- `Algenib`
+- `Algieba`
+- `Alnilam`
+- `Aoede`
+- `Autonoe`
+- `Callirrhoe`
+- `Charon`
+- `Despina`
+- `Enceladus`
+- `Erinome`
+- `Fenrir`
+- `Gacrux`
+- `Iapetus`
+- `Kore`
+- `Laomedeia`
+- `Leda`
+- `Orus`
+- `Pulcherrima`
+- `Puck`
+- `Rasalgethi`
+- `Sadachbia`
+- `Sadaltager`
+- `Schedar`
+- `Sulafat`
+- `Umbriel`
+- `Vindemiatrix`
+- `Zephyr`
+- `Zubenelgenubi`
+
+</Accordion>
+
+### Language Code
+
+- `language_code`: Optional. String.
+
+<Accordion title="Supported language code values">
+
+- `Arabic (Egypt)`
+- `Bangla (Bangladesh)`
+- `Dutch (Netherlands)`
+- `English (India)`
+- `English (US)`
+- `French (France)`
+- `German (Germany)`
+- `Hindi (India)`
+- `Indonesian (Indonesia)`
+- `Italian (Italy)`
+- `Japanese (Japan)`
+- `Korean (South Korea)`
+- `Marathi (India)`
+- `Polish (Poland)`
+- `Portuguese (Brazil)`
+- `Romanian (Romania)`
+- `Russian (Russia)`
+- `Spanish (Spain)`
+- `Tamil (India)`
+- `Telugu (India)`
+- `Thai (Thailand)`
+- `Turkish (Turkey)`
+- `Ukrainian (Ukraine)`
+- `Vietnamese (Vietnam)`
+- `Afrikaans (South Africa)`
+- `Albanian (Albania)`
+- `Amharic (Ethiopia)`
+- `Arabic (World)`
+- `Armenian (Armenia)`
+- `Azerbaijani (Azerbaijan)`
+- `Basque (Spain)`
+- `Belarusian (Belarus)`
+- `Bulgarian (Bulgaria)`
+- `Burmese (Myanmar)`
+- `Catalan (Spain)`
+- `Cebuano (Philippines)`
+- `Chinese Mandarin (China)`
+- `Chinese Mandarin (Taiwan)`
+- `Croatian (Croatia)`
+- `Czech (Czech Republic)`
+- `Danish (Denmark)`
+- `English (Australia)`
+- `English (UK)`
+- `Estonian (Estonia)`
+- `Filipino (Philippines)`
+- `Finnish (Finland)`
+- `French (Canada)`
+- `Galician (Spain)`
+- `Georgian (Georgia)`
+- `Greek (Greece)`
+- `Gujarati (India)`
+- `Haitian Creole (Haiti)`
+- `Hebrew (Israel)`
+- `Hungarian (Hungary)`
+- `Icelandic (Iceland)`
+- `Javanese (Java)`
+- `Kannada (India)`
+- `Konkani (India)`
+- `Lao (Laos)`
+- `Latin (Vatican City)`
+- `Latvian (Latvia)`
+- `Lithuanian (Lithuania)`
+- `Luxembourgish (Luxembourg)`
+- `Macedonian (North Macedonia)`
+- `Maithili (India)`
+- `Malagasy (Madagascar)`
+- `Malay (Malaysia)`
+- `Malayalam (India)`
+- `Mongolian (Mongolia)`
+- `Nepali (Nepal)`
+- `Norwegian Bokmal (Norway)`
+- `Norwegian Nynorsk (Norway)`
+- `Odia (India)`
+- `Pashto (Afghanistan)`
+- `Persian (Iran)`
+- `Portuguese (Portugal)`
+- `Punjabi (India)`
+- `Serbian (Serbia)`
+- `Sindhi (India)`
+- `Sinhala (Sri Lanka)`
+- `Slovak (Slovakia)`
+- `Slovenian (Slovenia)`
+- `Spanish (Latin America)`
+- `Spanish (Mexico)`
+- `Swahili (Kenya)`
+- `Swedish (Sweden)`
+- `Urdu (Pakistan)`
+
+</Accordion>
+
+### Speakers
+
+- `speakers`: Optional. Supply exactly 2 items. Each item is an object.
+
+- `speakers[].voice`: Optional. String. Default: `Kore`.
+
+<Accordion title="Supported voice values">
+
+- `Achernar`
+- `Achird`
+- `Algenib`
+- `Algieba`
+- `Alnilam`
+- `Aoede`
+- `Autonoe`
+- `Callirrhoe`
+- `Charon`
+- `Despina`
+- `Enceladus`
+- `Erinome`
+- `Fenrir`
+- `Gacrux`
+- `Iapetus`
+- `Kore`
+- `Laomedeia`
+- `Leda`
+- `Orus`
+- `Pulcherrima`
+- `Puck`
+- `Rasalgethi`
+- `Sadachbia`
+- `Sadaltager`
+- `Schedar`
+- `Sulafat`
+- `Umbriel`
+- `Vindemiatrix`
+- `Zephyr`
+- `Zubenelgenubi`
+
+</Accordion>
+- `speakers[].speaker_id`: Required. String. Use only letters, digits, and underscores.
+
+### Temperature
+
+- `temperature`: Optional. Control speech-generation variability. Number from `0` to `2`. Default: `1`.
+
+## Output Files
+
+- Read every item in the returned `files` array.
+- Generated audio uses `file_type: "audio"`.
+- Timestamp and alignment files may use `file_type: "other"`. Preserve optional file metadata when present.
+
+## Pricing
+
+Usage is based on the combined length of `text` and `style_instructions`.
+
+Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.

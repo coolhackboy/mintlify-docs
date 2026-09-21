@@ -5,24 +5,62 @@ icon: "video"
 openapi: "/api-manual/video-series/alibaba-wan-2-5-image-to-video.json POST /api/generate/submit"
 ---
 
-## Usage Guide
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
 
-Submit `alibaba/wan-2.5/image-to-video` with `VIDGO_API_KEY`. Keep model and callback_url at the request root and place workflow parameters inside input.
+# Wan 2.5 Image to Video
 
-The response contains a task_id. Use [Query Task Status](/api-manual/task-management/status) or [Webhook Callbacks](/api-manual/task-management/webhooks) to retrieve the files.
+Animate a reference image into a five-second clip with Wan 2.5, with audio input and video output up to 1080p.
 
-## Parameter Details
+## Available Models
 
-Required input fields: `image_urls`, `prompt`.
+- **alibaba/wan-2.5/image-to-video** - Generate video from image input.
 
-- Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
-- This workflow currently accepts five-second outputs; the longer-duration price is awaiting confirmation.
+## Duration Options
 
-## Developer Notes
+- **5 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**.
 
-Keep the task_id until the task reaches finished or failed. Failed tasks return charged credits through the normal refund process. Existing public IDs remain available; use the exact workflow ID shown on this page for new integrations.
+## Key Features
 
-## Optional parameters
+- Generate video from image input.
+- Accepts exactly 1 image in `image_urls`.
+- Choose from `480p`, `720p`, `1080p` output resolutions.
 
-Available input fields: `resolution`, `duration`, `audio`, `negative_prompt`, `seed`. See the request schema for accepted values and defaults.
+## Advanced Parameters
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
+### Prompt
+
+- `prompt`: Required. Describe the scene and desired motion. Length: **1-1,500 characters**.
+- The value must not be blank when supplied.
+
+### Image URLs
+
+- `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
+
+### Resolution
+
+- `resolution`: Optional. Accepted values: `480p`, `720p`, `1080p`. Default: `720p`.
+
+### Audio
+
+- `audio`: Optional. Supply the audio input as a string.
+
+### Negative Prompt
+
+- `negative_prompt`: Optional. Describe content to avoid.
+
+### Seed
+
+- `seed`: Optional. Set the generation seed. Integer.
+
+## Pricing
+
+Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+
+Credits are deducted on submission and refunded if the task fails.
