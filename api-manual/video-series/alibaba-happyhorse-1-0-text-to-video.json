@@ -23,7 +23,7 @@
         ],
         "summary": "Happy Horse Text to Video",
         "operationId": "submit_alibaba_happyhorse_1_0_text_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nCredits are deducted on submission and refunded if the task fails. Reference prompts do not require character1 or character2 markers.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nA nonblank prompt of at most 5,000 characters is required. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nCredits are deducted on submission and refunded if the task fails. Reference prompts do not require character1 or character2 markers.",
         "requestBody": {
           "required": true,
           "content": {
@@ -49,9 +49,9 @@
                     "properties": {
                       "prompt": {
                         "type": "string",
-                        "maxLength": 2500,
+                        "maxLength": 5000,
                         "minLength": 1,
-                        "description": "Text prompt. Required for text-to-video, reference-to-video, and video-edit. Optional for image-to-video. Maximum length is 2,500 characters."
+                        "description": "Text prompt. Required. Maximum length is 5,000 characters."
                       },
                       "aspect_ratio": {
                         "type": "string",

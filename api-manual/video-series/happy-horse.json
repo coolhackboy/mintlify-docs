@@ -149,7 +149,8 @@
             "properties": {
               "prompt": {
                 "type": "string",
-                "description": "Generation or edit prompt. Required for text-to-video, reference-to-video, and video-edit; optional for image-to-video.",
+                "minLength": 1,
+                "description": "Generation or edit prompt. Required for text-to-video, image-to-video, and reference-to-video (maximum 5,000 characters). Required for video-edit (maximum 2,500 characters).",
                 "example": "A cinematic street scene with realistic character motion."
               },
               "image_urls": {

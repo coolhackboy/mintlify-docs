@@ -26,7 +26,7 @@ Send a `prompt` without image or video input fields. Use `aspect_ratio`, `resolu
 
 ### Image to Video
 
-Send a single-item `image_urls` array. The image is used as the first frame. `prompt` is optional in this workflow.
+Send a single-item `image_urls` array. The image is used as the first frame. A nonblank `prompt` of at most 5,000 characters is required.
 
 ### Reference to Video
 
@@ -49,7 +49,7 @@ Text-to-video, image-to-video, and reference-to-video use the requested `duratio
 ## Required Parameters
 
 - **model**: `happy-horse`
-- **input.prompt**: Required for text-to-video, reference-to-video, and video-edit. Optional for image-to-video.
+- **input.prompt**: Required for text-to-video, image-to-video, and reference-to-video (maximum 5,000 characters). Required for video-edit (maximum 2,500 characters).
 - **input.video_url**: Required for video-edit.
 - **input.reference_image_urls**: Required for reference-to-video.
 

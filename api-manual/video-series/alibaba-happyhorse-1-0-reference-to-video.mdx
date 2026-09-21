@@ -16,7 +16,7 @@ The response contains a task_id. Use [Query Task Status](/api-manual/task-manage
 Required input fields: `prompt`, `reference_image_urls`.
 
 - Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.
-- When supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
+- A nonblank prompt of at most 5,000 characters is required. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.
 - Credits are deducted on submission and refunded if the task fails. Reference prompts do not require character1 or character2 markers.
 
 ## Developer Notes
