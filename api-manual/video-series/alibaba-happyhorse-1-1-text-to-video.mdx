@@ -33,10 +33,12 @@ Set `model` and optional `callback_url` at the request root. Place all workflow 
 
 Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
 
+`duration` and `seed` also accept integer strings such as `"5"`; decimal numbers such as `5.0` and decimal strings such as `"5.0"` are rejected. Null or empty values use the default duration or omit the seed. Supported boolean fields also accept `0`/`1` and case-insensitive strings `true`/`false`, `1`/`0`, `yes`/`no`, `y`/`n`, and `on`/`off`; null omits the field. Surrounding whitespace is trimmed, and resolution values are case-insensitive.
+
 ### Prompt
 
-- `prompt`: Required. Describe the scene and desired motion. Length: **1-2,500 characters**.
-- The value must not be blank when supplied.
+- `prompt`: Required. Describe the scene and desired motion. Maximum: **2,500 Unicode characters**.
+- Leading and trailing whitespace is trimmed. A nonblank prompt is required.
 
 ### Aspect Ratio
 
@@ -56,6 +58,6 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+Usage equals output seconds multiplied by the selected resolution rate. See [Pricing](https://vidgo.ai/apis/api-pricing) for current rates.
 
 Credits are deducted on submission and refunded if the task fails.

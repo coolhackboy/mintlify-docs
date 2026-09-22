@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API - Wan 2.7 Video Text to Video",
-    "description": "Create video sequences with Wan 2.7 using written scenes, optional audio input, and support for multiple shots at up to 1080p.",
+    "description": "Wan 2.7 Video Text to Video through the Vidgo unified submit API.",
     "version": "1.0.0"
   },
   "servers": [
@@ -23,7 +23,7 @@
         ],
         "summary": "Wan 2.7 Video Text to Video",
         "operationId": "submit_alibaba_wan_2_7_text_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nPrompts are trimmed and limited to 5,000 Unicode characters; required except for image-to-video, where blank or null prompts are omitted. Image inputs accept HTTP(S) URLs, image Data URIs, or raw Base64. Conversion and validation complete before charging. Other media require public HTTP(S) URLs.\n\nUsage equals output seconds multiplied by the selected resolution rate. See [Pricing](https://vidgo.ai/apis/api-pricing) for current rates.\n\n`duration` and `seed` also accept integer strings such as `\"5\"`; decimal numbers such as `5.0` and decimal strings such as `\"5.0\"` are rejected. Null or empty values use the default duration or omit the seed. Supported boolean fields also accept `0`/`1` and case-insensitive strings `true`/`false`, `1`/`0`, `yes`/`no`, `y`/`n`, and `on`/`off`; null omits the field. Surrounding whitespace is trimmed, and resolution values are case-insensitive.",
         "requestBody": {
           "required": true,
           "content": {
@@ -35,6 +35,7 @@
                   "input"
                 ],
                 "additionalProperties": true,
+                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected.",
                 "properties": {
                   "model": {
                     "type": "string",
@@ -89,14 +90,6 @@
                         ],
                         "description": "Duration."
                       },
-                      "multi_shots": {
-                        "type": "boolean",
-                        "description": "Multi shots."
-                      },
-                      "audio_setting": {
-                        "type": "string",
-                        "description": "Audio setting."
-                      },
                       "seed": {
                         "type": "integer",
                         "minimum": 0,
@@ -118,8 +111,7 @@
                     "nullable": true,
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
-                },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                }
               },
               "examples": {
                 "basic": {

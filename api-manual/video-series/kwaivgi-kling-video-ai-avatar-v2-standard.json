@@ -23,7 +23,7 @@
         ],
         "summary": "Kling Avatar 2.0 Standard",
         "operationId": "submit_kwaivgi_kling_video_ai_avatar_v2_standard",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nDriving audio must be between two and sixty seconds. Usage is based on its detected duration, rounded up to a whole second.\n\nMedia inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nOptional prompt strings are trimmed; null, empty, and whitespace-only prompts are omitted. Provide exactly one image as a public HTTP(S) URL, image Data URI, or raw Base64. Audio requires a public HTTP(S) URL with no embedded credentials. Base64 conversion and media validation happen before credits are deducted.\n\nDriving audio must be between two and sixty seconds. Usage is based on its detected duration, rounded up to a whole second.\n\nDriving audio must be a publicly reachable HTTP(S) file of at most 5 MiB (5,242,880 bytes).",
         "requestBody": {
           "required": true,
           "content": {
@@ -35,6 +35,7 @@
                   "input"
                 ],
                 "additionalProperties": true,
+                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected.",
                 "properties": {
                   "model": {
                     "type": "string",
@@ -55,23 +56,22 @@
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "format": "uri",
+                          "minLength": 1,
                           "description": "Image urls."
                         },
                         "minItems": 1,
                         "maxItems": 1,
-                        "description": "Image urls."
+                        "description": "Exactly one image: public HTTP(S) URL, image Data URI, or raw Base64. Base64 is converted to a URL before submission."
                       },
                       "audio_url": {
                         "type": "string",
                         "format": "uri",
-                        "description": "Audio url."
+                        "description": "Public HTTP(S) driving audio URL. Duration must be 2–60 seconds, inclusive; file size must not exceed 5 MiB."
                       },
                       "prompt": {
                         "type": "string",
-                        "maxLength": 5000,
-                        "minLength": 1,
-                        "description": "Prompt."
+                        "nullable": true,
+                        "description": "Optional prompt. Leading and trailing whitespace is trimmed; null, empty, or whitespace-only values are omitted."
                       }
                     },
                     "additionalProperties": false
@@ -81,8 +81,7 @@
                     "nullable": true,
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
-                },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                }
               },
               "examples": {
                 "basic": {
