@@ -23,7 +23,7 @@
         ],
         "summary": "Hailuo 02 Pro Text to Video",
         "operationId": "submit_minimax_hailuo_02_pro_text_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nThis Pro workflow accepts six-second output and does not accept a resolution field.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nPro accepts 512P and 768P (default 768P). Do not send duration. Prompts must be nonblank after trimming, with no explicit length limit in the current handler.",
         "requestBody": {
           "required": true,
           "content": {
@@ -49,24 +49,28 @@
                     "required": [
                       "prompt"
                     ],
+                    "description": "Input parameters for generation",
                     "properties": {
                       "prompt": {
                         "type": "string",
-                        "maxLength": 1500,
-                        "minLength": 1,
-                        "description": "Prompt."
-                      },
-                      "duration": {
-                        "type": "integer",
-                        "enum": [
-                          6
-                        ],
-                        "default": 6,
-                        "description": "Duration."
+                        "description": "Required nonblank prompt, trimmed before validation. No explicit length limit in the current PoYo handler.",
+                        "example": "A cinematic video scene",
+                        "minLength": 1
                       },
                       "prompt_optimizer": {
                         "type": "boolean",
-                        "description": "Prompt optimizer."
+                        "description": "Enable AI-powered prompt optimization",
+                        "example": true
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "description": "Resolution passed to PoYo. Defaults to 768P.",
+                        "enum": [
+                          "512P",
+                          "768P"
+                        ],
+                        "default": "768P",
+                        "example": "768P"
                       }
                     },
                     "additionalProperties": false
@@ -86,7 +90,7 @@
                     "model": "minimax/hailuo-02/pro/text-to-video",
                     "input": {
                       "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "duration": 6
+                      "resolution": "768P"
                     }
                   }
                 },
@@ -96,7 +100,7 @@
                     "model": "minimax/hailuo-02/pro/text-to-video",
                     "input": {
                       "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "duration": 6
+                      "resolution": "768P"
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }

@@ -23,7 +23,7 @@
         ],
         "summary": "Hailuo 02 Text to Video",
         "operationId": "submit_minimax_hailuo_02_standard_text_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nThis Standard workflow accepts only 768P resolution.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nStandard accepts 512P and 768P (default 768P), and 6 or 10 seconds (default 6). Standard end_image_url requires 768P.",
         "requestBody": {
           "required": true,
           "content": {
@@ -49,33 +49,39 @@
                     "required": [
                       "prompt"
                     ],
+                    "description": "Input parameters for generation",
                     "properties": {
                       "prompt": {
                         "type": "string",
+                        "description": "Required nonblank prompt, trimmed before validation. Maximum 1500 Unicode characters.",
                         "maxLength": 1500,
-                        "minLength": 1,
-                        "description": "Prompt."
+                        "example": "A cinematic video scene",
+                        "minLength": 1
                       },
                       "duration": {
                         "type": "integer",
+                        "description": "Video duration in seconds. Defaults to 6.",
                         "enum": [
                           6,
                           10
                         ],
-                        "default": 6,
-                        "description": "Duration."
+                        "example": 6,
+                        "default": 6
                       },
                       "resolution": {
                         "type": "string",
+                        "description": "Resolution passed to PoYo. Defaults to 768P.",
                         "enum": [
+                          "512P",
                           "768P"
                         ],
                         "default": "768P",
-                        "description": "Resolution."
+                        "example": "768P"
                       },
                       "prompt_optimizer": {
                         "type": "boolean",
-                        "description": "Prompt optimizer."
+                        "description": "Enable AI-powered prompt optimization",
+                        "example": true
                       }
                     },
                     "additionalProperties": false

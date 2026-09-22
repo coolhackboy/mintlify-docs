@@ -27,7 +27,7 @@ Animate still images with Hailuo 02 Standard, with text guidance, prompt refinem
 - Generate video from image input.
 - Accepts exactly 1 image in `image_urls`.
 - Optionally supply an ending frame with `end_image_url`.
-- This model ID fixes the output resolution to `768P`.
+- Accepts `512P` or `768P` resolution; defaults to `768P`.
 
 ## Advanced Parameters
 
@@ -38,7 +38,7 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 ### Prompt
 
 - `prompt`: Required. Describe the scene and desired motion. Length: **1-1,500 characters**.
-- The value must not be blank when supplied.
+- Whitespace is trimmed before validation; the result must not be blank.
 
 ### Image URLs
 
@@ -46,11 +46,11 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ### End Image URL
 
-- `end_image_url`: Optional. Provide the ending frame URL. Use a publicly accessible HTTP(S) URL.
+- `end_image_url`: Optional. Provide the ending frame URL. Use a publicly accessible HTTP(S) URL. Requires a starting image in `image_urls`. Standard requires `768P` when an ending frame is supplied.
 
 ### Resolution
 
-- `resolution`: Optional. Accepted values: `768P`. Default: `768P`.
+- `resolution`: Optional. Accepted values: `512P`, `768P`. Default: `768P`.
 
 ### Prompt Optimizer
 
@@ -58,6 +58,8 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+512P: 3 credits/second, 18 credits ($0.09) for 6 seconds or 30 credits ($0.15) for 10 seconds.
 
-Credits are deducted on submission and refunded if the task fails.
+768P: 7 credits/second, 42 credits ($0.21) for 6 seconds or 70 credits ($0.35) for 10 seconds.
+
+1 credit = $0.005. Credits are deducted on submission and refunded if the task fails.

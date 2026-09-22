@@ -23,7 +23,7 @@
         ],
         "summary": "Hailuo 02 Pro Image to Video",
         "operationId": "submit_minimax_hailuo_02_pro_image_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nThis Pro workflow accepts six-second output and does not accept a resolution field.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nPro accepts 512P and 768P (default 768P). Do not send duration. Prompts must be nonblank after trimming, with no explicit length limit in the current handler.",
         "requestBody": {
           "required": true,
           "content": {
@@ -50,40 +50,47 @@
                       "image_urls",
                       "prompt"
                     ],
+                    "description": "Input parameters for generation",
                     "properties": {
                       "prompt": {
                         "type": "string",
-                        "maxLength": 1500,
-                        "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Required nonblank prompt, trimmed before validation. No explicit length limit in the current PoYo handler.",
+                        "example": "A cinematic video scene",
+                        "minLength": 1
                       },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "format": "uri",
-                          "description": "Image urls."
+                          "format": "uri"
                         },
                         "maxItems": 1,
-                        "minItems": 1,
-                        "description": "Image urls."
+                        "description": "Reference image URLs for image-to-video generation (required for image-to-video)",
+                        "example": [
+                          "https://example.com/start.png"
+                        ],
+                        "minItems": 1
                       },
                       "end_image_url": {
                         "type": "string",
                         "format": "uri",
-                        "description": "End image url."
-                      },
-                      "duration": {
-                        "type": "integer",
-                        "enum": [
-                          6
-                        ],
-                        "default": 6,
-                        "description": "Duration."
+                        "description": "Optional last-frame image URL; requires image_urls.",
+                        "example": "https://example.com/end_image.png"
                       },
                       "prompt_optimizer": {
                         "type": "boolean",
-                        "description": "Prompt optimizer."
+                        "description": "Enable AI-powered prompt optimization",
+                        "example": true
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "description": "Resolution passed to PoYo. Defaults to 768P.",
+                        "enum": [
+                          "512P",
+                          "768P"
+                        ],
+                        "default": "768P",
+                        "example": "768P"
                       }
                     },
                     "additionalProperties": false
@@ -106,7 +113,7 @@
                         "https://example.com/image.png"
                       ],
                       "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "duration": 6
+                      "resolution": "768P"
                     }
                   }
                 },
@@ -119,7 +126,7 @@
                         "https://example.com/image.png"
                       ],
                       "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "duration": 6
+                      "resolution": "768P"
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
