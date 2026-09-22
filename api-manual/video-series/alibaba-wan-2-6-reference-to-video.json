@@ -47,66 +47,51 @@
                   "input": {
                     "type": "object",
                     "required": [
-                      "duration",
                       "prompt",
-                      "resolution"
+                      "video_urls"
                     ],
+                    "description": "Input parameters for generation",
                     "properties": {
                       "prompt": {
                         "type": "string",
+                        "description": "Text prompt for video generation",
                         "maxLength": 5000,
-                        "minLength": 1,
-                        "description": "Prompt."
+                        "minLength": 1
                       },
                       "video_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "format": "uri",
-                          "description": "Video urls."
+                          "format": "uri"
                         },
                         "minItems": 1,
-                        "maxItems": 3,
-                        "description": "Video urls."
+                        "maxItems": 10,
+                        "description": "Required reference video URLs. Supply 1–10 MP4, MOV, or MKV videos, each up to 10 MiB. PoYo validates remote files."
                       },
                       "duration": {
                         "type": "integer",
+                        "description": "Output duration in seconds: 5 or 10.",
                         "enum": [
                           5,
                           10
                         ],
-                        "description": "Duration."
+                        "default": 5
                       },
                       "resolution": {
                         "type": "string",
+                        "description": "Output video resolution",
                         "enum": [
                           "720p",
                           "1080p"
                         ],
-                        "description": "Resolution."
+                        "default": "720p"
                       },
                       "multi_shots": {
                         "type": "boolean",
-                        "description": "Multi shots."
+                        "description": "Enable multi-shot composition (single continuous shot when false)"
                       }
                     },
-                    "additionalProperties": false,
-                    "allOf": [
-                      {
-                        "anyOf": [
-                          {
-                            "required": [
-                              "video_urls"
-                            ],
-                            "properties": {
-                              "video_urls": {
-                                "minItems": 1
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    ]
+                    "additionalProperties": false
                   },
                   "callback_url": {
                     "type": "string",

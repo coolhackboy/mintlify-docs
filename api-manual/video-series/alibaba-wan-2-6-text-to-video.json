@@ -47,37 +47,38 @@
                   "input": {
                     "type": "object",
                     "required": [
-                      "duration",
-                      "prompt",
-                      "resolution"
+                      "prompt"
                     ],
+                    "description": "Input parameters for generation",
                     "properties": {
                       "prompt": {
                         "type": "string",
+                        "description": "Text prompt for video generation",
                         "maxLength": 5000,
-                        "minLength": 1,
-                        "description": "Prompt."
+                        "minLength": 1
                       },
                       "duration": {
                         "type": "integer",
+                        "description": "Video duration in seconds (15 seconds supported for text-to-video and image-to-video)",
                         "enum": [
                           5,
                           10,
                           15
                         ],
-                        "description": "Duration."
+                        "default": 5
                       },
                       "resolution": {
                         "type": "string",
+                        "description": "Output video resolution",
                         "enum": [
                           "720p",
                           "1080p"
                         ],
-                        "description": "Resolution."
+                        "default": "720p"
                       },
                       "multi_shots": {
                         "type": "boolean",
-                        "description": "Multi shots."
+                        "description": "Enable multi-shot composition (single continuous shot when false)"
                       }
                     },
                     "additionalProperties": false
