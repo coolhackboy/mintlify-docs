@@ -1,54 +1,63 @@
 ---
 title: "Wan Animate Replace"
-description: "Replace the character in a source video using a reference image with Wan Animate, adapting the original performance to a new subject."
+description: "Replace the character in a source video with the character from a reference image using Wan Animate Replace."
 icon: "video"
 openapi: "/api-manual/video-series/alibaba-wan-v2-2-14b-animate-replace.json POST /api/generate/submit"
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. Submit the request with `VIDGO_API_KEY`. Vidgo validates the request and checks the source video before creating the task. A `task_id` is returned after the task is successfully created.
+2. Use the returned `task_id` with [Query Task Status](/api-manual/task-management/status) until the task reaches `finished` or `failed`. If you provide a `callback_url`, Vidgo also sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
 </Tip>
 
 # Wan Animate Replace
 
-Replace the character in a source video using a reference image with Wan Animate, adapting the original performance to a new subject.
+Replace the character in a source video with the character from a reference image using Wan Animate Replace.
 
 ## Available Models
 
-- **alibaba/wan/v2.2-14b/animate/replace** - Replace a character in a source video using an image reference.
+- **alibaba/wan/v2.2-14b/animate/replace** - Replace the character in a source video with the character from a reference image using Wan Animate Replace.
 
-## Duration Options
+## Source Video Requirements
 
-- The service inspects the duration of `video_url`; this workflow does not accept a `duration` field.
-- The source video must be publicly reachable over HTTP(S) and no larger than **100 MiB**.
+- `video_url` must point to a publicly accessible HTTP(S) video file.
+- The entire video file must be no larger than **100 MiB** (104,857,600 bytes), and its duration must be greater than zero.
+- Vidgo reads the source video to determine its duration for billing. This endpoint does not accept a `duration` field.
 
 ## Key Features
 
-- Replace a character in a source video using an image reference.
-- Accepts exactly 1 image in `image_urls`.
-- Choose from `480p`, `580p`, `720p` output resolutions.
+- Replace the character in a source video with the character from a reference image using Wan Animate Replace.
+- Accepts an `image_urls` array containing exactly one image URL.
+- Supports `480p`, `580p`, and `720p` output resolutions.
 
-## Advanced Parameters
+## Request Parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+Set `model` and optional `callback_url` at the request root. The `input` object accepts only `video_url`, `image_urls`, and `resolution`. It does not accept `prompt`, `text`, or `duration`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials or whitespace.
 
 ### Source Video
 
-- `video_url`: Required. Provide the source video URL. Use a publicly accessible HTTP(S) URL.
+- `video_url`: Required string. The source video containing the character to replace. The video must meet the source video requirements above.
 
-### Image URLs
+### Character Image
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
+- `image_urls`: Required array containing exactly one publicly accessible HTTP(S) image URL. The reference image containing the replacement character. A single URL string instead of an array, an empty array, multiple URLs, and Base64 images are rejected.
 
 ### Resolution
 
-- `resolution`: Optional. Accepted values: `480p`, `580p`, `720p`. Default: `480p`.
+- `resolution`: Optional string. Accepted values: `480p`, `580p`, `720p`. Defaults to `480p` only when the field is omitted. Null, empty strings, other values, and values with surrounding whitespace are rejected.
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+Move and Replace use the same per-second rates:
 
-Credits are deducted on submission and refunded if the task fails.
+| Resolution | Credits per second | USD per second |
+| --- | ---: | ---: |
+| 480p | 7 | $0.035 |
+| 580p | 12 | $0.060 |
+| 720p | 15 | $0.075 |
+
+Vidgo measures the source video duration for billing. Whole seconds are billed as measured; any fractional second is rounded up to a whole second. Total credits = `ceil(source video duration in seconds) × credits per second`. For example, a 5.1-second source video at 480p is billed as 6 seconds: 42 credits ($0.210). Do not send a `duration` field. If Vidgo cannot read the video or determine its duration, the request is rejected before credits are deducted.
+
+Credits are deducted when a valid request is submitted for generation and refunded if the task fails.

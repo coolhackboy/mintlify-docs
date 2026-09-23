@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API - Wan Animate Move",
-    "description": "Transfer motion from a source video to a character image with Wan Animate, bringing still characters into a moving performance.",
+    "description": "Animate the character in an image using motion from a reference video with Wan Animate Move.",
     "version": "1.0.0"
   },
   "servers": [
@@ -23,7 +23,7 @@
         ],
         "summary": "Wan Animate Move",
         "operationId": "submit_alibaba_wan_v2_2_14b_animate_move",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nMedia inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.",
+        "description": "Animate the character in an image using motion from a reference video with Wan Animate Move.\n\nSet model and optional callback_url at the request root. The input object accepts only video_url, image_urls, and resolution. It does not accept prompt, text, or duration. Unsupported input fields are rejected before credits are deducted.\n\nInput URLs must use HTTP(S), include a hostname, and contain no embedded credentials or whitespace. The source video must be publicly accessible, its entire file must be no larger than 100 MiB (104,857,600 bytes), and its duration must be greater than zero. Vidgo validates the request and checks the source video before creating the task. A task_id is returned after the task is successfully created. Query task status or provide a callback_url to receive the result.\n\nBilling uses the source video duration rounded up to a whole second, multiplied by the selected resolution rate: 480p costs 7 credits ($0.035) per second; 580p costs 12 credits ($0.060); 720p costs 15 credits ($0.075). A 5.1-second source video at 480p is billed as 6 seconds: 42 credits ($0.210). Video inspection failures are rejected before credits are deducted. Credits are deducted when a valid request is submitted for generation and refunded if the task fails.",
         "requestBody": {
           "required": true,
           "content": {
@@ -54,18 +54,18 @@
                       "video_url": {
                         "type": "string",
                         "format": "uri",
-                        "description": "Video url."
+                        "description": "Required string. The reference video that provides the motion for the character image. Use a publicly accessible HTTP(S) URL with a hostname and no embedded credentials or whitespace. The entire video file must be no larger than 100 MiB (104,857,600 bytes), and its duration must be greater than zero. Vidgo determines the source duration for billing; do not send a duration field."
                       },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
                           "format": "uri",
-                          "description": "Image urls."
+                          "description": "A publicly accessible HTTP(S) image URL with a hostname and no embedded credentials or whitespace."
                         },
                         "minItems": 1,
                         "maxItems": 1,
-                        "description": "Image urls."
+                        "description": "Required array containing exactly one publicly accessible HTTP(S) image URL. The image containing the character to animate. A single URL string instead of an array, an empty array, multiple URLs, and Base64 images are rejected. URLs must include a hostname and contain no embedded credentials or whitespace."
                       },
                       "resolution": {
                         "type": "string",
@@ -75,7 +75,7 @@
                           "720p"
                         ],
                         "default": "480p",
-                        "description": "Resolution."
+                        "description": "Optional string: 480p, 580p, or 720p. Defaults to 480p only when omitted. Null, empty strings, other values, and values with surrounding whitespace are rejected. Rates per billable second: 480p costs 7 credits ($0.035); 580p costs 12 credits ($0.060); 720p costs 15 credits ($0.075). The source video duration is rounded up to a whole second before calculating the total."
                       }
                     },
                     "additionalProperties": false
@@ -122,7 +122,7 @@
         },
         "responses": {
           "200": {
-            "description": "Task submitted",
+            "description": "Task created successfully. Use the returned task_id to query its status and retrieve the result.",
             "content": {
               "application/json": {
                 "schema": {
@@ -178,7 +178,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Invalid or unsupported input parameters, an inaccessible source video, a video that exceeds 100 MiB or has a non-positive or unreadable duration, or insufficient credits.",
             "content": {
               "application/json": {
                 "schema": {
@@ -388,7 +388,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Unable to create the video generation task.",
             "content": {
               "application/json": {
                 "schema": {
@@ -418,7 +418,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "The selected model is currently unavailable.",
             "content": {
               "application/json": {
                 "schema": {
