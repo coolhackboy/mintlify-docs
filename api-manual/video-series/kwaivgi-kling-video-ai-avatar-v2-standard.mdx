@@ -21,7 +21,7 @@ Create a speaking avatar with Kling Avatar 2.0 Standard, combining a character i
 ## Duration Options
 
 - **Driving audio: 2-60 seconds** - The service detects the duration of `audio_url`.
-- Do not send `duration`. The audio must be publicly reachable over HTTP(S) and no larger than **100 MiB**.
+- Do not send `duration`. The audio must be publicly reachable over HTTP(S) and no larger than **5 MiB**.
 
 ## Key Features
 
@@ -32,11 +32,11 @@ Create a speaking avatar with Kling Avatar 2.0 Standard, combining a character i
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials. Image inputs also accept image Data URIs or raw Base64. Image conversion and media validation complete before credits are deducted.
 
 ### Image URLs
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
+- `image_urls`: Required. Supply exactly 1 item. Each item may be a public HTTP(S) URL, image Data URI, or raw Base64. Image order is preserved.
 
 ### Audio URL
 
@@ -44,8 +44,8 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ### Prompt
 
-- `prompt`: Optional. Describe the scene and desired motion. Length: **1-5,000 characters**.
-- The value must not be blank when supplied.
+- `prompt`: Optional. Describe the scene and desired motion.
+- Leading and trailing whitespace is trimmed. Omitted, null, empty, and whitespace-only values are treated as omitted.
 
 ## Pricing
 

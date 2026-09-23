@@ -25,7 +25,7 @@ Create short scenes from text with Hailuo 02 Standard, with optional prompt refi
 ## Key Features
 
 - Generate video scenes from text prompts.
-- This model ID fixes the output resolution to `768P`.
+- Accepts `512P` or `768P` resolution; defaults to `768P`.
 
 ## Advanced Parameters
 
@@ -36,11 +36,11 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 ### Prompt
 
 - `prompt`: Required. Describe the scene and desired motion. Length: **1-1,500 characters**.
-- The value must not be blank when supplied.
+- Whitespace is trimmed before validation; the result must not be blank.
 
 ### Resolution
 
-- `resolution`: Optional. Accepted values: `768P`. Default: `768P`.
+- `resolution`: Optional. Accepted values: `512P`, `768P`. Default: `768P`.
 
 ### Prompt Optimizer
 
@@ -48,6 +48,8 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+512P: 3 credits/second, 18 credits ($0.09) for 6 seconds or 30 credits ($0.15) for 10 seconds.
 
-Credits are deducted on submission and refunded if the task fails.
+768P: 7 credits/second, 42 credits ($0.21) for 6 seconds or 70 credits ($0.35) for 10 seconds.
+
+1 credit = $0.005. Credits are deducted on submission and refunded if the task fails.

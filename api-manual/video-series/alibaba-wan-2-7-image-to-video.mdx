@@ -32,24 +32,26 @@ Animate reference images with Wan 2.7, with optional audio guidance and multiple
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials. Image inputs also accept image Data URIs or raw Base64. Image conversion and media validation complete before credits are deducted.
+
+`duration` and `seed` also accept integer strings such as `"5"`; decimal numbers such as `5.0` and decimal strings such as `"5.0"` are rejected. Null or empty values use the default duration or omit the seed. Supported boolean fields also accept `0`/`1` and case-insensitive strings `true`/`false`, `1`/`0`, `yes`/`no`, `y`/`n`, and `on`/`off`; null omits the field. Surrounding whitespace is trimmed, and resolution values are case-insensitive.
 
 ### Prompt
 
-- `prompt`: Optional. Describe the scene and desired motion. Length: **1-5,000 characters**.
-- The value must not be blank when supplied.
+- `prompt`: Optional. Describe the scene and desired motion. Maximum: **5,000 Unicode characters**.
+- Leading and trailing whitespace is trimmed. Omitted, null, empty, and whitespace-only values are treated as omitted.
 
 ### Image URLs
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-2 items. Each item must be an HTTP(S) URL.
+- `image_urls`: Required. Supply 1-2 items. Each item may be a public HTTP(S) URL, image Data URI, or raw Base64. Image order is preserved.
 
 ### Audio URL
 
 - `audio_url`: Optional. Provide the input audio URL. Use a publicly accessible HTTP(S) URL.
 
-### Aspect Ratio
+### Video URL
 
-- `aspect_ratio`: Optional. Accepted values: `16:9`, `9:16`, `1:1`, `4:3`, `3:4`. Default: `16:9`.
+- `video_url`: Optional. Provide a publicly accessible HTTP(S) video URL.
 
 ### Resolution
 
@@ -58,10 +60,6 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 ### Multi-Shot Generation
 
 - `multi_shots`: Optional. Enable multi-shot generation. Use `true` or `false`.
-
-### Audio Settings
-
-- `audio_setting`: Optional. Supply the audio setting as a string.
 
 ### Seed
 
@@ -73,6 +71,6 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+Usage equals output seconds multiplied by the selected resolution rate. See [Pricing](https://vidgo.ai/apis/api-pricing) for current rates.
 
 Credits are deducted on submission and refunded if the task fails.

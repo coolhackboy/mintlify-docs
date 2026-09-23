@@ -23,7 +23,7 @@
         ],
         "summary": "Seedance 1.0 Pro Image to Video",
         "operationId": "submit_bytedance_seedance_v1_pro_image_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Use the documented input types and values. Prompt must be a string containing 1–10,000 Unicode characters after trimming. Duration must be numeric 5 or 10; strings and fractional values are rejected. Resolution must be 720p or 1080p. Image input requires exactly one HTTP(S) URL with a hostname and no embedded credentials or whitespace; Base64 is not supported.",
         "requestBody": {
           "required": true,
           "content": {
@@ -50,41 +50,47 @@
                       "image_urls",
                       "prompt"
                     ],
+                    "description": "Input parameters for generation",
                     "properties": {
                       "prompt": {
                         "type": "string",
+                        "description": "Required string; trim surrounding whitespace before validating 1-10,000 Unicode characters.",
                         "maxLength": 10000,
-                        "minLength": 1,
-                        "description": "Prompt."
+                        "example": "Animate this exact outdoor loom scene in one continuous five-second shot. The same Ghanaian weaver throws the wooden shuttle once through the open shed, then beats the weft so the navy-and-gold cloth settles with a slight sag. Preserve her face, hair, clothing, loom geometry, textile pattern, mango-tree background, and camera framing. Very slow gentle lateral camera drift. Tactile wood and cloth physics. No extra people, no cuts, no lettering, no logos, no brands, no advertising, no watermark.",
+                        "minLength": 1
                       },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "format": "uri",
-                          "description": "Image urls."
+                          "format": "uri"
                         },
                         "maxItems": 1,
-                        "minItems": 1,
-                        "description": "Image urls."
+                        "description": "Exactly one HTTP(S) image URL with a hostname and no embedded credentials or whitespace. Base64 and bare strings are rejected.",
+                        "example": [
+                          "https://cdn.vidgo.ai/apis/models/bytedance/seedance/v1/pro/image-to-video/v1/01/input.png"
+                        ],
+                        "minItems": 1
                       },
                       "resolution": {
                         "type": "string",
+                        "description": "Only 720p or 1080p. Defaults to 720p only when omitted; aliases, null and empty strings are rejected.",
                         "enum": [
                           "720p",
                           "1080p"
                         ],
-                        "default": "720p",
-                        "description": "Resolution."
+                        "example": "720p",
+                        "default": "720p"
                       },
                       "duration": {
                         "type": "integer",
+                        "description": "Numeric integer 5 or 10 seconds. Defaults to 5 only when omitted; strings, booleans, null and fractional values are rejected.",
                         "enum": [
                           5,
                           10
                         ],
-                        "default": 5,
-                        "description": "Duration."
+                        "example": 5,
+                        "default": 5
                       }
                     },
                     "additionalProperties": false
@@ -95,34 +101,34 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Keep model and optional callback_url at the root. Unsupported input fields are rejected. Defaults apply only to omitted fields; null and empty input values are rejected."
               },
               "examples": {
                 "basic": {
-                  "summary": "Basic workflow",
+                  "summary": "Kente Loom Shuttle",
                   "value": {
                     "model": "bytedance/seedance/v1/pro/image-to-video",
                     "input": {
-                      "image_urls": [
-                        "https://example.com/image.png"
-                      ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
+                      "prompt": "Animate this exact outdoor loom scene in one continuous five-second shot. The same Ghanaian weaver throws the wooden shuttle once through the open shed, then beats the weft so the navy-and-gold cloth settles with a slight sag. Preserve her face, hair, clothing, loom geometry, textile pattern, mango-tree background, and camera framing. Very slow gentle lateral camera drift. Tactile wood and cloth physics. No extra people, no cuts, no lettering, no logos, no brands, no advertising, no watermark.",
                       "resolution": "720p",
-                      "duration": 5
+                      "duration": 5,
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedance/v1/pro/image-to-video/v1/01/input.png"
+                      ]
                     }
                   }
                 },
                 "callback": {
-                  "summary": "Receive a completion callback",
+                  "summary": "Kente Loom Shuttle with a completion callback",
                   "value": {
                     "model": "bytedance/seedance/v1/pro/image-to-video",
                     "input": {
-                      "image_urls": [
-                        "https://example.com/image.png"
-                      ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
+                      "prompt": "Animate this exact outdoor loom scene in one continuous five-second shot. The same Ghanaian weaver throws the wooden shuttle once through the open shed, then beats the weft so the navy-and-gold cloth settles with a slight sag. Preserve her face, hair, clothing, loom geometry, textile pattern, mango-tree background, and camera framing. Very slow gentle lateral camera drift. Tactile wood and cloth physics. No extra people, no cuts, no lettering, no logos, no brands, no advertising, no watermark.",
                       "resolution": "720p",
-                      "duration": 5
+                      "duration": 5,
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedance/v1/pro/image-to-video/v1/01/input.png"
+                      ]
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }

@@ -20,12 +20,12 @@ Use reference videos to guide new scenes with Wan 2.6, with support for multiple
 
 ## Duration Options
 
-- **5, 10 seconds** - Set `duration` as an integer. Required.
+- **5, 10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**.
 
 ## Key Features
 
 - Generate video guided by reference material and a prompt.
-- Use video references to guide the generated scene.
+- Use 1-10 video references to guide the generated scene.
 - Choose from `720p`, `1080p` output resolutions.
 
 ## Advanced Parameters
@@ -41,11 +41,12 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ### Reference Videos
 
-- `video_urls`: Required. Provide reference video URLs. Supply 1-3 items. Each item must be an HTTP(S) URL.
+- `video_urls`: Required. Provide reference video URLs. Supply 1-10 items. Each item must be an HTTP(S) URL.
+- PoYo accepts MP4, MOV, and MKV files up to 10 MiB each.
 
 ### Resolution
 
-- `resolution`: Required. Accepted values: `720p`, `1080p`.
+- `resolution`: Optional. Accepted values: `720p`, `1080p`. Default: `720p`.
 
 ### Multi-Shot Generation
 

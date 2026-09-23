@@ -1,6 +1,6 @@
 ---
 title: "Wan 2.7 Video Text to Video"
-description: "Create video sequences with Wan 2.7 using written scenes, optional audio input, and support for multiple shots at up to 1080p."
+description: "Create 5, 10, or 15-second videos with Wan 2.7 using written scenes and optional audio input at up to 1080p."
 icon: "video"
 openapi: "/api-manual/video-series/alibaba-wan-2-7-text-to-video.json POST /api/generate/submit"
 ---
@@ -12,7 +12,7 @@ openapi: "/api-manual/video-series/alibaba-wan-2-7-text-to-video.json POST /api/
 
 # Wan 2.7 Video Text to Video
 
-Create video sequences with Wan 2.7 using written scenes, optional audio input, and support for multiple shots at up to 1080p.
+Create 5, 10, or 15-second videos with Wan 2.7 using written scenes and optional audio input at up to 1080p.
 
 ## Available Models
 
@@ -33,10 +33,12 @@ Set `model` and optional `callback_url` at the request root. Place all workflow 
 
 Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
 
+`duration` and `seed` also accept integer strings such as `"5"`; decimal numbers such as `5.0` and decimal strings such as `"5.0"` are rejected. Null or empty values use the default duration or omit the seed. Supported boolean fields also accept `0`/`1` and case-insensitive strings `true`/`false`, `1`/`0`, `yes`/`no`, `y`/`n`, and `on`/`off`; null omits the field. Surrounding whitespace is trimmed, and resolution values are case-insensitive.
+
 ### Prompt
 
-- `prompt`: Required. Describe the scene and desired motion. Length: **1-5,000 characters**.
-- The value must not be blank when supplied.
+- `prompt`: Required. Describe the scene and desired motion. Maximum: **5,000 Unicode characters**.
+- Leading and trailing whitespace is trimmed. A nonblank prompt is required.
 
 ### Audio URL
 
@@ -50,14 +52,6 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 - `resolution`: Optional. Accepted values: `720p`, `1080p`. Default: `720p`.
 
-### Multi-Shot Generation
-
-- `multi_shots`: Optional. Enable multi-shot generation. Use `true` or `false`.
-
-### Audio Settings
-
-- `audio_setting`: Optional. Supply the audio setting as a string.
-
 ### Seed
 
 - `seed`: Optional. Set the generation seed. Integer from `0` to `2147483647`.
@@ -68,6 +62,6 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+Usage equals output seconds multiplied by the selected resolution rate. See [Pricing](https://vidgo.ai/apis/api-pricing) for current rates.
 
 Credits are deducted on submission and refunded if the task fails.

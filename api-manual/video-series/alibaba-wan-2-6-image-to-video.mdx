@@ -20,7 +20,7 @@ Bring a still image into motion with Wan 2.6, creating video sequences with opti
 
 ## Duration Options
 
-- **5, 10, 15 seconds** - Set `duration` as an integer. Required.
+- **5, 10, 15 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**.
 
 ## Key Features
 
@@ -42,10 +42,11 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 ### Image URLs
 
 - `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
+- The playground accepts JPG, PNG, and WebP uploads up to 10 MiB. This is a playground upload policy, not a remote file check by the PoYo handler.
 
 ### Resolution
 
-- `resolution`: Required. Accepted values: `720p`, `1080p`.
+- `resolution`: Optional. Accepted values: `720p`, `1080p`. Default: `720p`.
 
 ### Multi-Shot Generation
 

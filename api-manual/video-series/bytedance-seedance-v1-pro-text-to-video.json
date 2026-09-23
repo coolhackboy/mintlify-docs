@@ -23,7 +23,7 @@
         ],
         "summary": "Seedance 1.0 Pro Text to Video",
         "operationId": "submit_bytedance_seedance_v1_pro_text_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Use the documented input types and values. Prompt must be a string containing 1–10,000 Unicode characters after trimming. Duration must be numeric 5 or 10; strings and fractional values are rejected. Resolution must be 720p or 1080p. Image input requires exactly one HTTP(S) URL with a hostname and no embedded credentials or whitespace; Base64 is not supported.",
         "requestBody": {
           "required": true,
           "content": {
@@ -49,30 +49,34 @@
                     "required": [
                       "prompt"
                     ],
+                    "description": "Input parameters for generation",
                     "properties": {
                       "prompt": {
                         "type": "string",
+                        "description": "Required string; trim surrounding whitespace before validating 1-10,000 Unicode characters.",
                         "maxLength": 10000,
-                        "minLength": 1,
-                        "description": "Prompt."
+                        "example": "One continuous cinematic five-second shot inside a Nordic night sleeper-train compartment. An adult Nordic woman with fair skin and a charcoal wool sweater sits in three-quarter profile at the window, her hands resting on her lap. Outside, a blizzard and dark conifer trunks stream past. Begin as a medium shot of her quiet face and the window, then slowly push in until the glass fills the frame. Warm amber cabin lamps and cold blue snowlight must stay physically consistent on the glass as layered reflections. Keep her anatomy, sweater knit, and seat geometry stable. No cuts, no other passengers, no readable text, no logos, no brands, no advertising, no watermark.",
+                        "minLength": 1
                       },
                       "resolution": {
                         "type": "string",
+                        "description": "Only 720p or 1080p. Defaults to 720p only when omitted; aliases, null and empty strings are rejected.",
                         "enum": [
                           "720p",
                           "1080p"
                         ],
-                        "default": "720p",
-                        "description": "Resolution."
+                        "example": "720p",
+                        "default": "720p"
                       },
                       "duration": {
                         "type": "integer",
+                        "description": "Numeric integer 5 or 10 seconds. Defaults to 5 only when omitted; strings, booleans, null and fractional values are rejected.",
                         "enum": [
                           5,
                           10
                         ],
-                        "default": 5,
-                        "description": "Duration."
+                        "example": 5,
+                        "default": 5
                       }
                     },
                     "additionalProperties": false
@@ -83,26 +87,26 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Keep model and optional callback_url at the root. Unsupported input fields are rejected. Defaults apply only to omitted fields; null and empty input values are rejected."
               },
               "examples": {
                 "basic": {
-                  "summary": "Basic workflow",
+                  "summary": "Night Sleeper Window",
                   "value": {
                     "model": "bytedance/seedance/v1/pro/text-to-video",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
+                      "prompt": "One continuous cinematic five-second shot inside a Nordic night sleeper-train compartment. An adult Nordic woman with fair skin and a charcoal wool sweater sits in three-quarter profile at the window, her hands resting on her lap. Outside, a blizzard and dark conifer trunks stream past. Begin as a medium shot of her quiet face and the window, then slowly push in until the glass fills the frame. Warm amber cabin lamps and cold blue snowlight must stay physically consistent on the glass as layered reflections. Keep her anatomy, sweater knit, and seat geometry stable. No cuts, no other passengers, no readable text, no logos, no brands, no advertising, no watermark.",
                       "resolution": "720p",
                       "duration": 5
                     }
                   }
                 },
                 "callback": {
-                  "summary": "Receive a completion callback",
+                  "summary": "Night Sleeper Window with a completion callback",
                   "value": {
                     "model": "bytedance/seedance/v1/pro/text-to-video",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
+                      "prompt": "One continuous cinematic five-second shot inside a Nordic night sleeper-train compartment. An adult Nordic woman with fair skin and a charcoal wool sweater sits in three-quarter profile at the window, her hands resting on her lap. Outside, a blizzard and dark conifer trunks stream past. Begin as a medium shot of her quiet face and the window, then slowly push in until the glass fills the frame. Warm amber cabin lamps and cold blue snowlight must stay physically consistent on the glass as layered reflections. Keep her anatomy, sweater knit, and seat geometry stable. No cuts, no other passengers, no readable text, no logos, no brands, no advertising, no watermark.",
                       "resolution": "720p",
                       "duration": 5
                     },

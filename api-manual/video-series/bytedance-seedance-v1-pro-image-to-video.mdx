@@ -20,7 +20,7 @@ Turn a still image into a five- or ten-second video with Seedance 1.0 Pro, using
 
 ## Duration Options
 
-- **5, 10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**.
+- **5, 10 seconds** - Set `duration` as a numeric integer. Optional. Default: **5 seconds**, only when omitted. Strings, booleans, null and fractional values are rejected. A numeric value such as `5.0` is equivalent to `5`.
 
 ## Key Features
 
@@ -32,23 +32,30 @@ Turn a still image into a five- or ten-second video with Seedance 1.0 Pro, using
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials or whitespace. Defaults apply only when optional input fields are omitted; explicit null and empty values are rejected.
 
 ### Prompt
 
-- `prompt`: Required. Describe the scene and desired motion. Length: **1-10,000 characters**.
+- `prompt`: Required string. Describe the scene and desired motion. After trimming surrounding whitespace, length must be **1-10,000 Unicode characters**. Non-string values are rejected.
 - The value must not be blank when supplied.
 
 ### Image URLs
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
+- `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL. Base64, a bare string instead of an array, and empty arrays are rejected.
 
 ### Resolution
 
-- `resolution`: Optional. Accepted values: `720p`, `1080p`. Default: `720p`.
+- `resolution`: Optional. Accepted values: `720p`, `1080p`. Default: `720p`, only when omitted. Aliases, different casing, surrounding whitespace and numeric values are rejected.
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+Both workflows use the same price per generation ($0.005 per credit):
+
+| Resolution | Duration | Credits | USD |
+| --- | --- | --- | --- |
+| 720p | 5 seconds | 21 | $0.105 |
+| 720p | 10 seconds | 42 | $0.210 |
+| 1080p | 5 seconds | 43 | $0.215 |
+| 1080p | 10 seconds | 86 | $0.430 |
 
 Credits are deducted on submission and refunded if the task fails.
