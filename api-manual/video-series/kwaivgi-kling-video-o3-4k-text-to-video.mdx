@@ -1,69 +1,77 @@
 ---
-title: "Kling O3 4K Text to Video"
-description: "Direct video sequences with Kling O3 4K, using individual shot prompts, shot timing, and optional sound to shape a scene."
+title: "Kling O3 4K Text To Video"
+description: "Generate 3–15-second videos from text prompts with Kling O3 4K. Outputs 4K video. Supports single-shot and multi-shot generation. Explicitly set sound; multi-shot requires audio."
 icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-video-o3-4k-text-to-video.json POST /api/generate/submit"
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+Submit with your Vidgo API key, then query [task status](/api-manual/task-management/status) using the returned task ID. An optional callback receives the final result. The submit response above is an initial-state illustration, not the completed video response.
 </Tip>
 
-# Kling O3 4K Text to Video
+## Parameters
 
-Direct video sequences with Kling O3 4K, using individual shot prompts, shot timing, and optional sound to shape a scene.
+Use model `kwaivgi/kling-video-o3-4k/text-to-video`. Put generation parameters inside `input`.
 
-## Available Models
+- **`prompt`**: Required when multi_shots=false. Describe the scene, action and camera movement. Use nonblank text, up to 2,500 characters after trimming. Omit prompt when multi_shots=true.
+- **`multi_prompt`**: Required when multi_shots=true; omit in single-shot mode. Supply at least one shot, each with a nonblank prompt of up to 2,500 characters and an integer duration of 1–12 seconds. Shot durations must sum to the top-level duration (3–15 seconds). Extra fields inside a shot are ignored.
+- **`duration`**: Required integer from 3 to 15 seconds. In multi-shot mode, this must equal the sum of all shot durations. Credits are calculated using this value.
+- **`multi_shots`**: Required: explicitly send false for a single shot or true for multiple shots. Single-shot mode requires prompt. Multi-shot mode requires multi_prompt and sound=true, with no nonblank top-level prompt. Omitting this field is an error.
+- **`sound`**: Required: explicitly send true to generate audio or false for video without audio. Single-shot mode accepts either value; multi-shot mode requires true.
+- **`aspect_ratio`**: Optional: 16:9 (landscape), 9:16 (portrait) or 1:1 (square). Sets the video aspect ratio.
 
-- **kwaivgi/kling-video-o3-4k/text-to-video** - Generate video scenes from text prompts.
-
-## Duration Options
-
-- **3-15 seconds** - Set `duration` as an integer. Required.
-- With `multi_prompt`, the shot durations must add up to the requested `duration`.
-
-## Key Features
-
-- Generate video scenes from text prompts.
-- Describe individual shots with `multi_prompt` and enable `multi_shots`.
-
-## Advanced Parameters
-
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
-
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
-
-- Each `multi_prompt` shot requires a nonblank `prompt` and an integer `duration` from **1 to 12 seconds**.
-- The shot durations must sum to the requested `duration`. Set `multi_shots: true` when using `multi_prompt`; enabling `multi_shots` also requires `multi_prompt`.
-
-### Prompt
-
-- `prompt`: Required. Describe the scene and desired motion. Length: **1-2,500 characters**.
-- The value must not be blank when supplied.
-
-### Multi-Prompt
-
-- `multi_prompt`: Optional. Supply an array. Each item is an object.
-
-- `multi_prompt[].prompt`: Required. Maximum length: **2,500 characters**.
-- `multi_prompt[].duration`: Required. Duration in seconds. Integer from `1` to `12`.
-- Each shot duration is measured in seconds.
-
-### Multi-Shot Generation
-
-- `multi_shots`: Optional. Enable multi-shot generation. Use `true` or `false`. Default: `false`.
-
-### Sound
-
-- `sound`: Required. Control audio generation. Use `true` or `false`.
-
-### Aspect Ratio
-
-- `aspect_ratio`: Optional. Accepted values: `1:1`, `16:9`, `9:16`.
+Use standard JSON numbers and booleans. For compatibility, integer strings such as "5" are accepted. Boolean strings true/1/yes/y/on mean true; false/0/no/n/off mean false. These strings are case-insensitive and trimmed. Numeric 1 and 0 are also accepted for boolean fields. Numeric and boolean prompt values are converted to text; 0, false and null are treated as empty. Objects and arrays are not accepted as prompts. Unsupported input fields, including reference_image_urls and kling_elements, are rejected. HTTP(S) URLs must have a hostname and no embedded credentials.
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+50 credits/s with or without sound. Credits = duration × rate. Failed generation tasks are refunded.
 
-Credits are deducted on submission and refunded if the task fails.
+## Default example: Rain Along the Stone Gallery
+
+This is the same default example shown on the [model page](https://vidgo.ai/apis/models/kwaivgi/kling-video-o3-4k/text-to-video).
+
+```json
+{
+  "model": "kwaivgi/kling-video-o3-4k/text-to-video",
+  "input": {
+    "duration": 4,
+    "sound": true,
+    "multi_shots": false,
+    "prompt": "Photoreal slow lateral dolly through an empty ancient temple gallery in rain. Weathered floral stone reliefs fill the foreground; rows of pillars recede toward a quiet courtyard. Water follows carved grooves and drips from worn edges, revealing mineral grains, chisel marks and moss in cracks. Soft overcast daylight, subtle wet highlights, stable architecture and rich fine detail. Audio: gentle rain and isolated drips; no music. No text, logos or watermarks.",
+    "aspect_ratio": "16:9"
+  }
+}
+```
+
+<video controls playsInline preload="metadata" style={{ width: "100%", height: "auto" }} poster="https://cdn.vidgo.ai/apis/models/kwaivgi/kling-video-o3-4k/text-to-video/v1/01/poster.jpg" src="https://cdn.vidgo.ai/apis/models/kwaivgi/kling-video-o3-4k/text-to-video/v1/01/output.mp4" />
+
+[Download this video](https://cdn.vidgo.ai/apis/models/kwaivgi/kling-video-o3-4k/text-to-video/v1/01/output.mp4)
+
+### Completed result from the status endpoint
+
+`GET /api/generate/status/{task_id}`
+
+The response below records this verified example. For a new generation, query the task ID returned by your own submission.
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "EE4XVIYVL5IAX4YG",
+    "status": "finished",
+    "files": [
+      {
+        "file_type": "video",
+        "file_url": "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-video-o3-4k/text-to-video/v1/01/output.mp4"
+      }
+    ],
+    "created_time": "2026-09-22T18:48:45",
+    "error_message": null,
+    "progress": 100
+  }
+}
+```
+
+<Note>
+The API validates prompts up to 2,500 characters. Some multi-shot generation requests have failed when a shot prompt exceeded 512 characters. We recommend keeping each shot prompt within 512 characters; this recommendation does not change the API validation limit.
+</Note>
