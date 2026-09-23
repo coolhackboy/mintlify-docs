@@ -55,7 +55,7 @@
                         "type": "string",
                         "minLength": 1,
                         "maxLength": 8000,
-                        "description": "Prompt."
+                        "description": "Required non-blank string, 1–8,000 characters after trimming. Non-string values are rejected."
                       },
                       "image_urls": {
                         "type": "array",
@@ -66,14 +66,14 @@
                           "format": "uri",
                           "description": "Image urls."
                         },
-                        "description": "Image urls."
+                        "description": "Required for editing: 1–3 public HTTP(S) image URLs, without embedded credentials. Each input image adds 2 credits per request."
                       },
                       "n": {
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 4,
                         "default": 1,
-                        "description": "N."
+                        "description": "Number of output images. Integer from 1 to 4, default 1. Strings, booleans, and fractional values are rejected."
                       },
                       "aspect_ratio": {
                         "type": "string",
@@ -85,7 +85,7 @@
                           "16:9"
                         ],
                         "default": "1:1",
-                        "description": "Aspect ratio."
+                        "description": "Output aspect ratio. Defaults to 1:1."
                       },
                       "resolution": {
                         "type": "string",
@@ -94,7 +94,7 @@
                           "2K"
                         ],
                         "default": "1K",
-                        "description": "Resolution."
+                        "description": "Output resolution tier: 1K or 2K. Defaults to 1K."
                       },
                       "quality": {
                         "type": "string",
@@ -103,7 +103,7 @@
                           "medium"
                         ],
                         "default": "medium",
-                        "description": "Quality."
+                        "description": "Output quality: low or medium. Defaults to medium."
                       }
                     },
                     "additionalProperties": false
@@ -148,6 +148,24 @@
                       "quality": "medium"
                     },
                     "callback_url": "https://your-domain.com/callback"
+                  }
+                },
+                "multiple_outputs": {
+                  "summary": "Four Medium / 2K outputs: 70 credits including three input images",
+                  "value": {
+                    "model": "xai/grok-imagine-image-v2.0/edit",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/input-1.png",
+                        "https://example.com/input-2.png",
+                        "https://example.com/input-3.png"
+                      ],
+                      "prompt": "A quiet forest under soft morning light, with natural detail.",
+                      "n": 4,
+                      "aspect_ratio": "1:1",
+                      "resolution": "2K",
+                      "quality": "medium"
+                    }
                   }
                 }
               }

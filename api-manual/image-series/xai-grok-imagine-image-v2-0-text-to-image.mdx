@@ -55,6 +55,15 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+| Output tier | USD per output image | Credits per output image |
+| --- | ---: | ---: |
+| Low / 1K | $0.040 | 8 |
+| Medium / 1K | $0.060 | 12 |
+| Low / 2K | $0.060 | 12 |
+| Medium / 2K | $0.080 | 16 |
+
+One credit equals $0.005. The default Medium / 1K tier costs 12 credits per output image.
+
+Total credits = output count (`n`) × output tier rate. For example, Medium / 2K with `n: 4` costs **64 credits ($0.320)**. This endpoint does not accept input images.
 
 Credits are deducted on submission and refunded if the task fails.
