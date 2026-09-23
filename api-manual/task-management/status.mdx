@@ -76,7 +76,7 @@ Authorization: Bearer VIDGO_API_KEY
 | `data.files[].file_size` | integer | Optional size in bytes |
 | `data.files[].metadata` | object | Optional additional artifact metadata |
 | `data.created_time` | string | ISO 8601 timestamp of task creation |
-| `data.progress` | integer or null | Completion percentage when supplied by the service; new PoYo workflows may remain at 0 until completion |
+| `data.progress` | integer or null | Completion percentage when supplied by the service; some tasks may remain at 0 until completion |
 | `data.error_message` | string or null | Error description when available; null when there is no error |
 
 ### Status Values
@@ -575,9 +575,9 @@ except RuntimeError as e:
   </Card>
 </CardGroup>
 
-{/* poyo-20260910:start */}
+{/* task-workflows-20260910:start */}
 ## Additional generated files
 
 Audio and 3D workflows use the same files array. file_type may be audio, 3d, image, or other. The array retains model assets, previews, textures, animation files, and timestamp files. Each item may also include label, format, content_type, file_name, file_size, and metadata. Process every returned file; metadata fields are optional.
 
-{/* poyo-20260910:end */}
+{/* task-workflows-20260910:end */}

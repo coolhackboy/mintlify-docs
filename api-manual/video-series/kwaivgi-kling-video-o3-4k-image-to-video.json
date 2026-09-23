@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API - Kling O3 4K Image to Video",
-    "description": "Animate image references with Kling O3 4K, with support for multiple shots, individual shot prompts, and optional sound.",
+    "description": "Generate 3–15-second videos with Kling O3 4K from a starting image and an optional ending frame. Outputs 4K video. Supports single-shot and multi-shot generation. Explicitly set sound; multi-shot requires audio.",
     "version": "1.0.0"
   },
   "servers": [
@@ -23,7 +23,7 @@
         ],
         "summary": "Kling O3 4K Image to Video",
         "operationId": "submit_kwaivgi_kling_video_o3_4k_image_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nEach multi_prompt shot needs a nonblank prompt and positive integer duration. Shot durations must sum to the requested duration. When multi_shots is available, enable it with multi_prompt; multi_shots=true also requires multi_prompt.",
+        "description": "Submit a video generation task. duration, multi_shots and sound must be explicitly provided. In multi-shot mode, provide multi_prompt, set sound=true and make shot durations sum to duration. Invalid parameters are rejected before image upload, task creation or charging.",
         "requestBody": {
           "required": true,
           "content": {
@@ -48,25 +48,29 @@
                     "type": "object",
                     "required": [
                       "duration",
-                      "image_urls",
-                      "sound"
+                      "multi_shots",
+                      "sound",
+                      "image_urls"
                     ],
+                    "description": "Video generation parameters. Use standard JSON numbers and booleans. For compatibility, integer strings such as \"5\" are accepted. Boolean strings true/1/yes/y/on mean true; false/0/no/n/off mean false. These strings are case-insensitive and trimmed. Numeric 1 and 0 are also accepted for boolean fields. Numeric and boolean prompt values are converted to text; 0, false and null are treated as empty. Objects and arrays are not accepted as prompts.",
                     "properties": {
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "format": "uri",
-                          "description": "Image urls."
+                          "minLength": 1,
+                          "pattern": "\\S"
                         },
+                        "description": "Required: an array of 1–2 images. The first is the starting frame; the optional second is the ending frame. Accepts public HTTP(S) URLs, image Data URIs or raw Base64 image data.",
                         "minItems": 1,
-                        "description": "Image urls."
+                        "maxItems": 2
                       },
                       "prompt": {
                         "type": "string",
+                        "description": "Required when multi_shots=false. Describe the scene, action and camera movement. Use nonblank text, up to 2,500 characters after trimming. Omit prompt when multi_shots=true.",
                         "maxLength": 2500,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "pattern": "\\S"
                       },
                       "multi_prompt": {
                         "type": "array",
@@ -79,47 +83,90 @@
                           "properties": {
                             "prompt": {
                               "type": "string",
+                              "description": "Required nonblank text for this shot, up to 2,500 characters after trimming.",
                               "maxLength": 2500,
-                              "description": "Prompt."
+                              "minLength": 1,
+                              "pattern": "\\S"
                             },
                             "duration": {
                               "type": "integer",
+                              "description": "Required integer from 1 to 12 seconds for this shot.",
                               "minimum": 1,
-                              "maximum": 12,
-                              "description": "Duration."
+                              "maximum": 12
                             }
                           },
-                          "additionalProperties": false,
-                          "description": "Multi prompt."
+                          "additionalProperties": true
                         },
-                        "description": "Multi prompt."
+                        "description": "Required when multi_shots=true; omit in single-shot mode. Supply at least one shot, each with a nonblank prompt of up to 2,500 characters and an integer duration of 1–12 seconds. Shot durations must sum to the top-level duration (3–15 seconds). Extra fields inside a shot are ignored.",
+                        "minItems": 1
                       },
                       "duration": {
                         "type": "integer",
+                        "description": "Required integer from 3 to 15 seconds. In multi-shot mode, this must equal the sum of all shot durations. Credits are calculated using this value.",
                         "minimum": 3,
-                        "maximum": 15,
-                        "description": "Duration."
+                        "maximum": 15
                       },
                       "multi_shots": {
                         "type": "boolean",
-                        "default": false,
-                        "description": "Multi shots."
+                        "description": "Required: explicitly send false for a single shot or true for multiple shots. Single-shot mode requires prompt. Multi-shot mode requires multi_prompt and sound=true, with no nonblank top-level prompt. Omitting this field is an error."
                       },
                       "sound": {
                         "type": "boolean",
-                        "description": "Sound."
+                        "description": "Required: explicitly send true to generate audio or false for video without audio. Single-shot mode accepts either value; multi-shot mode requires true."
                       },
                       "aspect_ratio": {
                         "type": "string",
+                        "description": "May be omitted. If provided, use 16:9, 9:16 or 1:1. Image-to-video ignores this value; framing is determined by the input image.",
                         "enum": [
                           "1:1",
                           "16:9",
                           "9:16"
-                        ],
-                        "description": "Aspect ratio."
+                        ]
                       }
                     },
-                    "additionalProperties": false
+                    "additionalProperties": false,
+                    "oneOf": [
+                      {
+                        "properties": {
+                          "multi_shots": {
+                            "enum": [
+                              false
+                            ]
+                          }
+                        },
+                        "required": [
+                          "prompt"
+                        ],
+                        "not": {
+                          "required": [
+                            "multi_prompt"
+                          ]
+                        }
+                      },
+                      {
+                        "properties": {
+                          "multi_shots": {
+                            "enum": [
+                              true
+                            ]
+                          },
+                          "sound": {
+                            "enum": [
+                              true
+                            ]
+                          }
+                        },
+                        "required": [
+                          "multi_shots",
+                          "multi_prompt"
+                        ],
+                        "not": {
+                          "required": [
+                            "prompt"
+                          ]
+                        }
+                      }
+                    ]
                   },
                   "callback_url": {
                     "type": "string",
@@ -131,30 +178,32 @@
               },
               "examples": {
                 "basic": {
-                  "summary": "Basic workflow",
+                  "summary": "The Greenhouse Trap",
                   "value": {
                     "model": "kwaivgi/kling-video-o3-4k/image-to-video",
                     "input": {
-                      "duration": 3,
-                      "image_urls": [
-                        "https://example.com/image.png"
-                      ],
+                      "duration": 4,
+                      "sound": true,
                       "multi_shots": false,
-                      "sound": false
+                      "prompt": "Begin with the supplied botanical macro. The foreground Venus flytrap slowly closes its two lobes around their central hinge, ending with marginal cilia interlaced. Preserve its vein pattern, dew beads, surrounding leaves and blurred greenhouse glazing. Droplet highlights shift naturally. Fixed macro camera, realistic plant motion; no insect, animal features or new leaves. Audio: quiet greenhouse ambience and one distant drip; no music. No text, logos or watermarks.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-video-o3-4k/image-to-video/v1/01/input-start.png"
+                      ]
                     }
                   }
                 },
                 "callback": {
-                  "summary": "Receive a completion callback",
+                  "summary": "The Greenhouse Trap with callback",
                   "value": {
                     "model": "kwaivgi/kling-video-o3-4k/image-to-video",
                     "input": {
-                      "duration": 3,
-                      "image_urls": [
-                        "https://example.com/image.png"
-                      ],
+                      "duration": 4,
+                      "sound": true,
                       "multi_shots": false,
-                      "sound": false
+                      "prompt": "Begin with the supplied botanical macro. The foreground Venus flytrap slowly closes its two lobes around their central hinge, ending with marginal cilia interlaced. Preserve its vein pattern, dew beads, surrounding leaves and blurred greenhouse glazing. Droplet highlights shift naturally. Fixed macro camera, realistic plant motion; no insect, animal features or new leaves. Audio: quiet greenhouse ambience and one distant drip; no music. No text, logos or watermarks.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-video-o3-4k/image-to-video/v1/01/input-start.png"
+                      ]
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -212,9 +261,9 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
-                    "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "task_id": "task-submitted-example",
+                    "status": "not_started",
+                    "created_time": "2026-09-22T00:00:00Z"
                   }
                 }
               }
@@ -431,7 +480,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Unable to create the video generation task",
             "content": {
               "application/json": {
                 "schema": {
@@ -461,7 +510,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "This model is currently unavailable",
             "content": {
               "application/json": {
                 "schema": {

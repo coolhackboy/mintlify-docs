@@ -1,0 +1,284 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 2.6 Pro Image to Video",
+    "description": "Kling 2.6 Pro Image to Video",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit Kling 2.6 Pro Image to Video Task",
+        "description": "Submit a Kling 2.6 Pro image-to-video task. Place generation parameters in input; model and optional callback_url belong at the request root. Replace example.com and your-domain.com URLs with your own publicly accessible image URLs and callback endpoint where applicable. Output file URLs in examples are illustrative.",
+        "operationId": "submitKling26ProImageToVideo",
+        "tags": [
+          "Kling 2.6"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "Basic request",
+                  "value": {
+                    "model": "kwaivgi/kling-v2.6-pro/image-to-video",
+                    "input": {
+                      "prompt": "A slow camera pan across a sunlit garden.",
+                      "duration": 5,
+                      "sound": false,
+                      "aspect_ratio": "16:9",
+                      "image_urls": [
+                        "https://example.com/start-frame.png"
+                      ]
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "With callback",
+                  "value": {
+                    "model": "kwaivgi/kling-v2.6-pro/image-to-video",
+                    "input": {
+                      "prompt": "A slow camera pan across a sunlit garden.",
+                      "duration": 5,
+                      "sound": false,
+                      "aspect_ratio": "16:9",
+                      "image_urls": [
+                        "https://example.com/start-frame.png"
+                      ]
+                    },
+                    "callback_url": "https://example.com/callback"
+                  }
+                },
+                "end-frame": {
+                  "summary": "First and last frame, without audio",
+                  "value": {
+                    "model": "kwaivgi/kling-v2.6-pro/image-to-video",
+                    "input": {
+                      "prompt": "A slow camera pan across a sunlit garden.",
+                      "duration": 5,
+                      "sound": false,
+                      "aspect_ratio": "16:9",
+                      "image_urls": [
+                        "https://example.com/start-frame.png"
+                      ],
+                      "end_image_url": "https://example.com/end-frame.png"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-example",
+                    "status": "running",
+                    "created_time": "2026-09-23T00:00:00Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Kling 2.6 model identifier",
+            "enum": [
+              "kwaivgi/kling-v2.6-pro/image-to-video"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "aspect_ratio",
+              "duration",
+              "image_urls",
+              "prompt",
+              "sound"
+            ],
+            "description": "Input parameters for generation",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Required nonblank string, 1 to 1,000 characters after trimming leading and trailing whitespace.",
+                "maxLength": 1000,
+                "example": "A cinematic video scene",
+                "minLength": 1
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "Required array containing at least one publicly accessible HTTP(S) image URL. URLs must not contain embedded credentials or whitespace.",
+                "example": [
+                  "https://example.com/start-frame.png"
+                ],
+                "minItems": 1
+              },
+              "end_image_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Optional publicly accessible HTTP(S) last-frame image URL, without embedded credentials or whitespace. Omit this field when not using a last frame; empty strings and null are not accepted. Requires sound=false.",
+                "example": "https://your-domain.com/end-frame.png"
+              },
+              "sound": {
+                "type": "boolean",
+                "description": "Required boolean: true for audio, false for no audio. Must be false when end_image_url is provided.",
+                "example": true
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Required: 16:9, 9:16 or 1:1. This field must be submitted but does not control the output aspect ratio for image-to-video.",
+                "enum": [
+                  "1:1",
+                  "16:9",
+                  "9:16"
+                ],
+                "example": "16:9"
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Required integer: 5 or 10 seconds. Strings and fractional durations are rejected.",
+                "enum": [
+                  5,
+                  10
+                ],
+                "example": 5
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "Unique task identifier for status tracking"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started",
+                  "running"
+                ],
+                "example": "running",
+                "description": "Accepted task status; processing may already have started."
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "ISO 8601 timestamp when the task was created"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "error"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP status code"
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "message",
+              "type"
+            ],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "Error message describing what went wrong"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "Error type identifier"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

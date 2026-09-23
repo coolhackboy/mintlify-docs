@@ -1,0 +1,30 @@
+---
+title: "Kling 2.6 Pro Image to Video"
+description: "Kling 2.6 Pro Image to Video API parameters and pricing"
+icon: "video"
+openapi: "/api-manual/video-series/kwaivgi-kling-v2-6-pro-image-to-video.json POST /api/generate/submit"
+---
+
+Submit `kwaivgi/kling-v2.6-pro/image-to-video` through `POST /api/generate/submit`. Query the returned `task_id` with [Task Status](/api-manual/task-management/status), or provide a top-level `callback_url`.
+
+## Parameters
+
+- `prompt`: Required nonblank string, 1 to 1,000 characters after trimming leading and trailing whitespace.
+- `duration`: Required integer: 5 or 10 seconds. Strings and fractional durations are rejected.
+- `aspect_ratio`: Required: 16:9, 9:16 or 1:1. This field must be submitted but does not control the output aspect ratio for image-to-video.
+- `sound`: Required boolean: true for audio, false for no audio. Must be false when end_image_url is provided.
+- `image_urls`: Required array containing at least one publicly accessible HTTP(S) image URL. URLs must not contain embedded credentials or whitespace.
+- `end_image_url`: Optional publicly accessible HTTP(S) last-frame image URL, without embedded credentials or whitespace. Omit this field when not using a last frame; empty strings and null are not accepted. Requires sound=false.
+- Use standard JSON types. Unknown input fields and invalid values are rejected before submission and charging.
+- URLs using `example.com` or `your-domain.com` are placeholders. Replace them with your own publicly accessible image URLs and callback endpoint where applicable.
+
+## Pricing
+
+| Duration | Audio | Credits/video | USD/video |
+|---|---|---:|---:|
+| 5s | No audio | 65 | $0.325 |
+| 10s | No audio | 130 | $0.650 |
+| 5s | With audio | 120 | $0.600 |
+| 10s | With audio | 240 | $1.20 |
+
+1 credit = $0.005. The same prices apply to the Pro text-to-video and image-to-video endpoints.

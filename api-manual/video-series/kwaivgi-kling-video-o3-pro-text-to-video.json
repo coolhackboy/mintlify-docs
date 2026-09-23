@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API - Kling O3 Pro Text to Video",
-    "description": "Direct video sequences with Kling O3 Pro, using individual shot prompts, shot timing, and optional sound to shape a scene.",
+    "description": "Generate 3–15-second videos from text prompts with Kling O3 Pro. Supports single-shot and multi-shot generation. Explicitly set sound; multi-shot requires audio.",
     "version": "1.0.0"
   },
   "servers": [
@@ -23,7 +23,7 @@
         ],
         "summary": "Kling O3 Pro Text to Video",
         "operationId": "submit_kwaivgi_kling_video_o3_pro_text_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nEach multi_prompt shot needs a nonblank prompt and positive integer duration. Shot durations must sum to the requested duration. When multi_shots is available, enable it with multi_prompt; multi_shots=true also requires multi_prompt.",
+        "description": "Submit a video generation task. duration, multi_shots and sound must be explicitly provided. In multi-shot mode, provide multi_prompt, set sound=true and make shot durations sum to duration. Invalid parameters are rejected before image upload, task creation or charging.",
         "requestBody": {
           "required": true,
           "content": {
@@ -48,15 +48,17 @@
                     "type": "object",
                     "required": [
                       "duration",
-                      "prompt",
+                      "multi_shots",
                       "sound"
                     ],
+                    "description": "Video generation parameters. Use standard JSON numbers and booleans. For compatibility, integer strings such as \"5\" are accepted. Boolean strings true/1/yes/y/on mean true; false/0/no/n/off mean false. These strings are case-insensitive and trimmed. Numeric 1 and 0 are also accepted for boolean fields. Numeric and boolean prompt values are converted to text; 0, false and null are treated as empty. Objects and arrays are not accepted as prompts.",
                     "properties": {
                       "prompt": {
                         "type": "string",
+                        "description": "Required when multi_shots=false. Describe the scene, action and camera movement. Use nonblank text, up to 2,500 characters after trimming. Omit prompt when multi_shots=true.",
                         "maxLength": 2500,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "pattern": "\\S"
                       },
                       "multi_prompt": {
                         "type": "array",
@@ -69,47 +71,90 @@
                           "properties": {
                             "prompt": {
                               "type": "string",
+                              "description": "Required nonblank text for this shot, up to 2,500 characters after trimming.",
                               "maxLength": 2500,
-                              "description": "Prompt."
+                              "minLength": 1,
+                              "pattern": "\\S"
                             },
                             "duration": {
                               "type": "integer",
+                              "description": "Required integer from 1 to 12 seconds for this shot.",
                               "minimum": 1,
-                              "maximum": 12,
-                              "description": "Duration."
+                              "maximum": 12
                             }
                           },
-                          "additionalProperties": false,
-                          "description": "Multi prompt."
+                          "additionalProperties": true
                         },
-                        "description": "Multi prompt."
+                        "description": "Required when multi_shots=true; omit in single-shot mode. Supply at least one shot, each with a nonblank prompt of up to 2,500 characters and an integer duration of 1–12 seconds. Shot durations must sum to the top-level duration (3–15 seconds). Extra fields inside a shot are ignored.",
+                        "minItems": 1
                       },
                       "duration": {
                         "type": "integer",
+                        "description": "Required integer from 3 to 15 seconds. In multi-shot mode, this must equal the sum of all shot durations. Credits are calculated using this value.",
                         "minimum": 3,
-                        "maximum": 15,
-                        "description": "Duration."
+                        "maximum": 15
                       },
                       "multi_shots": {
                         "type": "boolean",
-                        "default": false,
-                        "description": "Multi shots."
+                        "description": "Required: explicitly send false for a single shot or true for multiple shots. Single-shot mode requires prompt. Multi-shot mode requires multi_prompt and sound=true, with no nonblank top-level prompt. Omitting this field is an error."
                       },
                       "sound": {
                         "type": "boolean",
-                        "description": "Sound."
+                        "description": "Required: explicitly send true to generate audio or false for video without audio. Single-shot mode accepts either value; multi-shot mode requires true."
                       },
                       "aspect_ratio": {
                         "type": "string",
+                        "description": "Optional: 16:9 (landscape), 9:16 (portrait) or 1:1 (square). Sets the video aspect ratio.",
                         "enum": [
                           "1:1",
                           "16:9",
                           "9:16"
-                        ],
-                        "description": "Aspect ratio."
+                        ]
                       }
                     },
-                    "additionalProperties": false
+                    "additionalProperties": false,
+                    "oneOf": [
+                      {
+                        "properties": {
+                          "multi_shots": {
+                            "enum": [
+                              false
+                            ]
+                          }
+                        },
+                        "required": [
+                          "prompt"
+                        ],
+                        "not": {
+                          "required": [
+                            "multi_prompt"
+                          ]
+                        }
+                      },
+                      {
+                        "properties": {
+                          "multi_shots": {
+                            "enum": [
+                              true
+                            ]
+                          },
+                          "sound": {
+                            "enum": [
+                              true
+                            ]
+                          }
+                        },
+                        "required": [
+                          "multi_shots",
+                          "multi_prompt"
+                        ],
+                        "not": {
+                          "required": [
+                            "prompt"
+                          ]
+                        }
+                      }
+                    ]
                   },
                   "callback_url": {
                     "type": "string",
@@ -121,26 +166,46 @@
               },
               "examples": {
                 "basic": {
-                  "summary": "Basic workflow",
+                  "summary": "A Quiet Apology",
                   "value": {
                     "model": "kwaivgi/kling-video-o3-pro/text-to-video",
                     "input": {
-                      "duration": 3,
-                      "multi_shots": false,
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "sound": false
+                      "duration": 5,
+                      "sound": true,
+                      "multi_shots": true,
+                      "multi_prompt": [
+                        {
+                          "prompt": "Cinematic whimsical realism in a warm oak library. Medium two-shot: a small ivory robot with an oval face and amber eyes shelves a blue book, accidentally knocking one red book onto the floor. Beside it, an adult librarian wears a green cardigan and round glasses. Both remain visible under warm reading lamps. One distinct book thud against quiet room tone. Unmarked book covers. No text, logos or watermarks.",
+                          "duration": 2
+                        },
+                        {
+                          "prompt": "Cut closer to the same ivory robot and green-cardigan librarian in the same oak library. The librarian raises one finger to her lips. The robot tilts its head apologetically and softly says exactly \"Sorry.\" in a gentle robotic voice, synchronized with its small mouth light. Preserve their appearance, positions and warm lighting. End in an embarrassed pause; no music. No text, logos or watermarks.",
+                          "duration": 3
+                        }
+                      ],
+                      "aspect_ratio": "16:9"
                     }
                   }
                 },
                 "callback": {
-                  "summary": "Receive a completion callback",
+                  "summary": "A Quiet Apology with callback",
                   "value": {
                     "model": "kwaivgi/kling-video-o3-pro/text-to-video",
                     "input": {
-                      "duration": 3,
-                      "multi_shots": false,
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "sound": false
+                      "duration": 5,
+                      "sound": true,
+                      "multi_shots": true,
+                      "multi_prompt": [
+                        {
+                          "prompt": "Cinematic whimsical realism in a warm oak library. Medium two-shot: a small ivory robot with an oval face and amber eyes shelves a blue book, accidentally knocking one red book onto the floor. Beside it, an adult librarian wears a green cardigan and round glasses. Both remain visible under warm reading lamps. One distinct book thud against quiet room tone. Unmarked book covers. No text, logos or watermarks.",
+                          "duration": 2
+                        },
+                        {
+                          "prompt": "Cut closer to the same ivory robot and green-cardigan librarian in the same oak library. The librarian raises one finger to her lips. The robot tilts its head apologetically and softly says exactly \"Sorry.\" in a gentle robotic voice, synchronized with its small mouth light. Preserve their appearance, positions and warm lighting. End in an embarrassed pause; no music. No text, logos or watermarks.",
+                          "duration": 3
+                        }
+                      ],
+                      "aspect_ratio": "16:9"
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -198,9 +263,9 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
-                    "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "task_id": "task-submitted-example",
+                    "status": "not_started",
+                    "created_time": "2026-09-22T00:00:00Z"
                   }
                 }
               }
@@ -417,7 +482,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Unable to create the video generation task",
             "content": {
               "application/json": {
                 "schema": {
@@ -447,7 +512,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "This model is currently unavailable",
             "content": {
               "application/json": {
                 "schema": {
