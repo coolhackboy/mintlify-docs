@@ -65,6 +65,8 @@
     "/api-manual/video-series/kling-3-0.json",
     "/api-manual/video-series/kling-3-0-motion-control.json",
     "/api-manual/video-series/kling-2-6.json",
+    "/api-manual/video-series/kwaivgi-kling-v2-6-pro-text-to-video.json",
+    "/api-manual/video-series/kwaivgi-kling-v2-6-pro-image-to-video.json",
     "/api-manual/video-series/kling-2.6-motion-control.json",
     "/api-manual/video-series/kling-2-5-turbo-pro.json",
     "/api-manual/video-series/kling-2-1.json",
@@ -417,7 +419,8 @@
                 "pages": [
                   "api-manual/video-series/kling-3-0",
                   "api-manual/video-series/kling-3-0-motion-control",
-                  "api-manual/video-series/kling-2-6",
+                  "api-manual/video-series/kwaivgi-kling-v2-6-pro-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-v2-6-pro-image-to-video",
                   "api-manual/video-series/kling-2.6-motion-control",
                   "api-manual/video-series/kling-2-5-turbo-pro",
                   "api-manual/video-series/kling-2-1",
