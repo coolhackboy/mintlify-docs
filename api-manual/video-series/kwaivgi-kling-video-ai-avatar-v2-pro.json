@@ -71,7 +71,8 @@
                       "prompt": {
                         "type": "string",
                         "nullable": true,
-                        "description": "Optional prompt. Leading and trailing whitespace is trimmed; null, empty, or whitespace-only values are omitted."
+                        "maxLength": 2500,
+                        "description": "Optional prompt, maximum 2500 characters. Leading and trailing whitespace is trimmed; null, empty, or whitespace-only values are omitted."
                       }
                     },
                     "additionalProperties": false

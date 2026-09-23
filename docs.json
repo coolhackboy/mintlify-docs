@@ -411,7 +411,14 @@
                   "api-manual/video-series/alibaba-wan-3-0-reference-to-video",
                   "api-manual/video-series/alibaba-wan-3-0-prime-text-to-video",
                   "api-manual/video-series/alibaba-wan-3-0-prime-image-to-video",
-                  "api-manual/video-series/alibaba-wan-3-0-prime-reference-to-video"
+                  "api-manual/video-series/alibaba-wan-3-0-prime-reference-to-video",
+                  "api-manual/video-series/alibaba-wan-2-7-text-to-video",
+                  "api-manual/video-series/alibaba-wan-2-7-image-to-video",
+                  "api-manual/video-series/alibaba-wan-2-7-reference-to-video",
+                  "api-manual/video-series/alibaba-wan-2-7-video-edit",
+                  "api-manual/video-series/alibaba-wan-2-6-text-to-video",
+                  "api-manual/video-series/alibaba-wan-2-6-image-to-video",
+                  "api-manual/video-series/alibaba-wan-2-6-reference-to-video"
                 ]
               },
               {
@@ -432,7 +439,15 @@
                   "api-manual/video-series/kwaivgi-kling-v3-0-std-motion-control",
                   "api-manual/video-series/kwaivgi-kling-v3-0-pro-motion-control",
                   "api-manual/video-series/kwaivgi-kling-v2-6-std-motion-control",
-                  "api-manual/video-series/kwaivgi-kling-v2-6-pro-motion-control"
+                  "api-manual/video-series/kwaivgi-kling-v2-6-pro-motion-control",
+                  "api-manual/video-series/kwaivgi-kling-video-ai-avatar-v2-standard",
+                  "api-manual/video-series/kwaivgi-kling-video-ai-avatar-v2-pro",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-std-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-std-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-pro-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-pro-image-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-4k-text-to-video",
+                  "api-manual/video-series/kwaivgi-kling-video-o3-4k-image-to-video"
                 ]
               },
               {
@@ -449,7 +464,10 @@
                   "api-manual/video-series/alibaba-happyhorse-1-0-text-to-video",
                   "api-manual/video-series/alibaba-happyhorse-1-0-image-to-video",
                   "api-manual/video-series/alibaba-happyhorse-1-0-reference-to-video",
-                  "api-manual/video-series/alibaba-happyhorse-1-0-video-edit"
+                  "api-manual/video-series/alibaba-happyhorse-1-0-video-edit",
+                  "api-manual/video-series/alibaba-happyhorse-1-1-text-to-video",
+                  "api-manual/video-series/alibaba-happyhorse-1-1-image-to-video",
+                  "api-manual/video-series/alibaba-happyhorse-1-1-reference-to-video"
                 ]
               },
               {
@@ -459,7 +477,11 @@
                   "api-manual/video-series/hailuo-02",
                   "api-manual/video-series/minimax-h3-text-to-video",
                   "api-manual/video-series/minimax-h3-image-to-video",
-                  "api-manual/video-series/minimax-h3-reference-to-video"
+                  "api-manual/video-series/minimax-h3-reference-to-video",
+                  "api-manual/video-series/minimax-hailuo-02-standard-text-to-video",
+                  "api-manual/video-series/minimax-hailuo-02-standard-image-to-video",
+                  "api-manual/video-series/minimax-hailuo-02-pro-text-to-video",
+                  "api-manual/video-series/minimax-hailuo-02-pro-image-to-video"
                 ]
               },
               {
@@ -485,7 +507,9 @@
                   "api-manual/video-series/seedance-2-0-mini-image-to-video",
                   "api-manual/video-series/seedance-2-0-mini-reference-to-video",
                   "api-manual/video-series/seedance-1-5-pro",
-                  "api-manual/video-series/seedance-1.0-pro"
+                  "api-manual/video-series/seedance-1.0-pro",
+                  "api-manual/video-series/bytedance-seedance-v1-pro-text-to-video",
+                  "api-manual/video-series/bytedance-seedance-v1-pro-image-to-video"
                 ]
               }
             ]
