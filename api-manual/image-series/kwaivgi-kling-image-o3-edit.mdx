@@ -30,7 +30,7 @@ Rework images with Kling O3 using multiple references and subject elements, with
 
 ### Image Count
 
-- `n`: Optional. Number of images to generate. Integer from `1` to `9`. Default: `1`.
+- `n`: Optional. Number of images to generate. Integer from `1` to `9`. Default: `1`. Fractional values, strings, and booleans are rejected.
 
 ### Output Format
 
@@ -45,6 +45,8 @@ Rework images with Kling O3 using multiple references and subject elements, with
 - Control the number of output images with `n`.
 
 ## Advanced Parameters
+
+Defaults apply only when an optional input field is omitted. Explicit `null` or empty-string values are rejected. An empty `elements` array is accepted.
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
@@ -66,8 +68,15 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 - `elements[].frontal_image_url`: Optional. Use a publicly accessible HTTP(S) URL.
 - `elements[].reference_image_urls`: Optional. Supply an array. Each item must be an HTTP(S) URL.
 
+Refer to subjects in the prompt as `@Element1`, `@Element2`, etc. Element objects may include additional fields; no element count limit is specified.
+
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+| Resolution | Credits per output image | USD per output image |
+| --- | --- | --- |
+| 1K / 2K | 3.5 | Approximately $0.018 |
+| 4K | 7 | $0.035 |
+
+Total credits = the resolution rate × `n`. Both endpoints use the same rates, without an input-image or subject-reference surcharge. At $0.005 per credit, 3.5 credits equals $0.0175; the displayed dollar amount is rounded to three decimals. Calculate totals before rounding.
 
 Credits are deducted on submission and refunded if the task fails.

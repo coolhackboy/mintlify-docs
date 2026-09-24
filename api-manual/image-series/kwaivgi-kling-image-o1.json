@@ -50,60 +50,72 @@
                       "image_urls",
                       "prompt"
                     ],
+                    "description": "Input parameters for image editing",
                     "properties": {
                       "prompt": {
                         "type": "string",
+                        "description": "Editing prompt describing the desired output",
                         "maxLength": 2000,
-                        "minLength": 1,
-                        "description": "Prompt."
+                        "example": "Place the referenced animal on the forest boardwalk, preserving its markings and the scene perspective",
+                        "minLength": 1
                       },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "format": "uri",
-                          "description": "Image urls."
+                          "format": "uri"
                         },
                         "minItems": 1,
                         "maxItems": 10,
-                        "description": "Image urls."
+                        "description": "Reference image URLs for editing. Required for kling-o1-image-edit.",
+                        "example": [
+                          "https://example.com/reference1.png"
+                        ]
                       },
                       "elements": {
                         "type": "array",
+                        "description": "Optional array of element descriptors for character/object control. Reference them in prompt as @Element1, @Element2, etc. Recommended fields are `frontal_image_url` and optional `reference_image_urls`.",
                         "items": {
                           "type": "object",
                           "properties": {
                             "frontal_image_url": {
                               "type": "string",
                               "format": "uri",
-                              "description": "Frontal image url."
+                              "description": "Public image URL for the main face/object reference."
                             },
                             "reference_image_urls": {
                               "type": "array",
+                              "description": "Optional additional public image URLs for the same element.",
                               "items": {
                                 "type": "string",
-                                "format": "uri",
-                                "description": "Reference image urls."
-                              },
-                              "description": "Reference image urls."
+                                "format": "uri"
+                              }
                             }
                           },
-                          "additionalProperties": true,
-                          "description": "Elements."
+                          "additionalProperties": true
                         },
-                        "description": "Elements."
+                        "example": [
+                          {
+                            "frontal_image_url": "https://example.com/subject-front.png",
+                            "reference_image_urls": [
+                              "https://example.com/subject-side.png"
+                            ]
+                          }
+                        ]
                       },
                       "resolution": {
                         "type": "string",
+                        "description": "Output resolution preset",
                         "enum": [
                           "1K",
                           "2K"
                         ],
                         "default": "1K",
-                        "description": "Resolution."
+                        "example": "2K"
                       },
                       "size": {
                         "type": "string",
+                        "description": "Output aspect ratio preset",
                         "enum": [
                           "auto",
                           "16:9",
@@ -116,24 +128,26 @@
                           "21:9"
                         ],
                         "default": "auto",
-                        "description": "Size."
+                        "example": "16:9"
                       },
                       "output_format": {
                         "type": "string",
+                        "description": "Output image format.",
                         "enum": [
                           "jpeg",
                           "png",
                           "webp"
                         ],
                         "default": "png",
-                        "description": "Output format."
+                        "example": "png"
                       },
                       "n": {
                         "type": "integer",
+                        "description": "Number of images to generate (1-9). Billing is based on the selected resolution and `n`.",
                         "minimum": 1,
                         "maximum": 9,
                         "default": 1,
-                        "description": "N."
+                        "example": 2
                       }
                     },
                     "additionalProperties": false
@@ -147,37 +161,53 @@
                 "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
               },
               "examples": {
-                "basic": {
-                  "summary": "Basic workflow",
+                "edit-01": {
+                  "summary": "The Tapir at the Flooded Boardwalk",
                   "value": {
                     "model": "kwaivgi/kling-image-o1",
                     "input": {
+                      "prompt": "Use image 1 as the flooded forest boardwalk scene to edit and image 2 only as the animal identity reference. Edit the scene in image 1 by adding exactly one adult Malayan tapir, the tapir from image 2, standing on the wide wooden deck in the left-center foreground. Preserve the exact tapir identity and anatomy from image 2: black head, neck and hindquarters, broad white saddle, short flexible snout and white-rimmed ears. The tapir faces left in three-quarter side view, pausing as if listening toward the flooded forest. Its full body must be visible, four feet planted naturally on the boardwalk, correct real-world scale, weight and soft contact shadows. Preserve the boardwalk structure, tree positions, floodwater reflections, original camera perspective and documentary photographic style. Match the soft green canopy daylight. Do not add people, other animals, accessories, text, logos or watermark.",
                       "image_urls": [
-                        "https://example.com/image.png"
+                        "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-image-o1/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-image-o1/edit/v1/01/input-02.png"
                       ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "resolution": "1K",
-                      "size": "auto",
+                      "resolution": "2K",
+                      "size": "16:9",
                       "output_format": "png",
                       "n": 1
                     }
                   }
                 },
-                "callback": {
-                  "summary": "Receive a completion callback",
+                "edit-02": {
+                  "summary": "Listening Inside the Salt Cavern",
                   "value": {
                     "model": "kwaivgi/kling-image-o1",
                     "input": {
+                      "prompt": "Make one precise localized edit to this documentary photograph: change only the faded blue canvas messenger bag and its shoulder strap into worn warm-brown leather. Preserve the exact bag silhouette, flap, size, position at the man's right hip, strap route and existing perspective. Add believable leather grain, subtle creases and gently polished worn edges; keep the design plain and unbranded. Everything else must remain unchanged: the same man's face, skin tone, shaved head, expression, pose, hands, dark fleece jacket, trousers, boots, black headphones, handheld recorder, camera framing, salt-crystal cavern geometry, lighting and shadows. Do not add or remove objects, people or animals. No text, logos or watermark.",
                       "image_urls": [
-                        "https://example.com/image.png"
+                        "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-image-o1/edit/v1/02/input-01.png"
                       ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "resolution": "1K",
-                      "size": "auto",
+                      "resolution": "2K",
+                      "size": "3:4",
                       "output_format": "png",
                       "n": 1
-                    },
-                    "callback_url": "https://your-domain.com/callback"
+                    }
+                  }
+                },
+                "edit-03": {
+                  "summary": "Rainwater Routes in Two-Color Woodcut",
+                  "value": {
+                    "model": "kwaivgi/kling-image-o1",
+                    "input": {
+                      "prompt": "Transform this rooftop rainwater-collection photograph into a detailed hand-carved two-color woodcut print, using deep indigo and warm terracotta ink on warm ivory paper. Preserve the original camera view and spatial composition exactly: two cylindrical tanks side by side on the left, the sloping corrugated roof at upper left, downpipe feeding the left tank, connector between the tanks, descending outlet, low brick parapet, drain grate at right foreground, and distant apartment skyline. Keep all pipes connected plausibly and each original object recognizable. Translate shading into expressive carved hatching, bold clean silhouettes, slightly imperfect ink edges and subtle paper texture; no photographic gradients. One continuous scene, no borders, panels, diagrams, added objects, people, animals, text, labels, branding or watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-image-o1/edit/v1/03/input-01.png"
+                      ],
+                      "resolution": "2K",
+                      "size": "4:3",
+                      "output_format": "png",
+                      "n": 1
+                    }
                   }
                 }
               }
@@ -233,9 +263,9 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "G9UB0VC3IRIBRX9W",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-24T11:52:39"
                   }
                 }
               }

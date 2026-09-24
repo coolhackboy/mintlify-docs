@@ -22,7 +22,7 @@ Generate images up to 4K with Kling O3, creating multiple variations in a range 
 
 ### Image Size
 
-- `size`: Optional. Accepted values: `auto`, `16:9`, `9:16`, `1:1`, `4:3`, `3:4`, `3:2`, `2:3`, `21:9`. Default: `16:9`.
+- `size`: Optional. Accepted values: `16:9`, `9:16`, `1:1`, `4:3`, `3:4`, `3:2`, `2:3`, `21:9`. Default: `16:9`.
 
 ### Resolution
 
@@ -30,7 +30,7 @@ Generate images up to 4K with Kling O3, creating multiple variations in a range 
 
 ### Image Count
 
-- `n`: Optional. Number of images to generate. Integer from `1` to `9`. Default: `1`.
+- `n`: Optional. Number of images to generate. Integer from `1` to `9`. Default: `1`. Fractional values, strings, and booleans are rejected.
 
 ### Output Format
 
@@ -44,6 +44,8 @@ Generate images up to 4K with Kling O3, creating multiple variations in a range 
 
 ## Advanced Parameters
 
+Defaults apply only when an optional input field is omitted. Explicit `null` or empty-string values are rejected. An empty `elements` array is accepted.
+
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
 Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
@@ -53,8 +55,20 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 - `prompt`: Required. Describe the desired image. Length: **1-2,000 characters**.
 - The value must not be blank when supplied.
 
+### Subject Elements
+
+- `elements`: Optional array of subject-reference objects. Refer to them in the prompt as `@Element1`, `@Element2`, etc.
+- `elements[].frontal_image_url`: Optional public HTTP(S) URL for the main subject view.
+- `elements[].reference_image_urls`: Optional array of additional public HTTP(S) image URLs.
+- Element objects may include additional fields. No element count limit is specified.
+
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+| Resolution | Credits per output image | USD per output image |
+| --- | --- | --- |
+| 1K / 2K | 3.5 | Approximately $0.018 |
+| 4K | 7 | $0.035 |
+
+Total credits = the resolution rate × `n`. Both endpoints use the same rates, without an input-image or subject-reference surcharge. At $0.005 per credit, 3.5 credits equals $0.0175; the displayed dollar amount is rounded to three decimals. Calculate totals before rounding.
 
 Credits are deducted on submission and refunded if the task fails.

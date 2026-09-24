@@ -53,58 +53,69 @@
                     "properties": {
                       "prompt": {
                         "type": "string",
+                        "description": "Generation prompt describing the desired output",
                         "maxLength": 2000,
-                        "minLength": 1,
-                        "description": "Prompt."
+                        "example": "A cinematic futuristic alley with rain and neon reflections",
+                        "minLength": 1
                       },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "format": "uri",
-                          "description": "Image urls."
+                          "format": "uri"
                         },
                         "minItems": 1,
                         "maxItems": 10,
-                        "description": "Image urls."
+                        "description": "Reference image URLs. Required for image editing. Provide 1-10 publicly accessible HTTP(S) URLs.",
+                        "example": [
+                          "https://example.com/reference1.png"
+                        ]
                       },
                       "elements": {
                         "type": "array",
+                        "description": "Optional array of element descriptors for character/object control. Reference them in prompt as @Element1, @Element2, etc. Recommended fields are `frontal_image_url` and optional `reference_image_urls`.",
                         "items": {
                           "type": "object",
                           "properties": {
                             "frontal_image_url": {
                               "type": "string",
                               "format": "uri",
-                              "description": "Frontal image url."
+                              "description": "Public image URL for the main face/object reference."
                             },
                             "reference_image_urls": {
                               "type": "array",
+                              "description": "Optional additional public image URLs for the same element.",
                               "items": {
                                 "type": "string",
-                                "format": "uri",
-                                "description": "Reference image urls."
-                              },
-                              "description": "Reference image urls."
+                                "format": "uri"
+                              }
                             }
                           },
-                          "additionalProperties": true,
-                          "description": "Elements."
+                          "additionalProperties": true
                         },
-                        "description": "Elements."
+                        "example": [
+                          {
+                            "frontal_image_url": "https://example.com/lead-model-front.png",
+                            "reference_image_urls": [
+                              "https://example.com/lead-model-side.png"
+                            ]
+                          }
+                        ]
                       },
                       "resolution": {
                         "type": "string",
+                        "description": "Output resolution preset",
                         "enum": [
                           "1K",
                           "2K",
                           "4K"
                         ],
                         "default": "1K",
-                        "description": "Resolution."
+                        "example": "4K"
                       },
                       "size": {
                         "type": "string",
+                        "description": "Output aspect ratio preset. Supports fixed aspect ratios and `auto`.",
                         "enum": [
                           "auto",
                           "16:9",
@@ -117,27 +128,30 @@
                           "21:9"
                         ],
                         "default": "16:9",
-                        "description": "Size."
+                        "example": "16:9"
                       },
                       "output_format": {
                         "type": "string",
+                        "description": "Output image format.",
                         "enum": [
                           "jpeg",
                           "png",
                           "webp"
                         ],
                         "default": "png",
-                        "description": "Output format."
+                        "example": "png"
                       },
                       "n": {
                         "type": "integer",
+                        "description": "Number of images to generate (1-9). Billing is based on the selected resolution and `n`.",
                         "minimum": 1,
                         "maximum": 9,
                         "default": 1,
-                        "description": "N."
+                        "example": 2
                       }
                     },
-                    "additionalProperties": false
+                    "additionalProperties": false,
+                    "description": "Input parameters for image generation or editing"
                   },
                   "callback_url": {
                     "type": "string",
@@ -453,7 +467,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Unable to create the generation task",
             "content": {
               "application/json": {
                 "schema": {

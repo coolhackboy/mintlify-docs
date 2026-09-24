@@ -57,17 +57,42 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ### Image URLs
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-10 items. Each item must be an HTTP(S) URL.
+- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-10 items. Each item must be an HTTP(S) URL. A single URL string and Base64 inputs are not accepted.
 
 ### Subject Elements
 
-- `elements`: Optional. Provide subject-reference objects. Supply an array. Each item is an object.
+- `elements`: Optional array of subject-reference objects. Refer to them in the prompt as `@Element1`, `@Element2`, etc., in array order. Additional object properties are preserved. No element or additional-view count limit is specified by the upstream contract.
 
 - `elements[].frontal_image_url`: Optional. Use a publicly accessible HTTP(S) URL.
 - `elements[].reference_image_urls`: Optional. Supply an array. Each item must be an HTTP(S) URL.
 
+### Tested multi-image example
+
+```json
+{
+  "model": "kwaivgi/kling-image-o1",
+  "input": {
+    "prompt": "Use image 1 as the flooded forest boardwalk scene to edit and image 2 only as the animal identity reference. Edit the scene in image 1 by adding exactly one adult Malayan tapir, the tapir from image 2, standing on the wide wooden deck in the left-center foreground. Preserve the exact tapir identity and anatomy from image 2: black head, neck and hindquarters, broad white saddle, short flexible snout and white-rimmed ears. The tapir faces left in three-quarter side view, pausing as if listening toward the flooded forest. Its full body must be visible, four feet planted naturally on the boardwalk, correct real-world scale, weight and soft contact shadows. Preserve the boardwalk structure, tree positions, floodwater reflections, original camera perspective and documentary photographic style. Match the soft green canopy daylight. Do not add people, other animals, accessories, text, logos or watermark.",
+    "image_urls": [
+      "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-image-o1/edit/v1/01/input-01.png",
+      "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-image-o1/edit/v1/01/input-02.png"
+    ],
+    "resolution": "2K",
+    "size": "16:9",
+    "output_format": "png",
+    "n": 1
+  }
+}
+```
+
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+| Resolution | Rate per output image | USD display |
+| --- | --- | --- |
+| 1K / 2K | 3.5 credits | Approximately $0.018 |
+
+Total charge is **3.5 × n credits**. Reference images and subject elements have no additional charge.
+
+At $0.005 per credit, one image costs $0.0175, displayed as $0.018. Calculate the total before rounding USD to three decimals: two images cost 7 credits ($0.035), and nine images cost 31.5 credits (approximately $0.158).
 
 Credits are deducted on submission and refunded if the task fails.
