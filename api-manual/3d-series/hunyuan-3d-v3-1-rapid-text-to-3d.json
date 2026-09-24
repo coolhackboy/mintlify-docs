@@ -23,7 +23,7 @@
         ],
         "summary": "Hunyuan 3D v3.1 Rapid Text to 3D",
         "operationId": "submit_hunyuan_3d_v3_1_rapid_text_to_3d",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nRapid does not accept PBR, custom face count, or extra views.\n\nRead every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.\n\nRead every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "hunyuan-3d/v3.1/rapid/text-to-3d"
-                    ],
-                    "example": "hunyuan-3d/v3.1/rapid/text-to-3d",
-                    "description": "Vidgo public model ID. Must be `hunyuan-3d/v3.1/rapid/text-to-3d`."
+                    "example": "hunyuan-3d/v3.1/rapid/text-to-3d"
                   },
                   "input": {
                     "type": "object",

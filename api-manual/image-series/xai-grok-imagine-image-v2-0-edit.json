@@ -23,7 +23,7 @@
         ],
         "summary": "Grok Imagine Image 2.0 Edit",
         "operationId": "submit_xai_grok_imagine_image_v2_0_edit",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "xai/grok-imagine-image-v2.0/edit"
-                    ],
-                    "example": "xai/grok-imagine-image-v2.0/edit",
-                    "description": "Vidgo public model ID. Must be `xai/grok-imagine-image-v2.0/edit`."
+                    "example": "xai/grok-imagine-image-v2.0/edit"
                   },
                   "input": {
                     "type": "object",
@@ -66,7 +62,7 @@
                           "format": "uri",
                           "description": "Image urls."
                         },
-                        "description": "Required for editing: 1–3 public HTTP(S) image URLs, without embedded credentials. Each input image adds 2 credits per request."
+                        "description": "Required for editing: 1–3 public HTTP(S) image URLs, without embedded credentials. Input image count adds a separate charge once per request, independent of output count (n)."
                       },
                       "n": {
                         "type": "integer",
@@ -151,7 +147,7 @@
                   }
                 },
                 "multiple_outputs": {
-                  "summary": "Four Medium / 2K outputs: 70 credits including three input images",
+                  "summary": "Four Medium / 2K outputs with three input images",
                   "value": {
                     "model": "xai/grok-imagine-image-v2.0/edit",
                     "input": {

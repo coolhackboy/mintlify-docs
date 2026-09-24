@@ -79,10 +79,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Wan 2.5 image-to-video model identifier",
-            "enum": [
-              "wan2.5-image-to-video"
-            ]
+            "example": "wan2.5-image-to-video"
           },
           "callback_url": {
             "type": "string",

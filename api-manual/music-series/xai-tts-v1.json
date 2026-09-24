@@ -23,7 +23,7 @@
         ],
         "summary": "xAI TTS 1",
         "operationId": "submit_xai_tts_v1",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nUsage is based on text length.\n\nThe bit_rate output option applies only to MP3.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, text must not be blank.\n\nUsage is based on text length.\n\nThe bit_rate output option applies only to MP3.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "xai/tts/v1"
-                    ],
-                    "example": "xai/tts/v1",
-                    "description": "Vidgo public model ID. Must be `xai/tts/v1`."
+                    "example": "xai/tts/v1"
                   },
                   "input": {
                     "type": "object",

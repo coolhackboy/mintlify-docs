@@ -23,7 +23,7 @@
         ],
         "summary": "ElevenLabs TTS Turbo v2.5",
         "operationId": "submit_elevenlabs_tts_turbo_v2_5",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nUsage counts trimmed text in UTF-16 code units. Context fields do not add billable characters.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, text must not be blank.\n\nUsage counts trimmed text in UTF-16 code units. Context fields do not add billable characters.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "elevenlabs/tts/turbo-v2.5"
-                    ],
-                    "example": "elevenlabs/tts/turbo-v2.5",
-                    "description": "Vidgo public model ID. Must be `elevenlabs/tts/turbo-v2.5`."
+                    "example": "elevenlabs/tts/turbo-v2.5"
                   },
                   "input": {
                     "type": "object",

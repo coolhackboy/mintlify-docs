@@ -47,15 +47,8 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 - `resolution`: Optional. Accepted values: `720p`, `1080p`. Default: `720p`, only when omitted. Aliases, different casing, surrounding whitespace and numeric values are rejected.
 
-## Pricing
+## Billing Factors
 
-Both workflows use the same price per generation ($0.005 per credit):
-
-| Resolution | Duration | Credits | USD |
-| --- | --- | --- | --- |
-| 720p | 5 seconds | 21 | $0.105 |
-| 720p | 10 seconds | 42 | $0.210 |
-| 1080p | 5 seconds | 43 | $0.215 |
-| 1080p | 10 seconds | 86 | $0.430 |
+Billing depends on output resolution (`resolution`) and video duration (`duration`). Text-to-video and image-to-video use the same rates.
 
 Credits are deducted on submission and refunded if the task fails.

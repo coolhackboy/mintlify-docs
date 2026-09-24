@@ -111,8 +111,6 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "API model identifier.\n\nMust be `generate-music` for this endpoint.",
-            "enum": ["generate-music"],
             "example": "generate-music"
           },
           "callback_url": {

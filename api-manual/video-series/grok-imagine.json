@@ -92,10 +92,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Grok Imagine model identifier",
-            "enum": [
-              "grok-imagine"
-            ]
+            "example": "grok-imagine"
           },
           "callback_url": {
             "type": "string",

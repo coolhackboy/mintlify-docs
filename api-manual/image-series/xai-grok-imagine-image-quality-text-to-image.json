@@ -23,7 +23,7 @@
         ],
         "summary": "Grok Imagine Image Quality Text to Image",
         "operationId": "submit_xai_grok_imagine_image_quality_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "xai/grok-imagine-image-quality/text-to-image"
-                    ],
-                    "example": "xai/grok-imagine-image-quality/text-to-image",
-                    "description": "Vidgo public model ID. Must be `xai/grok-imagine-image-quality/text-to-image`."
+                    "example": "xai/grok-imagine-image-quality/text-to-image"
                   },
                   "input": {
                     "type": "object",
@@ -80,7 +76,7 @@
                           "2K"
                         ],
                         "default": "1K",
-                        "description": "Output resolution. 1K: 8 credits ($0.040) per output; 2K: 11 credits ($0.055) per output."
+                        "description": "Output resolution. Billing depends on the selected resolution and output image count (n)."
                       }
                     },
                     "additionalProperties": false

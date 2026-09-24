@@ -124,11 +124,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Sora 2 Pro model identifier",
-            "enum": [
-              "sora-2-pro",
-              "sora-2-pro-private"
-            ]
+            "example": "sora-2-pro"
           },
           "callback_url": {
             "type": "string",

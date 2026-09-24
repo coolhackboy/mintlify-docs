@@ -80,10 +80,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Kling 3.0 Motion Control model identifier",
-            "enum": [
-              "kling-3.0-motion-control"
-            ]
+            "example": "kling-3.0-motion-control"
           },
           "callback_url": {
             "type": "string",

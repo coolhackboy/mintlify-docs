@@ -23,7 +23,7 @@
         ],
         "summary": "Kling O3 Image Text to Image",
         "operationId": "submit_kwaivgi_kling_image_o3_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nEach multi_prompt shot needs a nonblank prompt and positive integer duration. Shot durations must sum to the requested duration. When multi_shots is available, enable it with multi_prompt; multi_shots=true also requires multi_prompt.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "kwaivgi/kling-image-o3/text-to-image"
-                    ],
-                    "example": "kwaivgi/kling-image-o3/text-to-image",
-                    "description": "Vidgo public model ID. Must be `kwaivgi/kling-image-o3/text-to-image`."
+                    "example": "kwaivgi/kling-image-o3/text-to-image"
                   },
                   "input": {
                     "type": "object",

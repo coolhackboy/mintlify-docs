@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "kwaivgi/kling-video-o3-pro/text-to-video"
-                    ],
-                    "example": "kwaivgi/kling-video-o3-pro/text-to-video",
-                    "description": "Vidgo public model ID. Must be `kwaivgi/kling-video-o3-pro/text-to-video`."
+                    "example": "kwaivgi/kling-video-o3-pro/text-to-video"
                   },
                   "input": {
                     "type": "object",

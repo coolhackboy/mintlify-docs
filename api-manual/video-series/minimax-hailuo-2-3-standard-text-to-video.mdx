@@ -31,7 +31,7 @@ Generate short video scenes with Hailuo 2.3 Standard, with 768p output and optio
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. `end_image_url` and `image_urls` are not supported. JSON types are validated without converting strings to numbers or booleans; `prompt` must be a string and fractional durations are rejected. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Send only the input fields supported by this workflow. JSON types are validated without converting strings to numbers or booleans; `prompt` must be a string and fractional durations are rejected. Unsupported `input` fields are rejected before credits are deducted.
 
 ### Prompt
 
@@ -46,13 +46,8 @@ Send only the input fields supported by this workflow. `end_image_url` and `imag
 
 - `prompt_optimizer`: Optional. Control automatic prompt optimization. Use `true` or `false`. Omit this field to leave it unspecified upstream; no API default is imposed.
 
-## Pricing
+## Billing Factors
 
-| Resolution | Duration | Credits / video | USD / video |
-| --- | --- | --- | --- |
-| 768p | 6 seconds | 35 | $0.175 |
-| 768p | 10 seconds | 70 | $0.350 |
-
-1 credit = $0.005. Prompt optimization does not change the rate.
+Billing depends on video duration (`duration`) using the Standard model tier. This endpoint fixes output resolution to `768p`. Prompt optimization (`prompt_optimizer`) does not change the charge.
 
 Credits are deducted on submission and refunded if the task fails.

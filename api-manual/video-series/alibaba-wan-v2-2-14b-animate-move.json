@@ -23,7 +23,7 @@
         ],
         "summary": "Wan Animate Move",
         "operationId": "submit_alibaba_wan_v2_2_14b_animate_move",
-        "description": "Animate the character in an image using motion from a reference video with Wan Animate Move.\n\nSet model and optional callback_url at the request root. The input object accepts only video_url, image_urls, and resolution. It does not accept prompt, text, or duration. Unsupported input fields are rejected before credits are deducted.\n\nInput URLs must use HTTP(S), include a hostname, and contain no embedded credentials or whitespace. The source video must be publicly accessible, its entire file must be no larger than 100 MiB (104,857,600 bytes), and its duration must be greater than zero. Vidgo validates the request and checks the source video before creating the task. A task_id is returned after the task is successfully created. Query task status or provide a callback_url to receive the result.\n\nBilling uses the source video duration rounded up to a whole second, multiplied by the selected resolution rate: 480p costs 7 credits ($0.035) per second; 580p costs 12 credits ($0.060); 720p costs 15 credits ($0.075). A 5.1-second source video at 480p is billed as 6 seconds: 42 credits ($0.210). Video inspection failures are rejected before credits are deducted. Credits are deducted when a valid request is submitted for generation and refunded if the task fails.",
+        "description": "Animate the character in an image using motion from a reference video with Wan Animate Move.\n\nSet model and optional callback_url at the request root. The input object accepts only video_url, image_urls, and resolution. Unsupported input fields are rejected before credits are deducted.\n\nInput URLs must use HTTP(S), include a hostname, and contain no embedded credentials or whitespace. The source video must be publicly accessible, its entire file must be no larger than 100 MiB (104,857,600 bytes), and its duration must be greater than zero. Vidgo validates the request and checks the source video before creating the task. A task_id is returned after the task is successfully created. Query task status or provide a callback_url to receive the result.\n\nBilling depends on the selected resolution and source-video duration rounded up to whole seconds. Move and Replace use the same rates. A source video lasting 5.1 seconds is billed as 6 seconds. Video inspection failures are rejected before credits are deducted. Credits are deducted when a valid request is submitted for generation and refunded if the task fails.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "alibaba/wan/v2.2-14b/animate/move"
-                    ],
-                    "example": "alibaba/wan/v2.2-14b/animate/move",
-                    "description": "Vidgo public model ID. Must be `alibaba/wan/v2.2-14b/animate/move`."
+                    "example": "alibaba/wan/v2.2-14b/animate/move"
                   },
                   "input": {
                     "type": "object",
@@ -54,7 +50,7 @@
                       "video_url": {
                         "type": "string",
                         "format": "uri",
-                        "description": "Required string. The reference video that provides the motion for the character image. Use a publicly accessible HTTP(S) URL with a hostname and no embedded credentials or whitespace. The entire video file must be no larger than 100 MiB (104,857,600 bytes), and its duration must be greater than zero. Vidgo determines the source duration for billing; do not send a duration field."
+                        "description": "Required string. The reference video that provides the motion for the character image. Use a publicly accessible HTTP(S) URL with a hostname and no embedded credentials or whitespace. The entire video file must be no larger than 100 MiB (104,857,600 bytes), and its duration must be greater than zero. Vidgo determines the source duration for billing."
                       },
                       "image_urls": {
                         "type": "array",
@@ -75,7 +71,7 @@
                           "720p"
                         ],
                         "default": "480p",
-                        "description": "Optional string: 480p, 580p, or 720p. Defaults to 480p only when omitted. Null, empty strings, other values, and values with surrounding whitespace are rejected. Rates per billable second: 480p costs 7 credits ($0.035); 580p costs 12 credits ($0.060); 720p costs 15 credits ($0.075). The source video duration is rounded up to a whole second before calculating the total."
+                        "description": "Optional string: 480p, 580p, or 720p. Defaults to 480p only when omitted. Null, empty strings, other values, and values with surrounding whitespace are rejected. The selected resolution determines the billing rate per source-video second. The source video duration is rounded up to a whole second before calculating the total."
                       }
                     },
                     "additionalProperties": false

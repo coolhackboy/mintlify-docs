@@ -23,7 +23,7 @@
         ],
         "summary": "ElevenLabs Music",
         "operationId": "submit_elevenlabs_music",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nUse text or a composition plan, exclusively. Duration and instrumental mode belong to text input; respect_sections_durations belongs to a composition plan. Section durations must total between three and six hundred seconds. Usage is rounded up by started minute. Text without duration uses one started minute.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, text must not be blank.\n\nUse text or a composition plan, exclusively. Duration and instrumental mode belong to text input; respect_sections_durations belongs to a composition plan. Section durations must total between three and six hundred seconds. Usage is rounded up by started minute. Text without duration uses one started minute.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "elevenlabs/music"
-                    ],
-                    "example": "elevenlabs/music",
-                    "description": "Vidgo public model ID. Must be `elevenlabs/music`."
+                    "example": "elevenlabs/music"
                   },
                   "input": {
                     "type": "object",

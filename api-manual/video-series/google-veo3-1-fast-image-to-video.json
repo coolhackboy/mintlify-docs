@@ -23,7 +23,7 @@
         ],
         "summary": "Veo 3.1 Fast Image to Video",
         "operationId": "submit_google_veo3_1_fast_image_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nSupply one or two images. Omit generation_type for a single starting image. Two images default to generation_type=frame; explicitly specifying frame requires exactly two images.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nSupply one or two images. Omit generation_type for a single starting image. Two images default to generation_type=frame; explicitly specifying frame requires exactly two images.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "google/veo3.1-fast/image-to-video"
-                    ],
-                    "example": "google/veo3.1-fast/image-to-video",
-                    "description": "Vidgo public model ID. Must be `google/veo3.1-fast/image-to-video`."
+                    "example": "google/veo3.1-fast/image-to-video"
                   },
                   "input": {
                     "type": "object",

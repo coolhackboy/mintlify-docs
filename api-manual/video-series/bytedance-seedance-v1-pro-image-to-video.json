@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "bytedance/seedance/v1/pro/image-to-video"
-                    ],
-                    "example": "bytedance/seedance/v1/pro/image-to-video",
-                    "description": "Vidgo public model ID. Must be `bytedance/seedance/v1/pro/image-to-video`."
+                    "example": "bytedance/seedance/v1/pro/image-to-video"
                   },
                   "input": {
                     "type": "object",

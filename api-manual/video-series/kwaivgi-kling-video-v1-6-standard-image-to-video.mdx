@@ -1,6 +1,6 @@
 ---
 title: "Kling 1.6 Standard Image to Video"
-description: "Kling 1.6 Standard Image to Video parameters and pricing."
+description: "Kling 1.6 Standard Image to Video parameters and billing factors."
 icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-video-v1-6-standard-image-to-video.json POST /api/generate/submit"
 ---
@@ -17,10 +17,10 @@ Submit with `VIDGO_API_KEY`, then use [Query Task Status](/api-manual/task-manag
 
 Provide **either** `start_image_url` for first-frame animation **or** `image_urls` for Elements. The endpoint does not accept text-only requests.
 
-- Elements accepts 1–4 reference images and cannot be combined with `start_image_url`, `end_image_url`, or `cfg_scale`.
-- Standard does not support `end_image_url`. Standard first-frame animation does not support `aspect_ratio`; Elements does.
+- Elements accepts 1–4 reference images and cannot be combined with `start_image_url` or `cfg_scale`.
+- Standard first-frame animation does not support `aspect_ratio`; Elements does.
 
-Do not send `mode`, `type`, or `task_type` in `input`. The image fields select the workflow.
+The image fields select the workflow.
 
 ## Parameters
 
@@ -34,17 +34,12 @@ Place generation parameters inside `input`. Keep `model` and optional `callback_
 | `negative_prompt` | Optional | Optional string, at most 2,500 Unicode characters. |
 | `cfg_scale` | Optional | Optional finite number from 0 to 1. Not supported with image_urls. No API default. |
 | `start_image_url` | Conditional | First-frame HTTP(S) URL. Required for the first-frame workflow; mutually exclusive with image_urls. |
-| `image_urls` | Conditional | Elements: 1 to 4 HTTP(S) reference URLs. Mutually exclusive with start_image_url, end_image_url and cfg_scale. |
+| `image_urls` | Conditional | Elements: 1 to 4 HTTP(S) reference URLs. Mutually exclusive with start_image_url and cfg_scale. |
 
 Image URLs must be public HTTP(S) URLs with a hostname, without embedded credentials or whitespace. Local files can be uploaded in the playground before submitting their URL. Optional parameters have no documented API defaults.
 
-## Pricing
+## Billing Factors
 
-**9 credits / second ($0.045 / second)**. 1 credit = $0.005.
+Billing depends on the selected model tier (Standard or Pro) and video duration (`duration`). Usage is charged per generated second. Within a tier, text-to-video, first-frame animation, and Elements use the same rate.
 
-| Duration | Credits | USD |
-| --- | --- | --- |
-| 5 seconds | 45 | $0.225 |
-| 10 seconds | 90 | $0.450 |
-
-The same tier rate applies to text-to-video, first-frame animation and Elements. Credits are deducted on submission and refunded if the task fails.
+Credits are deducted on submission and refunded if the task fails.

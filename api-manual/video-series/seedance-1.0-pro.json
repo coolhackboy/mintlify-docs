@@ -97,10 +97,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Seedance 1.0 Pro model identifier",
-            "enum": [
-              "seedance-1.0-pro"
-            ]
+            "example": "seedance-1.0-pro"
           },
           "callback_url": {
             "type": "string",

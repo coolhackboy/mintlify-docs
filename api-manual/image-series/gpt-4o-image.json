@@ -125,11 +125,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "GPT-4o model identifier",
-            "enum": [
-              "gpt-4o-image",
-              "gpt-4o-image-edit"
-            ]
+            "example": "gpt-4o-image"
           },
           "callback_url": {
             "type": "string",

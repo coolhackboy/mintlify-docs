@@ -23,7 +23,7 @@
         ],
         "summary": "Hailuo 2.3 Text to Video",
         "operationId": "submit_minimax_hailuo_2_3_standard_text_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nprompt is required and must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nThis ID fixes `resolution` to `768p`.\n\nNo type coercion: numeric prompts, string booleans and fractional durations are rejected. end_image_url and image_urls are not supported.\n\nPricing per video: 768p / 6s: 35 credits ($0.175); 768p / 10s: 70 credits ($0.350). 1 credit = $0.005.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nprompt is required and must not be blank.\n\nThis ID fixes `resolution` to `768p`.\n\nNo type coercion: numeric prompts, string booleans and fractional durations are rejected.\n\nBilling depends on video duration (`duration`) using the Standard model tier. This endpoint fixes output resolution to `768p`. Prompt optimization (`prompt_optimizer`) does not change the charge.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "minimax/hailuo-2.3/standard/text-to-video"
-                    ],
-                    "example": "minimax/hailuo-2.3/standard/text-to-video",
-                    "description": "Vidgo public model ID. Must be `minimax/hailuo-2.3/standard/text-to-video`."
+                    "example": "minimax/hailuo-2.3/standard/text-to-video"
                   },
                   "input": {
                     "type": "object",

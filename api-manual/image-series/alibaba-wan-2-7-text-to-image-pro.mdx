@@ -35,13 +35,13 @@ Create image variations with Wan 2.7 Pro, using detailed prompts to guide the su
 - Generate images from text prompts.
 - Control the number of output images with `n`.
 
-This text-to-image endpoint does not accept `image_urls`. Use the corresponding image-edit endpoint for reference images.
+Use the corresponding image-edit endpoint for reference images.
 
 ## Advanced Parameters
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted.
 
 ### Prompt
 
@@ -52,8 +52,8 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 - `seed`: Optional. Set the generation seed. Integer.
 
-## Pricing
+## Billing Factors
 
-**10.5 credits per output image ($0.0525)** at $0.005 per credit. Total credits = 10.5 × `n`. Output size and the number of reference images do not add charges.
+Billing depends on the selected model variant and output image count (`n`). Output size does not add a charge.
 
 Credits are deducted on submission and refunded if the task fails.

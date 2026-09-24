@@ -56,10 +56,8 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 - `prompt_optimizer`: Optional. Control automatic prompt optimization. Use `true` or `false`.
 
-## Pricing
+## Billing Factors
 
-512P: 3 credits/second, 18 credits ($0.09) for 6 seconds or 30 credits ($0.15) for 10 seconds.
+Billing depends on output resolution (`resolution`) and video duration (`duration`). Usage is charged per generated second using the Standard model tier.
 
-768P: 7 credits/second, 42 credits ($0.21) for 6 seconds or 70 credits ($0.35) for 10 seconds.
-
-1 credit = $0.005. Credits are deducted on submission and refunded if the task fails.
+Credits are deducted on submission and refunded if the task fails.

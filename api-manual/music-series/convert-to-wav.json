@@ -94,8 +94,6 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "API model identifier.\n\nMust be `convert-to-wav` for this endpoint.",
-            "enum": ["convert-to-wav"],
             "example": "convert-to-wav"
           },
           "callback_url": {

@@ -183,12 +183,6 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "VEO 3.1 official model identifier",
-            "enum": [
-              "veo3.1-fast-official",
-              "veo3.1-lite-official",
-              "veo3.1-quality-official"
-            ],
             "example": "veo3.1-fast-official"
           },
           "callback_url": {

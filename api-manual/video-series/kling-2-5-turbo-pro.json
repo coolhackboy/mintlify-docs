@@ -76,10 +76,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Kling 2.5 Turbo Pro model identifier",
-            "enum": [
-              "kling-2.5-turbo-pro"
-            ]
+            "example": "kling-2.5-turbo-pro"
           },
           "callback_url": {
             "type": "string",

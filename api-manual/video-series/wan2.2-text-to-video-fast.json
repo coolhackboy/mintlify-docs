@@ -76,10 +76,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Wan 2.2 Fast text-to-video model identifier",
-            "enum": [
-              "wan2.2-text-to-video-fast"
-            ]
+            "example": "wan2.2-text-to-video-fast"
           },
           "callback_url": {
             "type": "string",

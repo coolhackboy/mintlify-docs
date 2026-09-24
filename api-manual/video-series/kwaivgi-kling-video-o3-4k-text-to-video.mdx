@@ -20,12 +20,13 @@ Use model `kwaivgi/kling-video-o3-4k/text-to-video`. Put generation parameters i
 - **`sound`**: Required: explicitly send true to generate audio or false for video without audio. Single-shot mode accepts either value; multi-shot mode requires true.
 - **`aspect_ratio`**: Optional: 16:9 (landscape), 9:16 (portrait) or 1:1 (square). Sets the video aspect ratio.
 
-Use standard JSON numbers and booleans. For compatibility, integer strings such as "5" are accepted. Boolean strings true/1/yes/y/on mean true; false/0/no/n/off mean false. These strings are case-insensitive and trimmed. Numeric 1 and 0 are also accepted for boolean fields. Numeric and boolean prompt values are converted to text; 0, false and null are treated as empty. Objects and arrays are not accepted as prompts. Unsupported input fields, including reference_image_urls and kling_elements, are rejected. HTTP(S) URLs must have a hostname and no embedded credentials.
+Use standard JSON numbers and booleans. For compatibility, integer strings such as "5" are accepted. Boolean strings true/1/yes/y/on mean true; false/0/no/n/off mean false. These strings are case-insensitive and trimmed. Numeric 1 and 0 are also accepted for boolean fields. Numeric and boolean prompt values are converted to text; 0, false and null are treated as empty. Objects and arrays are not accepted as prompts. Unsupported input fields are rejected.
 
-## Pricing
+## Billing Factors
 
-50 credits/s with or without sound. Credits = duration × rate. Failed generation tasks are refunded.
+Billed per generated second using the 4K model tier. Video duration (`duration`) determines usage; enabling or disabling audio (`sound`) does not change the rate.
 
+Failed generation tasks are refunded.
 ## Default example: Rain Along the Stone Gallery
 
 This is the same default example shown on the [model page](https://vidgo.ai/apis/models/kwaivgi/kling-video-o3-4k/text-to-video).

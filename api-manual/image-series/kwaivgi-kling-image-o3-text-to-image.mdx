@@ -62,13 +62,8 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 - `elements[].reference_image_urls`: Optional array of additional public HTTP(S) image URLs.
 - Element objects may include additional fields. No element count limit is specified.
 
-## Pricing
+## Billing Factors
 
-| Resolution | Credits per output image | USD per output image |
-| --- | --- | --- |
-| 1K / 2K | 3.5 | Approximately $0.018 |
-| 4K | 7 | $0.035 |
-
-Total credits = the resolution rate × `n`. Both endpoints use the same rates, without an input-image or subject-reference surcharge. At $0.005 per credit, 3.5 credits equals $0.0175; the displayed dollar amount is rounded to three decimals. Calculate totals before rounding.
+Billing depends on output resolution (`resolution`) and output image count (`n`). Text-to-image and image editing use the same rates. Reference images and subject elements do not add charges.
 
 Credits are deducted on submission and refunded if the task fails.

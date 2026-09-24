@@ -92,10 +92,6 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Vidgo public model identifier.",
-            "enum": [
-              "seedance-2.0/image-to-video"
-            ],
             "example": "seedance-2.0/image-to-video"
           },
           "callback_url": {

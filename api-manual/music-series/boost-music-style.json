@@ -86,8 +86,6 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "API model identifier.\n\nMust be `boost-music-style` for this endpoint.",
-            "enum": ["boost-music-style"],
             "example": "boost-music-style"
           },
           "callback_url": {

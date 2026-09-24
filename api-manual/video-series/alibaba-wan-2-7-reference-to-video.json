@@ -23,7 +23,7 @@
         ],
         "summary": "Wan 2.7 Video Reference to Video",
         "operationId": "submit_alibaba_wan_2_7_reference_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nPrompts are trimmed and limited to 5,000 Unicode characters; required except for image-to-video, where blank or null prompts are omitted. Image inputs accept HTTP(S) URLs, image Data URIs, or raw Base64. Conversion and validation complete before charging. Other media require public HTTP(S) URLs.\n\nUsage equals output seconds multiplied by the selected resolution rate. See [Pricing](https://vidgo.ai/apis/api-pricing) for current rates.\n\n`duration` and `seed` also accept integer strings such as `\"5\"`; decimal numbers such as `5.0` and decimal strings such as `\"5.0\"` are rejected. Null or empty values use the default duration or omit the seed. Supported boolean fields also accept `0`/`1` and case-insensitive strings `true`/`false`, `1`/`0`, `yes`/`no`, `y`/`n`, and `on`/`off`; null omits the field. Surrounding whitespace is trimmed, and resolution values are case-insensitive.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nPrompts are trimmed and limited to 5,000 Unicode characters. A nonblank prompt is required. Image inputs accept HTTP(S) URLs, image Data URIs, or raw Base64. Conversion and validation complete before charging. Other media require public HTTP(S) URLs.\n\nUsage equals output seconds multiplied by the selected resolution rate. See [Pricing](https://vidgo.ai/apis/api-pricing) for current rates.\n\n`duration` and `seed` also accept integer strings such as `\"5\"`; decimal numbers such as `5.0` and decimal strings such as `\"5.0\"` are rejected. Null or empty values use the default duration or omit the seed. Supported boolean fields also accept `0`/`1` and case-insensitive strings `true`/`false`, `1`/`0`, `yes`/`no`, `y`/`n`, and `on`/`off`; null omits the field. Surrounding whitespace is trimmed, and resolution values are case-insensitive.",
         "requestBody": {
           "required": true,
           "content": {
@@ -39,11 +39,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "alibaba/wan-2.7/reference-to-video"
-                    ],
-                    "example": "alibaba/wan-2.7/reference-to-video",
-                    "description": "Vidgo public model ID. Must be `alibaba/wan-2.7/reference-to-video`."
+                    "example": "alibaba/wan-2.7/reference-to-video"
                   },
                   "input": {
                     "type": "object",

@@ -94,11 +94,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Wan Animate model identifier",
-            "enum": [
-              "wan-animate-replace",
-              "wan-animate-move"
-            ]
+            "example": "wan-animate-replace"
           },
           "callback_url": {
             "type": "string",

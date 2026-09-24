@@ -1,6 +1,6 @@
 ---
 title: "Kling 2.1 Image to Video"
-description: "Kling 2.1 Standard image-to-video with a required start frame. End frames are not supported."
+description: "Kling 2.1 Standard image-to-video with a required start frame."
 icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-video-v2-1-standard-image-to-video.json POST /api/generate/submit"
 ---
@@ -12,7 +12,7 @@ openapi: "/api-manual/video-series/kwaivgi-kling-video-v2-1-standard-image-to-vi
 
 # Kling 2.1 Image to Video
 
-Kling 2.1 Standard image-to-video with a required start frame. End frames are not supported.
+Kling 2.1 Standard image-to-video with a required start frame.
 
 ## Available Models
 
@@ -26,7 +26,7 @@ Kling 2.1 Standard image-to-video with a required start frame. End frames are no
 
 - Generate video from image input.
 - Use `start_image_url` to supply the starting frame.
-- `end_image_url` is not supported by Standard; use the Pro endpoint for an optional ending frame.
+- For an optional ending frame, use the [Pro endpoint](/api-manual/video-series/kwaivgi-kling-video-v2-1-pro-image-to-video).
 
 ## Advanced Parameters
 
@@ -47,13 +47,8 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 - `negative_prompt`: Optional. Describe content to avoid.
 
-## Pricing
+## Billing Factors
 
-Billed per video. 1 credit = $0.005.
-
-| Duration | Credits / video | USD / video |
-| --- | ---: | ---: |
-| 5 seconds | 30 | $0.150 |
-| 10 seconds | 60 | $0.300 |
+Billed per video according to the selected model tier (Standard or Pro) and video duration (`duration`).
 
 Credits are deducted on submission and refunded if the task fails.

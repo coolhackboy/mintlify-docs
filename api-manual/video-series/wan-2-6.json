@@ -107,12 +107,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Wan 2.6 model identifier",
-            "enum": [
-              "wan2.6-text-to-video",
-              "wan2.6-image-to-video",
-              "wan2.6-video-to-video"
-            ]
+            "example": "wan2.6-text-to-video"
           },
           "callback_url": {
             "type": "string",

@@ -21,12 +21,13 @@ Use model `kwaivgi/kling-video-o3-std/image-to-video`. Put generation parameters
 - **`sound`**: Required: explicitly send true to generate audio or false for video without audio. Single-shot mode accepts either value; multi-shot mode requires true.
 - **`aspect_ratio`**: May be omitted. If provided, use 16:9, 9:16 or 1:1. Image-to-video ignores this value; framing is determined by the input image.
 
-Use standard JSON numbers and booleans. For compatibility, integer strings such as "5" are accepted. Boolean strings true/1/yes/y/on mean true; false/0/no/n/off mean false. These strings are case-insensitive and trimmed. Numeric 1 and 0 are also accepted for boolean fields. Numeric and boolean prompt values are converted to text; 0, false and null are treated as empty. Objects and arrays are not accepted as prompts. Unsupported input fields, including reference_image_urls and kling_elements, are rejected. HTTP(S) URLs must have a hostname and no embedded credentials.
+Use standard JSON numbers and booleans. For compatibility, integer strings such as "5" are accepted. Boolean strings true/1/yes/y/on mean true; false/0/no/n/off mean false. These strings are case-insensitive and trimmed. Numeric 1 and 0 are also accepted for boolean fields. Numeric and boolean prompt values are converted to text; 0, false and null are treated as empty. Objects and arrays are not accepted as prompts. Unsupported input fields are rejected. HTTP(S) URLs must have a hostname and no embedded credentials.
 
-## Pricing
+## Billing Factors
 
-10 credits/s without sound; 13 credits/s with sound. Credits = duration × rate. Failed generation tasks are refunded.
+Billing depends on the model tier, video duration (`duration`), and whether audio is generated (`sound`). Usage is charged per generated second.
 
+Failed generation tasks are refunded.
 ## Default example: The Miniature Drawbridge
 
 This is the same default example shown on the [model page](https://vidgo.ai/apis/models/kwaivgi/kling-video-o3-std/image-to-video).

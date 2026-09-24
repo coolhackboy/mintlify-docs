@@ -96,8 +96,6 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "API model identifier.\n\nMust be `extend-music` for this endpoint.",
-            "enum": ["extend-music"],
             "example": "extend-music"
           },
           "callback_url": {

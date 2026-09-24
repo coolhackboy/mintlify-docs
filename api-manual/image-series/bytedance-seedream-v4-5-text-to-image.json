@@ -23,7 +23,7 @@
         ],
         "summary": "Seedream 4.5 Text to Image",
         "operationId": "submit_bytedance_seedream_v4_5_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nCustom size width and height must both be positive.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.\n\nCustom size width and height must both be positive.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "bytedance/seedream/v4.5/text-to-image"
-                    ],
-                    "example": "bytedance/seedream/v4.5/text-to-image",
-                    "description": "Vidgo public model ID. Must be `bytedance/seedream/v4.5/text-to-image`."
+                    "example": "bytedance/seedream/v4.5/text-to-image"
                   },
                   "input": {
                     "type": "object",

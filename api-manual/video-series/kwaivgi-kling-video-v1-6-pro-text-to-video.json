@@ -23,7 +23,7 @@
         ],
         "summary": "Kling 1.6 Pro Text to Video",
         "operationId": "submit_kwaivgi_kling_video_v1_6_pro_text_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "kwaivgi/kling-video/v1.6/pro/text-to-video"
-                    ],
-                    "example": "kwaivgi/kling-video/v1.6/pro/text-to-video",
-                    "description": "Vidgo public model ID. Must be `kwaivgi/kling-video/v1.6/pro/text-to-video`."
+                    "example": "kwaivgi/kling-video/v1.6/pro/text-to-video"
                   },
                   "input": {
                     "type": "object",
@@ -87,7 +83,7 @@
                       },
                       "cfg_scale": {
                         "type": "number",
-                        "description": "Optional finite number from 0 to 1. Not supported with image_urls. No API default.",
+                        "description": "Optional finite number from 0 to 1. No API default.",
                         "minimum": 0,
                         "maximum": 1,
                         "example": 0.5

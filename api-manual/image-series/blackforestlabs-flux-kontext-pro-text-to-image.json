@@ -23,7 +23,7 @@
         ],
         "summary": "Flux Kontext Pro Text to Image",
         "operationId": "submit_blackforestlabs_flux_kontext_pro_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "blackforestlabs/flux-kontext-pro/text-to-image"
-                    ],
-                    "example": "blackforestlabs/flux-kontext-pro/text-to-image",
-                    "description": "Vidgo public model ID. Must be `blackforestlabs/flux-kontext-pro/text-to-image`."
+                    "example": "blackforestlabs/flux-kontext-pro/text-to-image"
                   },
                   "input": {
                     "type": "object",

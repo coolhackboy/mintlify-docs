@@ -30,25 +30,20 @@ Use Vidgo API to generate a single image from a prompt or edit one or more refer
 - `gpt-image-2-edit` requires `input.image_urls`.
 - `gpt-image-2` does not accept `input.image_urls`.
 - Each request returns one image.
-- `n` is not supported for GPT Image 2 requests.
 
 ## Resolution
 
-The `resolution` parameter controls the effective output resolution and credits cost.
+The `resolution` parameter controls the effective output resolution.
 
-| Resolution | Credits multiplier | Description |
-| --- | ---: | --- |
-| `1K` | 1x | Standard resolution |
-| `2K` | 2x | High resolution |
-| `4K` | 4x | Ultra-high resolution for true 4K-supported sizes |
+| Resolution | Description |
+| --- | --- |
+| `1K` | Standard resolution |
+| `2K` | High resolution |
+| `4K` | Ultra-high resolution for true 4K-supported sizes |
 
-### Billing by Quality
+### Billing Factors
 
-| Quality | 1K | 2K | 4K |
-| --- | ---: | ---: | ---: |
-| Low | 2 credits | 4 credits | 8 credits |
-| Medium | 3 credits | 6 credits | 12 credits |
-| High | 12 credits | 24 credits | 48 credits |
+Each request generates one image. Billing depends on `quality` and the effective output resolution determined by `size` and `resolution`. The rules below explain how the effective resolution is selected.
 
 ## Resolution Rules
 

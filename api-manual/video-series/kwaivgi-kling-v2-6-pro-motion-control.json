@@ -23,7 +23,7 @@
         ],
         "summary": "Kling 2.6 Pro Motion Control",
         "operationId": "submit_kwaivgi_kling_v2_6_pro_motion_control",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nBlank optional prompts are treated as omitted. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nThis ID fixes `resolution` to `1080p`.\n\nInput video must be at least three seconds. The maximum is ten seconds with image orientation or thirty seconds with video orientation. Credits equal the detected duration multiplied by the endpoint rate, with the resulting credits rounded up to a whole number. Omit duration. Null, empty, and whitespace-only prompts are treated as omitted; nonempty prompts are trimmed and limited to 2,500 characters.\n\nresolution is optional: Standard defaults to 720p and Pro to 1080p. A resolution from the other tier is rejected. kling_elements is not supported.\n\nMedia inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nBlank optional prompts are treated as omitted. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nThis ID fixes `resolution` to `1080p`.\n\nInput video must be at least three seconds. The maximum is ten seconds with image orientation or thirty seconds with video orientation. Credits equal the detected duration multiplied by the endpoint rate, with the resulting credits rounded up to a whole number. Null, empty, and whitespace-only prompts are treated as omitted; nonempty prompts are trimmed and limited to 2,500 characters.\n\nresolution is optional: Standard defaults to 720p and Pro to 1080p. A resolution from the other tier is rejected.\n\nMedia inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "kwaivgi/kling-v2.6-pro/motion-control"
-                    ],
-                    "example": "kwaivgi/kling-v2.6-pro/motion-control",
-                    "description": "Vidgo public model ID. Must be `kwaivgi/kling-v2.6-pro/motion-control`."
+                    "example": "kwaivgi/kling-v2.6-pro/motion-control"
                   },
                   "input": {
                     "type": "object",

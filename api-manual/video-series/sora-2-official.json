@@ -75,10 +75,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Sora 2 Official model identifier",
-            "enum": [
-              "sora-2-official"
-            ]
+            "example": "sora-2-official"
           },
           "callback_url": {
             "type": "string",

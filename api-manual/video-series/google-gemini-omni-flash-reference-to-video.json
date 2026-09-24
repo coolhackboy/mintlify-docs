@@ -23,7 +23,7 @@
         ],
         "summary": "Omni Flash Reference to Video",
         "operationId": "submit_google_gemini_omni_flash_reference_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nReference fusion requires exactly three images in image_urls.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nReference fusion requires exactly three images in image_urls.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "google/gemini-omni-flash/reference-to-video"
-                    ],
-                    "example": "google/gemini-omni-flash/reference-to-video",
-                    "description": "Vidgo public model ID. Must be `google/gemini-omni-flash/reference-to-video`."
+                    "example": "google/gemini-omni-flash/reference-to-video"
                   },
                   "input": {
                     "type": "object",

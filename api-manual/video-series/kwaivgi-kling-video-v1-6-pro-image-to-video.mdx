@@ -1,6 +1,6 @@
 ---
 title: "Kling 1.6 Pro Image to Video"
-description: "Kling 1.6 Pro Image to Video parameters and pricing."
+description: "Kling 1.6 Pro Image to Video parameters and billing factors."
 icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-video-v1-6-pro-image-to-video.json POST /api/generate/submit"
 ---
@@ -20,7 +20,7 @@ Provide **either** `start_image_url` for first-frame animation **or** `image_url
 - Elements accepts 1–4 reference images and cannot be combined with `start_image_url`, `end_image_url`, or `cfg_scale`.
 - Pro supports an optional `end_image_url` when `start_image_url` is present; aspect ratio is supported in both workflows.
 
-Do not send `mode`, `type`, or `task_type` in `input`. The image fields select the workflow.
+The image fields select the workflow.
 
 ## Parameters
 
@@ -39,13 +39,8 @@ Place generation parameters inside `input`. Keep `model` and optional `callback_
 
 Image URLs must be public HTTP(S) URLs with a hostname, without embedded credentials or whitespace. Local files can be uploaded in the playground before submitting their URL. Optional parameters have no documented API defaults.
 
-## Pricing
+## Billing Factors
 
-**15 credits / second ($0.075 / second)**. 1 credit = $0.005.
+Billing depends on the selected model tier (Standard or Pro) and video duration (`duration`). Usage is charged per generated second. Within a tier, text-to-video, first-frame animation, and Elements use the same rate.
 
-| Duration | Credits | USD |
-| --- | --- | --- |
-| 5 seconds | 75 | $0.375 |
-| 10 seconds | 150 | $0.750 |
-
-The same tier rate applies to text-to-video, first-frame animation and Elements. Credits are deducted on submission and refunded if the task fails.
+Credits are deducted on submission and refunded if the task fails.

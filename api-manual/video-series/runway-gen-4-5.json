@@ -75,10 +75,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Runway Gen-4.5 model identifier",
-            "enum": [
-              "runway-gen-4.5"
-            ]
+            "example": "runway-gen-4.5"
           },
           "callback_url": {
             "type": "string",

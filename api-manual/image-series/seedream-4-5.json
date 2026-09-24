@@ -128,11 +128,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Seedream-4.5 model identifier",
-            "enum": [
-              "seedream-4.5",
-              "seedream-4.5-edit"
-            ]
+            "example": "seedream-4.5"
           },
           "callback_url": {
             "type": "string",

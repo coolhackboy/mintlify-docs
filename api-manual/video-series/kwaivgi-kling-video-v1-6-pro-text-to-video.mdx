@@ -1,6 +1,6 @@
 ---
 title: "Kling 1.6 Pro Text to Video"
-description: "Kling 1.6 Pro Text to Video parameters and pricing."
+description: "Kling 1.6 Pro Text to Video parameters and billing factors."
 icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-video-v1-6-pro-text-to-video.json POST /api/generate/submit"
 ---
@@ -15,9 +15,7 @@ Submit with `VIDGO_API_KEY`, then use [Query Task Status](/api-manual/task-manag
 
 ## Input workflow
 
-Text-to-video does not accept image fields.
-
-Do not send `mode`, `type`, or `task_type` in `input`. The image fields select the workflow.
+This endpoint generates videos from text prompts.
 
 ## Parameters
 
@@ -29,17 +27,12 @@ Place generation parameters inside `input`. Keep `model` and optional `callback_
 | `duration` | Required | Required integer: 5 or 10 seconds. No API default. |
 | `aspect_ratio` | Optional | Optional: 1:1, 16:9 or 9:16. No API default. |
 | `negative_prompt` | Optional | Optional string, at most 2,500 Unicode characters. |
-| `cfg_scale` | Optional | Optional finite number from 0 to 1. Not supported with image_urls. No API default. |
+| `cfg_scale` | Optional | Optional finite number from 0 to 1. No API default. |
 
-Image URLs must be public HTTP(S) URLs with a hostname, without embedded credentials or whitespace. Local files can be uploaded in the playground before submitting their URL. Optional parameters have no documented API defaults.
+Optional parameters have no documented API defaults.
 
-## Pricing
+## Billing Factors
 
-**15 credits / second ($0.075 / second)**. 1 credit = $0.005.
+Billing depends on the selected model tier (Standard or Pro) and video duration (`duration`). Usage is charged per generated second. Within a tier, text-to-video, first-frame animation, and Elements use the same rate.
 
-| Duration | Credits | USD |
-| --- | --- | --- |
-| 5 seconds | 75 | $0.375 |
-| 10 seconds | 150 | $0.750 |
-
-The same tier rate applies to text-to-video, first-frame animation and Elements. Credits are deducted on submission and refunded if the task fails.
+Credits are deducted on submission and refunded if the task fails.

@@ -54,17 +54,8 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 - `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-3 items. Each item must be an HTTP(S) URL.
 
-## Pricing
+## Billing Factors
 
-| Usage | Credits | Price | Official comparison |
-| --- | ---: | ---: | ---: |
-| 1K output image | 8 | $0.040 / image | $0.050 / image |
-| 2K output image | 11 | $0.055 / image | $0.070 / image |
-| Reference image (Edit only; additional fee) | 2 | $0.010 / image | $0.010 / image |
-
-Total credits = output count (`n`) × resolution rate + reference image count × 2.
-Reference image fees are charged once per request, not once per output. Text-to-image has no reference image fee.
-1 credit = $0.005. For an Edit request, 2 outputs at 2K with 3 references cost 28 credits ($0.140).
-Comparison rates are the supplied official price snapshot; savings round to 20% (1K) and 21% (2K).
+Billing depends on output resolution (`resolution`) and output image count (`n`). Reference image count (`image_urls`) adds a separate input charge once per request; this charge is not multiplied by `n`.
 
 Credits are deducted on submission and refunded if the task fails.

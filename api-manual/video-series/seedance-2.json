@@ -142,11 +142,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Seedance 2 model identifier",
-            "enum": [
-              "seedance-2",
-              "seedance-2-fast"
-            ]
+            "example": "seedance-2"
           },
           "callback_url": {
             "type": "string",

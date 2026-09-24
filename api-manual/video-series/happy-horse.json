@@ -132,10 +132,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Happy Horse model identifier.",
-            "enum": [
-              "happy-horse"
-            ]
+            "example": "happy-horse"
           },
           "callback_url": {
             "type": "string",

@@ -486,7 +486,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Vidgo public model ID or an existing feature code belonging to your vendor."
+            "example": "gpt-4o-image"
           },
           "callback_url": {
             "type": "string",

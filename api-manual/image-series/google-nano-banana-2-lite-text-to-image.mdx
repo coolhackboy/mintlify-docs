@@ -24,7 +24,7 @@ Turn visual ideas into images with Nano Banana 2 Lite, with framing options for 
 
 - `size`: Optional. Accepted values: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`. If omitted, no explicit aspect ratio is specified; there is no default. `auto` is not accepted.
 
-`image_urls` is not supported by this endpoint. For image editing, use `google/nano-banana-2-lite/edit`.
+For image editing, use `google/nano-banana-2-lite/edit`.
 
 ## Key Features
 
@@ -34,17 +34,15 @@ Turn visual ideas into images with Nano Banana 2 Lite, with framing options for 
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted.
 
 ### Prompt
 
 - `prompt`: Required. Describe the desired image. Minimum length: **1 character**.
 - The value must not be blank when supplied. No maximum prompt length is specified.
 
-## Pricing
+## Billing Factors
 
-**5 credits ($0.025) per generation** for both Text to Image and Image Edit. 1 credit = $0.005. Reference images do not add a surcharge.
-
-Google comparison price: $0.034 per generation, Vidgo is approximately 26% lower (comparison supplied in the pricing reference).
+Billed per generation. Text-to-image and image editing use the same billing rate. The selected aspect ratio (`size`) and reference image count do not add charges.
 
 Credits are deducted on submission and refunded if the task fails.

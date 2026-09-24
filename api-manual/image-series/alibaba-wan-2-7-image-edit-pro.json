@@ -23,7 +23,7 @@
         ],
         "summary": "Wan 2.7 Pro Image Edit",
         "operationId": "submit_alibaba_wan_2_7_image_edit_pro",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nCustom size width and height must both be positive.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nCustom size width and height must both be positive.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "alibaba/wan-2.7/image-edit-pro"
-                    ],
-                    "example": "alibaba/wan-2.7/image-edit-pro",
-                    "description": "Vidgo public model ID. Must be `alibaba/wan-2.7/image-edit-pro`."
+                    "example": "alibaba/wan-2.7/image-edit-pro"
                   },
                   "input": {
                     "type": "object",

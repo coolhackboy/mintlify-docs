@@ -97,10 +97,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Kling 2.6 Motion Control model identifier",
-            "enum": [
-              "kling-2.6-motion-control"
-            ]
+            "example": "kling-2.6-motion-control"
           },
           "callback_url": {
             "type": "string",

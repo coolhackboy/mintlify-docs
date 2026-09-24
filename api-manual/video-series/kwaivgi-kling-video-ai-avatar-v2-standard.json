@@ -39,11 +39,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "kwaivgi/kling-video/ai-avatar/v2/standard"
-                    ],
-                    "example": "kwaivgi/kling-video/ai-avatar/v2/standard",
-                    "description": "Vidgo public model ID. Must be `kwaivgi/kling-video/ai-avatar/v2/standard`."
+                    "example": "kwaivgi/kling-video/ai-avatar/v2/standard"
                   },
                   "input": {
                     "type": "object",

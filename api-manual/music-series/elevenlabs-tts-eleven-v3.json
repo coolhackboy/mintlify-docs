@@ -23,7 +23,7 @@
         ],
         "summary": "ElevenLabs V3 TTS",
         "operationId": "submit_elevenlabs_tts_eleven_v3",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nUsage is based on text length.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, text must not be blank.\n\nUsage is based on text length.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "elevenlabs/tts/eleven-v3"
-                    ],
-                    "example": "elevenlabs/tts/eleven-v3",
-                    "description": "Vidgo public model ID. Must be `elevenlabs/tts/eleven-v3`."
+                    "example": "elevenlabs/tts/eleven-v3"
                   },
                   "input": {
                     "type": "object",

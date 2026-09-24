@@ -23,7 +23,7 @@
         ],
         "summary": "Tripo3D H3.1 Image to 3D",
         "operationId": "submit_tripo3d_h3_1_image_to_3d",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nTexture quality, detailed geometry, and quad topology affect usage. All returned geometry, previews, textures, and animation artifacts remain in the files array.\n\nRead every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nInput URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nTexture quality, detailed geometry, and quad topology affect usage. All returned geometry, previews, textures, and animation artifacts remain in the files array.\n\nRead every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "tripo3d/h3.1/image-to-3d"
-                    ],
-                    "example": "tripo3d/h3.1/image-to-3d",
-                    "description": "Vidgo public model ID. Must be `tripo3d/h3.1/image-to-3d`."
+                    "example": "tripo3d/h3.1/image-to-3d"
                   },
                   "input": {
                     "type": "object",

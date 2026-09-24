@@ -137,7 +137,7 @@
     },
     "schemas": {
       "SubmitRequest": {
-        "oneOf": [
+        "anyOf": [
           {
             "$ref": "#/components/schemas/LiteSubmitRequest"
           },
@@ -159,8 +159,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "enum": ["seedream-5.0-lite"],
-            "description": "Seedream-5.0-Lite text-to-image model identifier"
+            "example": "seedream-5.0-lite"
           },
           "callback_url": {
             "type": "string",
@@ -179,8 +178,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "enum": ["seedream-5.0-lite-edit"],
-            "description": "Seedream-5.0-Lite edit model identifier"
+            "example": "seedream-5.0-lite-edit"
           },
           "callback_url": {
             "type": "string",

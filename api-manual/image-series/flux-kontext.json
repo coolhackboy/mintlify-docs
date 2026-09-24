@@ -151,13 +151,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Flux Kontext model identifier",
-            "enum": [
-              "flux-kontext-pro",
-              "flux-kontext-pro-edit",
-              "flux-kontext-max",
-              "flux-kontext-max-edit"
-            ]
+            "example": "flux-kontext-pro"
           },
           "callback_url": {
             "type": "string",

@@ -23,7 +23,7 @@
         ],
         "summary": "GPT Image 1.5 Text to Image",
         "operationId": "submit_openai_gpt_image_1_5_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "openai/gpt-image-1.5/text-to-image"
-                    ],
-                    "example": "openai/gpt-image-1.5/text-to-image",
-                    "description": "Vidgo public model ID. Must be `openai/gpt-image-1.5/text-to-image`."
+                    "example": "openai/gpt-image-1.5/text-to-image"
                   },
                   "input": {
                     "type": "object",

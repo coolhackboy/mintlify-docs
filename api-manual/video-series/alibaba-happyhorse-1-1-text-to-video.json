@@ -23,7 +23,7 @@
         ],
         "summary": "Happy Horse 1.1 Text to Video",
         "operationId": "submit_alibaba_happyhorse_1_1_text_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nPrompts are trimmed and limited to 2,500 Unicode characters. Text-to-video and reference-to-video require a nonblank prompt. Image-to-video accepts an omitted, null, empty, or whitespace-only prompt. Image arrays accept public HTTP(S) URLs, image Data URIs, or raw Base64; conversion completes before credits are deducted.\n\nChoose an integer duration from three to fifteen seconds (default five) and 720p or 1080p resolution (default 1080p). Usage equals requested output seconds multiplied by the selected resolution rate. See [Pricing](https://vidgo.ai/apis/api-pricing) for current rates.\n\nSupported aspect ratios: 21:9, 16:9, 4:3, 1:1, 3:4, 4:5, 5:4, 9:16, and 9:21. Default: 16:9.\n\n`duration` and `seed` also accept integer strings such as `\"5\"`; decimal numbers such as `5.0` and decimal strings such as `\"5.0\"` are rejected. Null or empty values use the default duration or omit the seed. Supported boolean fields also accept `0`/`1` and case-insensitive strings `true`/`false`, `1`/`0`, `yes`/`no`, `y`/`n`, and `on`/`off`; null omits the field. Surrounding whitespace is trimmed, and resolution values are case-insensitive.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nPrompts are trimmed and limited to 2,500 Unicode characters. A nonblank prompt is required.\n\nChoose an integer duration from three to fifteen seconds (default five) and 720p or 1080p resolution (default 1080p). Usage equals requested output seconds multiplied by the selected resolution rate. See [Pricing](https://vidgo.ai/apis/api-pricing) for current rates.\n\nSupported aspect ratios: 21:9, 16:9, 4:3, 1:1, 3:4, 4:5, 5:4, 9:16, and 9:21. Default: 16:9.\n\n`duration` and `seed` also accept integer strings such as `\"5\"`; decimal numbers such as `5.0` and decimal strings such as `\"5.0\"` are rejected. Null or empty values use the default duration or omit the seed. Supported boolean fields also accept `0`/`1` and case-insensitive strings `true`/`false`, `1`/`0`, `yes`/`no`, `y`/`n`, and `on`/`off`; null omits the field. Surrounding whitespace is trimmed, and resolution values are case-insensitive.",
         "requestBody": {
           "required": true,
           "content": {
@@ -39,11 +39,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "alibaba/happyhorse-1.1/text-to-video"
-                    ],
-                    "example": "alibaba/happyhorse-1.1/text-to-video",
-                    "description": "Vidgo public model ID. Must be `alibaba/happyhorse-1.1/text-to-video`."
+                    "example": "alibaba/happyhorse-1.1/text-to-video"
                   },
                   "input": {
                     "type": "object",

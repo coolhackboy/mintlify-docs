@@ -77,10 +77,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Z-Image model identifier",
-            "enum": [
-              "z-image"
-            ]
+            "example": "z-image"
           },
           "callback_url": {
             "type": "string",

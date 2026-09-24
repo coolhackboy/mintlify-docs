@@ -23,7 +23,7 @@
         ],
         "summary": "Kling 2.5 Turbo Pro Image to Video",
         "operationId": "submit_kwaivgi_kling_v2_5_turbo_pro_image_to_video",
-        "description": "Place generation parameters in input. Unsupported input fields and invalid types are rejected before credits are deducted. Pricing: 5 seconds = 42 credits ($0.210/video); 10 seconds = 84 credits ($0.420/video).",
+        "description": "Place generation parameters in input. Unsupported input fields and invalid types are rejected before credits are deducted. Billing depends on video duration (`duration`). Text-to-video and image-to-video use the same rates.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "kwaivgi/kling-v2.5-turbo-pro/image-to-video"
-                    ],
-                    "example": "kwaivgi/kling-v2.5-turbo-pro/image-to-video",
-                    "description": "Vidgo public model ID. Must be `kwaivgi/kling-v2.5-turbo-pro/image-to-video`."
+                    "example": "kwaivgi/kling-v2.5-turbo-pro/image-to-video"
                   },
                   "input": {
                     "type": "object",

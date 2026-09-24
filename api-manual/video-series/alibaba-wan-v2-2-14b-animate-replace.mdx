@@ -22,7 +22,7 @@ Replace the character in a source video with the character from a reference imag
 
 - `video_url` must point to a publicly accessible HTTP(S) video file.
 - The entire video file must be no larger than **100 MiB** (104,857,600 bytes), and its duration must be greater than zero.
-- Vidgo reads the source video to determine its duration for billing. This endpoint does not accept a `duration` field.
+- Vidgo reads the source video to determine its duration for billing.
 
 ## Key Features
 
@@ -32,7 +32,7 @@ Replace the character in a source video with the character from a reference imag
 
 ## Request Parameters
 
-Set `model` and optional `callback_url` at the request root. The `input` object accepts only `video_url`, `image_urls`, and `resolution`. It does not accept `prompt`, `text`, or `duration`.
+Set `model` and optional `callback_url` at the request root. The `input` object accepts only `video_url`, `image_urls`, and `resolution`.
 
 Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials or whitespace.
 
@@ -48,16 +48,10 @@ Unsupported `input` fields are rejected before credits are deducted. Input URLs 
 
 - `resolution`: Optional string. Accepted values: `480p`, `580p`, `720p`. Defaults to `480p` only when the field is omitted. Null, empty strings, other values, and values with surrounding whitespace are rejected.
 
-## Pricing
+## Billing Factors
 
-Move and Replace use the same per-second rates:
+Billing depends on the selected resolution (`resolution`) and the measured source-video duration (`video_url`). Move and Replace use the same rates.
 
-| Resolution | Credits per second | USD per second |
-| --- | ---: | ---: |
-| 480p | 7 | $0.035 |
-| 580p | 12 | $0.060 |
-| 720p | 15 | $0.075 |
-
-Vidgo measures the source video duration for billing. Whole seconds are billed as measured; any fractional second is rounded up to a whole second. Total credits = `ceil(source video duration in seconds) × credits per second`. For example, a 5.1-second source video at 480p is billed as 6 seconds: 42 credits ($0.210). Do not send a `duration` field. If Vidgo cannot read the video or determine its duration, the request is rejected before credits are deducted.
+Source-video duration is rounded up to whole seconds before billing. For example, a source video lasting 5.1 seconds is billed as 6 seconds. If Vidgo cannot read the video or determine its duration, the request is rejected before credits are deducted.
 
 Credits are deducted when a valid request is submitted for generation and refunded if the task fails.

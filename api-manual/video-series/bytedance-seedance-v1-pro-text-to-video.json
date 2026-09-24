@@ -23,7 +23,7 @@
         ],
         "summary": "Seedance 1.0 Pro Text to Video",
         "operationId": "submit_bytedance_seedance_v1_pro_text_to_video",
-        "description": "Use the documented input types and values. Prompt must be a string containing 1–10,000 Unicode characters after trimming. Duration must be numeric 5 or 10; strings and fractional values are rejected. Resolution must be 720p or 1080p. Image input requires exactly one HTTP(S) URL with a hostname and no embedded credentials or whitespace; Base64 is not supported.",
+        "description": "Use the documented input types and values. Prompt must be a string containing 1–10,000 Unicode characters after trimming. Duration must be numeric 5 or 10; strings and fractional values are rejected. Resolution must be 720p or 1080p.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "bytedance/seedance/v1/pro/text-to-video"
-                    ],
-                    "example": "bytedance/seedance/v1/pro/text-to-video",
-                    "description": "Vidgo public model ID. Must be `bytedance/seedance/v1/pro/text-to-video`."
+                    "example": "bytedance/seedance/v1/pro/text-to-video"
                   },
                   "input": {
                     "type": "object",

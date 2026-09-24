@@ -23,7 +23,7 @@
         ],
         "summary": "Flux Kontext Max Edit",
         "operationId": "submit_blackforestlabs_flux_kontext_max",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "blackforestlabs/flux-kontext-max"
-                    ],
-                    "example": "blackforestlabs/flux-kontext-max",
-                    "description": "Vidgo public model ID. Must be `blackforestlabs/flux-kontext-max`."
+                    "example": "blackforestlabs/flux-kontext-max"
                   },
                   "input": {
                     "type": "object",

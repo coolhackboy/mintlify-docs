@@ -23,7 +23,7 @@
         ],
         "summary": "Hailuo 02 Image to Video",
         "operationId": "submit_minimax_hailuo_02_standard_image_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nStandard accepts 512P and 768P (default 768P), and 6 or 10 seconds (default 6). Standard end_image_url requires 768P.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nStandard accepts 512P and 768P (default 768P), and 6 or 10 seconds (default 6). Standard end_image_url requires 768P.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "minimax/hailuo-02/standard/image-to-video"
-                    ],
-                    "example": "minimax/hailuo-02/standard/image-to-video",
-                    "description": "Vidgo public model ID. Must be `minimax/hailuo-02/standard/image-to-video`."
+                    "example": "minimax/hailuo-02/standard/image-to-video"
                   },
                   "input": {
                     "type": "object",

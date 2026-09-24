@@ -23,7 +23,7 @@
         ],
         "summary": "Happy Horse Video Edit",
         "operationId": "submit_alibaba_happyhorse_1_0_video_edit",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nInput video must be between three and sixty seconds. Credits equal the detected source duration capped at fifteen seconds multiplied by the resolution rate, normalized to six decimal places. A nonblank prompt of at most 2,500 characters is required. Omit duration.\n\nCredits are deducted on submission and refunded if the task fails. Reference prompts do not require character1 or character2 markers.\n\nMedia inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nInput video must be between three and sixty seconds. Credits equal the detected source duration capped at fifteen seconds multiplied by the resolution rate, normalized to six decimal places. A nonblank prompt of at most 2,500 characters is required.\n\nCredits are deducted on submission and refunded if the task fails. Reference prompts do not require character1 or character2 markers.\n\nMedia inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "alibaba/happyhorse-1.0/video-edit"
-                    ],
-                    "example": "alibaba/happyhorse-1.0/video-edit",
-                    "description": "Vidgo public model ID. Must be `alibaba/happyhorse-1.0/video-edit`."
+                    "example": "alibaba/happyhorse-1.0/video-edit"
                   },
                   "input": {
                     "type": "object",

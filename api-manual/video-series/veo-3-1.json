@@ -125,11 +125,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "VEO 3.1 model identifier",
-            "enum": [
-              "veo3.1-fast",
-              "veo3.1-quality"
-            ]
+            "example": "veo3.1-fast"
           },
           "callback_url": {
             "type": "string",

@@ -23,7 +23,7 @@
         ],
         "summary": "Wan 2.7 Video Edit",
         "operationId": "submit_alibaba_wan_2_7_video_edit",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nPrompts are trimmed and limited to 5,000 Unicode characters; required except for image-to-video, where blank or null prompts are omitted. Image inputs accept HTTP(S) URLs, image Data URIs, or raw Base64. Conversion and validation complete before charging. Other media require public HTTP(S) URLs.\n\nUsage equals output seconds multiplied by the selected resolution rate. See [Pricing](https://vidgo.ai/apis/api-pricing) for current rates.\n\nduration=0 (the default) detects source duration, checks that it is between two and ten seconds, then rounds down to whole seconds. The same whole-second duration is used for billing and upstream generation. An explicit duration selects the output length instead.\n\nMedia inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB when duration=0.\n\n`duration` and `seed` also accept integer strings such as `\"5\"`; decimal numbers such as `5.0` and decimal strings such as `\"5.0\"` are rejected. Null or empty values use the default duration or omit the seed. Supported boolean fields also accept `0`/`1` and case-insensitive strings `true`/`false`, `1`/`0`, `yes`/`no`, `y`/`n`, and `on`/`off`; null omits the field. Surrounding whitespace is trimmed, and resolution values are case-insensitive.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nPrompts are trimmed and limited to 5,000 Unicode characters. A nonblank prompt is required. Image inputs accept HTTP(S) URLs, image Data URIs, or raw Base64. Conversion and validation complete before charging. Other media require public HTTP(S) URLs.\n\nUsage equals output seconds multiplied by the selected resolution rate. See [Pricing](https://vidgo.ai/apis/api-pricing) for current rates.\n\nduration=0 (the default) detects source duration, checks that it is between two and ten seconds, then rounds down to whole seconds. The same whole-second duration is used for billing and upstream generation. An explicit duration selects the output length instead.\n\nMedia inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB when duration=0.\n\n`duration` and `seed` also accept integer strings such as `\"5\"`; decimal numbers such as `5.0` and decimal strings such as `\"5.0\"` are rejected. Null or empty values use the default duration or omit the seed. Supported boolean fields also accept `0`/`1` and case-insensitive strings `true`/`false`, `1`/`0`, `yes`/`no`, `y`/`n`, and `on`/`off`; null omits the field. Surrounding whitespace is trimmed, and resolution values are case-insensitive.",
         "requestBody": {
           "required": true,
           "content": {
@@ -39,11 +39,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "alibaba/wan-2.7/video-edit"
-                    ],
-                    "example": "alibaba/wan-2.7/video-edit",
-                    "description": "Vidgo public model ID. Must be `alibaba/wan-2.7/video-edit`."
+                    "example": "alibaba/wan-2.7/video-edit"
                   },
                   "input": {
                     "type": "object",

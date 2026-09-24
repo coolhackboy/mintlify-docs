@@ -89,10 +89,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Grok Imagine Image model identifier",
-            "enum": [
-              "grok-imagine-image"
-            ]
+            "example": "grok-imagine-image"
           },
           "callback_url": {
             "type": "string",

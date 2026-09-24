@@ -125,11 +125,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "GPT Image 1.5 model identifier",
-            "enum": [
-              "gpt-image-1.5",
-              "gpt-image-1.5-edit"
-            ]
+            "example": "gpt-image-1.5"
           },
           "callback_url": {
             "type": "string",

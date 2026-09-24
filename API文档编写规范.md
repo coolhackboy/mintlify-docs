@@ -116,11 +116,12 @@ api-manual/{series-name}/
 如果已有 `"example": "xxx"` 字段，description 中不要再写 `Example: "xxx"`
 
 ### 4. 外层 model 参数
+
+只保留字符串类型和示例模型值。必填要求由请求体的 `required` 声明；不添加重复的标识说明或 `enum` 可选值列表。多模型接口的其他可用模型放在模型列表或请求示例中。
+
 ```json
 "model": {
   "type": "string",
-  "description": "API model identifier.\n\nMust be `{api-model-name}` for this endpoint.",
-  "enum": ["{api-model-name}"],
   "example": "{api-model-name}"
 }
 ```
@@ -199,6 +200,18 @@ openapi: "/api-manual/{series}/{api-name}.json POST /api/generate/submit"
 - Available Models 表格（除非有特殊说明需求）
 - Next Steps
 
+### 4. 计费说明
+
+- 只说明影响计费的模型档位和参数，例如分辨率、质量、时长、输出数量、音频开关、参考图片数量或参考视频时长；按各模型实际规则填写。
+- 不在 MDX 正文、OpenAPI 描述或示例标题中写具体金额、积分单价、计费倍率、积分兑换比例、价格对比、折扣百分比或带具体价格的计算示例。
+- 保留按次、按张、按时长等计费方式，以及时长取整、参考素材附加费用、扣费和退款规则。需要查询实时价格时可链接价格页。
+
+### 5. 参数说明范围
+
+- MDX 正文和 OpenAPI 描述只说明当前接口 schema 中存在的字段，不逐项列出其他接口才有的“不支持字段”。
+- 按当前工作流核对通用文案，避免将图片上传、视频分镜或 `prompt` / `text` 等说明复制到没有对应入参的接口。
+- 保留实际支持字段之间的依赖、互斥和取值限制；区分请求参数、响应字段与其他接口的使用指引。
+
 ---
 
 ## 七、更新 docs.json
@@ -235,4 +248,6 @@ openapi: "/api-manual/{series}/{api-name}.json POST /api/generate/submit"
 - [ ] 没有重复的 Example
 - [ ] API Key 使用 `VIDGO_API_KEY`
 - [ ] MDX 包含 Usage Guide、Parameter Details、Developer Notes、Optional parameters
+- [ ] 计费说明仅列影响因素和规则，正文、OpenAPI 与示例中没有具体价格
+- [ ] 正文和 OpenAPI 描述中的入参均属于当前接口，实际参数约束完整
 - [ ] docs.json 已更新 openapi 和 navigation

@@ -94,10 +94,6 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Vidgo public model identifier.",
-            "enum": [
-              "veo3.1-fast/reference-to-video"
-            ],
             "example": "veo3.1-fast/reference-to-video"
           },
           "callback_url": {

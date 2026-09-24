@@ -124,11 +124,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Sora 2 Standard model identifier",
-            "enum": [
-              "sora-2",
-              "sora-2-private"
-            ]
+            "example": "sora-2"
           },
           "callback_url": {
             "type": "string",

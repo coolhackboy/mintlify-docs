@@ -76,10 +76,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Hailuo 2.3 model identifier",
-            "enum": [
-              "hailuo-2.3"
-            ]
+            "example": "hailuo-2.3"
           },
           "callback_url": {
             "type": "string",

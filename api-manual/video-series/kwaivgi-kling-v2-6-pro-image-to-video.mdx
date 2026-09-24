@@ -1,6 +1,6 @@
 ---
 title: "Kling 2.6 Pro Image to Video"
-description: "Kling 2.6 Pro Image to Video API parameters and pricing"
+description: "Kling 2.6 Pro Image to Video API parameters and billing factors"
 icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-v2-6-pro-image-to-video.json POST /api/generate/submit"
 ---
@@ -18,13 +18,6 @@ Submit `kwaivgi/kling-v2.6-pro/image-to-video` through `POST /api/generate/submi
 - Use standard JSON types. Unknown input fields and invalid values are rejected before submission and charging.
 - URLs using `example.com` or `your-domain.com` are placeholders. Replace them with your own publicly accessible image URLs and callback endpoint where applicable.
 
-## Pricing
+## Billing Factors
 
-| Duration | Audio | Credits/video | USD/video |
-|---|---|---:|---:|
-| 5s | No audio | 65 | $0.325 |
-| 10s | No audio | 130 | $0.650 |
-| 5s | With audio | 120 | $0.600 |
-| 10s | With audio | 240 | $1.20 |
-
-1 credit = $0.005. The same prices apply to the Pro text-to-video and image-to-video endpoints.
+Billing depends on video duration (`duration`) and whether audio is generated (`sound`). The Pro text-to-video and image-to-video endpoints use the same rates.

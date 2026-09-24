@@ -20,7 +20,7 @@
     "/api/generate/submit": {
       "post": {
         "summary": "Submit GPT Image 2 Task",
-        "description": "Generate or edit one image using GPT Image 2 on Vidgo API. Use gpt-image-2 for prompt-based generation and gpt-image-2-edit when you need reference image URLs. The n parameter is not supported.",
+        "description": "Generate or edit one image using GPT Image 2 on Vidgo API. Use gpt-image-2 for prompt-based generation and gpt-image-2-edit when you need reference image URLs.",
         "operationId": "submitGPTImage2Task",
         "tags": ["GPT Image 2"],
         "requestBody": {
@@ -131,15 +131,6 @@
                       }
                     }
                   },
-                  "unsupported_n": {
-                    "value": {
-                      "code": 400,
-                      "error": {
-                        "message": "n is not supported for gpt-image-2",
-                        "type": "invalid_request_error"
-                      }
-                    }
-                  },
                   "missing_image_urls_for_edit": {
                     "value": {
                       "code": 400,
@@ -235,8 +226,6 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "GPT Image 2 model identifier. Use gpt-image-2 for prompt-based generation and gpt-image-2-edit when you need reference image URLs for editing.",
-            "enum": ["gpt-image-2", "gpt-image-2-edit"],
             "example": "gpt-image-2"
           },
           "callback_url": {

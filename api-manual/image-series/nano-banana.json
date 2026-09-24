@@ -123,11 +123,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Nano Banana model identifier",
-            "enum": [
-              "nano-banana",
-              "nano-banana-edit"
-            ]
+            "example": "nano-banana"
           },
           "callback_url": {
             "type": "string",

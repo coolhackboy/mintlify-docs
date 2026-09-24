@@ -58,19 +58,8 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 - `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-3 items. Each item must be an HTTP(S) URL.
 
-## Pricing
+## Billing Factors
 
-| Output tier | USD per output image | Credits per output image |
-| --- | ---: | ---: |
-| Low / 1K | $0.040 | 8 |
-| Medium / 1K | $0.060 | 12 |
-| Low / 2K | $0.060 | 12 |
-| Medium / 2K | $0.080 | 16 |
-
-One credit equals $0.005. The default Medium / 1K tier costs 12 credits per output image.
-
-Each input image adds **2 credits ($0.010)** per request. Total credits = output count (`n`) × output tier rate + input image count × 2. The input surcharge is not multiplied by `n`.
-
-For example, Medium / 2K with `n: 4` and three input images costs **70 credits ($0.350)**.
+Billing depends on output quality (`quality`), output resolution (`resolution`), and output image count (`n`). Input image count (`image_urls`) adds a separate charge once per request; this charge is not multiplied by `n`.
 
 Credits are deducted on submission and refunded if the task fails.

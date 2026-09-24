@@ -79,10 +79,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Kling 2.6 model identifier",
-            "enum": [
-              "kling-2.6"
-            ]
+            "example": "kling-2.6"
           },
           "callback_url": {
             "type": "string",

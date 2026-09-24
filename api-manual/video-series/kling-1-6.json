@@ -175,8 +175,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Kling 1.6 public model identifier",
-            "enum": ["kling-1.6/standard", "kling-1.6/pro"]
+            "example": "kling-1.6/standard"
           },
           "callback_url": {
             "type": "string",

@@ -23,7 +23,7 @@
         ],
         "summary": "MiniMax Music 2.6",
         "operationId": "submit_minimax_music_2_6",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nSupply lyrics unless instrumental mode or automatic lyrics generation is enabled.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.\n\nSupply lyrics unless instrumental mode or automatic lyrics generation is enabled.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "minimax/music-2.6"
-                    ],
-                    "example": "minimax/music-2.6",
-                    "description": "Vidgo public model ID. Must be `minimax/music-2.6`."
+                    "example": "minimax/music-2.6"
                   },
                   "input": {
                     "type": "object",

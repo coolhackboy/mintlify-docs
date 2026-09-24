@@ -42,7 +42,10 @@
         "type": "object",
         "required": ["model", "input"],
         "properties": {
-          "model": { "type": "string", "enum": ["grok-imagine-video-1.5"] },
+          "model": {
+            "type": "string",
+            "example": "grok-imagine-video-1.5"
+          },
           "input": { "$ref": "#/components/schemas/VideoInput" },
           "callback_url": { "type": "string", "format": "uri" }
         }

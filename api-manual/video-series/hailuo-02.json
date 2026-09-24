@@ -117,11 +117,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Hailuo 02 model identifier",
-            "enum": [
-              "hailuo-02",
-              "hailuo-02-pro"
-            ]
+            "example": "hailuo-02"
           },
           "callback_url": {
             "type": "string",

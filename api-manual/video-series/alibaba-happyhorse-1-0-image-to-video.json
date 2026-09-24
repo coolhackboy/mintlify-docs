@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "alibaba/happyhorse-1.0/image-to-video"
-                    ],
-                    "example": "alibaba/happyhorse-1.0/image-to-video",
-                    "description": "Vidgo public model ID. Must be `alibaba/happyhorse-1.0/image-to-video`."
+                    "example": "alibaba/happyhorse-1.0/image-to-video"
                   },
                   "input": {
                     "type": "object",

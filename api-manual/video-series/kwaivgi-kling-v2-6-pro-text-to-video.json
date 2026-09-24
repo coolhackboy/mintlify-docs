@@ -104,10 +104,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Kling 2.6 model identifier",
-            "enum": [
-              "kwaivgi/kling-v2.6-pro/text-to-video"
-            ]
+            "example": "kwaivgi/kling-v2.6-pro/text-to-video"
           },
           "callback_url": {
             "type": "string",

@@ -23,7 +23,7 @@
         ],
         "summary": "Grok Imagine Image Quality Edit",
         "operationId": "submit_xai_grok_imagine_image_quality_edit",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "xai/grok-imagine-image-quality/edit"
-                    ],
-                    "example": "xai/grok-imagine-image-quality/edit",
-                    "description": "Vidgo public model ID. Must be `xai/grok-imagine-image-quality/edit`."
+                    "example": "xai/grok-imagine-image-quality/edit"
                   },
                   "input": {
                     "type": "object",
@@ -65,7 +61,7 @@
                         },
                         "maxItems": 3,
                         "minItems": 1,
-                        "description": "Required 1–3 public HTTP(S) URLs without embedded credentials. Adds 2 credits ($0.010) per reference, once per request regardless of output count."
+                        "description": "Required 1–3 public HTTP(S) URLs without embedded credentials. Reference image count adds a separate charge once per request, regardless of output count."
                       },
                       "n": {
                         "type": "integer",
@@ -92,7 +88,7 @@
                           "2K"
                         ],
                         "default": "1K",
-                        "description": "Output resolution. 1K: 8 credits ($0.040) per output; 2K: 11 credits ($0.055) per output."
+                        "description": "Output resolution. Billing depends on the selected resolution and output image count (n)."
                       }
                     },
                     "additionalProperties": false

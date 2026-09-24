@@ -23,7 +23,7 @@
         ],
         "summary": "Gemini 3.1 Flash TTS",
         "operationId": "submit_google_gemini_3_1_flash_text_to_speech",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nUsage is based on text length plus style instruction length.\n\nMulti-speaker input needs two distinct speaker_id aliases containing only letters, digits, or underscores. Omit the single voice field when speakers are provided.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, text must not be blank.\n\nUsage is based on text length plus style instruction length.\n\nMulti-speaker input needs two distinct speaker_id aliases containing only letters, digits, or underscores. Omit the single voice field when speakers are provided.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,11 +38,7 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "enum": [
-                      "google/gemini-3.1-flash/text-to-speech"
-                    ],
-                    "example": "google/gemini-3.1-flash/text-to-speech",
-                    "description": "Vidgo public model ID. Must be `google/gemini-3.1-flash/text-to-speech`."
+                    "example": "google/gemini-3.1-flash/text-to-speech"
                   },
                   "input": {
                     "type": "object",

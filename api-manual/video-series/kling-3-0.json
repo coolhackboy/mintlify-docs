@@ -90,11 +90,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Kling 3.0 model identifier. Use `kling-3.0/standard` for HD resolution (~720p/1K) or `kling-3.0/pro` for Full HD resolution (1080p/2K) with sharper and more detailed output",
-            "enum": [
-              "kling-3.0/standard",
-              "kling-3.0/pro"
-            ]
+            "example": "kling-3.0/standard"
           },
           "callback_url": {
             "type": "string",
