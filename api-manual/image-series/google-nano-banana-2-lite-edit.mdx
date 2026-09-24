@@ -20,9 +20,9 @@ Combine text instructions with up to fourteen reference images in Nano Banana 2 
 
 ## Output Options
 
-### Image Size
+### Aspect Ratio
 
-- `size`: Optional. Accepted values: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`.
+- `size`: Optional. Accepted values: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`. If omitted, no explicit aspect ratio is specified; there is no default. `auto` is not accepted.
 
 ## Key Features
 
@@ -38,7 +38,7 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 ### Prompt
 
 - `prompt`: Required. Describe the requested changes. Minimum length: **1 character**.
-- The value must not be blank when supplied.
+- The value must not be blank when supplied. No maximum prompt length is specified.
 
 ### Image URLs
 
@@ -46,6 +46,8 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+**5 credits ($0.025) per generation** for both Text to Image and Image Edit. 1 credit = $0.005. Reference images do not add a surcharge.
+
+Google comparison price: $0.034 per generation, Vidgo is approximately 26% lower (comparison supplied in the pricing reference).
 
 Credits are deducted on submission and refunded if the task fails.

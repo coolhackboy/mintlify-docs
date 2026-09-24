@@ -23,7 +23,7 @@
         ],
         "summary": "Nano Banana 2 Lite Text to Image",
         "operationId": "submit_google_nano_banana_2_lite_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nThe required prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nPricing: 5 credits ($0.025) per generation. 1 credit = $0.005. No reference-image surcharge.",
         "requestBody": {
           "required": true,
           "content": {
@@ -53,7 +53,7 @@
                       "prompt": {
                         "type": "string",
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Required non-blank text instruction for the generated or edited image. No maximum length is specified."
                       },
                       "size": {
                         "type": "string",
@@ -69,7 +69,7 @@
                           "16:9",
                           "21:9"
                         ],
-                        "description": "Size."
+                        "description": "Optional output aspect ratio. If omitted, no explicit aspect ratio is specified. There is no default; auto is not supported."
                       }
                     },
                     "additionalProperties": false
