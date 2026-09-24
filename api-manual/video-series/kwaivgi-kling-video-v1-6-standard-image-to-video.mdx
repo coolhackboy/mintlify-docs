@@ -1,70 +1,50 @@
 ---
-title: "Kling 1.6 Image to Video"
-description: "Animate reference images with Kling 1.6 Standard, using text direction and negative prompts to shape the scene and motion."
+title: "Kling 1.6 Standard Image to Video"
+description: "Kling 1.6 Standard Image to Video parameters and pricing."
 icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-video-v1-6-standard-image-to-video.json POST /api/generate/submit"
 ---
 
+# Kling 1.6 Standard Image to Video
+
+Public model ID: `kwaivgi/kling-video/v1.6/standard/image-to-video`.
+
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+Submit with `VIDGO_API_KEY`, then use [Query Task Status](/api-manual/task-management/status) with the returned `task_id`. Optional root-level `callback_url` enables [webhook notifications](/api-manual/task-management/webhooks).
 </Tip>
 
-# Kling 1.6 Image to Video
+## Input workflow
 
-Animate reference images with Kling 1.6 Standard, using text direction and negative prompts to shape the scene and motion.
+Provide **either** `start_image_url` for first-frame animation **or** `image_urls` for Elements. The endpoint does not accept text-only requests.
 
-## Available Models
+- Elements accepts 1–4 reference images and cannot be combined with `start_image_url`, `end_image_url`, or `cfg_scale`.
+- Standard does not support `end_image_url`. Standard first-frame animation does not support `aspect_ratio`; Elements does.
 
-- **kwaivgi/kling-video/v1.6/standard/image-to-video** - Generate video from image input.
+Do not send `mode`, `type`, or `task_type` in `input`. The image fields select the workflow.
 
-## Duration Options
+## Parameters
 
-- **5, 10 seconds** - Set `duration` as an integer. Required.
+Place generation parameters inside `input`. Keep `model` and optional `callback_url` at the request root. Unsupported input fields are rejected before credits are deducted.
 
-## Key Features
+| Parameter | Requirement | Description |
+| --- | --- | --- |
+| `prompt` | Required | Required nonblank string, at most 2,500 Unicode characters after trimming. |
+| `duration` | Required | Required integer: 5 or 10 seconds. No API default. |
+| `aspect_ratio` | Optional | Optional: 1:1, 16:9 or 9:16. No API default. Not supported in Standard first-frame image-to-video; supported in Elements. |
+| `negative_prompt` | Optional | Optional string, at most 2,500 Unicode characters. |
+| `cfg_scale` | Optional | Optional finite number from 0 to 1. Not supported with image_urls. No API default. |
+| `start_image_url` | Conditional | First-frame HTTP(S) URL. Required for the first-frame workflow; mutually exclusive with image_urls. |
+| `image_urls` | Conditional | Elements: 1 to 4 HTTP(S) reference URLs. Mutually exclusive with start_image_url, end_image_url and cfg_scale. |
 
-- Generate video from image input.
-- Accepts 1-4 images in `image_urls`.
-- Optionally supply an ending frame with `end_image_url`.
-
-## Advanced Parameters
-
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
-
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
-
-### Prompt
-
-- `prompt`: Required. Describe the scene and desired motion. Length: **1-2,500 characters**.
-- The value must not be blank when supplied.
-
-### Aspect Ratio
-
-- `aspect_ratio`: Optional. Accepted values: `1:1`, `16:9`, `9:16`.
-
-### Negative Prompt
-
-- `negative_prompt`: Optional. Describe content to avoid. Maximum length: **2,500 characters**.
-
-### Guidance Scale
-
-- `cfg_scale`: Optional. Control how closely generation follows the prompt. Number from `0` to `1`.
-
-### Start Image URL
-
-- `start_image_url`: Optional. Provide the starting frame URL. Use a publicly accessible HTTP(S) URL.
-
-### End Image URL
-
-- `end_image_url`: Optional. Provide the ending frame URL. Use a publicly accessible HTTP(S) URL.
-
-### Image URLs
-
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-4 items. Each item must be an HTTP(S) URL.
+Image URLs must be public HTTP(S) URLs with a hostname, without embedded credentials or whitespace. Local files can be uploaded in the playground before submitting their URL. Optional parameters have no documented API defaults.
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+**9 credits / second ($0.045 / second)**. 1 credit = $0.005.
 
-Credits are deducted on submission and refunded if the task fails.
+| Duration | Credits | USD |
+| --- | --- | --- |
+| 5 seconds | 45 | $0.225 |
+| 10 seconds | 90 | $0.450 |
+
+The same tier rate applies to text-to-video, first-frame animation and Elements. Credits are deducted on submission and refunded if the task fails.

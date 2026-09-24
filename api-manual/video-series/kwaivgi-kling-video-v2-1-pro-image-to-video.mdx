@@ -1,6 +1,6 @@
 ---
 title: "Kling 2.1 Pro Image to Video"
-description: "Bring a starting image into motion with Kling 2.1 Pro, using text direction and an optional closing frame to shape the shot."
+description: "Kling 2.1 Pro image-to-video with a required start frame and an optional end frame."
 icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-video-v2-1-pro-image-to-video.json POST /api/generate/submit"
 ---
@@ -12,7 +12,7 @@ openapi: "/api-manual/video-series/kwaivgi-kling-video-v2-1-pro-image-to-video.j
 
 # Kling 2.1 Pro Image to Video
 
-Bring a starting image into motion with Kling 2.1 Pro, using text direction and an optional closing frame to shape the shot.
+Kling 2.1 Pro image-to-video with a required start frame and an optional end frame.
 
 ## Available Models
 
@@ -20,7 +20,7 @@ Bring a starting image into motion with Kling 2.1 Pro, using text direction and 
 
 ## Duration Options
 
-- **5, 10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**.
+- **5, 10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds** when omitted. Strings, booleans, null and fractional values are rejected.
 
 ## Key Features
 
@@ -37,15 +37,15 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 ### Prompt
 
 - `prompt`: Required. Describe the scene and desired motion. Length: **1-5,000 characters**.
-- The value must not be blank when supplied.
+- The value must be a string and must not be blank after trimming. Non-string values are rejected.
 
 ### Start Image URL
 
-- `start_image_url`: Required. Provide the starting frame URL. Use a publicly accessible HTTP(S) URL.
+- `start_image_url`: Required. Provide the starting frame URL. Use a publicly accessible HTTP(S) URL without credentials or whitespace. Empty URLs and null are rejected.
 
 ### End Image URL
 
-- `end_image_url`: Optional. Provide the ending frame URL. Use a publicly accessible HTTP(S) URL.
+- `end_image_url`: Optional. Provide the ending frame URL. Use a publicly accessible HTTP(S) URL without credentials or whitespace. Empty URLs and null are rejected.
 
 ### Negative Prompt
 
@@ -53,6 +53,11 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+Billed per video. 1 credit = $0.005.
+
+| Duration | Credits / video | USD / video |
+| --- | ---: | ---: |
+| 5 seconds | 55 | $0.275 |
+| 10 seconds | 110 | $0.550 |
 
 Credits are deducted on submission and refunded if the task fails.

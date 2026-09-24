@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API - Kling 2.1 Pro Image to Video",
-    "description": "Bring a starting image into motion with Kling 2.1 Pro, using text direction and an optional closing frame to shape the shot.",
+    "description": "Kling 2.1 Pro image-to-video with a required start frame and an optional end frame.",
     "version": "1.0.0"
   },
   "servers": [
@@ -23,7 +23,7 @@
         ],
         "summary": "Kling 2.1 Pro Image to Video",
         "operationId": "submit_kwaivgi_kling_video_v2_1_pro_image_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Kling 2.1 Pro image-to-video with a required start frame and an optional end frame. Unsupported input fields are rejected before credits are deducted. Pricing per video: 5 seconds = 55 credits ($0.275); 10 seconds = 110 credits ($0.550).",
         "requestBody": {
           "required": true,
           "content": {
@@ -55,7 +55,7 @@
                         "type": "string",
                         "maxLength": 5000,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Required nonblank string, maximum 5,000 Unicode characters after trimming."
                       },
                       "duration": {
                         "type": "integer",
@@ -64,17 +64,17 @@
                           10
                         ],
                         "default": 5,
-                        "description": "Duration."
+                        "description": "Optional integer: 5 or 10 seconds. Defaults to 5 when omitted. Strings, booleans, null and fractional durations are rejected."
                       },
                       "start_image_url": {
                         "type": "string",
                         "format": "uri",
-                        "description": "Start image url."
+                        "description": "Required first-frame public HTTP(S) URL, with a hostname and no credentials or whitespace. Empty URLs and null are rejected."
                       },
                       "end_image_url": {
                         "type": "string",
                         "format": "uri",
-                        "description": "End image url."
+                        "description": "Optional last frame public HTTP(S) URL, with a hostname and no credentials or whitespace. Omit optional fields when unused; empty URLs and null are rejected."
                       },
                       "negative_prompt": {
                         "type": "string",
@@ -113,6 +113,18 @@
                       "duration": 5
                     },
                     "callback_url": "https://your-domain.com/callback"
+                  }
+                },
+                "with_end_frame": {
+                  "summary": "Pro with an optional end frame",
+                  "value": {
+                    "model": "kwaivgi/kling-video/v2.1/pro/image-to-video",
+                    "input": {
+                      "prompt": "A quiet forest under soft morning light, with natural detail.",
+                      "start_image_url": "https://example.com/image.png",
+                      "duration": 5,
+                      "end_image_url": "https://example.com/end-frame.png"
+                    }
                   }
                 }
               }

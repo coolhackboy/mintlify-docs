@@ -47,68 +47,113 @@
                   "input": {
                     "type": "object",
                     "required": [
-                      "duration",
-                      "image_urls",
-                      "prompt"
+                      "prompt",
+                      "duration"
                     ],
+                    "description": "Input parameters for generation. PoYo selects the generation workflow from the provided image fields.",
                     "additionalProperties": false,
                     "properties": {
                       "prompt": {
                         "type": "string",
+                        "description": "Required nonblank string, at most 2,500 Unicode characters after trimming.",
                         "maxLength": 2500,
-                        "minLength": 1,
-                        "description": "Prompt."
+                        "example": "A cinematic video scene",
+                        "minLength": 1
                       },
                       "duration": {
                         "type": "integer",
+                        "description": "Required integer: 5 or 10 seconds. No API default.",
                         "enum": [
                           5,
                           10
                         ],
-                        "description": "Duration."
+                        "example": 5
                       },
                       "aspect_ratio": {
                         "type": "string",
+                        "description": "Optional: 1:1, 16:9 or 9:16. No API default.",
                         "enum": [
                           "1:1",
                           "16:9",
                           "9:16"
                         ],
-                        "description": "Aspect ratio."
+                        "example": "16:9"
                       },
                       "negative_prompt": {
                         "type": "string",
+                        "description": "Optional string, at most 2,500 Unicode characters.",
                         "maxLength": 2500,
-                        "description": "Negative prompt."
+                        "example": "blur, low quality, artifacts"
                       },
                       "cfg_scale": {
                         "type": "number",
+                        "description": "Optional finite number from 0 to 1. Not supported with image_urls. No API default.",
                         "minimum": 0,
                         "maximum": 1,
-                        "description": "Cfg scale."
+                        "example": 0.5
                       },
                       "start_image_url": {
                         "type": "string",
                         "format": "uri",
-                        "description": "Start image url."
+                        "description": "First-frame HTTP(S) URL. Required for the first-frame workflow; mutually exclusive with image_urls.",
+                        "example": "https://example.com/start-frame.png"
                       },
                       "end_image_url": {
                         "type": "string",
                         "format": "uri",
-                        "description": "End image url."
+                        "description": "Optional Pro last-frame HTTP(S) URL. Requires start_image_url; not supported with image_urls.",
+                        "example": "https://example.com/end-frame.png"
                       },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "format": "uri",
-                          "description": "Image urls."
+                          "format": "uri"
                         },
+                        "description": "Elements: 1 to 4 HTTP(S) reference URLs. Mutually exclusive with start_image_url, end_image_url and cfg_scale.",
                         "minItems": 1,
                         "maxItems": 4,
-                        "description": "Image urls."
+                        "example": [
+                          "https://example.com/reference-1.png"
+                        ]
                       }
-                    }
+                    },
+                    "oneOf": [
+                      {
+                        "required": [
+                          "start_image_url"
+                        ],
+                        "not": {
+                          "required": [
+                            "image_urls"
+                          ]
+                        }
+                      },
+                      {
+                        "required": [
+                          "image_urls"
+                        ],
+                        "not": {
+                          "anyOf": [
+                            {
+                              "required": [
+                                "start_image_url"
+                              ]
+                            },
+                            {
+                              "required": [
+                                "end_image_url"
+                              ]
+                            },
+                            {
+                              "required": [
+                                "cfg_scale"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
                   },
                   "callback_url": {
                     "type": "string",
@@ -120,15 +165,13 @@
               },
               "examples": {
                 "basic": {
-                  "summary": "Basic workflow",
+                  "summary": "First-frame image to video",
                   "value": {
                     "model": "kwaivgi/kling-video/v1.6/pro/image-to-video",
                     "input": {
+                      "prompt": "A quiet forest in morning light, with a slow camera pan.",
                       "duration": 5,
-                      "image_urls": [
-                        "https://example.com/image.png"
-                      ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail."
+                      "start_image_url": "https://example.com/start-frame.png"
                     }
                   }
                 },
@@ -137,13 +180,39 @@
                   "value": {
                     "model": "kwaivgi/kling-video/v1.6/pro/image-to-video",
                     "input": {
+                      "prompt": "A quiet forest in morning light, with a slow camera pan.",
                       "duration": 5,
-                      "image_urls": [
-                        "https://example.com/image.png"
-                      ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail."
+                      "start_image_url": "https://example.com/start-frame.png"
                     },
                     "callback_url": "https://your-domain.com/callback"
+                  }
+                },
+                "elements": {
+                  "summary": "Elements reference images",
+                  "value": {
+                    "model": "kwaivgi/kling-video/v1.6/pro/image-to-video",
+                    "input": {
+                      "prompt": "A quiet forest in morning light, with a slow camera pan.",
+                      "duration": 5,
+                      "aspect_ratio": "16:9",
+                      "image_urls": [
+                        "https://example.com/reference-1.png"
+                      ]
+                    }
+                  }
+                },
+                "first-last-frame": {
+                  "summary": "Pro first and last frames",
+                  "value": {
+                    "model": "kwaivgi/kling-video/v1.6/pro/image-to-video",
+                    "input": {
+                      "prompt": "A quiet forest in morning light, with a slow camera pan.",
+                      "duration": 5,
+                      "start_image_url": "https://example.com/start-frame.png",
+                      "end_image_url": "https://example.com/end-frame.png",
+                      "cfg_scale": 0.5,
+                      "aspect_ratio": "16:9"
+                    }
                   }
                 }
               }
