@@ -17,30 +17,32 @@ Create five- or ten-second scenes with Kling 2.5 Turbo Pro, using text to direct
 ## Available Models
 
 - **kwaivgi/kling-v2.5-turbo-pro/text-to-video** - Generate video scenes from text prompts.
+- Image parameters are not accepted by this endpoint; use the [image-to-video endpoint](/api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-image-to-video) for frame guidance.
 
 ## Duration Options
 
-- **5, 10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**.
+- **5, 10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**. Strings, booleans, fractional durations, and `null` are rejected.
 
 ## Key Features
 
 - Generate video scenes from text prompts.
+- Image parameters are not accepted by this endpoint; use the [image-to-video endpoint](/api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-image-to-video) for frame guidance.
 - Use `negative_prompt` to describe content to avoid.
 
 ## Advanced Parameters
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials or whitespace. Image fields do not accept arrays or Base64.
 
 ### Prompt
 
 - `prompt`: Required. Describe the scene and desired motion. Length: **1-2,500 characters**.
-- The value must not be blank when supplied.
+- Supply a string, not a number, boolean, array, or object. Whitespace is trimmed before the 2,500 Unicode character limit is checked.
 
 ### Aspect Ratio
 
-- `aspect_ratio`: Optional. String.
+- `aspect_ratio`: Optional string. PoYo does not document an enum or default. Omit when unused.
 
 ### Negative Prompt
 
@@ -48,6 +50,11 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+| Duration | Credits / video | USD / video |
+| --- | ---: | ---: |
+| 5 seconds | 42 | $0.210 |
+| 10 seconds | 84 | $0.420 |
+
+Both text-to-video and image-to-video use the same rates. 1 credit = $0.005.
 
 Credits are deducted on submission and refunded if the task fails.

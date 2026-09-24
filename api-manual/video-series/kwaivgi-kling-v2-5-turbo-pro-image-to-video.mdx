@@ -1,6 +1,6 @@
 ---
 title: "Kling 2.5 Turbo Pro Image to Video"
-description: "Animate a starting image with Kling 2.5 Turbo Pro, with an optional closing frame to guide the end of the shot."
+description: "Generate video with Kling 2.5 Turbo Pro using a start frame, an end frame, or both, plus a text prompt."
 icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-image-to-video.json POST /api/generate/submit"
 ---
@@ -12,7 +12,7 @@ openapi: "/api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-image-to-video.j
 
 # Kling 2.5 Turbo Pro Image to Video
 
-Animate a starting image with Kling 2.5 Turbo Pro, with an optional closing frame to guide the end of the shot.
+Generate video with Kling 2.5 Turbo Pro using a start frame, an end frame, or both, plus a text prompt.
 
 ## Available Models
 
@@ -20,36 +20,36 @@ Animate a starting image with Kling 2.5 Turbo Pro, with an optional closing fram
 
 ## Duration Options
 
-- **5, 10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**.
+- **5, 10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**. Strings, booleans, fractional durations, and `null` are rejected.
 
 ## Key Features
 
 - Generate video from image input.
-- Use `start_image_url` to supply the starting frame.
-- Optionally supply an ending frame with `end_image_url`.
+- Guide generation with `start_image_url`, `end_image_url`, or both.
 
 ## Advanced Parameters
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials or whitespace. Image fields do not accept arrays or Base64.
 
 ### Prompt
 
 - `prompt`: Required. Describe the scene and desired motion. Length: **1-2,500 characters**.
-- The value must not be blank when supplied.
+- Supply a string, not a number, boolean, array, or object. Whitespace is trimmed before the 2,500 Unicode character limit is checked.
 
 ### Start Image URL
 
-- `start_image_url`: Required. Provide the starting frame URL. Use a publicly accessible HTTP(S) URL.
+- `start_image_url`: First-frame public HTTP(S) URL. Required only when `end_image_url` is omitted.
 
 ### End Image URL
 
-- `end_image_url`: Optional. Provide the ending frame URL. Use a publicly accessible HTTP(S) URL.
+- `end_image_url`: Last-frame public HTTP(S) URL. Required only when `start_image_url` is omitted.
+- Provide at least one frame: start only, end only, or both. Omit unused URL fields; empty strings and `null` are rejected.
 
 ### Aspect Ratio
 
-- `aspect_ratio`: Optional. String.
+- `aspect_ratio`: Optional string. PoYo does not document an enum or default. Omit when unused.
 
 ### Negative Prompt
 
@@ -57,6 +57,11 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+| Duration | Credits / video | USD / video |
+| --- | ---: | ---: |
+| 5 seconds | 42 | $0.210 |
+| 10 seconds | 84 | $0.420 |
+
+Both text-to-video and image-to-video use the same rates. 1 credit = $0.005.
 
 Credits are deducted on submission and refunded if the task fails.

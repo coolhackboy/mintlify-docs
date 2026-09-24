@@ -23,7 +23,7 @@
         ],
         "summary": "Kling 2.5 Turbo Pro Text to Video",
         "operationId": "submit_kwaivgi_kling_v2_5_turbo_pro_text_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Place generation parameters in input. Unsupported input fields and invalid types are rejected before credits are deducted. Pricing: 5 seconds = 42 credits ($0.210/video); 10 seconds = 84 credits ($0.420/video).",
         "requestBody": {
           "required": true,
           "content": {
@@ -52,26 +52,30 @@
                     "properties": {
                       "prompt": {
                         "type": "string",
+                        "description": "Required nonblank string, maximum 2,500 Unicode characters after trimming.",
                         "maxLength": 2500,
-                        "minLength": 1,
-                        "description": "Prompt."
+                        "example": "A man in a trench coat holding a black umbrella walks briskly through the streets of Tokyo on a rainy night, splashing through puddles. A handheld follow-cam shot from his side and slightly behind. The focus is locked on the man, while background neon signs blur into beautiful bokeh. Cyberpunk aesthetic with a film noir quality; the mood is mysterious and lonely. The pavement is slick and wet, reflecting the vibrant neon signs. Individual raindrops are visible, and a light fog hangs in the air.",
+                        "minLength": 1
                       },
                       "duration": {
                         "type": "integer",
+                        "description": "Integer 5 or 10 seconds; defaults to 5 when omitted. Strings, booleans, fractional durations and null are rejected.",
                         "enum": [
                           5,
                           10
                         ],
                         "default": 5,
-                        "description": "Duration."
+                        "example": 5
                       },
                       "aspect_ratio": {
                         "type": "string",
-                        "description": "Aspect ratio."
+                        "description": "Optional aspect ratio string; no documented enum or default. Omit when unused.",
+                        "example": "16:9"
                       },
                       "negative_prompt": {
                         "type": "string",
-                        "description": "Negative prompt."
+                        "description": "Optional string describing content to avoid. Omit when unused.",
+                        "example": "low quality, blur"
                       }
                     },
                     "additionalProperties": false
@@ -86,24 +90,14 @@
               },
               "examples": {
                 "basic": {
-                  "summary": "Basic workflow",
+                  "summary": "Text to video",
                   "value": {
                     "model": "kwaivgi/kling-v2.5-turbo-pro/text-to-video",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "duration": 5
+                      "prompt": "A slow camera pan across a sunlit garden.",
+                      "duration": 5,
+                      "aspect_ratio": "16:9"
                     }
-                  }
-                },
-                "callback": {
-                  "summary": "Receive a completion callback",
-                  "value": {
-                    "model": "kwaivgi/kling-v2.5-turbo-pro/text-to-video",
-                    "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "duration": 5
-                    },
-                    "callback_url": "https://your-domain.com/callback"
                   }
                 }
               }
