@@ -35,6 +35,8 @@ Turn scene and design ideas into images with Wan 2.7, with custom canvas sizes a
 - Generate images from text prompts.
 - Control the number of output images with `n`.
 
+This text-to-image endpoint does not accept `image_urls`. Use the corresponding image-edit endpoint for reference images.
+
 ## Advanced Parameters
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
@@ -52,6 +54,6 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+**4.2 credits per output image ($0.021)** at $0.005 per credit. Total credits = 4.2 × `n`. Output size and the number of reference images do not add charges.
 
 Credits are deducted on submission and refunded if the task fails.

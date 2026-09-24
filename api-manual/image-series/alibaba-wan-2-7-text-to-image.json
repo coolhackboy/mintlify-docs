@@ -49,14 +49,17 @@
                     "required": [
                       "prompt"
                     ],
+                    "description": "Input parameters for this public endpoint. Use an image-edit endpoint when supplying reference images.",
                     "properties": {
                       "prompt": {
                         "type": "string",
+                        "description": "Prompt describing the desired output. Maximum length is 5,000 characters.",
                         "maxLength": 5000,
-                        "minLength": 1,
-                        "description": "Prompt."
+                        "example": "A beautiful sunset over the ocean",
+                        "minLength": 1
                       },
                       "size": {
+                        "description": "Output size. Supported preset values: `512x512`, `1024x1024`, `768x1024`, `1024x768`, `576x1024`, `1024x576`. For custom image sizes, you can pass `width` and `height` as an object: `{ \"width\": 1280, \"height\": 720 }`.",
                         "oneOf": [
                           {
                             "type": "string",
@@ -68,7 +71,7 @@
                               "576x1024",
                               "1024x576"
                             ],
-                            "description": "Size."
+                            "example": "1024x1024"
                           },
                           {
                             "type": "object",
@@ -79,30 +82,33 @@
                             "properties": {
                               "width": {
                                 "type": "integer",
-                                "description": "Width."
+                                "minimum": 1,
+                                "example": 1280
                               },
                               "height": {
                                 "type": "integer",
-                                "description": "Height."
+                                "minimum": 1,
+                                "example": 720
                               }
                             },
-                            "additionalProperties": false,
-                            "description": "Size."
+                            "additionalProperties": false
                           }
                         ],
                         "default": "1024x1024",
-                        "description": "Size."
+                        "example": "1024x1024"
                       },
                       "n": {
                         "type": "integer",
+                        "description": "Number of images to generate (1-4). Credits are charged by image count.",
                         "minimum": 1,
                         "maximum": 4,
                         "default": 1,
-                        "description": "N."
+                        "example": 1
                       },
                       "seed": {
                         "type": "integer",
-                        "description": "Seed."
+                        "description": "Optional random seed for reproducible output",
+                        "example": 24680
                       }
                     },
                     "additionalProperties": false
@@ -137,6 +143,33 @@
                       "n": 1
                     },
                     "callback_url": "https://your-domain.com/callback"
+                  }
+                },
+                "preset-size": {
+                  "summary": "Preset Size",
+                  "value": {
+                    "model": "alibaba/wan-2.7/text-to-image",
+                    "input": {
+                      "prompt": "A product photo on a pale blue background",
+                      "size": "1024x1024",
+                      "n": 2,
+                      "seed": 24680
+                    }
+                  }
+                },
+                "custom-size": {
+                  "summary": "Custom Size",
+                  "value": {
+                    "model": "alibaba/wan-2.7/text-to-image",
+                    "input": {
+                      "prompt": "A product photo on a pale blue background",
+                      "size": {
+                        "width": 1280,
+                        "height": 720
+                      },
+                      "n": 2,
+                      "seed": 24680
+                    }
                   }
                 }
               }

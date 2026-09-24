@@ -53,13 +53,13 @@
                       "prompt": {
                         "type": "string",
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Required non-blank string. No maximum length is documented upstream."
                       },
                       "n": {
                         "type": "integer",
                         "minimum": 1,
                         "default": 1,
-                        "description": "N."
+                        "description": "Output image count. Integer at least 1; default 1. No maximum is documented upstream. Fractional numbers, strings and booleans are rejected."
                       },
                       "aspect_ratio": {
                         "type": "string",
@@ -80,7 +80,7 @@
                           "2K"
                         ],
                         "default": "1K",
-                        "description": "Resolution."
+                        "description": "Output resolution. 1K: 8 credits ($0.040) per output; 2K: 11 credits ($0.055) per output."
                       }
                     },
                     "additionalProperties": false

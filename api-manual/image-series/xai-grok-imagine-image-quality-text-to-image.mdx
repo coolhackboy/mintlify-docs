@@ -30,7 +30,7 @@ Create image variations in 1K or 2K with Grok Imagine Image Quality, with framin
 
 ### Image Count
 
-- `n`: Optional. Number of images to generate. Integer, at least `1`. Default: `1`.
+- `n`: Optional. Number of images to generate. Integer, at least `1`. Default: `1`. No maximum is documented upstream; fractional numbers, strings, and booleans are rejected.
 
 ## Key Features
 
@@ -47,10 +47,19 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 ### Prompt
 
 - `prompt`: Required. Describe the desired image. Minimum length: **1 character**.
-- The value must not be blank when supplied.
+- The value must be a string and must not be blank. No maximum prompt length is documented upstream.
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+| Usage | Credits | Price | Official comparison |
+| --- | ---: | ---: | ---: |
+| 1K output image | 8 | $0.040 / image | $0.050 / image |
+| 2K output image | 11 | $0.055 / image | $0.070 / image |
+| Reference image (Edit only; additional fee) | 2 | $0.010 / image | $0.010 / image |
+
+Total credits = output count (`n`) × resolution rate + reference image count × 2.
+Reference image fees are charged once per request, not once per output. Text-to-image has no reference image fee.
+1 credit = $0.005. For an Edit request, 2 outputs at 2K with 3 references cost 28 credits ($0.140).
+Comparison rates are the supplied official price snapshot; savings round to 20% (1K) and 21% (2K).
 
 Credits are deducted on submission and refunded if the task fails.
