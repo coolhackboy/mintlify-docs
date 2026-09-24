@@ -23,7 +23,7 @@
         ],
         "summary": "Hailuo 2.3 Pro Image to Video",
         "operationId": "submit_minimax_hailuo_2_3_pro_image_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt and text must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nThis ID fixes `resolution` to `1080p`.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nprompt is required and must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nThis ID fixes `resolution` to `1080p`.\n\nNo type coercion: numeric prompts, string booleans and fractional durations are rejected. end_image_url and image_urls are not supported.\n\nPricing per video: 1080p / 6s: 60 credits ($0.300). 1 credit = $0.005.",
         "requestBody": {
           "required": true,
           "content": {
@@ -55,7 +55,7 @@
                         "type": "string",
                         "maxLength": 5000,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Required nonblank string, trimmed before validation. Maximum 5,000 Unicode characters."
                       },
                       "duration": {
                         "type": "integer",
@@ -63,7 +63,7 @@
                           6
                         ],
                         "default": 6,
-                        "description": "Duration."
+                        "description": "Output duration in seconds. Only 6 is supported."
                       },
                       "resolution": {
                         "type": "string",
@@ -71,16 +71,16 @@
                           "1080p"
                         ],
                         "default": "1080p",
-                        "description": "Resolution."
+                        "description": "Fixed to 1080p for this endpoint."
                       },
                       "start_image_url": {
                         "type": "string",
                         "format": "uri",
-                        "description": "Start image url."
+                        "description": "Required first-frame HTTP(S) image URL with a hostname and no embedded credentials. Data URLs and arrays are not supported."
                       },
                       "prompt_optimizer": {
                         "type": "boolean",
-                        "description": "Prompt optimizer."
+                        "description": "Optional boolean. Omit to leave unspecified upstream. No extra charge."
                       }
                     },
                     "additionalProperties": false

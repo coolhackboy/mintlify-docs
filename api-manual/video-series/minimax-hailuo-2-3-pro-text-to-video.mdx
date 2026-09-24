@@ -31,7 +31,7 @@ Generate short video scenes with Hailuo 2.3 Pro, with 1080p output and optional 
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Send only the input fields supported by this workflow. `end_image_url` and `image_urls` are not supported. JSON types are validated without converting strings to numbers or booleans; `prompt` must be a string and fractional durations are rejected. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
 
 ### Prompt
 
@@ -44,10 +44,14 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ### Prompt Optimizer
 
-- `prompt_optimizer`: Optional. Control automatic prompt optimization. Use `true` or `false`.
+- `prompt_optimizer`: Optional. Control automatic prompt optimization. Use `true` or `false`. Omit this field to leave it unspecified upstream; no API default is imposed.
 
 ## Pricing
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+| Resolution | Duration | Credits / video | USD / video |
+| --- | --- | --- | --- |
+| 1080p | 6 seconds | 60 | $0.300 |
+
+1 credit = $0.005. Prompt optimization does not change the rate.
 
 Credits are deducted on submission and refunded if the task fails.
