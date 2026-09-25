@@ -1,0 +1,54 @@
+---
+title: "Flux Dev Image to Image"
+description: "Edit one source image using a text prompt with PNG or JPEG output."
+icon: "image"
+openapi: "/api-manual/image-series/blackforestlabs-flux-dev-image-to-image.json POST /api/generate/submit"
+---
+
+## Submit a Task
+
+Send `model: "blackforestlabs/flux/dev/image-to-image"` and an `input` object to `POST /api/generate/submit`. Authenticate with `Authorization: Bearer VIDGO_API_KEY`.
+
+- `prompt`: Required string. Describe the image or editing instructions using at least one character after trimming.
+- `image_urls`: Required array containing one public HTTP(S) source-image URL. The source image guides the edited output.
+- `n`: Positive integer specifying the output image count, default `1`.
+- `output_format`: `png` or `jpeg`, default `png`.
+
+### Canvas Parameter
+
+`size` defines the text-to-image canvas and defaults to `1:1`. Image-to-image generation uses the source image to guide the output. The request example supplies the source image, prompt, image count, and output format.
+
+## Retrieve Images
+
+The submission response returns `data.task_id`. Use [Query Task Status](/api-manual/task-management/status) to follow the task through `not_started`, `running`, `finished`, or `failed`.
+
+Read image URLs from `data.files[].file_url` when the status is `finished`. For `failed`, read `data.error_message`.
+
+You can provide a top-level `callback_url` to receive the terminal result through a [webhook](/api-manual/task-management/webhooks).
+
+## Verified Example
+
+This example was generated through the Vidgo test API. The source and result images are hosted on the Vidgo CDN.
+
+![Source image](https://cdn.vidgo.ai/apis/models/blackforestlabs/flux/dev/image-to-image/v1/01/input.png)
+
+![A Warmer Reading Room](https://cdn.vidgo.ai/apis/models/blackforestlabs/flux/dev/image-to-image/v1/01/output.png)
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "I0RYI5JVOJC6CR8I",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux/dev/image-to-image/v1/01/output.png",
+        "file_type": "image"
+      }
+    ],
+    "created_time": "2026-09-25T11:22:15",
+    "error_message": null,
+    "progress": 100
+  }
+}
+```

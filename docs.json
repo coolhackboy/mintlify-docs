@@ -31,6 +31,9 @@
     "/api-manual/image-series/nano-banana.json",
     "/api-manual/image-series/nano-banana-2.json",
     "/api-manual/image-series/nano-banana-2-new.json",
+    "/api-manual/image-series/blackforestlabs-flux-schnell.json",
+    "/api-manual/image-series/blackforestlabs-flux-dev.json",
+    "/api-manual/image-series/blackforestlabs-flux-dev-image-to-image.json",
     "/api-manual/image-series/flux-2.json",
     "/api-manual/image-series/flux-kontext.json",
     "/api-manual/image-series/seedream-4.json",
@@ -43,6 +46,7 @@
     "/api-manual/image-series/qwen-image-3-0-pro-text-to-image.json",
     "/api-manual/image-series/qwen-image-3-0-pro-edit.json",
     "/api-manual/image-series/z-image.json",
+    "/api-manual/image-series/alibaba-z-image-turbo.json",
     "/api-manual/image-series/grok-imagine-image.json",
     "/api-manual/video-series/sora-2-official.json",
     "/api-manual/video-series/sora-2-pro-official.json",
@@ -308,6 +312,9 @@
               {
                 "group": "Flux",
                 "pages": [
+                  "api-manual/image-series/blackforestlabs-flux-schnell",
+                  "api-manual/image-series/blackforestlabs-flux-dev",
+                  "api-manual/image-series/blackforestlabs-flux-dev-image-to-image",
                   "api-manual/image-series/flux-2",
                   "api-manual/image-series/flux-kontext"
                 ]
@@ -341,7 +348,7 @@
                   "api-manual/image-series/alibaba-wan-2-7-image-edit",
                   "api-manual/image-series/alibaba-wan-2-7-text-to-image-pro",
                   "api-manual/image-series/alibaba-wan-2-7-image-edit-pro",
-                  "api-manual/image-series/z-image"
+                  "api-manual/image-series/alibaba-z-image-turbo"
                 ]
               },
               {

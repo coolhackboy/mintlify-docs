@@ -1,0 +1,41 @@
+---
+title: "Flux Schnell Text to Image"
+description: "Generate images from a text prompt with preset or custom dimensions and PNG or JPEG output."
+icon: "image"
+openapi: "/api-manual/image-series/blackforestlabs-flux-schnell.json POST /api/generate/submit"
+---
+
+## Submit a Task
+
+Send `model: "blackforestlabs/flux/schnell"` and an `input` object to `POST /api/generate/submit`. Authenticate with `Authorization: Bearer VIDGO_API_KEY`.
+
+- `prompt`: Required string. Describe the image using at least one character after trimming.
+- `size`: Output canvas, default `1:1`. Choose `1:1`, `1:1 HD`, `4:3`, `3:4`, `16:9`, `9:16`, or a custom `WIDTHxHEIGHT` such as `1024x1536`. Custom width and height are positive integers.
+- `n`: Positive integer specifying the output image count, default `1`.
+- `output_format`: `png` or `jpeg`, default `png`.
+
+## Retrieve Images
+
+The submission response returns `data.task_id`. Use [Query Task Status](/api-manual/task-management/status) to follow the task through `not_started`, `running`, `finished`, or `failed`.
+
+Read image URLs from `data.files[].file_url` when the status is `finished`. For `failed`, read `data.error_message`.
+
+You can provide a top-level `callback_url` to receive the terminal result through a [webhook](/api-manual/task-management/webhooks).
+
+## Verified Example
+
+First Light at the Cliffside Pool. This text-to-image example uses a prompt only.
+
+```json
+{
+  "model": "blackforestlabs/flux/schnell",
+  "input": {
+    "prompt": "An architectural photograph of an empty public seawater swimming pool built into a coastal cliff at sunrise. From a low viewpoint beside the pool, pale turquoise water fills the foreground, broad curved stone steps descend naturally into the shallow end on the right, and a simple white limewashed wall catches moving water reflections. Warm low morning sunlight reveals the rough limestone coping and delicate ripples. Beyond the far pool edge, the calm open sea and a clean level horizon remain clearly visible. Restrained Mediterranean colors, believable pool geometry, natural light, crisp tactile surfaces, peaceful everyday public architecture. One coherent full-frame photograph, no people, hotel styling, advertising, signs, lettering, logos or watermark.",
+    "size": "4:3",
+    "n": 1,
+    "output_format": "png"
+  }
+}
+```
+
+![First Light at the Cliffside Pool](https://cdn.vidgo.ai/apis/models/blackforestlabs/flux/schnell/text-to-image/v1/01/output.png)

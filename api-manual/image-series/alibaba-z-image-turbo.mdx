@@ -1,0 +1,48 @@
+---
+title: "Z-Image Turbo"
+description: "Text-to-image generation and single-image editing with Z-Image Turbo"
+icon: "image"
+openapi: "/api-manual/image-series/alibaba-z-image-turbo.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, use the returned `task_id` to retrieve the result through [Query Task Status](/api-manual/task-management/status).
+2. Provide `callback_url` to receive a POST notification when the task reaches `finished` or `failed`.
+</Tip>
+
+## Model
+
+`alibaba/z-image/turbo` generates images from text and edits a single reference image.
+
+## Input parameters
+
+- `prompt`: Required string containing 1 to 1000 characters. Describe the image to generate or the edits to apply.
+- `image_urls`: Optional array containing exactly one HTTP(S) image URL. Providing this field selects image editing.
+- `size`: Required for text-to-image and optional for image editing. Values: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`.
+- `enable_safety_checker`: Optional boolean. Defaults to `true`.
+
+## Text to image
+
+```json
+{
+  "model": "alibaba/z-image/turbo",
+  "input": {
+    "prompt": "A ceramic vase on a wooden table in soft daylight.",
+    "size": "1:1",
+    "enable_safety_checker": true
+  }
+}
+```
+
+## Image editing
+
+```json
+{
+  "model": "alibaba/z-image/turbo",
+  "input": {
+    "prompt": "Add soft studio lighting to this product photo.",
+    "image_urls": ["https://example.com/reference.png"],
+    "enable_safety_checker": true
+  }
+}
+```

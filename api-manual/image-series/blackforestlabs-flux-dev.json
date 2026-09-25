@@ -1,0 +1,229 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Flux Dev Text to Image",
+    "description": "Flux Dev Text to Image API.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit Flux Dev Text to Image Task",
+        "operationId": "submitFluxDevTextToImage",
+        "tags": [
+          "Flux Dev"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "default": {
+                  "summary": "The Violin Restorer",
+                  "value": {
+                    "model": "blackforestlabs/flux/dev",
+                    "input": {
+                      "prompt": "An intimate documentary photograph of an elderly violin restorer in a small lived-in workshop, viewed from slightly above bench height. The craftsman wears a faded indigo work shirt and round spectacles, leaning forward to inspect the curved varnished body of one antique violin resting on a folded linen cloth. One hand steadies the violin gently while the other holds a small inspection light. A large window on the left casts soft directional afternoon daylight across his lined face, amber wood grain, delicate wood shavings, a steel chisel and worn workbench. A few unfinished violin shapes hang softly out of focus in the background. Quiet concentration, believable hands and tools, rich natural material textures, subtle film grain, restrained warm colors, one coherent scene, no staged product display, no lettering, no logos, no watermark.",
+                      "n": 1,
+                      "output_format": "png",
+                      "size": "4:3"
+                    }
+                  }
+                },
+                "text-to-image-02": {
+                  "summary": "Inside the Blue Glacier",
+                  "value": {
+                    "model": "blackforestlabs/flux/dev",
+                    "input": {
+                      "prompt": "A vertical environmental photograph from deep inside a vast natural blue glacier cave. One small adult explorer wearing a burnt-orange parka, dark trousers and a climbing helmet stands in the lower third on solid textured ice, seen from behind in a stable natural stance. A modest warm-white headlamp illuminates a nearby translucent ridge. Towering curved walls of aquamarine ice sweep upward around the explorer, with intricate trapped bubbles and layered striations visible in the foreground; pale daylight enters through a narrow opening far above. Strong sense of human scale, physically plausible ice translucency, controlled blue and amber color contrast, deep spatial perspective, crisp near textures and gentle distant haze, documentary adventure photography, no text, no logos, no watermark.",
+                      "n": 1,
+                      "output_format": "jpeg",
+                      "size": "3:4"
+                    }
+                  }
+                },
+                "text-to-image-03": {
+                  "summary": "Cloud Ray over the Dunes",
+                  "value": {
+                    "model": "blackforestlabs/flux/dev",
+                    "input": {
+                      "prompt": "A wide surreal fine-art landscape with a single enormous manta-ray-shaped cloud floating slowly above ochre desert dunes. The ray is made entirely of soft white cloud vapor, with broad gracefully curved wings and a long delicate cloud tail, recognizable as a manta silhouette rather than a solid animal. Late afternoon sunlight gives the vapor luminous edges, while its broad soft shadow falls naturally across the wind-sculpted sand. One tiny solitary traveler in a dark cloak stands on a distant dune ridge at the lower right, emphasizing the vast scale. A pale clear sky, long elegant dune curves, quiet wonder, cinematic depth and carefully balanced negative space, detailed sand ripples in the foreground, no buildings, no vehicles, no typography, no logo, no watermark.",
+                      "n": 1,
+                      "output_format": "png",
+                      "size": "16:9"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "ZOBDNFN25SVGKU85",
+                    "status": "running",
+                    "created_time": "2026-09-25T11:20:26"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "Use `Authorization: Bearer VIDGO_API_KEY`."
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "enum": [
+              "blackforestlabs/flux/dev"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional webhook callback URL."
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "description": "Parameters for text-to-image generation.",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Describe the image to generate or the changes to make. Provide at least one character after trimming.",
+                "minLength": 1,
+                "example": "An intimate documentary photograph of an elderly violin restorer in a small lived-in workshop, viewed from slightly above bench height. The craftsman wears a faded indigo work shirt and round spectacles, leaning forward to inspect the curved varnished body of one antique violin resting on a folded linen cloth. One hand steadies the violin gently while the other holds a small inspection light. A large window on the left casts soft directional afternoon daylight across his lined face, amber wood grain, delicate wood shavings, a steel chisel and worn workbench. A few unfinished violin shapes hang softly out of focus in the background. Quiet concentration, believable hands and tools, rich natural material textures, subtle film grain, restrained warm colors, one coherent scene, no staged product display, no lettering, no logos, no watermark."
+              },
+              "size": {
+                "type": "string",
+                "description": "Output canvas. Presets: 1:1 (512×512), 1:1 HD (1024×1024), 4:3 (1024×768), 3:4 (768×1024), 16:9 (1024×576), 9:16 (576×1024). Custom WIDTHxHEIGHT dimensions are positive integers.",
+                "oneOf": [
+                  {
+                    "enum": [
+                      "1:1",
+                      "1:1 HD",
+                      "4:3",
+                      "3:4",
+                      "16:9",
+                      "9:16"
+                    ]
+                  },
+                  {
+                    "pattern": "^\\d+x\\d+$"
+                  }
+                ],
+                "default": "1:1",
+                "example": "4:3"
+              },
+              "n": {
+                "type": "integer",
+                "description": "Number of output images.",
+                "default": 1,
+                "example": 1,
+                "minimum": 1
+              },
+              "output_format": {
+                "type": "string",
+                "description": "Output image format.",
+                "enum": [
+                  "jpeg",
+                  "png"
+                ],
+                "default": "png",
+                "example": "png"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started",
+                  "running",
+                  "failed"
+                ]
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

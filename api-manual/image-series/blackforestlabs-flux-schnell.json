@@ -1,0 +1,205 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Flux Schnell Text to Image",
+    "description": "Flux Schnell Text to Image API.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit Flux Schnell Text to Image Task",
+        "operationId": "submitFluxSchnellTextToImage",
+        "tags": [
+          "Flux Schnell"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "default": {
+                  "summary": "First Light at the Cliffside Pool",
+                  "value": {
+                    "model": "blackforestlabs/flux/schnell",
+                    "input": {
+                      "prompt": "An architectural photograph of an empty public seawater swimming pool built into a coastal cliff at sunrise. From a low viewpoint beside the pool, pale turquoise water fills the foreground, broad curved stone steps descend naturally into the shallow end on the right, and a simple white limewashed wall catches moving water reflections. Warm low morning sunlight reveals the rough limestone coping and delicate ripples. Beyond the far pool edge, the calm open sea and a clean level horizon remain clearly visible. Restrained Mediterranean colors, believable pool geometry, natural light, crisp tactile surfaces, peaceful everyday public architecture. One coherent full-frame photograph, no people, hotel styling, advertising, signs, lettering, logos or watermark.",
+                      "size": "4:3",
+                      "n": 1,
+                      "output_format": "png"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "RGOGR6Z9UO0KX623",
+                    "status": "running",
+                    "created_time": "2026-09-25T11:31:42"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "Use `Authorization: Bearer VIDGO_API_KEY`."
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "enum": [
+              "blackforestlabs/flux/schnell"
+            ]
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional webhook callback URL."
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "description": "Parameters for text-to-image generation.",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Describe the image to generate or the changes to make. Provide at least one character after trimming.",
+                "minLength": 1,
+                "example": "An architectural photograph of an empty public seawater swimming pool built into a coastal cliff at sunrise. From a low viewpoint beside the pool, pale turquoise water fills the foreground, broad curved stone steps descend naturally into the shallow end on the right, and a simple white limewashed wall catches moving water reflections. Warm low morning sunlight reveals the rough limestone coping and delicate ripples. Beyond the far pool edge, the calm open sea and a clean level horizon remain clearly visible. Restrained Mediterranean colors, believable pool geometry, natural light, crisp tactile surfaces, peaceful everyday public architecture. One coherent full-frame photograph, no people, hotel styling, advertising, signs, lettering, logos or watermark."
+              },
+              "size": {
+                "type": "string",
+                "description": "Output canvas. Presets: 1:1 (512×512), 1:1 HD (1024×1024), 4:3 (1024×768), 3:4 (768×1024), 16:9 (1024×576), 9:16 (576×1024). Custom WIDTHxHEIGHT dimensions are positive integers.",
+                "oneOf": [
+                  {
+                    "enum": [
+                      "1:1",
+                      "1:1 HD",
+                      "4:3",
+                      "3:4",
+                      "16:9",
+                      "9:16"
+                    ]
+                  },
+                  {
+                    "pattern": "^\\d+x\\d+$"
+                  }
+                ],
+                "default": "1:1",
+                "example": "4:3"
+              },
+              "n": {
+                "type": "integer",
+                "description": "Number of output images.",
+                "default": 1,
+                "example": 1,
+                "minimum": 1
+              },
+              "output_format": {
+                "type": "string",
+                "description": "Output image format.",
+                "enum": [
+                  "jpeg",
+                  "png"
+                ],
+                "default": "png",
+                "example": "png"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started",
+                  "running",
+                  "failed"
+                ]
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
