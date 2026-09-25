@@ -41,23 +41,17 @@ Remix existing visuals with Seedream 5.0 Lite using text instructions and multip
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Input image URLs use HTTP(S) and point to publicly accessible JPEG or PNG files.
 
 ### Prompt
 
 - `prompt`: Required. Describe the requested changes. Length: **3-3,000 characters**.
-- The value must not be blank when supplied.
+- Length is counted after leading and trailing whitespace is trimmed.
 
 ### Image URLs
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-10 items. Each item must be an HTTP(S) URL.
+- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-10 items. Each item must be an HTTP(S) URL pointing to a JPEG or PNG image.
 
 ### Safety Checker
 
-- `enable_safety_checker`: Optional. Control safety checking. Use `true` or `false`. Default: `true`.
-
-## Pricing
-
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.
+- `enable_safety_checker`: Optional. Set `true` to enable the content safety check or `false` to disable it. Default: `true`.

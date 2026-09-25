@@ -23,7 +23,7 @@
         ],
         "summary": "Seedream 5.0 Lite Edit",
         "operationId": "submit_bytedance_seedream_v5_lite_edit",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nCustom size width and height must both be positive.",
+        "description": "Submit an asynchronous image editing task. Provide a prompt containing 3–3,000 characters. Custom size width and height are positive integers.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,10 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "bytedance/seedream/v5/lite/edit"
+                    "example": "bytedance/seedream/v5/lite/edit",
+                    "enum": [
+                      "bytedance/seedream/v5/lite/edit"
+                    ]
                   },
                   "input": {
                     "type": "object",
@@ -51,18 +54,18 @@
                         "type": "string",
                         "minLength": 3,
                         "maxLength": 3000,
-                        "description": "Prompt."
+                        "description": "Describe the requested changes using 3–3,000 characters, counted after leading and trailing whitespace is trimmed."
                       },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
                           "format": "uri",
-                          "description": "Image urls."
+                          "description": "Public HTTP(S) URL of a JPEG or PNG image."
                         },
                         "minItems": 1,
                         "maxItems": 10,
-                        "description": "Image urls."
+                        "description": "1–10 ordered HTTP(S) reference image URLs. Formats: JPEG, PNG."
                       },
                       "size": {
                         "oneOf": [
@@ -80,12 +83,12 @@
                               "2:3",
                               "21:9"
                             ],
-                            "description": "Size."
+                            "description": "Resolution or aspect-ratio preset."
                           },
                           {
                             "type": "string",
                             "pattern": "^\\s*\\d+\\s*[xX]\\s*\\d+\\s*$",
-                            "description": "Size."
+                            "description": "Custom dimensions, for example 2304x1728. Width and height are positive integers."
                           },
                           {
                             "type": "object",
@@ -96,31 +99,33 @@
                             "properties": {
                               "width": {
                                 "type": "integer",
-                                "description": "Width."
+                                "description": "Output width in pixels; a positive integer.",
+                                "minimum": 1
                               },
                               "height": {
                                 "type": "integer",
-                                "description": "Height."
+                                "description": "Output height in pixels; a positive integer.",
+                                "minimum": 1
                               }
                             },
                             "additionalProperties": false,
-                            "description": "Size."
+                            "description": "Custom dimensions as an object with positive integer width and height."
                           }
                         ],
                         "default": "1:1",
-                        "description": "Size."
+                        "description": "Output size: 2K, 3K, a ratio preset, a WIDTHxHEIGHT string, or an object with positive integer width and height. Default: 1:1."
                       },
                       "n": {
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 15,
                         "default": 1,
-                        "description": "N."
+                        "description": "Number of images to generate, from 1 to 15. Default: 1."
                       },
                       "enable_safety_checker": {
                         "type": "boolean",
                         "default": true,
-                        "description": "Enable safety checker."
+                        "description": "Set true to enable safety checking or false to disable it. Default: true."
                       }
                     },
                     "additionalProperties": false
@@ -128,22 +133,55 @@
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Optional public HTTP(S) URL for task completion notifications."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
-                "basic": {
-                  "summary": "Basic workflow",
+                "edit-01": {
+                  "summary": "The Weaver's Courtyard",
                   "value": {
                     "model": "bytedance/seedream/v5/lite/edit",
                     "input": {
+                      "prompt": "Combine the three reference images into one natural documentary photograph. Use the elderly woman from image 1 with exactly the same face, wrinkles, eyes, braids tied with red yarn, black montera hat with the red band and magenta shawl with the silver pin. Use the backstrap loom and half-finished textile from image 2, keeping the same red, deep green and golden yellow diamond and zigzag pattern with the small white llama figures. Set the scene in the adobe courtyard from image 3 with its ochre walls, blue door, clay pot of geraniums and the terraces and snowy peaks beyond the low wall. The woman kneels on the straw mat in three-quarter view; the far end bar of the loom is tied to the wooden post, the near bar is attached to a strap around her waist, and her hands pass the weaving sword through the warp threads. Relight her and the loom with the same warm low afternoon sun from the left and matching long shadows, consistent scale and perspective, no text, no watermark.",
                       "image_urls": [
-                        "https://example.com/image.png"
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-02.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-03.png"
                       ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1",
+                      "size": "4:3",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "edit-02": {
+                  "summary": "Widening the Fjord",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/edit",
+                    "input": {
+                      "prompt": "Extend image 1 into a wide 21:9 panoramic photograph. Keep the kayaker, the red kayak, the yellow paddle, the V-shaped wake and the turquoise-green water exactly as they are, with the same size, angle and relative position. Naturally expand the scene on both sides and upward: continue the steep dark rock cliff on the right to its full height and add a tall thin waterfall pouring down it into the fjord with mist at its base; on the left reveal a far shoreline with green meadows, three small red wooden boathouses at the waterline and layered mountain ridges fading into haze. Show the cliff tops and a soft overcast sky. Seamless continuation of light, reflections and water texture with no visible seams or borders, no text, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/02/input-01.png"
+                      ],
+                      "size": "21:9",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "edit-03": {
+                  "summary": "Park Chess as a Linocut",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/edit",
+                    "input": {
+                      "prompt": "Redraw image 1 in the exact visual style of image 2. Image 1 defines all content: keep the same composition and framing, the two elderly players with their facial features, poses and clothing, the standing onlooker with folded arms, the chess table with the pieces in the same positions, the jacaranda trees and the three pigeons. Image 2 defines only the style: a two-color linocut relief print on off-white textured paper with bold carved black lines, visible gouge marks, parallel hatching for shading, flat rust-red ink for the shirts, the cardigan and the jacaranda blossoms, slightly uneven ink coverage and visible paper grain. Do not copy any boats, harbor, lighthouse or seagulls from image 2. No text, no signature, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/03/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/03/input-02.png"
+                      ],
+                      "size": "3:2",
                       "n": 1,
                       "enable_safety_checker": true
                     }
@@ -154,15 +192,54 @@
                   "value": {
                     "model": "bytedance/seedream/v5/lite/edit",
                     "input": {
+                      "prompt": "Combine the three reference images into one natural documentary photograph. Use the elderly woman from image 1 with exactly the same face, wrinkles, eyes, braids tied with red yarn, black montera hat with the red band and magenta shawl with the silver pin. Use the backstrap loom and half-finished textile from image 2, keeping the same red, deep green and golden yellow diamond and zigzag pattern with the small white llama figures. Set the scene in the adobe courtyard from image 3 with its ochre walls, blue door, clay pot of geraniums and the terraces and snowy peaks beyond the low wall. The woman kneels on the straw mat in three-quarter view; the far end bar of the loom is tied to the wooden post, the near bar is attached to a strap around her waist, and her hands pass the weaving sword through the warp threads. Relight her and the loom with the same warm low afternoon sun from the left and matching long shadows, consistent scale and perspective, no text, no watermark.",
                       "image_urls": [
-                        "https://example.com/image.png"
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-02.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-03.png"
                       ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1",
+                      "size": "4:3",
                       "n": 1,
                       "enable_safety_checker": true
                     },
                     "callback_url": "https://your-domain.com/callback"
+                  }
+                },
+                "custom-string": {
+                  "summary": "Custom size string",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/edit",
+                    "input": {
+                      "prompt": "Combine the three reference images into one natural documentary photograph. Use the elderly woman from image 1 with exactly the same face, wrinkles, eyes, braids tied with red yarn, black montera hat with the red band and magenta shawl with the silver pin. Use the backstrap loom and half-finished textile from image 2, keeping the same red, deep green and golden yellow diamond and zigzag pattern with the small white llama figures. Set the scene in the adobe courtyard from image 3 with its ochre walls, blue door, clay pot of geraniums and the terraces and snowy peaks beyond the low wall. The woman kneels on the straw mat in three-quarter view; the far end bar of the loom is tied to the wooden post, the near bar is attached to a strap around her waist, and her hands pass the weaving sword through the warp threads. Relight her and the loom with the same warm low afternoon sun from the left and matching long shadows, consistent scale and perspective, no text, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-02.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-03.png"
+                      ],
+                      "size": "2304x1728",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "custom-object": {
+                  "summary": "Custom size object",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/edit",
+                    "input": {
+                      "prompt": "Combine the three reference images into one natural documentary photograph. Use the elderly woman from image 1 with exactly the same face, wrinkles, eyes, braids tied with red yarn, black montera hat with the red band and magenta shawl with the silver pin. Use the backstrap loom and half-finished textile from image 2, keeping the same red, deep green and golden yellow diamond and zigzag pattern with the small white llama figures. Set the scene in the adobe courtyard from image 3 with its ochre walls, blue door, clay pot of geraniums and the terraces and snowy peaks beyond the low wall. The woman kneels on the straw mat in three-quarter view; the far end bar of the loom is tied to the wooden post, the near bar is attached to a strap around her waist, and her hands pass the weaving sword through the warp threads. Relight her and the loom with the same warm low afternoon sun from the left and matching long shadows, consistent scale and perspective, no text, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-02.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-03.png"
+                      ],
+                      "size": {
+                        "width": 2304,
+                        "height": 1728
+                      },
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
                   }
                 }
               }
@@ -218,16 +295,16 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "MYBFV6M8G3QZ4W4C",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-25T16:21:48"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -257,7 +334,7 @@
             }
           },
           "401": {
-            "description": "Invalid credentials",
+            "description": "Authentication error",
             "content": {
               "application/json": {
                 "schema": {
@@ -377,7 +454,7 @@
             }
           },
           "429": {
-            "description": "Rate or API key credit limit exceeded",
+            "description": "Request rate or account limit reached",
             "content": {
               "application/json": {
                 "schema": {
@@ -407,7 +484,7 @@
             }
           },
           "500": {
-            "description": "Internal error",
+            "description": "Internal server error",
             "content": {
               "application/json": {
                 "schema": {
@@ -437,7 +514,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task creation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -467,7 +544,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Service temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

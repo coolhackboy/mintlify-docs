@@ -23,7 +23,7 @@
         ],
         "summary": "Seedream 5.0 Lite Text to Image",
         "operationId": "submit_bytedance_seedream_v5_lite_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.\n\nCustom size width and height must both be positive.",
+        "description": "Submit an asynchronous image generation task. Provide a prompt containing 3–3,000 characters. Custom size width and height are positive integers.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,10 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "bytedance/seedream/v5/lite/text-to-image"
+                    "example": "bytedance/seedream/v5/lite/text-to-image",
+                    "enum": [
+                      "bytedance/seedream/v5/lite/text-to-image"
+                    ]
                   },
                   "input": {
                     "type": "object",
@@ -50,7 +53,7 @@
                         "type": "string",
                         "minLength": 3,
                         "maxLength": 3000,
-                        "description": "Prompt."
+                        "description": "Describe the desired image using 3–3,000 characters, counted after leading and trailing whitespace is trimmed."
                       },
                       "size": {
                         "oneOf": [
@@ -68,12 +71,12 @@
                               "2:3",
                               "21:9"
                             ],
-                            "description": "Size."
+                            "description": "Resolution or aspect-ratio preset."
                           },
                           {
                             "type": "string",
                             "pattern": "^\\s*\\d+\\s*[xX]\\s*\\d+\\s*$",
-                            "description": "Size."
+                            "description": "Custom dimensions, for example 2304x1728. Width and height are positive integers."
                           },
                           {
                             "type": "object",
@@ -84,31 +87,33 @@
                             "properties": {
                               "width": {
                                 "type": "integer",
-                                "description": "Width."
+                                "description": "Output width in pixels; a positive integer.",
+                                "minimum": 1
                               },
                               "height": {
                                 "type": "integer",
-                                "description": "Height."
+                                "description": "Output height in pixels; a positive integer.",
+                                "minimum": 1
                               }
                             },
                             "additionalProperties": false,
-                            "description": "Size."
+                            "description": "Custom dimensions as an object with positive integer width and height."
                           }
                         ],
                         "default": "1:1",
-                        "description": "Size."
+                        "description": "Output size: 2K, 3K, a ratio preset, a WIDTHxHEIGHT string, or an object with positive integer width and height. Default: 1:1."
                       },
                       "n": {
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 15,
                         "default": 1,
-                        "description": "N."
+                        "description": "Number of images to generate, from 1 to 15. Default: 1."
                       },
                       "enable_safety_checker": {
                         "type": "boolean",
                         "default": true,
-                        "description": "Enable safety checker."
+                        "description": "Set true to enable safety checking or false to disable it. Default: true."
                       }
                     },
                     "additionalProperties": false
@@ -116,19 +121,43 @@
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Optional public HTTP(S) URL for task completion notifications."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
-                "basic": {
-                  "summary": "Basic workflow",
+                "text-to-image-01": {
+                  "summary": "How Bees Share a Flower Map",
                   "value": {
                     "model": "bytedance/seedream/v5/lite/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1",
+                      "prompt": "A scientifically accurate educational infographic explaining the honeybee waggle dance, drawn in a warm naturalist illustration style on cream paper. A title across the top reads exactly \"THE WAGGLE DANCE\". Below it, four numbered panels in a 2x2 grid, each with one short caption in clean capital letters. Panel 1 caption \"1. A FORAGER FINDS FLOWERS\": a worker bee flies from a wooden hive to a field of purple lavender; a dotted flight line leads to the flowers, a small sun sits in the sky, and a thin arc marks a 40 degree angle between the sun direction and the flight line. Panel 2 caption \"2. SHE DANCES ON THE COMB\": a vertical honeycomb of hexagonal wax cells; the returning bee traces a figure-eight path whose straight waggle run is tilted 40 degrees to the right of vertical, with a dashed vertical reference line, a thin arc marking the 40 degree angle between that line and the waggle run, and a small upward arrow whose tip carries the single word \"SUN\" to show that straight up on the comb stands for the direction of the sun. Panel 3 caption \"3. LONGER WAGGLE, FARTHER FOOD\": three waggle runs of increasing length drawn side by side, each connected to a flower patch placed at an increasing distance from the hive. Panel 4 caption \"4. SISTERS FOLLOW THE MAP\": several bees that watched the dance fly out from the hive along the same 40 degree angle to the sun and reach the lavender field. The 40 degree angle must stay consistent in panels 1, 2 and 4. Anatomically correct bees with six legs and four wings, readable fine linework, every word spelled correctly, no other text, no watermark.",
+                      "size": "3K",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "text-to-image-02": {
+                  "summary": "Night Shift at the Glass Furnace",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/text-to-image",
+                    "input": {
+                      "prompt": "A cinematic documentary photograph inside a centuries-old glassblowing furnace room on the island of Murano, Venice, late at night. In the foreground, a master glassblower in a sweat-darkened grey linen shirt and a scorched leather apron turns a long blowpipe with a glowing orange gather of molten glass at its tip; his face is lit from below by the glow. In the middle ground, a young female assistant shields her face with a wooden paddle as she opens the round furnace door, revealing a white-hot interior that is the brightest light source in the room. In the background, partly hidden behind the assistant's shoulder, an older artisan sits at a steel bench shaping a translucent cobalt-blue vase with folded wet newspaper, a wisp of steam rising. Shelves along the soot-darkened brick wall hold finished clear, amber and green glass pieces that refract the orange light and cast colored caustics onto the bench. Correct occlusion and depth between the three people, every shadow falling away from the furnace, warm firelight contrasted with cool blue moonlight from one small window, visible heat shimmer above the furnace mouth, 35mm lens, natural skin texture, believable hands with five fingers, no text, no logos, no watermark.",
+                      "size": "3:2",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "text-to-image-03": {
+                  "summary": "Eagle Hunter of the Altai",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/text-to-image",
+                    "input": {
+                      "prompt": "An ultra-wide cinematic landscape photograph of the Altai Mountains in western Mongolia in deep winter at golden hour. In the left third of the foreground, a Kazakh eagle hunter sits on a sturdy brown Mongolian horse, wearing a fox-fur hat and a long embroidered wool coat; he raises his thick leather-gloved forearm as a golden eagle with fully spread wings lands on it, powder snow kicked up around the horse's hooves. In the middle distance on the right, a second rider leads a small caravan of four Bactrian camels across a frozen river, their long shadows stretching over the snow. Far behind, jagged snow-covered peaks glow pink and gold under a clear pale sky, each successive ridge lighter and hazier with distance. Correct relative scale between the eagle, the riders, the camels and the mountains, one consistent low sun from the right, visible breath vapor from the horse, fine detail in feathers and fur, no text, no watermark.",
+                      "size": "21:9",
                       "n": 1,
                       "enable_safety_checker": true
                     }
@@ -139,12 +168,39 @@
                   "value": {
                     "model": "bytedance/seedream/v5/lite/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1",
+                      "prompt": "A scientifically accurate educational infographic explaining the honeybee waggle dance, drawn in a warm naturalist illustration style on cream paper. A title across the top reads exactly \"THE WAGGLE DANCE\". Below it, four numbered panels in a 2x2 grid, each with one short caption in clean capital letters. Panel 1 caption \"1. A FORAGER FINDS FLOWERS\": a worker bee flies from a wooden hive to a field of purple lavender; a dotted flight line leads to the flowers, a small sun sits in the sky, and a thin arc marks a 40 degree angle between the sun direction and the flight line. Panel 2 caption \"2. SHE DANCES ON THE COMB\": a vertical honeycomb of hexagonal wax cells; the returning bee traces a figure-eight path whose straight waggle run is tilted 40 degrees to the right of vertical, with a dashed vertical reference line, a thin arc marking the 40 degree angle between that line and the waggle run, and a small upward arrow whose tip carries the single word \"SUN\" to show that straight up on the comb stands for the direction of the sun. Panel 3 caption \"3. LONGER WAGGLE, FARTHER FOOD\": three waggle runs of increasing length drawn side by side, each connected to a flower patch placed at an increasing distance from the hive. Panel 4 caption \"4. SISTERS FOLLOW THE MAP\": several bees that watched the dance fly out from the hive along the same 40 degree angle to the sun and reach the lavender field. The 40 degree angle must stay consistent in panels 1, 2 and 4. Anatomically correct bees with six legs and four wings, readable fine linework, every word spelled correctly, no other text, no watermark.",
+                      "size": "3K",
                       "n": 1,
                       "enable_safety_checker": true
                     },
                     "callback_url": "https://your-domain.com/callback"
+                  }
+                },
+                "custom-string": {
+                  "summary": "Custom size string",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/text-to-image",
+                    "input": {
+                      "prompt": "A scientifically accurate educational infographic explaining the honeybee waggle dance, drawn in a warm naturalist illustration style on cream paper. A title across the top reads exactly \"THE WAGGLE DANCE\". Below it, four numbered panels in a 2x2 grid, each with one short caption in clean capital letters. Panel 1 caption \"1. A FORAGER FINDS FLOWERS\": a worker bee flies from a wooden hive to a field of purple lavender; a dotted flight line leads to the flowers, a small sun sits in the sky, and a thin arc marks a 40 degree angle between the sun direction and the flight line. Panel 2 caption \"2. SHE DANCES ON THE COMB\": a vertical honeycomb of hexagonal wax cells; the returning bee traces a figure-eight path whose straight waggle run is tilted 40 degrees to the right of vertical, with a dashed vertical reference line, a thin arc marking the 40 degree angle between that line and the waggle run, and a small upward arrow whose tip carries the single word \"SUN\" to show that straight up on the comb stands for the direction of the sun. Panel 3 caption \"3. LONGER WAGGLE, FARTHER FOOD\": three waggle runs of increasing length drawn side by side, each connected to a flower patch placed at an increasing distance from the hive. Panel 4 caption \"4. SISTERS FOLLOW THE MAP\": several bees that watched the dance fly out from the hive along the same 40 degree angle to the sun and reach the lavender field. The 40 degree angle must stay consistent in panels 1, 2 and 4. Anatomically correct bees with six legs and four wings, readable fine linework, every word spelled correctly, no other text, no watermark.",
+                      "size": "2304x1728",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "custom-object": {
+                  "summary": "Custom size object",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/text-to-image",
+                    "input": {
+                      "prompt": "A scientifically accurate educational infographic explaining the honeybee waggle dance, drawn in a warm naturalist illustration style on cream paper. A title across the top reads exactly \"THE WAGGLE DANCE\". Below it, four numbered panels in a 2x2 grid, each with one short caption in clean capital letters. Panel 1 caption \"1. A FORAGER FINDS FLOWERS\": a worker bee flies from a wooden hive to a field of purple lavender; a dotted flight line leads to the flowers, a small sun sits in the sky, and a thin arc marks a 40 degree angle between the sun direction and the flight line. Panel 2 caption \"2. SHE DANCES ON THE COMB\": a vertical honeycomb of hexagonal wax cells; the returning bee traces a figure-eight path whose straight waggle run is tilted 40 degrees to the right of vertical, with a dashed vertical reference line, a thin arc marking the 40 degree angle between that line and the waggle run, and a small upward arrow whose tip carries the single word \"SUN\" to show that straight up on the comb stands for the direction of the sun. Panel 3 caption \"3. LONGER WAGGLE, FARTHER FOOD\": three waggle runs of increasing length drawn side by side, each connected to a flower patch placed at an increasing distance from the hive. Panel 4 caption \"4. SISTERS FOLLOW THE MAP\": several bees that watched the dance fly out from the hive along the same 40 degree angle to the sun and reach the lavender field. The 40 degree angle must stay consistent in panels 1, 2 and 4. Anatomically correct bees with six legs and four wings, readable fine linework, every word spelled correctly, no other text, no watermark.",
+                      "size": {
+                        "width": 2304,
+                        "height": 1728
+                      },
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
                   }
                 }
               }
@@ -200,16 +256,16 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "EF4PBIXHZKGOWFP6",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-25T16:21:46"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -239,7 +295,7 @@
             }
           },
           "401": {
-            "description": "Invalid credentials",
+            "description": "Authentication error",
             "content": {
               "application/json": {
                 "schema": {
@@ -359,7 +415,7 @@
             }
           },
           "429": {
-            "description": "Rate or API key credit limit exceeded",
+            "description": "Request rate or account limit reached",
             "content": {
               "application/json": {
                 "schema": {
@@ -389,7 +445,7 @@
             }
           },
           "500": {
-            "description": "Internal error",
+            "description": "Internal server error",
             "content": {
               "application/json": {
                 "schema": {
@@ -419,7 +475,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task creation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -449,7 +505,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Service temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

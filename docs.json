@@ -295,7 +295,8 @@
                 "group": "OpenAI",
                 "pages": [
                   "api-manual/image-series/gpt-4o-image",
-                  "api-manual/image-series/gpt-image-1.5",
+                  "api-manual/image-series/openai-gpt-image-1-5-text-to-image",
+                  "api-manual/image-series/openai-gpt-image-1-5-edit",
                   "api-manual/image-series/gpt-image-2"
                 ]
               },
@@ -323,8 +324,10 @@
                 "group": "Seedream",
                 "pages": [
                   "api-manual/image-series/seedream-4",
-                  "api-manual/image-series/seedream-4-5",
-                  "api-manual/image-series/seedream-5-0-lite",
+                  "api-manual/image-series/bytedance-seedream-v4-5-text-to-image",
+                  "api-manual/image-series/bytedance-seedream-v4-5-edit",
+                  "api-manual/image-series/bytedance-seedream-v5-lite-text-to-image",
+                  "api-manual/image-series/bytedance-seedream-v5-lite-edit",
                   "api-manual/image-series/seedream-v5-0-pro",
                   "api-manual/image-series/seedream-v5-0-pro-edit"
                 ]

@@ -23,7 +23,7 @@
         ],
         "summary": "GPT Image 1.5 Edit",
         "operationId": "submit_openai_gpt_image_1_5_edit",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Submit a GPT Image 1.5 task with model and optional callback_url at the request root, and generation parameters inside input.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,10 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "openai/gpt-image-1.5/edit"
+                    "example": "openai/gpt-image-1.5/edit",
+                    "enum": [
+                      "openai/gpt-image-1.5/edit"
+                    ]
                   },
                   "input": {
                     "type": "object",
@@ -51,17 +54,17 @@
                         "type": "string",
                         "maxLength": 1000,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Describe the requested image changes using 1–1,000 characters, including at least one non-whitespace character."
                       },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
                           "format": "uri",
-                          "description": "Image urls."
+                          "description": "Publicly accessible HTTP(S) image URL."
                         },
                         "minItems": 1,
-                        "description": "Image urls."
+                        "description": "Reference images to edit. Supply at least one publicly accessible HTTP(S) image URL."
                       },
                       "size": {
                         "type": "string",
@@ -71,7 +74,7 @@
                           "1536x1024"
                         ],
                         "default": "1024x1024",
-                        "description": "Size."
+                        "description": "Output image dimensions in pixels. Defaults to 1024x1024."
                       },
                       "n": {
                         "type": "integer",
@@ -82,12 +85,13 @@
                           4
                         ],
                         "minimum": 1,
-                        "description": "N."
+                        "description": "Number of output images, from 1 to 4. Defaults to 1.",
+                        "default": 1
                       },
                       "mask_url": {
                         "type": "string",
                         "format": "uri",
-                        "description": "Mask url."
+                        "description": "Publicly accessible HTTP(S) URL of the mask image selecting the area to edit."
                       }
                     },
                     "additionalProperties": false
@@ -95,10 +99,10 @@
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Public HTTP(S) URL that receives a POST notification when the task reaches finished or failed."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -109,8 +113,9 @@
                       "image_urls": [
                         "https://example.com/image.png"
                       ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1024x1024"
+                      "prompt": "Replace the sky with a starry night sky.",
+                      "size": "1024x1024",
+                      "n": 1
                     }
                   }
                 },
@@ -122,8 +127,9 @@
                       "image_urls": [
                         "https://example.com/image.png"
                       ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1024x1024"
+                      "prompt": "Replace the sky with a starry night sky.",
+                      "size": "1024x1024",
+                      "n": 1
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -190,7 +196,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -400,7 +406,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task creation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -430,7 +436,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Model service temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

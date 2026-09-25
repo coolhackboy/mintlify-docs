@@ -23,7 +23,7 @@
         ],
         "summary": "GPT Image 1.5 Text to Image",
         "operationId": "submit_openai_gpt_image_1_5_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.",
+        "description": "Submit a GPT Image 1.5 task with model and optional callback_url at the request root, and generation parameters inside input.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,10 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "openai/gpt-image-1.5/text-to-image"
+                    "example": "openai/gpt-image-1.5/text-to-image",
+                    "enum": [
+                      "openai/gpt-image-1.5/text-to-image"
+                    ]
                   },
                   "input": {
                     "type": "object",
@@ -50,7 +53,7 @@
                         "type": "string",
                         "maxLength": 1000,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Describe the image to generate using 1–1,000 characters, including at least one non-whitespace character."
                       },
                       "size": {
                         "type": "string",
@@ -60,7 +63,7 @@
                           "1536x1024"
                         ],
                         "default": "1024x1024",
-                        "description": "Size."
+                        "description": "Output image dimensions in pixels. Defaults to 1024x1024."
                       },
                       "n": {
                         "type": "integer",
@@ -71,7 +74,8 @@
                           4
                         ],
                         "minimum": 1,
-                        "description": "N."
+                        "description": "Number of output images, from 1 to 4. Defaults to 1.",
+                        "default": 1
                       }
                     },
                     "additionalProperties": false
@@ -79,10 +83,10 @@
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Public HTTP(S) URL that receives a POST notification when the task reaches finished or failed."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -91,7 +95,8 @@
                     "model": "openai/gpt-image-1.5/text-to-image",
                     "input": {
                       "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1024x1024"
+                      "size": "1024x1024",
+                      "n": 1
                     }
                   }
                 },
@@ -101,7 +106,8 @@
                     "model": "openai/gpt-image-1.5/text-to-image",
                     "input": {
                       "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1024x1024"
+                      "size": "1024x1024",
+                      "n": 1
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -168,7 +174,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -378,7 +384,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task creation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -408,7 +414,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Model service temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {
