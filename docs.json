@@ -362,14 +362,8 @@
               {
                 "group": "OpenAI",
                 "pages": [
-                  "api-manual/video-series/sora-2-official",
-                  "api-manual/video-series/sora-2-pro-official",
                   "api-manual/video-series/sora-2-pro",
-                  "api-manual/video-series/sora-2",
-                  "api-manual/video-series/openai-sora-2-text-to-video",
-                  "api-manual/video-series/openai-sora-2-image-to-video",
-                  "api-manual/video-series/openai-sora-2-pro-text-to-video",
-                  "api-manual/video-series/openai-sora-2-pro-image-to-video"
+                  "api-manual/video-series/sora-2"
                 ]
               },
               {
