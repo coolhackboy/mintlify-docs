@@ -360,13 +360,6 @@
             "group": "Video Series",
             "pages": [
               {
-                "group": "OpenAI",
-                "pages": [
-                  "api-manual/video-series/sora-2-pro",
-                  "api-manual/video-series/sora-2"
-                ]
-              },
-              {
                 "group": "Google",
                 "pages": [
                   "api-manual/video-series/veo-3-1-official",
