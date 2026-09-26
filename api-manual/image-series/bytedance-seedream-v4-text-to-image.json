@@ -23,7 +23,7 @@
         ],
         "summary": "Seedream 4 Text to Image",
         "operationId": "submit_bytedance_seedream_v4_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.",
+        "description": "Submit an asynchronous text-to-image task. Provide a prompt containing 1–5,000 characters with at least one non-whitespace character.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,10 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "bytedance/seedream/v4/text-to-image"
+                    "example": "bytedance/seedream/v4/text-to-image",
+                    "enum": [
+                      "bytedance/seedream/v4/text-to-image"
+                    ]
                   },
                   "input": {
                     "type": "object",
@@ -50,7 +53,7 @@
                         "type": "string",
                         "maxLength": 5000,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Describe the desired image using 1–5,000 characters, including at least one non-whitespace character."
                       },
                       "size": {
                         "type": "string",
@@ -65,7 +68,7 @@
                           "21:9"
                         ],
                         "default": "1:1",
-                        "description": "Size."
+                        "description": "Output aspect ratio: 1:1, 3:4, 4:3, 16:9, 9:16, 3:2, 2:3, or 21:9. Default: 1:1."
                       },
                       "resolution": {
                         "type": "string",
@@ -75,14 +78,14 @@
                           "4K"
                         ],
                         "default": "2K",
-                        "description": "Resolution."
+                        "description": "Output resolution preset: 1K, 2K, or 4K. Default: 2K."
                       },
                       "n": {
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 15,
                         "default": 1,
-                        "description": "N."
+                        "description": "Number of images to generate, from 1 to 15. Default: 1."
                       }
                     },
                     "additionalProperties": false
@@ -90,19 +93,43 @@
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Optional public HTTP(S) URL for task completion notifications."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
-                "basic": {
-                  "summary": "Basic workflow",
+                "text-to-image-02": {
+                  "summary": "Steam Hour at Tbilisi Baths",
                   "value": {
                     "model": "bytedance/seedream/v4/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1",
+                      "prompt": "A cinematic documentary photograph inside a historic sulfur bath house in the Abanotubani district of Tbilisi, Georgia, mid-afternoon. In the foreground, an older Georgian attendant in a white cotton wrap and rubber sandals kneels at the rim of a hexagonal stone pool, testing the water with the back of his hand; steam wraps around his forearm. In the middle ground, a younger woman sits on a marble bench with a folded striped towel over her shoulders, her face half-hidden by a drifting steam veil, talking to a friend who is only visible as a silhouette behind a brick arch. In the far background, a high oculus window drops a single hard shaft of daylight onto the wet brick floor, making the steam glow. Correct occlusion between the three figures, every highlight coming from that one oculus, wet stone texture, visible condensation on the brick vault, 35mm lens, natural skin texture, believable hands with five fingers, no text, no logos, no watermark.",
+                      "size": "3:2",
+                      "resolution": "2K",
+                      "n": 1
+                    }
+                  }
+                },
+                "text-to-image-01": {
+                  "summary": "How a Qanat Shares Water",
+                  "value": {
+                    "model": "bytedance/seedream/v4/text-to-image",
+                    "input": {
+                      "prompt": "A scientifically accurate educational infographic of a Persian qanat on cream paper, warm naturalist watercolor linework. Title across the top is only the Chinese phrase printed exactly 坎儿井如何分水. Four panels in a 2x2 grid. Panel 1 caption is the single English word WELL under the Chinese 母井: a gravel mound with a vertical well, a blue dashed water table, and a hanging bucket. Panel 2 caption is the single English word TUNNEL under the Chinese 暗渠: a downhill tunnel with a 1 percent slope and left-to-right flow arrows. Panel 3 caption is the single English word SHAFTS under the Chinese 竖井: four evenly spaced vertical shafts. Panel 4 caption is the single English word OUTLET under the Chinese 龙口: the tunnel emerges at an oasis and splits into two channels labeled with the single words LEFT and RIGHT under 左渠 and 右渠. Use only these English words: WELL, TUNNEL, SHAFTS, OUTLET, LEFT, RIGHT. Each English word stands alone with space around it. Do not add extra letters. Consistent water table and downhill slope. No other text, no watermark.",
+                      "size": "4:3",
+                      "resolution": "4K",
+                      "n": 1
+                    }
+                  }
+                },
+                "text-to-image-03": {
+                  "summary": "Salt Harvest on Lake Abbe",
+                  "value": {
+                    "model": "bytedance/seedream/v4/text-to-image",
+                    "input": {
+                      "prompt": "An ultra-wide cinematic landscape photograph of Lake Abbe on the Ethiopia–Djibouti border at first light. In the left third of the foreground, two Afar salt workers in faded cotton wraps and sandals stand beside a low wooden sledge piled with pale salt cakes; one man lifts a slab while the other steadies a long wooden pole. Mid-frame, a shallow pink-white salt crust stretches toward the lake, with a few flamingos standing in a thin sheet of water. On the right, a row of tall pale limestone chimneys rises from the flats, their bases still in blue shadow while their tops catch the first gold sun. Far behind, a hazy volcanic ridge sits under a clear pale sky. Correct relative scale between the workers, the flamingos, the chimneys and the distant ridge, one consistent low sun from the right, fine crystal texture on the salt, visible breath in the cool air, no text, no watermark.",
+                      "size": "21:9",
                       "resolution": "2K",
                       "n": 1
                     }
@@ -113,8 +140,8 @@
                   "value": {
                     "model": "bytedance/seedream/v4/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1",
+                      "prompt": "A cinematic documentary photograph inside a historic sulfur bath house in the Abanotubani district of Tbilisi, Georgia, mid-afternoon. In the foreground, an older Georgian attendant in a white cotton wrap and rubber sandals kneels at the rim of a hexagonal stone pool, testing the water with the back of his hand; steam wraps around his forearm. In the middle ground, a younger woman sits on a marble bench with a folded striped towel over her shoulders, her face half-hidden by a drifting steam veil, talking to a friend who is only visible as a silhouette behind a brick arch. In the far background, a high oculus window drops a single hard shaft of daylight onto the wet brick floor, making the steam glow. Correct occlusion between the three figures, every highlight coming from that one oculus, wet stone texture, visible condensation on the brick vault, 35mm lens, natural skin texture, believable hands with five fingers, no text, no logos, no watermark.",
+                      "size": "3:2",
                       "resolution": "2K",
                       "n": 1
                     },
@@ -174,16 +201,16 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "KM1JC58S12F3BATH",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-26T10:59:51"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -213,7 +240,7 @@
             }
           },
           "401": {
-            "description": "Invalid credentials",
+            "description": "Authentication error",
             "content": {
               "application/json": {
                 "schema": {
@@ -333,7 +360,7 @@
             }
           },
           "429": {
-            "description": "Rate or API key credit limit exceeded",
+            "description": "Request rate or account limit reached",
             "content": {
               "application/json": {
                 "schema": {
@@ -363,7 +390,7 @@
             }
           },
           "500": {
-            "description": "Internal error",
+            "description": "Internal server error",
             "content": {
               "application/json": {
                 "schema": {
@@ -393,7 +420,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task creation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -423,7 +450,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Service temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

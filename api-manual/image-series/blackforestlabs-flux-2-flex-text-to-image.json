@@ -23,7 +23,7 @@
         ],
         "summary": "FLUX.2 Flex Text to Image",
         "operationId": "submit_blackforestlabs_flux_2_flex_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.",
+        "description": "Send the fields shown for this workflow. Place `prompt`, `size`, and `resolution` inside `input`.",
         "requestBody": {
           "required": true,
           "content": {
@@ -52,7 +52,7 @@
                         "type": "string",
                         "minLength": 3,
                         "maxLength": 5000,
-                        "description": "Prompt."
+                        "description": "Text description of the image to generate, 3-5,000 characters."
                       },
                       "size": {
                         "type": "string",
@@ -66,7 +66,7 @@
                           "2:3",
                           "auto"
                         ],
-                        "description": "Size."
+                        "description": "Aspect ratio of the output image."
                       },
                       "resolution": {
                         "type": "string",
@@ -74,7 +74,7 @@
                           "1K",
                           "2K"
                         ],
-                        "description": "Resolution."
+                        "description": "Output image resolution."
                       }
                     },
                     "additionalProperties": false
@@ -85,17 +85,39 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Keep model and callback_url at the root. Place workflow parameters inside input."
               },
               "examples": {
-                "basic": {
-                  "summary": "Basic workflow",
+                "default": {
+                  "summary": "Tide Pool Field Notebook",
                   "value": {
                     "model": "blackforestlabs/flux-2-flex/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "resolution": "1K",
-                      "size": "1:1"
+                      "prompt": "An overhead photograph of an open naturalist's field notebook lying on a sun-warmed basalt rock beside a tide pool. The two cream, lightly textured pages are filled with delicate pencil and watercolour studies: on the left page a purple ochre sea star, a giant green anemone with open tentacles, and a hermit crab in a turban-snail shell; on the right page a cluster of goose barnacles, a small tidepool sculpin, and a strand of rockweed. Each drawing has a neat handwritten ink label: \"Pisaster ochraceus\", \"Anthopleura xanthogrammica\", \"Pagurus samuelis\", \"Pollicipes polymerus\", \"Oligocottus maculosus\", \"Fucus distichus\". Across the top of the left page, the handwritten heading reads exactly \"LOW TIDE 0.3 m - 14 MAY\". Small measurement ticks and fine arrows point to anatomical details. A graphite pencil, a small brass magnifier and a water brush rest on the pages; a few drops of seawater and grains of sand sit near the paper edge. Soft overcast light, true-to-life paper texture, visible watercolour blooms and pencil grain, legible correctly spelled handwriting, no other text, no logos, no watermark.",
+                      "size": "4:3",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "flex-text-to-image-01": {
+                  "summary": "Alpine Trail Signpost",
+                  "value": {
+                    "model": "blackforestlabs/flux-2-flex/text-to-image",
+                    "input": {
+                      "prompt": "A photorealistic mid shot of a weathered larch-wood trail signpost at a high Alpine mountain pass in late afternoon. One small square metal plate at the top of the post and three arrow-shaped boards below it, each with crisp carved, white-painted capital lettering. Each board carries only its own single line of text, and nothing is repeated anywhere else:\nTop square plate: \"SENTIERO 443\"\nTop arrow, pointing left: \"RIFUGIO NUVOLAU 1 h 20\"\nMiddle arrow, pointing right: \"PASSO GIAU 45 min\"\nBottom arrow, pointing left: \"LAGO FEDERA 1 h 50\"\nThe wood shows deep silver-grey grain, cracks, rusted bolts and patches of orange and pale-green lichen. Behind the post, jagged dolomite peaks glow pink in alpenglow above a scree slope, and a narrow dirt path leads away with two tiny out-of-focus hikers. Low warm sun from the right, shallow depth of field on the signs, 50mm lens. Lettering sharp and correctly spelled, no other words or numbers, no logos, no watermark.",
+                      "size": "3:4",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "flex-text-to-image-03": {
+                  "summary": "Orbital Cockpit Console",
+                  "value": {
+                    "model": "blackforestlabs/flux-2-flex/text-to-image",
+                    "input": {
+                      "prompt": "A cinematic view from the pilot's seat of a retro-futurist research spacecraft cockpit in orbit above the night side of Earth. A curved instrument console spans the frame, built from brushed aluminium, olive-green enamel panels and chunky toggle switches with metal guards. Only four backlit amber labels appear on the console, each exactly once: on the far left panel \"O2 21.4%\", above a round analog gauge left of centre \"COOLANT °C\" with the needle at 22, directly right of the central screen \"NAV LOCK\", and on the far right panel \"DOCK 14.2 m/s\". All other switches and panels are unlabeled. The central small green monochrome screen shows a wireframe orbit trace with no text. Through the wide front window, city lights trace coastlines on the dark Earth below and a thin blue atmospheric line glows along the horizon. The pilot's gloved hands rest near a throttle lever at the bottom edge. Subtle scratches, worn paint around the switches and dust drifting in the soft cabin light. Sharp, legible labels in a clean engineering typeface, physically plausible lighting, no other text, no logos, no watermark.",
+                      "size": "16:9",
+                      "resolution": "1K"
                     }
                   }
                 },
@@ -104,9 +126,9 @@
                   "value": {
                     "model": "blackforestlabs/flux-2-flex/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "resolution": "1K",
-                      "size": "1:1"
+                      "prompt": "An overhead photograph of an open naturalist's field notebook lying on a sun-warmed basalt rock beside a tide pool. The two cream, lightly textured pages are filled with delicate pencil and watercolour studies: on the left page a purple ochre sea star, a giant green anemone with open tentacles, and a hermit crab in a turban-snail shell; on the right page a cluster of goose barnacles, a small tidepool sculpin, and a strand of rockweed. Each drawing has a neat handwritten ink label: \"Pisaster ochraceus\", \"Anthopleura xanthogrammica\", \"Pagurus samuelis\", \"Pollicipes polymerus\", \"Oligocottus maculosus\", \"Fucus distichus\". Across the top of the left page, the handwritten heading reads exactly \"LOW TIDE 0.3 m - 14 MAY\". Small measurement ticks and fine arrows point to anatomical details. A graphite pencil, a small brass magnifier and a water brush rest on the pages; a few drops of seawater and grains of sand sit near the paper edge. Soft overcast light, true-to-life paper texture, visible watercolour blooms and pencil grain, legible correctly spelled handwriting, no other text, no logos, no watermark.",
+                      "size": "4:3",
+                      "resolution": "1K"
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -164,16 +186,16 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "SBR3R4D3GOFPXM1Z",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-26T11:07:50"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Invalid input, inaccessible media, or insufficient credits",
             "content": {
               "application/json": {
                 "schema": {
@@ -383,7 +405,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Unable to create the generation task",
             "content": {
               "application/json": {
                 "schema": {

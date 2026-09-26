@@ -23,7 +23,7 @@
         ],
         "summary": "FLUX.2 Flex Edit",
         "operationId": "submit_blackforestlabs_flux_2_flex_edit",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Send the fields shown for this workflow. Place `prompt`, `image_urls`, `size`, and `resolution` inside `input`. Each `image_urls` item is a public HTTP(S) URL.",
         "requestBody": {
           "required": true,
           "content": {
@@ -53,18 +53,18 @@
                         "type": "string",
                         "minLength": 3,
                         "maxLength": 5000,
-                        "description": "Prompt."
+                        "description": "Text instructions for editing the reference images, 3-5,000 characters."
                       },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
                           "format": "uri",
-                          "description": "Image urls."
+                          "description": "Public HTTP(S) image URL."
                         },
                         "minItems": 1,
                         "maxItems": 8,
-                        "description": "Image urls."
+                        "description": "Reference images, 1-8 public HTTP(S) URLs."
                       },
                       "size": {
                         "type": "string",
@@ -78,7 +78,7 @@
                           "2:3",
                           "auto"
                         ],
-                        "description": "Size."
+                        "description": "Aspect ratio of the output image. `auto` uses the aspect ratio of the first image in `image_urls`."
                       },
                       "resolution": {
                         "type": "string",
@@ -86,7 +86,7 @@
                           "1K",
                           "2K"
                         ],
-                        "description": "Resolution."
+                        "description": "Output image resolution."
                       }
                     },
                     "additionalProperties": false
@@ -97,20 +97,51 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Keep model and callback_url at the root. Place workflow parameters inside input."
               },
               "examples": {
-                "basic": {
-                  "summary": "Basic workflow",
+                "default": {
+                  "summary": "Pip and the Glass Garden",
                   "value": {
                     "model": "blackforestlabs/flux-2-flex/edit",
                     "input": {
+                      "prompt": "Create a children's picture-book illustration. Use image 1 as the exact character design for Pip the robot gardener: the same round teal body, brass spout nose, amber lens eyes, red knitted scarf, yellow rubber boots and tiny brass watering can, with consistent proportions. Place Pip inside the Victorian glasshouse from image 2, standing on the wooden potting bench and carefully watering a row of tomato seedlings in terracotta pots, with the white cast-iron arches, mossy panes and hanging ferns clearly recognisable. Render the whole scene in the risograph print style of image 3: a limited palette of fluorescent pink, teal, sunflower yellow and deep navy, visible grain, halftone dots and slight layer misregistration on off-white paper. Across the top, in large hand-lettered risograph type, the title reads exactly \"PIP AND THE GLASS GARDEN\". No other text, no watermark.",
                       "image_urls": [
-                        "https://example.com/image.png"
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/edit/v1/01/input-02.png",
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/edit/v1/01/input-03.png"
                       ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "resolution": "1K",
-                      "size": "1:1"
+                      "size": "3:2",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "flex-edit-02": {
+                  "summary": "Lakeside Cabin from a Pencil Sketch",
+                  "value": {
+                    "model": "blackforestlabs/flux-2-flex/edit",
+                    "input": {
+                      "prompt": "Turn the pencil sketch in image 1 into a photorealistic architectural photograph at blue-hour dusk. Follow the sketch geometry precisely: the same A-frame silhouette, stone base, large triangular glass front, narrow deck extending over the lake, chimney on the right roof slope, two pines on the left, and the same camera angle. Build the cabin from the materials in image 2: charred black cedar with alligator texture on the roof slopes, rough dark basalt for the base, brushed copper for the chimney and flashing, and pale oiled oak for the deck. Warm interior light glows through the glass, a thin wisp of smoke rises from the chimney, and the still lake mirrors the cabin under a deep blue sky with the last orange light on the horizon. Crisp material detail, realistic reflections, 24mm architectural lens. No people, no text, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/edit/v1/02/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/edit/v1/02/input-02.png"
+                      ],
+                      "size": "16:9",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "flex-edit-03": {
+                  "summary": "Treasure Route on the Island Map",
+                  "value": {
+                    "model": "blackforestlabs/flux-2-flex/edit",
+                    "input": {
+                      "prompt": "Edit the map in image 1 by adding only two new hand-drawn elements in the same ink-and-watercolour style: a bold red dashed route line that starts at the small harbour on the south coast, follows the existing dotted trail north through the fern valley, and ends at the lighthouse on the northern cape; and a large hand-painted red X in the middle of the fern valley with a tiny closed wooden treasure chest drawn beside it. Keep every existing element of image 1 exactly as it is, including all six English labels in their original positions (\"Whale Bay\", \"Old Lighthouse\", \"Fern Valley\", \"Salt Marsh\", \"Seal Rocks\", \"Lantern Harbor\"), the coastline, forests, marshes, rocks, compass rose, dotted trails, sailboats, parchment texture and colours. No new text, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/edit/v1/03/input-01.png"
+                      ],
+                      "size": "4:3",
+                      "resolution": "1K"
                     }
                   }
                 },
@@ -119,12 +150,14 @@
                   "value": {
                     "model": "blackforestlabs/flux-2-flex/edit",
                     "input": {
+                      "prompt": "Create a children's picture-book illustration. Use image 1 as the exact character design for Pip the robot gardener: the same round teal body, brass spout nose, amber lens eyes, red knitted scarf, yellow rubber boots and tiny brass watering can, with consistent proportions. Place Pip inside the Victorian glasshouse from image 2, standing on the wooden potting bench and carefully watering a row of tomato seedlings in terracotta pots, with the white cast-iron arches, mossy panes and hanging ferns clearly recognisable. Render the whole scene in the risograph print style of image 3: a limited palette of fluorescent pink, teal, sunflower yellow and deep navy, visible grain, halftone dots and slight layer misregistration on off-white paper. Across the top, in large hand-lettered risograph type, the title reads exactly \"PIP AND THE GLASS GARDEN\". No other text, no watermark.",
                       "image_urls": [
-                        "https://example.com/image.png"
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/edit/v1/01/input-02.png",
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/edit/v1/01/input-03.png"
                       ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "resolution": "1K",
-                      "size": "1:1"
+                      "size": "3:2",
+                      "resolution": "1K"
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -182,16 +215,16 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "E4MB5ERGH360DFJI",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-26T11:07:59"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Invalid input, inaccessible media, or insufficient credits",
             "content": {
               "application/json": {
                 "schema": {
@@ -401,7 +434,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Unable to create the generation task",
             "content": {
               "application/json": {
                 "schema": {

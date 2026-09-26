@@ -23,7 +23,7 @@
         ],
         "summary": "Flux Kontext Pro Text to Image",
         "operationId": "submit_blackforestlabs_flux_kontext_pro_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.",
+        "description": "Submit a Flux Kontext Pro Text to Image task with model and optional callback_url at the request root, and generation parameters inside input.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,10 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "blackforestlabs/flux-kontext-pro/text-to-image"
+                    "example": "blackforestlabs/flux-kontext-pro/text-to-image",
+                    "enum": [
+                      "blackforestlabs/flux-kontext-pro/text-to-image"
+                    ]
                   },
                   "input": {
                     "type": "object",
@@ -50,7 +53,7 @@
                         "type": "string",
                         "maxLength": 2000,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Describe the image to generate using 1–2,000 characters, including at least one non-whitespace character."
                       },
                       "size": {
                         "type": "string",
@@ -64,7 +67,7 @@
                           "9:21"
                         ],
                         "default": "1:1",
-                        "description": "Size."
+                        "description": "Output aspect ratio. Defaults to 1:1."
                       },
                       "output_format": {
                         "type": "string",
@@ -72,7 +75,7 @@
                           "png",
                           "jpg"
                         ],
-                        "description": "Output format."
+                        "description": "Output image file format: png or jpg."
                       }
                     },
                     "additionalProperties": false
@@ -80,19 +83,41 @@
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Public HTTP(S) URL that receives a POST notification when the task reaches finished or failed."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
-                "basic": {
-                  "summary": "Basic workflow",
+                "default": {
+                  "summary": "Storm Chasers on the Kansas Plains",
                   "value": {
                     "model": "blackforestlabs/flux-kontext-pro/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1"
+                      "prompt": "A wide documentary photograph on an empty two-lane gravel road in western Kansas in late June, minutes before a tornado forms. A massive rotating supercell fills the upper two thirds of the sky: a striated, layered mesocyclone shaped like a stacked saucer, dark slate-green underneath, with a low rotating wall cloud on the left side and a thin shaft of hail glowing white behind it. On the right half of the frame, a dusty silver pickup truck is parked on the road shoulder with both front doors open and a tripod-mounted weather instrument mast on its roof. Two storm chasers stand in front of the truck: a tall woman in a faded red windbreaker holds a tablet showing a radar map and points toward the wall cloud; a shorter man in a grey hoodie and baseball cap crouches beside her with a camera on a small tripod. Behind them, golden wheat stubble fields stretch to a flat horizon where a thin strip of warm sunlight breaks under the storm base, lighting the grass and the side of the truck in gold while everything above is dark and heavy. A barbed-wire fence and a leaning wooden utility pole run along the left edge. Strong wind bends the grass and lifts dust from the road. 24mm lens, eye level, sharp foreground, natural color, realistic cloud structure, film grain. No text, no logos, no watermark.",
+                      "size": "16:9",
+                      "output_format": "png"
+                    }
+                  }
+                },
+                "pro-text-to-image-02": {
+                  "summary": "Travelers at a Snowy Mountain Pass, Ukiyo-e",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-pro/text-to-image",
+                    "input": {
+                      "prompt": "A tall vertical Japanese woodblock print illustration with bold saturated printed color, full-bleed so the image fills the entire frame edge to edge with no border, no margin, no title box and no cartouche. At the top, a jagged snow-covered peak stands against a deep Prussian blue sky that fades to pale blue with a bokashi gradient, with falling snow printed as small white dots. In the middle, a zigzag mountain path climbs between snow-laden pine trees with indigo trunks, and a tiny thatched teahouse with a glowing orange paper lantern sits halfway up. At the bottom, exactly three small travelers walk in a line across a wooden plank bridge over a frozen blue stream: first a man in a wide straw hat and straw rain cape leaning on a staff, second a porter with a wooden frame pack, third a man holding the reins of a brown packhorse with a bright vermilion saddle blanket. Flat areas of color, bold black keyblock outlines, visible wood grain in the sky and snow, slight color misregistration. Palette: Prussian blue, indigo, white, soft grey and vermilion accents. Pure image with no characters or writing of any kind.",
+                      "size": "9:21",
+                      "output_format": "jpg"
+                    }
+                  }
+                },
+                "pro-text-to-image-03": {
+                  "summary": "Antarctic Research Station Cutaway",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-pro/text-to-image",
+                    "input": {
+                      "prompt": "A detailed isometric cutaway illustration of a modular Antarctic research station raised on hydraulic stilts above an ice shelf, with the front wall removed to reveal six connected rooms. From left to right: a laboratory with a microscope, sample freezer and ice cores in clear tubes on a rack; a small kitchen with a steaming pot and four people eating at a table; a bunk room with two stacked beds and one person reading; a communications room with a radio operator wearing headphones in front of screens; a gym with a treadmill; and a garage with an orange snowmobile and a tracked vehicle. On the roof: a weather mast with a spinning anemometer, solar panels and a satellite dish. Outside, a blizzard blows snow across the scene, a line of emperor penguins walks past the stilts, and a red flag marks a trail to a distant fuel depot. Clean vector-like line work, soft pastel shading, cool blue-white exterior contrasted with warm yellow interior lighting, consistent isometric perspective, every room clearly readable. No text, no labels, no logos, no watermark.",
+                      "size": "4:3"
                     }
                   }
                 },
@@ -101,8 +126,9 @@
                   "value": {
                     "model": "blackforestlabs/flux-kontext-pro/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1"
+                      "prompt": "A wide documentary photograph on an empty two-lane gravel road in western Kansas in late June, minutes before a tornado forms. A massive rotating supercell fills the upper two thirds of the sky: a striated, layered mesocyclone shaped like a stacked saucer, dark slate-green underneath, with a low rotating wall cloud on the left side and a thin shaft of hail glowing white behind it. On the right half of the frame, a dusty silver pickup truck is parked on the road shoulder with both front doors open and a tripod-mounted weather instrument mast on its roof. Two storm chasers stand in front of the truck: a tall woman in a faded red windbreaker holds a tablet showing a radar map and points toward the wall cloud; a shorter man in a grey hoodie and baseball cap crouches beside her with a camera on a small tripod. Behind them, golden wheat stubble fields stretch to a flat horizon where a thin strip of warm sunlight breaks under the storm base, lighting the grass and the side of the truck in gold while everything above is dark and heavy. A barbed-wire fence and a leaning wooden utility pole run along the left edge. Strong wind bends the grass and lifts dust from the road. 24mm lens, eye level, sharp foreground, natural color, realistic cloud structure, film grain. No text, no logos, no watermark.",
+                      "size": "16:9",
+                      "output_format": "png"
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -160,16 +186,16 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "2M5RH08SQ7GQGKRE",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-26T10:59:34"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -379,7 +405,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task creation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -409,7 +435,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Model service temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

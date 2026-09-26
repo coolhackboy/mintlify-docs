@@ -23,7 +23,7 @@
         ],
         "summary": "Flux Kontext Max Text to Image",
         "operationId": "submit_blackforestlabs_flux_kontext_max_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.",
+        "description": "Submit a Flux Kontext Max Text to Image task with model and optional callback_url at the request root, and generation parameters inside input.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,10 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "blackforestlabs/flux-kontext-max/text-to-image"
+                    "example": "blackforestlabs/flux-kontext-max/text-to-image",
+                    "enum": [
+                      "blackforestlabs/flux-kontext-max/text-to-image"
+                    ]
                   },
                   "input": {
                     "type": "object",
@@ -50,7 +53,7 @@
                         "type": "string",
                         "maxLength": 2000,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Describe the image to generate using 1–2,000 characters, including at least one non-whitespace character."
                       },
                       "size": {
                         "type": "string",
@@ -64,7 +67,7 @@
                           "9:21"
                         ],
                         "default": "1:1",
-                        "description": "Size."
+                        "description": "Output aspect ratio. Defaults to 1:1."
                       },
                       "output_format": {
                         "type": "string",
@@ -72,7 +75,7 @@
                           "png",
                           "jpg"
                         ],
-                        "description": "Output format."
+                        "description": "Output image file format: png or jpg."
                       }
                     },
                     "additionalProperties": false
@@ -80,19 +83,42 @@
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Public HTTP(S) URL that receives a POST notification when the task reaches finished or failed."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
-                "basic": {
-                  "summary": "Basic workflow",
+                "default": {
+                  "summary": "Through the Porthole of a Deep-Sea Submersible",
                   "value": {
                     "model": "blackforestlabs/flux-kontext-max/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1"
+                      "prompt": "A photograph taken from inside a small deep-sea research submersible, looking through a thick round acrylic porthole at a depth of 1,200 meters. Outside in the black water, a female deep-sea anglerfish hangs close to the glass, seen from the side: a round lumpy dark-brown body, a huge wide mouth full of long translucent needle teeth, and tiny eyes. Growing out of the top of the fish's own head is a thin, flexible fleshy fishing rod, part of its body, that arches forward over its mouth and ends in a small glowing blue-green bioluminescent bulb, the only strong light source outside. The glow lights the fish's teeth and skin from above. Drifting marine snow particles catch the light. On the inside surface of the porthole, faint reflections of the cabin appear: amber-lit analog gauges, a red emergency switch and the soft silhouette of a scientist's face lit by a tablet screen. Tiny condensation droplets bead on the lower edge of the acrylic. A thick steel ring with heavy hex bolts frames the porthole. Extremely low light, high dynamic range, realistic photographic noise. No text, no logos, no watermark.",
+                      "size": "1:1",
+                      "output_format": "png"
+                    }
+                  }
+                },
+                "max-text-to-image-01": {
+                  "summary": "Pitcher Plant Herbarium Plate",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-max/text-to-image",
+                    "input": {
+                      "prompt": "A single hand-colored botanical plate from a nineteenth-century natural history book, photographed flat and straight on in soft daylight. On warm cream paper with faint foxing, a detailed watercolor and engraving of the carnivorous pitcher plant Nepenthes rajah: one large upright urn-shaped pitcher in deep wine red with yellow-green speckles, a ribbed glossy crimson peristome rim around its mouth, a round lid raised above the opening, and a curling tendril joining the base of the pitcher to the tip of a long leathery green leaf. Next to it, a small cutaway of the pitcher shows digestive fluid and a trapped beetle. Delicate engraved line hatching, soft watercolor washes and blooms, fine paper fibers and a slightly uneven plate-mark border. At the top center, one single line of elegant engraved serif capitals reads exactly \"NEPENTHES RAJAH\". That title is the only text on the page: there are no numbers, labels, captions, signatures, stamps or handwriting anywhere else.",
+                      "size": "3:4",
+                      "output_format": "png"
+                    }
+                  }
+                },
+                "max-text-to-image-02": {
+                  "summary": "Salt Caravan at Dawn in the Danakil",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-max/text-to-image",
+                    "input": {
+                      "prompt": "An ultra-wide cinematic panorama of the Danakil Depression in Ethiopia at dawn. A long camel caravan of about twenty camels, each loaded with stacked rectangular slabs of white salt tied with rope, walks in single file from left to right across a vast, perfectly flat salt pan. Afar herders in white and ochre wraps walk beside the camels holding long sticks. The low sun sits just above the horizon on the right, casting very long blue shadows of the camels across the cracked hexagonal salt crust and turning the ground into a gradient of pink, apricot and pale lilac. A thin layer of standing water in the foreground mirrors the caravan and the sky. Distant dark volcanic hills line the horizon under a clear sky fading from peach to deep blue with a few high streaks of cloud. Shot on an anamorphic lens, low camera height, gentle heat haze, fine detail in the salt texture and camel fur, realistic scale. No text, no logos, no watermark.",
+                      "size": "21:9",
+                      "output_format": "jpg"
                     }
                   }
                 },
@@ -101,8 +127,9 @@
                   "value": {
                     "model": "blackforestlabs/flux-kontext-max/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1"
+                      "prompt": "A photograph taken from inside a small deep-sea research submersible, looking through a thick round acrylic porthole at a depth of 1,200 meters. Outside in the black water, a female deep-sea anglerfish hangs close to the glass, seen from the side: a round lumpy dark-brown body, a huge wide mouth full of long translucent needle teeth, and tiny eyes. Growing out of the top of the fish's own head is a thin, flexible fleshy fishing rod, part of its body, that arches forward over its mouth and ends in a small glowing blue-green bioluminescent bulb, the only strong light source outside. The glow lights the fish's teeth and skin from above. Drifting marine snow particles catch the light. On the inside surface of the porthole, faint reflections of the cabin appear: amber-lit analog gauges, a red emergency switch and the soft silhouette of a scientist's face lit by a tablet screen. Tiny condensation droplets bead on the lower edge of the acrylic. A thick steel ring with heavy hex bolts frames the porthole. Extremely low light, high dynamic range, realistic photographic noise. No text, no logos, no watermark.",
+                      "size": "1:1",
+                      "output_format": "png"
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -160,16 +187,16 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "ENZJ08EV0WERQ3QY",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-26T11:05:02"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -379,7 +406,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task creation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -409,7 +436,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Model service temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

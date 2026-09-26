@@ -22,7 +22,7 @@ Use FLUX.2 Flex to rework images or combine references, guiding the subject, sty
 
 ### Image Size
 
-- `size`: Required. Accepted values: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `auto`.
+- `size`: Required. Accepted values: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `auto`. `auto` uses the aspect ratio of the first image in `image_urls`.
 
 ### Resolution
 
@@ -38,19 +38,43 @@ Use FLUX.2 Flex to rework images or combine references, guiding the subject, sty
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Send the input fields listed on this page. Each input URL is a public HTTP(S) URL.
 
 ### Prompt
 
 - `prompt`: Required. Describe the requested changes. Length: **3-5,000 characters**.
-- The value must not be blank when supplied.
 
 ### Image URLs
 
 - `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-8 items. Each item must be an HTTP(S) URL.
 
-## Pricing
+## Verified Example
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+This example was generated through the Vidgo API and is also the default example in the playground. Source and result images are hosted on the Vidgo CDN.
 
-Credits are deducted on submission and refunded if the task fails.
+![Reference image 1](https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/edit/v1/01/input-01.png)
+
+![Reference image 2](https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/edit/v1/01/input-02.png)
+
+![Reference image 3](https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/edit/v1/01/input-03.png)
+
+![Pip and the Glass Garden](https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/edit/v1/01/output.jpg)
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "E4MB5ERGH360DFJI",
+    "status": "finished",
+    "files": [
+      {
+        "file_type": "image",
+        "file_url": "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/edit/v1/01/output.jpg"
+      }
+    ],
+    "created_time": "2026-09-26T11:07:59",
+    "error_message": null,
+    "progress": 100
+  }
+}
+```

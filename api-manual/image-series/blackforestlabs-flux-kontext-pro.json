@@ -23,7 +23,7 @@
         ],
         "summary": "Flux Kontext Pro Edit",
         "operationId": "submit_blackforestlabs_flux_kontext_pro",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Submit a Flux Kontext Pro Edit task with model and optional callback_url at the request root, and generation parameters inside input.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,10 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "blackforestlabs/flux-kontext-pro"
+                    "example": "blackforestlabs/flux-kontext-pro",
+                    "enum": [
+                      "blackforestlabs/flux-kontext-pro"
+                    ]
                   },
                   "input": {
                     "type": "object",
@@ -51,18 +54,18 @@
                         "type": "string",
                         "maxLength": 2000,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Describe the requested image changes using 1–2,000 characters, including at least one non-whitespace character."
                       },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
                           "format": "uri",
-                          "description": "Image urls."
+                          "description": "Publicly accessible HTTP(S) image URL."
                         },
                         "minItems": 1,
                         "maxItems": 1,
-                        "description": "Image urls."
+                        "description": "Source image to edit. Supply exactly 1 publicly accessible HTTP(S) image URL."
                       },
                       "size": {
                         "type": "string",
@@ -76,7 +79,7 @@
                           "9:21"
                         ],
                         "default": "1:1",
-                        "description": "Size."
+                        "description": "Output aspect ratio. Defaults to 1:1."
                       },
                       "output_format": {
                         "type": "string",
@@ -84,7 +87,7 @@
                           "png",
                           "jpg"
                         ],
-                        "description": "Output format."
+                        "description": "Output image file format: png or jpg."
                       }
                     },
                     "additionalProperties": false
@@ -92,22 +95,50 @@
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Public HTTP(S) URL that receives a POST notification when the task reaches finished or failed."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
-                "basic": {
-                  "summary": "Basic workflow",
+                "default": {
+                  "summary": "Renaming a Fishing Boat in Chiloé",
                   "value": {
                     "model": "blackforestlabs/flux-kontext-pro",
                     "input": {
+                      "prompt": "Replace the painted name on the bow \"MARISOL\" with \"ALBATROS\". Paint the new letters in the same hand-painted white capital lettering style, same size, same brush texture, with the same chipping and weathering as the rest of the hull. Keep everything else unchanged: the boat, its sky blue hull and white stripe, the rope and buoy, the pebble beach, the palafito stilt houses, the hills, the overcast light and the camera framing.",
                       "image_urls": [
-                        "https://example.com/image.png"
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-pro/v1/02/input-01.png"
                       ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1"
+                      "size": "16:9",
+                      "output_format": "jpg"
+                    }
+                  }
+                },
+                "pro-edit-01": {
+                  "summary": "Backstrap Loom by Lamplight",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-pro",
+                    "input": {
+                      "prompt": "Change the time of day from bright midday to late night. The only light source is now a single old tin oil lantern with a warm flickering flame, placed on the ground to the left of the woman, casting warm orange light across her face, hands and the textile and long soft shadows on the wall. The sky above the courtyard becomes deep navy with a few stars, the turquoise door and bougainvillea fall mostly into shadow. Keep everything else exactly the same: the woman's face, expression, pose, braid with red ribbons, embroidered huipil, the exact position of her hands on the batten, the diamond pattern of the textile, the loom, the post, the clay jar and the camera framing.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-pro/v1/01/input-01.png"
+                      ],
+                      "size": "4:3",
+                      "output_format": "png"
+                    }
+                  }
+                },
+                "pro-edit-03": {
+                  "summary": "Clearing a Marrakech Riad Courtyard",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-pro",
+                    "input": {
+                      "prompt": "Remove the stacked white plastic chairs, the yellow bucket, the grey mop and the green garden hose. Fill in the areas behind them with the matching zellige mosaic fountain tiles and patterned floor tiles, continuing the existing geometric pattern and the diagonal late-afternoon light and shadows. Keep the fountain, the water, the arches, the carved balconies, the orange trees in terracotta pots and the camera framing exactly the same.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-pro/v1/03/input-01.png"
+                      ],
+                      "size": "3:4"
                     }
                   }
                 },
@@ -116,11 +147,12 @@
                   "value": {
                     "model": "blackforestlabs/flux-kontext-pro",
                     "input": {
+                      "prompt": "Replace the painted name on the bow \"MARISOL\" with \"ALBATROS\". Paint the new letters in the same hand-painted white capital lettering style, same size, same brush texture, with the same chipping and weathering as the rest of the hull. Keep everything else unchanged: the boat, its sky blue hull and white stripe, the rope and buoy, the pebble beach, the palafito stilt houses, the hills, the overcast light and the camera framing.",
                       "image_urls": [
-                        "https://example.com/image.png"
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-pro/v1/02/input-01.png"
                       ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1"
+                      "size": "16:9",
+                      "output_format": "jpg"
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -178,16 +210,16 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "KH8OWRITIOASWYGA",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-26T11:02:37"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -397,7 +429,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task creation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -427,7 +459,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Model service temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

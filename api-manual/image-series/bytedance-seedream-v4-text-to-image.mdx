@@ -42,15 +42,7 @@ Generate image sets with Seedream 4, with output up to 4K for illustrations, des
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted.
-
 ### Prompt
 
 - `prompt`: Required. Describe the desired image. Length: **1-5,000 characters**.
-- The value must not be blank when supplied.
-
-## Pricing
-
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.
+- Include at least one non-whitespace character.

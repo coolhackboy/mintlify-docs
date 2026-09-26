@@ -37,15 +37,33 @@ Create detailed images with FLUX.2 Pro, using natural language to direct subject
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted.
+Send the input fields listed on this page.
 
 ### Prompt
 
 - `prompt`: Required. Describe the desired image. Length: **3-5,000 characters**.
-- The value must not be blank when supplied.
 
-## Pricing
+## Verified Example
 
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
+This example was generated through the Vidgo API and is also the default example in the playground. Source and result images are hosted on the Vidgo CDN.
 
-Credits are deducted on submission and refunded if the task fails.
+![Night Ferry in the Rain](https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-pro/text-to-image/v1/01/output.jpg)
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "FUI8N7NW2JLV34RB",
+    "status": "finished",
+    "files": [
+      {
+        "file_type": "image",
+        "file_url": "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-pro/text-to-image/v1/01/output.jpg"
+      }
+    ],
+    "created_time": "2026-09-26T10:30:10",
+    "error_message": null,
+    "progress": 100
+  }
+}
+```

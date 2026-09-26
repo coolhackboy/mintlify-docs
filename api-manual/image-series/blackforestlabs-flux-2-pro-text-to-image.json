@@ -23,7 +23,7 @@
         ],
         "summary": "FLUX.2 Pro Text to Image",
         "operationId": "submit_blackforestlabs_flux_2_pro_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.",
+        "description": "Send the fields shown for this workflow. Place `prompt`, `size`, and `resolution` inside `input`.",
         "requestBody": {
           "required": true,
           "content": {
@@ -52,7 +52,7 @@
                         "type": "string",
                         "minLength": 3,
                         "maxLength": 5000,
-                        "description": "Prompt."
+                        "description": "Text description of the image to generate, 3-5,000 characters."
                       },
                       "size": {
                         "type": "string",
@@ -66,7 +66,7 @@
                           "2:3",
                           "auto"
                         ],
-                        "description": "Size."
+                        "description": "Aspect ratio of the output image."
                       },
                       "resolution": {
                         "type": "string",
@@ -74,7 +74,7 @@
                           "1K",
                           "2K"
                         ],
-                        "description": "Resolution."
+                        "description": "Output image resolution."
                       }
                     },
                     "additionalProperties": false
@@ -85,17 +85,39 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Keep model and callback_url at the root. Place workflow parameters inside input."
               },
               "examples": {
-                "basic": {
-                  "summary": "Basic workflow",
+                "default": {
+                  "summary": "Night Ferry in the Rain",
                   "value": {
                     "model": "blackforestlabs/flux-2-pro/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "resolution": "1K",
-                      "size": "1:1"
+                      "prompt": "A candid documentary photograph taken at night on the open deck of a small wooden river ferry crossing a wide Southeast Asian river in steady monsoon rain. In the foreground, a middle-aged woman in a translucent green raincoat steadies a dented red motor scooter by its handlebars. Behind her, an elderly man in a conical straw hat shares a folded black umbrella with a schoolgirl in a navy uniform who clutches a paper bag against her chest. At the far right, a young deckhand in rubber boots coils a wet mooring rope. A single sodium-vapor lamp above the wheelhouse casts warm orange light that falls off into deep blue darkness; distant city lights on the far bank blur into soft bokeh and long wavering reflections on the black water. Diagonal rain streaks catch the lamplight, beads of water cling to the scooter's chrome mirror, and the worn deck planks shine with puddles reflecting the lamp. 35mm lens at eye level, shallow depth of field focused on the woman's face, natural skin texture, believable hands, subtle film grain, a quiet and patient mood. No text, no signage, no logos, no watermark.",
+                      "size": "3:2",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "pro-text-to-image-02": {
+                  "summary": "Morning Inside a Mongolian Ger",
+                  "value": {
+                    "model": "blackforestlabs/flux-2-pro/text-to-image",
+                    "input": {
+                      "prompt": "An interior photograph of a traditional Mongolian ger on a cold clear morning, viewed from just inside the low wooden door toward the back wall. Pale sunlight enters through the circular roof crown and forms a bright shaft through faint stove smoke. Exact colour palette: the painted roof crown ring and the radiating roof poles are lacquered in #C8102E crimson with fine #F2A900 saffron-yellow geometric knot patterns; the two central support columns are painted #1B4D89 deep blue; the felt walls are undyed #EDE3D1 wool cream; the floor carpet is #7A2E1F madder brown with cream borders. A cast-iron stove with a steaming kettle stands in the centre, a low painted table holds two small bowls of milk tea, and a folded deel robe lies on a wooden bed at the left. Every coloured surface matches the specified hex values under natural daylight, with authentic hand-painted brush texture, wool fibre detail and soft bounce light. Documentary interior photography, 24mm lens, no people, no text, no logos, no watermark.",
+                      "size": "4:3",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "pro-text-to-image-03": {
+                  "summary": "Tunnel Boring Crew",
+                  "value": {
+                    "model": "blackforestlabs/flux-2-pro/text-to-image",
+                    "input": {
+                      "prompt": "A wide-angle industrial documentary photograph deep underground in a newly excavated metro tunnel. The enormous circular cutterhead of a tunnel boring machine, about twelve metres across, fills the right half of the frame, its steel disc cutters worn and caked with damp grey clay. Three workers in orange high-visibility overalls, white helmets with headlamps and mud-streaked boots inspect the cutters from a narrow steel gantry at mid-height: one points a flashlight at a chipped cutter, one takes notes on a clipboard, and the third holds a long torque wrench. Along the left, curved precast concrete tunnel rings recede into the distance, lit by a string of cool-white work lights that create repeating pools of light and hard shadows. Water drips from the tunnel crown and glistens on the rails of a small muck-removal train. Strong sense of scale between people and machine, realistic steel, concrete and clay textures, humid haze catching the light beams, truthful colour. No brand names, no lettering on the machine or clothing, no watermark.",
+                      "size": "16:9",
+                      "resolution": "1K"
                     }
                   }
                 },
@@ -104,9 +126,9 @@
                   "value": {
                     "model": "blackforestlabs/flux-2-pro/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "resolution": "1K",
-                      "size": "1:1"
+                      "prompt": "A candid documentary photograph taken at night on the open deck of a small wooden river ferry crossing a wide Southeast Asian river in steady monsoon rain. In the foreground, a middle-aged woman in a translucent green raincoat steadies a dented red motor scooter by its handlebars. Behind her, an elderly man in a conical straw hat shares a folded black umbrella with a schoolgirl in a navy uniform who clutches a paper bag against her chest. At the far right, a young deckhand in rubber boots coils a wet mooring rope. A single sodium-vapor lamp above the wheelhouse casts warm orange light that falls off into deep blue darkness; distant city lights on the far bank blur into soft bokeh and long wavering reflections on the black water. Diagonal rain streaks catch the lamplight, beads of water cling to the scooter's chrome mirror, and the worn deck planks shine with puddles reflecting the lamp. 35mm lens at eye level, shallow depth of field focused on the woman's face, natural skin texture, believable hands, subtle film grain, a quiet and patient mood. No text, no signage, no logos, no watermark.",
+                      "size": "3:2",
+                      "resolution": "1K"
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -164,16 +186,16 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "FUI8N7NW2JLV34RB",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-26T10:30:10"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Invalid input, inaccessible media, or insufficient credits",
             "content": {
               "application/json": {
                 "schema": {
@@ -383,7 +405,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Unable to create the generation task",
             "content": {
               "application/json": {
                 "schema": {
