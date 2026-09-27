@@ -20,7 +20,7 @@ Animate a still image with Grok Imagine, using text to shape the scene in six- o
 
 ## Duration Options
 
-- **6, 10 seconds** - Set `duration` as an integer. Required.
+- **6, 10 seconds** - Set `duration` as an integer. Optional; defaults to `6`.
 
 ## Key Features
 
@@ -31,27 +31,16 @@ Animate a still image with Grok Imagine, using text to shape the scene in six- o
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Use the input fields listed below. Supply publicly accessible HTTP(S) URLs for reference images.
 
 ### Prompt
 
 - `prompt`: Required. Describe the scene and desired motion. Length: **1-5,000 characters**.
-- The value must not be blank when supplied.
 
 ### Image URLs
 
 - `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
 
-### Aspect Ratio
-
-- `aspect_ratio`: Optional. Accepted values: `1:1`, `2:3`, `3:2`, `16:9`, `9:16`.
-
 ### Mode
 
 - `mode`: Optional. Accepted values: `fun`, `normal`, `spicy`.
-
-## Pricing
-
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.

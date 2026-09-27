@@ -20,7 +20,7 @@ Create six- or ten-second video scenes with Grok Imagine, using text to guide th
 
 ## Duration Options
 
-- **6, 10 seconds** - Set `duration` as an integer. Required.
+- **6, 10 seconds** - Set `duration` as an integer. Optional; defaults to `6`.
 
 ## Key Features
 
@@ -30,12 +30,11 @@ Create six- or ten-second video scenes with Grok Imagine, using text to guide th
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted.
+Use the input fields listed below.
 
 ### Prompt
 
 - `prompt`: Required. Describe the scene and desired motion. Length: **1-5,000 characters**.
-- The value must not be blank when supplied.
 
 ### Aspect Ratio
 
@@ -44,9 +43,3 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 ### Mode
 
 - `mode`: Optional. Accepted values: `fun`, `normal`, `spicy`.
-
-## Pricing
-
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.

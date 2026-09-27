@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "PoYo AI - Grok Imagine Image API",
+    "title": "Vidgo - Grok Imagine Image API",
     "description": "Grok Imagine Image Generation with text-to-image and image-to-image support",
     "version": "1.0.0"
   },

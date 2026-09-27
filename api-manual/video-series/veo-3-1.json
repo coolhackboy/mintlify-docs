@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "PoYo AI - VEO 3.1 API",
+    "title": "Vidgo - VEO 3.1 API",
     "description": "Fast and high-quality 8-second video generation with Google's VEO 3.1",
     "version": "1.0.0"
   },

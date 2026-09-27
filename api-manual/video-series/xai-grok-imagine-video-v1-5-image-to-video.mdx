@@ -1,60 +1,34 @@
 ---
 title: "Grok Imagine Video 1.5 Image to Video"
-description: "Turn a reference image into a video with Grok Imagine Video 1.5, with output up to 1080p and clips from one to fifteen seconds long."
+description: "Animate one first-frame image with Grok Imagine Video 1.5. Generate 1–15 second videos at 480p, 720p, or 1080p."
 icon: "video"
 openapi: "/api-manual/video-series/xai-grok-imagine-video-v1-5-image-to-video.json POST /api/generate/submit"
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+Submit the request with `VIDGO_API_KEY` and save the returned `task_id`. Use [Query Task Status](/api-manual/task-management/status) to retrieve the video. Provide `callback_url` to receive a [webhook](/api-manual/task-management/webhooks) when the task reaches `finished` or `failed`.
 </Tip>
 
-# Grok Imagine Video 1.5 Image to Video
+## Grok Imagine Video 1.5 Image to Video
 
-Turn a reference image into a video with Grok Imagine Video 1.5, with output up to 1080p and clips from one to fifteen seconds long.
+Animate a single image using a prompt that describes subject motion, camera movement, and sound. The image supplies the first frame and determines the video's aspect ratio.
 
-## Available Models
+## Request
 
-- **xai/grok-imagine-video-v1.5/image-to-video** - Generate video from image input.
+Set `model` to `xai/grok-imagine-video-v1.5/image-to-video`. Place the following parameters inside `input`. Set optional `callback_url` at the request root.
 
-## Duration Options
+### prompt
 
-- **1-15 seconds** - Set `duration` as an integer. Required.
+Required string. Describe the scene and desired motion in **1–4,096 characters**, including at least one non-whitespace character.
 
-## Key Features
+### image_urls
 
-- Generate video from image input.
-- Accepts exactly 1 image in `image_urls`.
-- Choose from `480p`, `720p`, `1080p` output resolutions.
+Required array containing **exactly one** publicly accessible HTTP(S) image URL. Use a URL with a hostname and credential-free access.
 
-## Advanced Parameters
+### resolution
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+Optional string: `480p`, `720p`, or `1080p`. Default: `720p`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+### duration
 
-- Use the required `image_urls` field for this workflow.
-
-### Prompt
-
-- `prompt`: Required. Describe the scene and desired motion. Length: **1-4,096 characters**.
-- The value must not be blank when supplied.
-
-### Image URLs
-
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
-
-### Resolution
-
-- `resolution`: Optional. Accepted values: `480p`, `720p`, `1080p`. Default: `720p`.
-
-### Aspect Ratio
-
-- `aspect_ratio`: Optional. Accepted values: `16:9`, `4:3`, `3:2`, `1:1`, `2:3`, `3:4`, `9:16`. Default: `16:9`.
-
-## Pricing
-
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.
+Optional integer from **1 to 15** seconds. Default: **6**.

@@ -77,6 +77,7 @@
     "/api-manual/video-series/kling-1-6.json",
     "/api-manual/video-series/grok-imagine.json",
     "/api-manual/video-series/grok-imagine-video-1-5.json",
+    "/api-manual/video-series/xai-grok-imagine-video-v1-5-image-to-video.json",
     "/api-manual/video-series/happy-horse.json",
     "/api-manual/video-series/hailuo-2-3.json",
     "/api-manual/video-series/hailuo-02.json",
@@ -367,7 +368,8 @@
               {
                 "group": "Grok (xAI)",
                 "pages": [
-                  "api-manual/image-series/grok-imagine-image",
+                  "api-manual/image-series/xai-grok-imagine-image-text-to-image",
+                  "api-manual/image-series/xai-grok-imagine-image-edit",
                   "api-manual/image-series/xai-grok-imagine-image-v2-0-text-to-image",
                   "api-manual/image-series/xai-grok-imagine-image-v2-0-edit",
                   "api-manual/image-series/xai-grok-imagine-image-quality-text-to-image",
@@ -468,8 +470,9 @@
               {
                 "group": "Grok (xAI)",
                 "pages": [
-                  "api-manual/video-series/grok-imagine",
-                  "api-manual/video-series/grok-imagine-video-1-5"
+                  "api-manual/video-series/xai-grok-imagine-video-text-to-video",
+                  "api-manual/video-series/xai-grok-imagine-video-image-to-video",
+                  "api-manual/video-series/xai-grok-imagine-video-v1-5-image-to-video"
                 ]
               },
               {
