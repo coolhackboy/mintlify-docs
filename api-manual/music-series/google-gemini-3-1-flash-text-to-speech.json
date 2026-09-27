@@ -23,7 +23,7 @@
         ],
         "summary": "Gemini 3.1 Flash TTS",
         "operationId": "submit_google_gemini_3_1_flash_text_to_speech",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, text must not be blank.\n\nUsage is based on text length plus style instruction length.\n\nMulti-speaker input needs two distinct speaker_id aliases containing only letters, digits, or underscores. Omit the single voice field when speakers are provided.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
+        "description": "Generate narration or two-speaker dialogue. Use speaker_id aliases as text prefixes and assign a voice to each speaker. Read the generated audio URLs from files, with file_type set to audio.",
         "requestBody": {
           "required": true,
           "content": {
@@ -92,7 +92,7 @@
                           "Zubenelgenubi"
                         ],
                         "default": "Kore",
-                        "description": "Voice."
+                        "description": "Voice preset for single-speaker speech. Dialogue uses the voices assigned in speakers."
                       },
                       "language_code": {
                         "type": "string",
@@ -185,7 +185,7 @@
                           "Swedish (Sweden)",
                           "Urdu (Pakistan)"
                         ],
-                        "description": "Language code."
+                        "description": "Select the spoken language, or omit this field to detect it from text."
                       },
                       "speakers": {
                         "type": "array",
@@ -194,6 +194,7 @@
                         "items": {
                           "type": "object",
                           "required": [
+                            "voice",
                             "speaker_id"
                           ],
                           "additionalProperties": false,
@@ -232,7 +233,6 @@
                                 "Zephyr",
                                 "Zubenelgenubi"
                               ],
-                              "default": "Kore",
                               "description": "Voice."
                             },
                             "speaker_id": {
@@ -243,7 +243,7 @@
                           },
                           "description": "Speakers."
                         },
-                        "description": "Speakers."
+                        "description": "Provide exactly two speakers with unique speaker_id aliases made of letters, digits and underscores. Speech uses the voice assigned to each speaker."
                       },
                       "temperature": {
                         "type": "number",
@@ -270,7 +270,7 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place speech parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -278,7 +278,8 @@
                   "value": {
                     "model": "google/gemini-3.1-flash/text-to-speech",
                     "input": {
-                      "text": "A quiet forest under soft morning light, with natural detail.",
+                      "text": "Welcome to the studio. [short pause] Let us tell your story.",
+                      "style_instructions": "Warm narration with a relaxed pace.",
                       "voice": "Kore",
                       "temperature": 1,
                       "output_format": "mp3"
@@ -290,12 +291,34 @@
                   "value": {
                     "model": "google/gemini-3.1-flash/text-to-speech",
                     "input": {
-                      "text": "A quiet forest under soft morning light, with natural detail.",
+                      "text": "Welcome to the studio. [short pause] Let us tell your story.",
+                      "style_instructions": "Warm narration with a relaxed pace.",
                       "voice": "Kore",
                       "temperature": 1,
                       "output_format": "mp3"
                     },
                     "callback_url": "https://your-domain.com/callback"
+                  }
+                },
+                "dialogue": {
+                  "summary": "Two-speaker dialogue",
+                  "value": {
+                    "model": "google/gemini-3.1-flash/text-to-speech",
+                    "input": {
+                      "text": "Host: Welcome to Launch Notes.\nGuest: Let us explore the new features.",
+                      "speakers": [
+                        {
+                          "speaker_id": "Host",
+                          "voice": "Charon"
+                        },
+                        {
+                          "speaker_id": "Guest",
+                          "voice": "Kore"
+                        }
+                      ],
+                      "temperature": 1,
+                      "output_format": "ogg_opus"
+                    }
                   }
                 }
               }
@@ -360,7 +383,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Review the request parameters and account balance",
             "content": {
               "application/json": {
                 "schema": {
@@ -570,7 +593,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Generation task creation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -600,7 +623,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Generation service temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

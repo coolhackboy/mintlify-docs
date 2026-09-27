@@ -26,24 +26,24 @@ Convert text into speech with xAI TTS, choosing from five voices and multiple la
 
 - `output_format.codec`: Optional. Accepted values: `mp3`, `wav`, `pcm`, `mulaw`, `alaw`. Default: `mp3`.
 - `output_format.sample_rate`: Optional. Sample rate in Hz. Accepted values: `8000`, `16000`, `22050`, `24000`, `44100`, `48000`. Default: `24000`.
-- `output_format.bit_rate`: Optional. Bitrate in bits per second. Accepted values: `32000`, `64000`, `96000`, `128000`, `192000`, `null`. Default: `128000`.
-- `output_format.bit_rate` applies only to the `mp3` codec.
+- `output_format.bit_rate`: Optional. MP3 bitrate in bits per second. Accepted values: `32000`, `64000`, `96000`, `128000`, `192000`, `null`. MP3 default: `128000`.
+- For `mp3`, use `output_format.bit_rate` to select the bitrate. For `wav`, `pcm`, `mulaw`, and `alaw`, omit `bit_rate` or set it to `null`.
 
 ## Key Features
 
 - Convert text into speech.
 - Select a voice with `voice` and specify the spoken language with `language_code`.
+- Direct pauses, laughter, sighs, whispers, and slower phrases through tags in `text`.
 
 ## Advanced Parameters
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted.
-
 ### Text
 
 - `text`: Required. Supply the text to speak. Length: **1-15,000 characters**.
-- The value must not be blank when supplied.
+- Enter spoken text after trimming leading and trailing whitespace. Tags, punctuation, and spaces within the text count toward the length.
+- Add `[laugh]`, `[pause]`, or `[sigh]` where the sound belongs. Use `<whisper>text</whisper>` for whispered passages and `<slow>text</slow>` for slower delivery.
 
 ### Voice
 
@@ -83,12 +83,22 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 - Read every item in the returned `files` array.
 - Generated audio uses `file_type: "audio"`.
-- Timestamp and alignment files may use `file_type: "other"`. Preserve optional file metadata when present.
+- Use `file_url` to download the generated speech.
 
-## Pricing
+## Request Example
 
-Usage is based on the length of `text`.
-
-Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.
+```json
+{
+  "model": "xai/tts/v1",
+  "input": {
+    "text": "Welcome to our story. [pause] <whisper>Listen closely.</whisper> [laugh] Let us begin.",
+    "voice": "eve",
+    "language_code": "auto",
+    "output_format": {
+      "codec": "mp3",
+      "sample_rate": 24000,
+      "bit_rate": 128000
+    }
+  }
+}
+```

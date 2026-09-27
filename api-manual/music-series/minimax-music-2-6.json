@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API - MiniMax Music 2.6",
-    "description": "Create songs from style prompts and lyrics with MiniMax Music 2.6, with support for instrumentals and automatic lyric refinement.",
+    "description": "Generate songs and instrumental music from style prompts and lyrics.",
     "version": "1.0.0"
   },
   "servers": [
@@ -23,7 +23,7 @@
         ],
         "summary": "MiniMax Music 2.6",
         "operationId": "submit_minimax_music_2_6",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.\n\nSupply lyrics unless instrumental mode or automatic lyrics generation is enabled.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
+        "description": "Generate songs with custom or automatic lyrics, or create instrumental music. Retrieve the completed audio through Query Task Status or a callback_url notification.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,11 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "minimax/music-2.6"
+                    "example": "minimax/music-2.6",
+                    "enum": [
+                      "minimax/music-2.6"
+                    ],
+                    "description": "Model identifier for MiniMax Music 2.6."
                   },
                   "input": {
                     "type": "object",
@@ -51,22 +55,22 @@
                         "type": "string",
                         "minLength": 10,
                         "maxLength": 2000,
-                        "description": "Prompt."
+                        "description": "10–2000 characters describing genre, mood, instrumentation, tempo or vocal direction."
                       },
                       "lyrics": {
                         "type": "string",
                         "maxLength": 3500,
-                        "description": "Lyrics."
+                        "description": "Up to 3500 characters. Supply lyrics when both is_instrumental and lyrics_optimizer are false. For instrumental music, leave lyrics empty."
                       },
                       "lyrics_optimizer": {
                         "type": "boolean",
                         "default": false,
-                        "description": "Lyrics optimizer."
+                        "description": "When true and lyrics is empty, generates lyrics from prompt. Set false for instrumental music."
                       },
                       "is_instrumental": {
                         "type": "boolean",
                         "default": false,
-                        "description": "Is instrumental."
+                        "description": "Set true for instrumental music, with empty lyrics and lyrics_optimizer set to false."
                       },
                       "audio_setting": {
                         "type": "object",
@@ -81,7 +85,7 @@
                               44100
                             ],
                             "default": 44100,
-                            "description": "Sample rate."
+                            "description": "Sample rate in Hz."
                           },
                           "bitrate": {
                             "type": "integer",
@@ -92,7 +96,7 @@
                               256000
                             ],
                             "default": 256000,
-                            "description": "Bitrate."
+                            "description": "Bitrate in bits per second."
                           },
                           "format": {
                             "type": "string",
@@ -102,43 +106,65 @@
                               "pcm"
                             ],
                             "default": "mp3",
-                            "description": "Format."
+                            "description": "Audio file format."
                           }
                         },
-                        "description": "Audio setting."
+                        "description": "Audio output settings containing sample_rate, bitrate and format."
                       }
-                    }
+                    },
+                    "description": "Supply lyrics for vocal music, enable lyrics_optimizer with empty lyrics for automatic writing, or set is_instrumental to true with empty lyrics and lyrics_optimizer false."
                   },
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Optional HTTP(S) callback URL for task completion or failure notifications."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place music parameters inside input."
               },
               "examples": {
-                "basic": {
-                  "summary": "Basic workflow",
+                "custom-lyrics": {
+                  "summary": "Create a song with custom lyrics",
                   "value": {
                     "model": "minimax/music-2.6",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
+                      "prompt": "City pop, 100 BPM, warm female vocals, electric piano, rounded synth bass and a nostalgic evening mood",
+                      "lyrics": "[Verse]\nThe evening lights begin to glow\nWe follow streets we used to know\n[Chorus]\nCarry the melody into the night\nFollow the rhythm until morning light",
                       "lyrics_optimizer": false,
-                      "is_instrumental": true
+                      "is_instrumental": false,
+                      "audio_setting": {
+                        "sample_rate": 44100,
+                        "bitrate": 256000,
+                        "format": "mp3"
+                      }
                     }
                   }
                 },
-                "callback": {
-                  "summary": "Receive a completion callback",
+                "automatic-lyrics": {
+                  "summary": "Generate lyrics from the music prompt",
                   "value": {
                     "model": "minimax/music-2.6",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
+                      "prompt": "Uplifting indie folk song about a rooftop garden, acoustic guitar, gentle drums and warm English vocals",
+                      "lyrics_optimizer": true,
+                      "is_instrumental": false
+                    }
+                  }
+                },
+                "instrumental": {
+                  "summary": "Create an instrumental track",
+                  "value": {
+                    "model": "minimax/music-2.6",
+                    "input": {
+                      "prompt": "Instrumental ambient piano, soft strings, slow flowing rhythm and a peaceful morning atmosphere",
+                      "is_instrumental": true,
                       "lyrics_optimizer": false,
-                      "is_instrumental": true
-                    },
-                    "callback_url": "https://your-domain.com/callback"
+                      "audio_setting": {
+                        "sample_rate": 44100,
+                        "bitrate": 256000,
+                        "format": "wav"
+                      }
+                    }
                   }
                 }
               }
@@ -203,7 +229,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation failed or account credits are insufficient. Review the response detail and correct the request or account balance.",
             "content": {
               "application/json": {
                 "schema": {
@@ -413,7 +439,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task submission failed. Review the response message and retry.",
             "content": {
               "application/json": {
                 "schema": {
