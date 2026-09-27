@@ -21,7 +21,7 @@
         "tags": [
           "Video Series"
         ],
-        "summary": "Wan 2.5 Text to Video",
+        "summary": "Submit Wan 2.5 Text to Video Task",
         "operationId": "submit_alibaba_wan_2_5_text_to_video",
         "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.\n\nThis workflow currently accepts five-second outputs; the longer-duration price is awaiting confirmation.",
         "requestBody": {
@@ -51,7 +51,7 @@
                         "type": "string",
                         "maxLength": 1500,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Describe the subject, scene, and motion. Use 1–1500 characters after trimming surrounding whitespace."
                       },
                       "aspect_ratio": {
                         "type": "string",
@@ -63,27 +63,29 @@
                           "1920*1080",
                           "1080*1920"
                         ],
-                        "description": "Aspect ratio."
+                        "description": "Frame dimensions in pixels, width*height: 832*480, 480*832, 1280*720, 720*1280, 1920*1080, 1080*1920."
                       },
                       "duration": {
                         "type": "integer",
                         "enum": [
-                          5
+                          5,
+                          10
                         ],
                         "default": 5,
-                        "description": "Duration."
+                        "description": "Video duration: 5 or 10 seconds. Default: 5."
                       },
                       "audio": {
                         "type": "string",
-                        "description": "Audio."
+                        "description": "Optional audio file URL to supply a recording for the video.",
+                        "example": "https://example.com/audio.mp3"
                       },
                       "negative_prompt": {
                         "type": "string",
-                        "description": "Negative prompt."
+                        "description": "Optional description of elements to exclude from the scene."
                       },
                       "seed": {
                         "type": "integer",
-                        "description": "Seed."
+                        "description": "Optional integer random seed for reusing generation settings."
                       }
                     },
                     "additionalProperties": false
@@ -94,7 +96,7 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -182,7 +184,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Input validation, media access, or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -392,7 +394,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Generation task creation error",
             "content": {
               "application/json": {
                 "schema": {

@@ -1,66 +1,55 @@
 ---
 title: "Wan 2.5 Image to Video"
-description: "Animate a reference image into a five-second clip with Wan 2.5, with audio input and video output up to 1080p."
+description: "Animate one reference image into a 5 or 10 second video with synchronized audio and output up to 1080p."
 icon: "video"
 openapi: "/api-manual/video-series/alibaba-wan-2-5-image-to-video.json POST /api/generate/submit"
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. Submit the request with `VIDGO_API_KEY`. Save the returned `task_id` to track generation.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. With a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task reaches `finished` or `failed`.
 </Tip>
 
 # Wan 2.5 Image to Video
 
-Animate a reference image into a five-second clip with Wan 2.5, with audio input and video output up to 1080p.
+Animate one reference image into a 5 or 10 second video with synchronized audio and output up to 1080p.
 
-## Available Models
+## Available Model
 
-- **alibaba/wan-2.5/image-to-video** - Generate video from image input.
+- `alibaba/wan-2.5/image-to-video`: Animate a reference image using a motion prompt.
 
-## Duration Options
+## Request Parameters
 
-- **5 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**.
+Set `model` and optional `callback_url` at the request root. Place the following generation parameters inside `input`.
 
-## Key Features
+### prompt
 
-- Generate video from image input.
-- Accepts exactly 1 image in `image_urls`.
-- Choose from `480p`, `720p`, `1080p` output resolutions.
+- `prompt` (string, required): Describe the subject, scene, and motion. Use 1–1500 characters after trimming surrounding whitespace.
 
-## Advanced Parameters
+### image_urls
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `image_urls` (string[], required): Provide exactly one publicly accessible HTTP(S) image URL.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+### resolution
 
-### Prompt
+- `resolution` (string, optional): Output resolution: 480p, 720p, or 1080p. Default: 720p.
 
-- `prompt`: Required. Describe the scene and desired motion. Length: **1-1,500 characters**.
-- The value must not be blank when supplied.
+### duration
 
-### Image URLs
+- `duration` (integer, optional): Video duration: 5 or 10 seconds. Default: 5.
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
+### audio
 
-### Resolution
+- `audio` (string, optional): Optional audio file URL to supply a recording for the video.
 
-- `resolution`: Optional. Accepted values: `480p`, `720p`, `1080p`. Default: `720p`.
+### negative_prompt
 
-### Audio
+- `negative_prompt` (string, optional): Optional description of elements to exclude from the scene.
 
-- `audio`: Optional. Supply the audio input as a string.
+### seed
 
-### Negative Prompt
+- `seed` (integer, optional): Optional integer random seed for reusing generation settings.
 
-- `negative_prompt`: Optional. Describe content to avoid.
+## Retrieve the Video
 
-### Seed
-
-- `seed`: Optional. Set the generation seed. Integer.
-
-## Pricing
-
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.
+Query the task with `task_id`. Continue polling while `status` is `not_started` or `running`. At `finished`, read the video URL from `data.files[].file_url`. At `failed`, read `data.error_message` for the error details.
