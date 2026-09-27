@@ -23,7 +23,7 @@
         ],
         "summary": "ElevenLabs V3 TTS",
         "operationId": "submit_elevenlabs_tts_eleven_v3",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, text must not be blank.\n\nUsage is based on text length.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
+        "description": "Convert text into speech with selectable voices, stability, language settings, and text normalization. Submit a request, then use task_id to retrieve audio and returned timestamp attachments from files.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,10 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "elevenlabs/tts/eleven-v3"
+                    "example": "elevenlabs/tts/eleven-v3",
+                    "enum": [
+                      "elevenlabs/tts/eleven-v3"
+                    ]
                   },
                   "input": {
                     "type": "object",
@@ -51,28 +54,51 @@
                         "type": "string",
                         "minLength": 1,
                         "maxLength": 5000,
-                        "description": "Text."
+                        "description": "Text to speak, containing 1–5,000 characters after leading and trailing whitespace is trimmed."
                       },
                       "voice": {
                         "type": "string",
                         "default": "Rachel",
-                        "description": "Voice."
+                        "description": "Voice name used for speech generation. Select one of the listed voices.",
+                        "enum": [
+                          "Aria",
+                          "Roger",
+                          "Sarah",
+                          "Laura",
+                          "Charlie",
+                          "George",
+                          "Callum",
+                          "River",
+                          "Liam",
+                          "Charlotte",
+                          "Alice",
+                          "Matilda",
+                          "Will",
+                          "Jessica",
+                          "Eric",
+                          "Chris",
+                          "Brian",
+                          "Daniel",
+                          "Lily",
+                          "Bill",
+                          "Rachel"
+                        ]
                       },
                       "stability": {
                         "type": "number",
                         "minimum": 0,
                         "maximum": 1,
                         "default": 0.5,
-                        "description": "Stability."
+                        "description": "Voice stability from 0 to 1."
                       },
                       "timestamps": {
                         "type": "boolean",
                         "default": false,
-                        "description": "Timestamps."
+                        "description": "Set true to request timestamps. Returned timestamps.json is a separate item in files with file_type other."
                       },
                       "language_code": {
                         "type": "string",
-                        "description": "Language code."
+                        "description": "Optional ISO 639-1 language code to specify the spoken language, such as en or zh."
                       },
                       "apply_text_normalization": {
                         "type": "string",
@@ -82,29 +108,58 @@
                           "off"
                         ],
                         "default": "auto",
-                        "description": "Apply text normalization."
+                        "description": "Choose auto, on, or off to control text normalization before speech generation."
                       }
                     }
                   },
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Optional public HTTP(S) URL for finished or failed task notifications."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place speech generation parameters inside input."
               },
               "examples": {
                 "basic": {
-                  "summary": "Basic workflow",
+                  "summary": "Stars in the attic",
                   "value": {
                     "model": "elevenlabs/tts/eleven-v3",
                     "input": {
-                      "text": "A quiet forest under soft morning light, with natural detail.",
-                      "voice": "Rachel",
+                      "text": "[whispers] Wait... that ticking is coming from inside the wall. [curious] This little brass key fits the crack. One turn, and... [excited] the whole ceiling is full of stars! [laughs] Grandpa, you built a planetarium in the attic. [exhales] All these years, it was waiting for us.",
+                      "voice": "Charlotte",
+                      "language_code": "en",
                       "stability": 0.5,
                       "timestamps": false,
                       "apply_text_normalization": "auto"
+                    }
+                  }
+                },
+                "eleven-v3-02": {
+                  "summary": "My first dumpling",
+                  "value": {
+                    "model": "elevenlabs/tts/eleven-v3",
+                    "input": {
+                      "text": "[sighs] 我练了一个下午，面团还是歪歪扭扭的。奶奶看了一眼，说：别急，手放轻一点。[curious] 这样吗？先对折，再慢慢捏紧……[laughs] 真的站住了！虽然像只胖企鹅，但这是我第一次包好饺子。原来，有些本事不是听懂的，是一起做着学会的。",
+                      "voice": "Rachel",
+                      "language_code": "zh",
+                      "stability": 0.5,
+                      "timestamps": false,
+                      "apply_text_normalization": "auto"
+                    }
+                  }
+                },
+                "eleven-v3-03": {
+                  "summary": "The character of sound",
+                  "value": {
+                    "model": "elevenlabs/tts/eleven-v3",
+                    "input": {
+                      "text": "[curious] Why does a violin sound different from a flute when both play the same note? Their fundamental frequency can match, but the overtones do not. [excited] Those extra vibrations give each instrument its own sound. At 440 Hz, the pitch is A; the pattern above it is what makes the voice of the instrument recognizable.",
+                      "voice": "George",
+                      "language_code": "en",
+                      "stability": 0.5,
+                      "timestamps": true,
+                      "apply_text_normalization": "on"
                     }
                   }
                 },
@@ -113,8 +168,9 @@
                   "value": {
                     "model": "elevenlabs/tts/eleven-v3",
                     "input": {
-                      "text": "A quiet forest under soft morning light, with natural detail.",
-                      "voice": "Rachel",
+                      "text": "[whispers] Wait... that ticking is coming from inside the wall. [curious] This little brass key fits the crack. One turn, and... [excited] the whole ceiling is full of stars! [laughs] Grandpa, you built a planetarium in the attic. [exhales] All these years, it was waiting for us.",
+                      "voice": "Charlotte",
+                      "language_code": "en",
                       "stability": 0.5,
                       "timestamps": false,
                       "apply_text_normalization": "auto"
@@ -175,16 +231,16 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "LPV36KJQ0Y2SYT21",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-27T10:45:57"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -394,7 +450,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Unable to create the generation task",
             "content": {
               "application/json": {
                 "schema": {

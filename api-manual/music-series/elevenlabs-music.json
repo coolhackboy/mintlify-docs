@@ -23,7 +23,7 @@
         ],
         "summary": "ElevenLabs Music",
         "operationId": "submit_elevenlabs_music",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, text must not be blank.\n\nUse text or a composition plan, exclusively. Duration and instrumental mode belong to text input; respect_sections_durations belongs to a composition plan. Section durations must total between three and six hundred seconds. Usage is rounded up by started minute. Text without duration uses one started minute.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
+        "description": "Compose music using one creative path: text or composition_plan. With text, set duration and is_instrumental. With composition_plan, set respect_sections_durations. Each section duration is measured in seconds. Read the generated audio from files entries with file_type=audio; preserve accompanying file metadata.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,10 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "elevenlabs/music"
+                    "example": "elevenlabs/music",
+                    "enum": [
+                      "elevenlabs/music"
+                    ]
                   },
                   "input": {
                     "type": "object",
@@ -48,7 +51,7 @@
                         "type": "string",
                         "maxLength": 4100,
                         "minLength": 1,
-                        "description": "Text."
+                        "description": "Music description, 1-4100 characters. Required for the text path."
                       },
                       "composition_plan": {
                         "type": "object",
@@ -65,7 +68,7 @@
                               "type": "string",
                               "description": "Positive global styles."
                             },
-                            "description": "Positive global styles."
+                            "description": "Musical styles to include throughout the track. Use an empty array when no global styles are specified."
                           },
                           "negative_global_styles": {
                             "type": "array",
@@ -73,7 +76,7 @@
                               "type": "string",
                               "description": "Negative global styles."
                             },
-                            "description": "Negative global styles."
+                            "description": "Musical styles to exclude throughout the track. An empty array is valid."
                           },
                           "sections": {
                             "type": "array",
@@ -93,7 +96,7 @@
                                   "type": "string",
                                   "minLength": 1,
                                   "maxLength": 100,
-                                  "description": "Section name."
+                                  "description": "Name of this musical section, such as Intro, Verse, or Chorus; 1-100 characters."
                                 },
                                 "positive_local_styles": {
                                   "type": "array",
@@ -101,7 +104,7 @@
                                     "type": "string",
                                     "description": "Positive local styles."
                                   },
-                                  "description": "Positive local styles."
+                                  "description": "Musical styles and instruments to include in this section. An empty array is valid."
                                 },
                                 "negative_local_styles": {
                                   "type": "array",
@@ -109,44 +112,46 @@
                                     "type": "string",
                                     "description": "Negative local styles."
                                   },
-                                  "description": "Negative local styles."
+                                  "description": "Musical styles to exclude from this section. An empty array is valid."
                                 },
                                 "duration": {
                                   "type": "number",
                                   "minimum": 3,
                                   "maximum": 120,
-                                  "description": "Duration."
+                                  "description": "Duration of this section in seconds, from 3 to 120, including decimals."
                                 },
                                 "lines": {
                                   "type": "array",
                                   "items": {
                                     "type": "string",
                                     "maxLength": 200,
-                                    "description": "Lines."
+                                    "description": "One lyric line of up to 200 characters."
                                   },
-                                  "description": "Lines."
+                                  "description": "Lyrics for this section, one string per line, up to 200 characters per line. Use an empty array for an instrumental section."
                                 }
                               },
                               "description": "Sections."
                             },
-                            "description": "Sections."
+                            "description": "At least one musical section, ordered by its position in the track."
                           }
                         },
-                        "description": "Composition plan."
+                        "description": "Structured global styles and musical sections. Required for the composition-plan path."
                       },
                       "duration": {
                         "type": "number",
                         "minimum": 3,
                         "maximum": 600,
-                        "description": "Duration."
+                        "description": "Song duration in seconds, from 3 to 600, including decimals. Applies to text input."
                       },
                       "is_instrumental": {
                         "type": "boolean",
-                        "description": "Is instrumental."
+                        "description": "Set true to generate instrumental music. Applies to text input; defaults to false in that path.",
+                        "default": false
                       },
                       "respect_sections_durations": {
                         "type": "boolean",
-                        "description": "Respect sections durations."
+                        "description": "Follow the specified section timings. Applies to composition_plan; defaults to true in that path.",
+                        "default": true
                       },
                       "output_format": {
                         "type": "string",
@@ -172,10 +177,55 @@
                           "opus_48000_192"
                         ],
                         "default": "mp3_44100_128",
-                        "description": "Output format."
+                        "description": "Audio encoding, sample rate, and bitrate. Default: mp3_44100_128."
                       }
                     },
-                    "required": []
+                    "required": [],
+                    "oneOf": [
+                      {
+                        "required": [
+                          "text"
+                        ],
+                        "not": {
+                          "anyOf": [
+                            {
+                              "required": [
+                                "composition_plan"
+                              ]
+                            },
+                            {
+                              "required": [
+                                "respect_sections_durations"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "required": [
+                          "composition_plan"
+                        ],
+                        "not": {
+                          "anyOf": [
+                            {
+                              "required": [
+                                "text"
+                              ]
+                            },
+                            {
+                              "required": [
+                                "duration"
+                              ]
+                            },
+                            {
+                              "required": [
+                                "is_instrumental"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
                   },
                   "callback_url": {
                     "type": "string",
@@ -183,17 +233,109 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the root. Place the creative path and its controls inside input."
               },
               "examples": {
                 "basic": {
-                  "summary": "Basic workflow",
+                  "summary": "Spring on the Rooftop",
                   "value": {
                     "model": "elevenlabs/music",
                     "input": {
-                      "text": "A gentle acoustic instrumental piece.",
-                      "duration": 45,
-                      "is_instrumental": true
+                      "composition_plan": {
+                        "positive_global_styles": [
+                          "indie folk with subtle organic electronica",
+                          "96 BPM, 4/4",
+                          "warm clear female lead vocal",
+                          "acoustic guitar, rounded bass, delicate electronic percussion",
+                          "hopeful intimate song about planting a rooftop garden",
+                          "clean spacious studio mix, clear Mandarin and English diction"
+                        ],
+                        "negative_global_styles": [
+                          "harsh distortion",
+                          "crowded arrangement",
+                          "spoken narration",
+                          "abrupt cut off"
+                        ],
+                        "sections": [
+                          {
+                            "section_name": "Acoustic introduction",
+                            "duration": 8,
+                            "positive_local_styles": [
+                              "instrumental only",
+                              "fingerpicked acoustic guitar introduces a memorable gentle motif",
+                              "soft airy pad, no drums"
+                            ],
+                            "negative_local_styles": [],
+                            "lines": []
+                          },
+                          {
+                            "section_name": "Mandarin verse",
+                            "duration": 16,
+                            "positive_local_styles": [
+                              "sing the supplied Mandarin lyrics clearly",
+                              "intimate gentle lead vocal",
+                              "fingerpicked guitar and soft bass, restrained percussion"
+                            ],
+                            "negative_local_styles": [],
+                            "lines": [
+                              "把春天种在屋顶上",
+                              "等风翻过旧砖墙"
+                            ]
+                          },
+                          {
+                            "section_name": "English chorus",
+                            "duration": 16,
+                            "positive_local_styles": [
+                              "sing the supplied English lyrics clearly",
+                              "open uplifting melody",
+                              "full warm drums and bass enter",
+                              "layered backing vocal harmonies, retain the acoustic motif"
+                            ],
+                            "negative_local_styles": [],
+                            "lines": [
+                              "Little seeds above the street",
+                              "Find the sunlight, find the beat"
+                            ]
+                          },
+                          {
+                            "section_name": "Instrumental resolution",
+                            "duration": 8,
+                            "positive_local_styles": [
+                              "instrumental only, no vocals",
+                              "return to fingerpicked guitar motif",
+                              "drums fall away, warm sustained final chord with natural decay"
+                            ],
+                            "negative_local_styles": [],
+                            "lines": []
+                          }
+                        ]
+                      },
+                      "respect_sections_durations": true,
+                      "output_format": "mp3_44100_128"
+                    }
+                  }
+                },
+                "clockmaker-clues": {
+                  "summary": "The Clockmaker's Clues",
+                  "value": {
+                    "model": "elevenlabs/music",
+                    "input": {
+                      "text": "Create a 30-second instrumental jazz cue for a puzzle scene in a clockmaker's workshop. 104 BPM, lightly swinging 4/4, playful curiosity with a hint of mystery. Use plucked upright bass, brushed drums, muted trumpet and vibraphone, each clearly separated in a warm intimate acoustic mix. Begin with a distinctive four-note vibraphone motif over bass; let muted trumpet answer and develop that motif in the middle, while brush accents subtly increase the momentum. Resolve with a short, clean ensemble cadence and allow the last note to decay naturally. No vocals, choir, spoken words, ticking sound effects or abrupt cutoff.",
+                      "duration": 30,
+                      "is_instrumental": true,
+                      "output_format": "mp3_44100_128"
+                    }
+                  }
+                },
+                "kelp-forest-light": {
+                  "summary": "Light Through the Kelp Forest",
+                  "value": {
+                    "model": "elevenlabs/music",
+                    "input": {
+                      "text": "Compose a 40-second instrumental score for a nature documentary gliding through a sunlit underwater kelp forest. 72 BPM, gently flowing 4/4. Felt piano, delicate harp harmonics, soft sustained strings and a subtle low ambient texture; luminous, patient, full of quiet wonder. Start sparsely with isolated felt-piano notes and wide space. Gradually introduce harp and strings into an expansive rising harmony through the middle third, suggesting shafts of light moving through long fronds. Gently thin the arrangement and finish on a peaceful resolved chord with natural reverb decay. Detailed soft dynamics, wide stereo depth, no heavy percussion, no vocals or choir, no narration, no water sound effects, no abrupt cutoff.",
+                      "duration": 40,
+                      "is_instrumental": true,
+                      "output_format": "mp3_44100_128"
                     }
                   }
                 },
@@ -202,9 +344,77 @@
                   "value": {
                     "model": "elevenlabs/music",
                     "input": {
-                      "text": "A gentle acoustic instrumental piece.",
-                      "duration": 45,
-                      "is_instrumental": true
+                      "composition_plan": {
+                        "positive_global_styles": [
+                          "indie folk with subtle organic electronica",
+                          "96 BPM, 4/4",
+                          "warm clear female lead vocal",
+                          "acoustic guitar, rounded bass, delicate electronic percussion",
+                          "hopeful intimate song about planting a rooftop garden",
+                          "clean spacious studio mix, clear Mandarin and English diction"
+                        ],
+                        "negative_global_styles": [
+                          "harsh distortion",
+                          "crowded arrangement",
+                          "spoken narration",
+                          "abrupt cut off"
+                        ],
+                        "sections": [
+                          {
+                            "section_name": "Acoustic introduction",
+                            "duration": 8,
+                            "positive_local_styles": [
+                              "instrumental only",
+                              "fingerpicked acoustic guitar introduces a memorable gentle motif",
+                              "soft airy pad, no drums"
+                            ],
+                            "negative_local_styles": [],
+                            "lines": []
+                          },
+                          {
+                            "section_name": "Mandarin verse",
+                            "duration": 16,
+                            "positive_local_styles": [
+                              "sing the supplied Mandarin lyrics clearly",
+                              "intimate gentle lead vocal",
+                              "fingerpicked guitar and soft bass, restrained percussion"
+                            ],
+                            "negative_local_styles": [],
+                            "lines": [
+                              "把春天种在屋顶上",
+                              "等风翻过旧砖墙"
+                            ]
+                          },
+                          {
+                            "section_name": "English chorus",
+                            "duration": 16,
+                            "positive_local_styles": [
+                              "sing the supplied English lyrics clearly",
+                              "open uplifting melody",
+                              "full warm drums and bass enter",
+                              "layered backing vocal harmonies, retain the acoustic motif"
+                            ],
+                            "negative_local_styles": [],
+                            "lines": [
+                              "Little seeds above the street",
+                              "Find the sunlight, find the beat"
+                            ]
+                          },
+                          {
+                            "section_name": "Instrumental resolution",
+                            "duration": 8,
+                            "positive_local_styles": [
+                              "instrumental only, no vocals",
+                              "return to fingerpicked guitar motif",
+                              "drums fall away, warm sustained final chord with natural decay"
+                            ],
+                            "negative_local_styles": [],
+                            "lines": []
+                          }
+                        ]
+                      },
+                      "respect_sections_durations": true,
+                      "output_format": "mp3_44100_128"
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -262,16 +472,16 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "W6KDNIQQOUAE1K8V",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-27T10:48:12"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Input validation failed or the account requires additional balance",
             "content": {
               "application/json": {
                 "schema": {

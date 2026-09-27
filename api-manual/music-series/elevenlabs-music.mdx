@@ -21,7 +21,7 @@ Compose songs or instrumentals from a text brief or a section-by-section plan, w
 ## Duration Options
 
 - **Text input** - Optional `duration` is a number from **3 to 600 seconds**. Use it only with `text`.
-- **Composition plan** - Each section accepts **3-120 seconds**. The section total must be **3-600 seconds**.
+- **Composition plan** - Each section accepts **3-120 seconds**.
 
 ## Output Options
 
@@ -63,19 +63,19 @@ Compose songs or instrumentals from a text brief or a section-by-section plan, w
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted.
+Choose one creative path: a text brief or a structured composition plan.
 
 - Provide exactly one of `text` or `composition_plan`.
 - `duration` and `is_instrumental` apply only to `text`. Use `respect_sections_durations` only with `composition_plan`.
 
 ### Text
 
-- `text`: Optional. Describe the music to generate. Length: **1-4,100 characters**.
-- The value must not be blank when supplied.
+- `text`: Required for the text path. Describe the music to generate. Length: **1-4,100 characters**.
+- Include a music description with the desired genre, mood, and instruments.
 
 ### Composition Plan
 
-- `composition_plan`: Optional. Describe global styles and an ordered list of musical sections. Supply an object with the fields below.
+- `composition_plan`: Required for the composition-plan path. Describe global styles and an ordered list of musical sections. Supply an object with the fields below.
 
 - `composition_plan.positive_global_styles`: Required. Supply an array. Each item must be a string.
 - `composition_plan.negative_global_styles`: Required. Supply an array. Each item must be a string.
@@ -86,16 +86,16 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 - `composition_plan.sections[].negative_local_styles`: Required. Supply an array. Each item must be a string.
 - `composition_plan.sections[].duration`: Required. Duration in seconds. Number from `3` to `120`.
 - `composition_plan.sections[].lines`: Required. Supply an array. Each item must be a string. Each string is limited to **200 characters**.
-- Section durations are measured in seconds. Their total must be **3-600 seconds**.
+- Section durations are measured in seconds.
 
 ### Instrumental Mode
 
-- `is_instrumental`: Optional. Request instrumental music. Use `true` or `false`.
+- `is_instrumental`: Optional. Request instrumental music with `true`. Default: `false` for the text path.
 - Use only with `text`.
 
 ### Section Timing
 
-- `respect_sections_durations`: Optional. Use only with a composition plan to control adherence to section durations. Use `true` or `false`.
+- `respect_sections_durations`: Optional. Use only with a composition plan to control adherence to section durations. Use `true` or `false`. Default: `true` for the composition-plan path.
 
 ## Output Files
 
@@ -103,10 +103,206 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 - Generated audio uses `file_type: "audio"`.
 - Timestamp and alignment files may use `file_type: "other"`. Preserve optional file metadata when present.
 
-## Pricing
+## Examples
 
-Usage is rounded up by started minute. With `text`, use the requested duration; if omitted, usage is one started minute. With `composition_plan`, use the total section duration.
+Each example pairs a request with its completed task response and generated audio. Submit the request to `POST https://api.vidgo.ai/api/generate/submit`, then query `GET https://api.vidgo.ai/api/generate/status/{task_id}` with the task ID returned by your submission.
 
-Check the Vidgo dashboard for the current rate.
+<AccordionGroup>
 
-Credits are deducted on submission and refunded if the task fails.
+<Accordion title="Spring on the Rooftop">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/music",
+  "input": {
+    "composition_plan": {
+      "positive_global_styles": [
+        "indie folk with subtle organic electronica",
+        "96 BPM, 4/4",
+        "warm clear female lead vocal",
+        "acoustic guitar, rounded bass, delicate electronic percussion",
+        "hopeful intimate song about planting a rooftop garden",
+        "clean spacious studio mix, clear Mandarin and English diction"
+      ],
+      "negative_global_styles": [
+        "harsh distortion",
+        "crowded arrangement",
+        "spoken narration",
+        "abrupt cut off"
+      ],
+      "sections": [
+        {
+          "section_name": "Acoustic introduction",
+          "duration": 8,
+          "positive_local_styles": [
+            "instrumental only",
+            "fingerpicked acoustic guitar introduces a memorable gentle motif",
+            "soft airy pad, no drums"
+          ],
+          "negative_local_styles": [],
+          "lines": []
+        },
+        {
+          "section_name": "Mandarin verse",
+          "duration": 16,
+          "positive_local_styles": [
+            "sing the supplied Mandarin lyrics clearly",
+            "intimate gentle lead vocal",
+            "fingerpicked guitar and soft bass, restrained percussion"
+          ],
+          "negative_local_styles": [],
+          "lines": [
+            "把春天种在屋顶上",
+            "等风翻过旧砖墙"
+          ]
+        },
+        {
+          "section_name": "English chorus",
+          "duration": 16,
+          "positive_local_styles": [
+            "sing the supplied English lyrics clearly",
+            "open uplifting melody",
+            "full warm drums and bass enter",
+            "layered backing vocal harmonies, retain the acoustic motif"
+          ],
+          "negative_local_styles": [],
+          "lines": [
+            "Little seeds above the street",
+            "Find the sunlight, find the beat"
+          ]
+        },
+        {
+          "section_name": "Instrumental resolution",
+          "duration": 8,
+          "positive_local_styles": [
+            "instrumental only, no vocals",
+            "return to fingerpicked guitar motif",
+            "drums fall away, warm sustained final chord with natural decay"
+          ],
+          "negative_local_styles": [],
+          "lines": []
+        }
+      ]
+    },
+    "respect_sections_durations": true,
+    "output_format": "mp3_44100_128"
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "W6KDNIQQOUAE1K8V",
+    "status": "finished",
+    "created_time": "2026-09-27T10:48:12",
+    "progress": 100,
+    "error_message": null,
+    "files": [
+      {
+        "file_type": "audio",
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/01/output.mp3"
+      }
+    ]
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/01/output.mp3" aria-label="Spring on the Rooftop" />
+
+[Download audio](https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/01/output.mp3)
+
+</Accordion>
+
+<Accordion title="The Clockmaker's Clues">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/music",
+  "input": {
+    "text": "Create a 30-second instrumental jazz cue for a puzzle scene in a clockmaker's workshop. 104 BPM, lightly swinging 4/4, playful curiosity with a hint of mystery. Use plucked upright bass, brushed drums, muted trumpet and vibraphone, each clearly separated in a warm intimate acoustic mix. Begin with a distinctive four-note vibraphone motif over bass; let muted trumpet answer and develop that motif in the middle, while brush accents subtly increase the momentum. Resolve with a short, clean ensemble cadence and allow the last note to decay naturally. No vocals, choir, spoken words, ticking sound effects or abrupt cutoff.",
+    "duration": 30,
+    "is_instrumental": true,
+    "output_format": "mp3_44100_128"
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "EBXJLNFGE8WD7114",
+    "status": "finished",
+    "created_time": "2026-09-27T10:48:48",
+    "progress": 100,
+    "error_message": null,
+    "files": [
+      {
+        "file_type": "audio",
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/02/output.mp3"
+      }
+    ]
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/02/output.mp3" aria-label="The Clockmaker's Clues" />
+
+[Download audio](https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/02/output.mp3)
+
+</Accordion>
+
+<Accordion title="Light Through the Kelp Forest">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/music",
+  "input": {
+    "text": "Compose a 40-second instrumental score for a nature documentary gliding through a sunlit underwater kelp forest. 72 BPM, gently flowing 4/4. Felt piano, delicate harp harmonics, soft sustained strings and a subtle low ambient texture; luminous, patient, full of quiet wonder. Start sparsely with isolated felt-piano notes and wide space. Gradually introduce harp and strings into an expansive rising harmony through the middle third, suggesting shafts of light moving through long fronds. Gently thin the arrangement and finish on a peaceful resolved chord with natural reverb decay. Detailed soft dynamics, wide stereo depth, no heavy percussion, no vocals or choir, no narration, no water sound effects, no abrupt cutoff.",
+    "duration": 40,
+    "is_instrumental": true,
+    "output_format": "mp3_44100_128"
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "VAK9IGFH57XPEUGP",
+    "status": "finished",
+    "created_time": "2026-09-27T10:49:30",
+    "progress": 100,
+    "error_message": null,
+    "files": [
+      {
+        "file_type": "audio",
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/03/output.mp3"
+      }
+    ]
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/03/output.mp3" aria-label="Light Through the Kelp Forest" />
+
+[Download audio](https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/03/output.mp3)
+
+</Accordion>
+
+</AccordionGroup>
