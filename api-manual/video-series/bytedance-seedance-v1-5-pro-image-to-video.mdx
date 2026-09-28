@@ -32,16 +32,16 @@ Animate reference images with Seedance 1.5 Pro, with optional generated audio an
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
 
 ### Prompt
 
 - `prompt`: Required. Describe the scene and desired motion. Length: **3-2,500 characters**.
-- The value must not be blank when supplied.
+- Surrounding whitespace is trimmed before counting Unicode characters.
 
 ### Image URLs
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-2 items. Each item must be an HTTP(S) URL.
+- `image_urls`: Required. Supply 1–2 publicly accessible HTTP(S) image URLs. The first image is the first frame; the optional second image is the last frame.
+- Use JPEG, PNG or WebP images, up to **10 MB per image**.
 
 ### Aspect Ratio
 
@@ -49,7 +49,7 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ### Resolution
 
-- `resolution`: Required. Accepted values: `480p`, `720p`, `1080p`.
+- `resolution`: Optional. Accepted values: `480p`, `720p`, `1080p`. Vidgo defaults to `720p` when omitted.
 
 ### Fixed Lens
 
@@ -57,10 +57,4 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ### Generate Audio
 
-- `generate_audio`: Required. Control audio generation. Use `true` or `false`.
-
-## Pricing
-
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.
+- `generate_audio`: Optional. Set `true` to generate synchronized audio or `false` for a silent video. Vidgo defaults to `true` when omitted.

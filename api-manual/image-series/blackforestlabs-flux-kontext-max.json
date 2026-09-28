@@ -23,7 +23,7 @@
         ],
         "summary": "Flux Kontext Max Edit",
         "operationId": "submit_blackforestlabs_flux_kontext_max",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Submit a Flux Kontext Max Edit task with model and optional callback_url at the request root, and generation parameters inside input.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,10 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "blackforestlabs/flux-kontext-max"
+                    "example": "blackforestlabs/flux-kontext-max",
+                    "enum": [
+                      "blackforestlabs/flux-kontext-max"
+                    ]
                   },
                   "input": {
                     "type": "object",
@@ -51,18 +54,18 @@
                         "type": "string",
                         "maxLength": 2000,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Describe the requested image changes using 1–2,000 characters, including at least one non-whitespace character."
                       },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
                           "format": "uri",
-                          "description": "Image urls."
+                          "description": "Publicly accessible HTTP(S) image URL."
                         },
                         "minItems": 1,
                         "maxItems": 1,
-                        "description": "Image urls."
+                        "description": "Source image to edit. Supply exactly 1 publicly accessible HTTP(S) image URL."
                       },
                       "size": {
                         "type": "string",
@@ -76,7 +79,7 @@
                           "9:21"
                         ],
                         "default": "1:1",
-                        "description": "Size."
+                        "description": "Output aspect ratio. Defaults to 1:1."
                       },
                       "output_format": {
                         "type": "string",
@@ -84,7 +87,7 @@
                           "png",
                           "jpg"
                         ],
-                        "description": "Output format."
+                        "description": "Output image file format: png or jpg."
                       }
                     },
                     "additionalProperties": false
@@ -92,22 +95,50 @@
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Public HTTP(S) URL that receives a POST notification when the task reaches finished or failed."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
-                "basic": {
-                  "summary": "Basic workflow",
+                "default": {
+                  "summary": "Same Cellist on a Frozen Lake",
                   "value": {
                     "model": "blackforestlabs/flux-kontext-max",
                     "input": {
+                      "prompt": "Move this exact same musician, still seated on the same wooden chair and playing the same cello, from the practice room to the middle of a vast frozen lake at blue hour. Keep his face, curly black hair, round tortoiseshell glasses, closed eyes, moss-green cable-knit sweater with rolled sleeves, charcoal trousers, brown boots, bow position and the honey-brown cello with its worn varnish identical. The new setting: smooth dark ice with white cracks and a light dusting of snow around the chair, snow-covered pine forest and mountains on the far shore, a deep blue twilight sky with a thin pink glow on the horizon and the first stars. A small warm light from a lantern on the ice beside the chair lights his face and the cello, while the rest of the scene is cool blue. His breath is faintly visible in the cold air. Remove the practice room completely.",
                       "image_urls": [
-                        "https://example.com/image.png"
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-max/v1/01/input-01.png"
                       ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1"
+                      "size": "9:16",
+                      "output_format": "png"
+                    }
+                  }
+                },
+                "max-edit-02": {
+                  "summary": "Icelandic Turf Farm as a Stained-Glass Window",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-max",
+                    "input": {
+                      "prompt": "Transform this photograph into a traditional leaded stained-glass window. Keep the exact composition: the four turf-roofed houses with white fronts and red doors, the stone wall, the gravel path, the waterfall on the basalt cliff, the sheep and the cloudy sky, all in the same positions. Render every shape as pieces of colored cathedral glass separated by thick dark lead came lines, with deep emerald and moss greens for the grass roofs and meadow, cobalt and pale blue glass for the sky and waterfall, ruby red for the doors, and milky white glass for the house fronts and sheep. Show light shining through the glass with subtle bubbles, streaks and uneven thickness, and a thin dark iron frame around the whole window.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-max/v1/02/input-01.png"
+                      ],
+                      "size": "1:1",
+                      "output_format": "jpg"
+                    }
+                  }
+                },
+                "max-edit-03": {
+                  "summary": "Restoring an Old Rice-Terrace Photograph",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-max",
+                    "input": {
+                      "prompt": "Restore and colorize this old photograph. Remove all dust specks, scratches and the diagonal crease, and repair the torn corner so the scene continues naturally. Recover sharp detail and natural contrast. Colorize realistically: vivid young green rice seedlings, muddy brown-green water reflecting a pale blue sky, warm natural skin tones, faded indigo and red traditional woven clothing, grey stone terrace walls with green moss, lush green mountainside and soft white mist on the peaks. Keep the three farmers' faces, poses, hands, positions and the composition exactly the same as the original.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-max/v1/03/input-01.png"
+                      ],
+                      "size": "4:3"
                     }
                   }
                 },
@@ -116,11 +147,12 @@
                   "value": {
                     "model": "blackforestlabs/flux-kontext-max",
                     "input": {
+                      "prompt": "Move this exact same musician, still seated on the same wooden chair and playing the same cello, from the practice room to the middle of a vast frozen lake at blue hour. Keep his face, curly black hair, round tortoiseshell glasses, closed eyes, moss-green cable-knit sweater with rolled sleeves, charcoal trousers, brown boots, bow position and the honey-brown cello with its worn varnish identical. The new setting: smooth dark ice with white cracks and a light dusting of snow around the chair, snow-covered pine forest and mountains on the far shore, a deep blue twilight sky with a thin pink glow on the horizon and the first stars. A small warm light from a lantern on the ice beside the chair lights his face and the cello, while the rest of the scene is cool blue. His breath is faintly visible in the cold air. Remove the practice room completely.",
                       "image_urls": [
-                        "https://example.com/image.png"
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-max/v1/01/input-01.png"
                       ],
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1"
+                      "size": "9:16",
+                      "output_format": "png"
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -178,16 +210,16 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "QBNW6JCNI530EKJV",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-26T11:02:47"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -397,7 +429,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task creation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -427,7 +459,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Model service temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

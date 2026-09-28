@@ -23,7 +23,7 @@
         ],
         "summary": "Grok Imagine Video 1.5 Image to Video",
         "operationId": "submit_xai_grok_imagine_video_v1_5_image_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Animate one first-frame image using a motion prompt. Choose output resolution and duration.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,21 +38,23 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "xai/grok-imagine-video-v1.5/image-to-video"
+                    "example": "xai/grok-imagine-video-v1.5/image-to-video",
+                    "enum": [
+                      "xai/grok-imagine-video-v1.5/image-to-video"
+                    ]
                   },
                   "input": {
                     "type": "object",
                     "required": [
-                      "duration",
-                      "image_urls",
-                      "prompt"
+                      "prompt",
+                      "image_urls"
                     ],
                     "properties": {
                       "prompt": {
                         "type": "string",
                         "maxLength": 4096,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Describe subject motion, camera movement, and sound in 1–4096 characters."
                       },
                       "image_urls": {
                         "type": "array",
@@ -63,7 +65,7 @@
                           "format": "uri",
                           "description": "Image urls."
                         },
-                        "description": "Image urls."
+                        "description": "Provide exactly one publicly accessible HTTP(S) image URL as the first frame."
                       },
                       "resolution": {
                         "type": "string",
@@ -73,39 +75,16 @@
                           "1080p"
                         ],
                         "default": "720p",
-                        "description": "Resolution."
+                        "description": "Output resolution. Default: 720p."
                       },
                       "duration": {
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 15,
-                        "description": "Duration."
-                      },
-                      "aspect_ratio": {
-                        "type": "string",
-                        "enum": [
-                          "16:9",
-                          "4:3",
-                          "3:2",
-                          "1:1",
-                          "2:3",
-                          "3:4",
-                          "9:16"
-                        ],
-                        "default": "16:9",
-                        "description": "Aspect ratio."
+                        "description": "Integer video duration from 1 to 15 seconds. Default: 6.",
+                        "default": 6
                       }
                     },
-                    "allOf": [
-                      {
-                        "not": {
-                          "required": [
-                            "image_urls",
-                            "reference_image_urls"
-                          ]
-                        }
-                      }
-                    ],
                     "additionalProperties": false
                   },
                   "callback_url": {
@@ -114,7 +93,7 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -122,13 +101,12 @@
                   "value": {
                     "model": "xai/grok-imagine-video-v1.5/image-to-video",
                     "input": {
-                      "duration": 1,
+                      "duration": 6,
                       "image_urls": [
                         "https://example.com/image.png"
                       ],
                       "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "resolution": "720p",
-                      "aspect_ratio": "16:9"
+                      "resolution": "720p"
                     }
                   }
                 },
@@ -137,13 +115,12 @@
                   "value": {
                     "model": "xai/grok-imagine-video-v1.5/image-to-video",
                     "input": {
-                      "duration": 1,
+                      "duration": 6,
                       "image_urls": [
                         "https://example.com/image.png"
                       ],
                       "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "resolution": "720p",
-                      "aspect_ratio": "16:9"
+                      "resolution": "720p"
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -210,7 +187,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or balance check failed",
             "content": {
               "application/json": {
                 "schema": {
@@ -420,7 +397,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Unable to create the generation task",
             "content": {
               "application/json": {
                 "schema": {

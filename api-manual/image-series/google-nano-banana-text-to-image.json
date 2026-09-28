@@ -23,7 +23,7 @@
         ],
         "summary": "Nano Banana Text to Image",
         "operationId": "submit_google_nano_banana_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.",
+        "description": "Submit a Nano Banana task with model and optional callback_url at the request root, and generation parameters inside input.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,10 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "google/nano-banana/text-to-image"
+                    "example": "google/nano-banana/text-to-image",
+                    "enum": [
+                      "google/nano-banana/text-to-image"
+                    ]
                   },
                   "input": {
                     "type": "object",
@@ -50,7 +53,7 @@
                         "type": "string",
                         "maxLength": 5000,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Describe the image to generate using 1–5,000 characters, including at least one non-whitespace character."
                       },
                       "size": {
                         "type": "string",
@@ -66,7 +69,7 @@
                           "16:9",
                           "21:9"
                         ],
-                        "description": "Size."
+                        "description": "Output image aspect ratio."
                       }
                     },
                     "additionalProperties": false
@@ -74,10 +77,10 @@
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Public HTTP(S) URL that receives a POST notification when the task reaches finished or failed."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -85,7 +88,8 @@
                   "value": {
                     "model": "google/nano-banana/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail."
+                      "prompt": "A quiet forest under soft morning light, with natural detail.",
+                      "size": "16:9"
                     }
                   }
                 },
@@ -94,7 +98,8 @@
                   "value": {
                     "model": "google/nano-banana/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail."
+                      "prompt": "A quiet forest under soft morning light, with natural detail.",
+                      "size": "16:9"
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -161,7 +166,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -371,7 +376,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task creation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -401,7 +406,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Model service temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

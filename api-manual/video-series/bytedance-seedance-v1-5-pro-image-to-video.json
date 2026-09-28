@@ -23,7 +23,7 @@
         ],
         "summary": "Seedance 1.5 Pro Image to Video",
         "operationId": "submit_bytedance_seedance_v1_5_pro_image_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.",
+        "description": "Submit a Seedance 1.5 Pro image-to-video task. Set model and optional callback_url at the request root and generation parameters inside input.",
         "requestBody": {
           "required": true,
           "content": {
@@ -45,28 +45,26 @@
                     "required": [
                       "aspect_ratio",
                       "duration",
-                      "generate_audio",
                       "image_urls",
-                      "prompt",
-                      "resolution"
+                      "prompt"
                     ],
                     "properties": {
                       "prompt": {
                         "type": "string",
                         "minLength": 3,
                         "maxLength": 2500,
-                        "description": "Prompt."
+                        "description": "Describe the scene, subject actions, camera movement and sound. Supply 3–2,500 Unicode characters after trimming surrounding whitespace."
                       },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
                           "format": "uri",
-                          "description": "Image urls."
+                          "description": "Public HTTP(S) URL of a JPEG, PNG or WebP image."
                         },
                         "maxItems": 2,
                         "minItems": 1,
-                        "description": "Image urls."
+                        "description": "Supply 1–2 publicly accessible HTTP(S) image URLs in order: first frame, then optional last frame. Use JPEG, PNG or WebP images, up to 10 MB each."
                       },
                       "aspect_ratio": {
                         "type": "string",
@@ -78,7 +76,7 @@
                           "16:9",
                           "9:16"
                         ],
-                        "description": "Aspect ratio."
+                        "description": "Output frame aspect ratio: 1:1, 21:9, 4:3, 3:4, 16:9 or 9:16."
                       },
                       "resolution": {
                         "type": "string",
@@ -87,7 +85,8 @@
                           "720p",
                           "1080p"
                         ],
-                        "description": "Resolution."
+                        "description": "Output resolution: 480p, 720p or 1080p. Vidgo defaults to 720p when omitted.",
+                        "default": "720p"
                       },
                       "duration": {
                         "type": "integer",
@@ -96,15 +95,16 @@
                           8,
                           12
                         ],
-                        "description": "Duration."
+                        "description": "Video duration in seconds. Supply the integer 4, 8 or 12."
                       },
                       "fixed_lens": {
                         "type": "boolean",
-                        "description": "Fixed lens."
+                        "description": "Set true to keep the camera fixed, or false to allow camera movement."
                       },
                       "generate_audio": {
                         "type": "boolean",
-                        "description": "Generate audio."
+                        "description": "Set true to generate synchronized audio, or false to generate a silent video. Vidgo defaults to true when omitted.",
+                        "default": true
                       }
                     },
                     "additionalProperties": false
@@ -112,10 +112,10 @@
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Optional public HTTP(S) URL for task completion notifications. Use HTTPS to receive finished or failed task results."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -213,7 +213,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -423,7 +423,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Generation service request failed",
             "content": {
               "application/json": {
                 "schema": {
@@ -453,7 +453,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Generation service temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

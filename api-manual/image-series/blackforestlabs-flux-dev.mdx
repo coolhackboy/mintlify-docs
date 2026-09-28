@@ -1,0 +1,48 @@
+---
+title: "Flux Dev Text to Image"
+description: "Generate images from a text prompt with preset or custom dimensions and PNG or JPEG output."
+icon: "image"
+openapi: "/api-manual/image-series/blackforestlabs-flux-dev.json POST /api/generate/submit"
+---
+
+## Submit a Task
+
+Send `model: "blackforestlabs/flux/dev"` and an `input` object to `POST /api/generate/submit`. Authenticate with `Authorization: Bearer VIDGO_API_KEY`.
+
+- `prompt`: Required string. Describe the image or editing instructions using at least one character after trimming.
+- `size`: Output canvas, default `1:1`. Choose `1:1`, `1:1 HD`, `4:3`, `3:4`, `16:9`, `9:16`, or a custom `WIDTHxHEIGHT` such as `1024x1536`. Custom width and height are positive integers.
+- `n`: Positive integer specifying the output image count, default `1`.
+- `output_format`: `png` or `jpeg`, default `png`.
+
+## Retrieve Images
+
+The submission response returns `data.task_id`. Use [Query Task Status](/api-manual/task-management/status) to follow the task through `not_started`, `running`, `finished`, or `failed`.
+
+Read image URLs from `data.files[].file_url` when the status is `finished`. For `failed`, read `data.error_message`.
+
+You can provide a top-level `callback_url` to receive the terminal result through a [webhook](/api-manual/task-management/webhooks).
+
+## Verified Example
+
+This example was generated through the Vidgo test API. The source and result images are hosted on the Vidgo CDN.
+
+![The Violin Restorer](https://cdn.vidgo.ai/apis/models/blackforestlabs/flux/dev/v1/01/output.png)
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "ZOBDNFN25SVGKU85",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux/dev/v1/01/output.png",
+        "file_type": "image"
+      }
+    ],
+    "created_time": "2026-09-25T11:20:26",
+    "error_message": null,
+    "progress": 100
+  }
+}
+```

@@ -23,7 +23,7 @@
         ],
         "summary": "Grok Imagine Text to Image",
         "operationId": "submit_xai_grok_imagine_image_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.",
+        "description": "Submit a text prompt using the parameters below to generate an image.",
         "requestBody": {
           "required": true,
           "content": {
@@ -50,7 +50,7 @@
                         "type": "string",
                         "maxLength": 5000,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Describe the desired image and visual style. Enter 1–5,000 characters."
                       },
                       "size": {
                         "type": "string",
@@ -61,7 +61,7 @@
                           "9:16",
                           "16:9"
                         ],
-                        "description": "Size."
+                        "description": "Optional output image aspect ratio: 1:1, 2:3, 3:2, 16:9, or 9:16."
                       }
                     },
                     "additionalProperties": false
@@ -72,7 +72,7 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -156,7 +156,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Review the input values, media accessibility, and account balance.",
             "content": {
               "application/json": {
                 "schema": {
@@ -366,7 +366,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task creation failed. Submit a new request to retry.",
             "content": {
               "application/json": {
                 "schema": {
@@ -396,7 +396,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Service temporarily unavailable; retry after the service recovers.",
             "content": {
               "application/json": {
                 "schema": {

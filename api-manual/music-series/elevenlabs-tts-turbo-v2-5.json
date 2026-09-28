@@ -23,7 +23,7 @@
         ],
         "summary": "ElevenLabs TTS Turbo v2.5",
         "operationId": "submit_elevenlabs_tts_turbo_v2_5",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, text must not be blank.\n\nUsage counts trimmed text in UTF-16 code units. Context fields do not add billable characters.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
+        "description": "Place the model parameters inside input. Include 1 to 40,000 Unicode characters of text after trimming leading and trailing whitespace. Read each item in files: generated speech uses file_type=audio. Preserve timestamp files and optional file metadata when present.",
         "requestBody": {
           "required": true,
           "content": {
@@ -50,55 +50,55 @@
                       "voice": {
                         "type": "string",
                         "default": "Rachel",
-                        "description": "Voice."
+                        "description": "Voice name or compatible voice ID. Defaults to Rachel."
                       },
                       "stability": {
                         "type": "number",
                         "minimum": 0,
                         "maximum": 1,
                         "default": 0.5,
-                        "description": "Stability."
+                        "description": "Voice stability from 0 to 1. Defaults to 0.5."
                       },
                       "similarity_boost": {
                         "type": "number",
                         "minimum": 0,
                         "maximum": 1,
                         "default": 0.75,
-                        "description": "Similarity boost."
+                        "description": "Voice similarity strength from 0 to 1. Defaults to 0.75."
                       },
                       "style": {
                         "type": "number",
                         "minimum": 0,
                         "maximum": 1,
                         "default": 0,
-                        "description": "Style."
+                        "description": "Style exaggeration from 0 to 1. Defaults to 0."
                       },
                       "speed": {
                         "type": "number",
                         "minimum": 0.7,
                         "maximum": 1.2,
                         "default": 1,
-                        "description": "Speed."
+                        "description": "Speech speed from 0.7 to 1.2. Values below 1 slow the delivery; values above 1 speed it up. Defaults to 1."
                       },
                       "timestamps": {
                         "type": "boolean",
                         "default": false,
-                        "description": "Timestamps."
+                        "description": "Request timestamp data alongside the generated audio. Defaults to false."
                       },
                       "previous_text": {
                         "type": "string",
                         "nullable": true,
-                        "description": "Previous text."
+                        "description": "Text preceding the current segment, used to guide continuity across narration segments."
                       },
                       "next_text": {
                         "type": "string",
                         "nullable": true,
-                        "description": "Next text."
+                        "description": "Text following the current segment, used to guide continuity across narration segments."
                       },
                       "language_code": {
                         "type": "string",
                         "nullable": true,
-                        "description": "Language code."
+                        "description": "ISO 639-1 language code for the spoken language, such as en, fr, de, ja, vi, hu, or no."
                       },
                       "apply_text_normalization": {
                         "type": "string",
@@ -108,13 +108,13 @@
                           "off"
                         ],
                         "default": "auto",
-                        "description": "Apply text normalization."
+                        "description": "Prepare numbers, dates, and currencies for speech: auto selects normalization automatically, on enables it, and off reads the supplied text directly. Defaults to auto."
                       },
                       "text": {
                         "type": "string",
                         "minLength": 1,
                         "maxLength": 40000,
-                        "description": "Text."
+                        "description": "Text to convert to speech. Include 1 to 40,000 Unicode characters after trimming leading and trailing whitespace."
                       }
                     }
                   },
@@ -124,22 +124,59 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Place model and optional callback_url at the request root, and the speech parameters inside input."
               },
               "examples": {
                 "basic": {
-                  "summary": "Basic workflow",
+                  "summary": "One fold at a time",
                   "value": {
                     "model": "elevenlabs/tts/turbo-v2.5",
                     "input": {
-                      "text": "A quiet forest under soft morning light, with natural detail.",
-                      "voice": "Rachel",
-                      "stability": 0.5,
                       "similarity_boost": 0.75,
                       "style": 0,
-                      "speed": 1,
+                      "apply_text_normalization": "auto",
+                      "text": "Almost there. Fold the top corner down until it meets the center crease. Now press along the edge with your fingertip. That's it. Turn the paper over, and we'll make the next fold together.",
+                      "voice": "Rachel",
+                      "language_code": "en",
+                      "speed": 1.05,
+                      "stability": 0.5,
+                      "timestamps": false
+                    }
+                  }
+                },
+                "turbo-stargazing-zh": {
+                  "summary": "Finding north in the night sky",
+                  "value": {
+                    "model": "elevenlabs/tts/turbo-v2.5",
+                    "input": {
+                      "similarity_boost": 0.75,
+                      "style": 0,
+                      "apply_text_normalization": "auto",
+                      "text": "今晚，我们先找到北斗七星，再从勺口两颗星的方向寻找北极星。它看起来并不耀眼，却能帮我们辨认北方。在黑暗中安静地等待片刻，你会发现，夜空远比第一眼看到的更丰富。",
+                      "voice": "Aria",
+                      "language_code": "zh",
+                      "speed": 0.95,
+                      "stability": 0.6,
+                      "timestamps": true
+                    }
+                  }
+                },
+                "turbo-memory-es": {
+                  "summary": "Two cups of tea",
+                  "value": {
+                    "model": "elevenlabs/tts/turbo-v2.5",
+                    "input": {
+                      "similarity_boost": 0.75,
+                      "style": 0,
+                      "apply_text_normalization": "auto",
+                      "text": "Hoy volví a la casa de mi abuela. En la cocina seguía el reloj de siempre, cinco minutos adelantado. Preparé dos tazas de té por costumbre y, al darme cuenta, sonreí. Algunos gestos también guardan recuerdos.",
+                      "voice": "Sarah",
+                      "language_code": "es",
+                      "speed": 0.98,
+                      "stability": 0.45,
                       "timestamps": false,
-                      "apply_text_normalization": "auto"
+                      "previous_text": "Hacía años que no cruzaba aquella puerta.",
+                      "next_text": "Después abrí las ventanas para dejar entrar la luz."
                     }
                   }
                 },
@@ -148,14 +185,15 @@
                   "value": {
                     "model": "elevenlabs/tts/turbo-v2.5",
                     "input": {
-                      "text": "A quiet forest under soft morning light, with natural detail.",
-                      "voice": "Rachel",
-                      "stability": 0.5,
                       "similarity_boost": 0.75,
                       "style": 0,
-                      "speed": 1,
-                      "timestamps": false,
-                      "apply_text_normalization": "auto"
+                      "apply_text_normalization": "auto",
+                      "text": "Almost there. Fold the top corner down until it meets the center crease. Now press along the edge with your fingertip. That's it. Turn the paper over, and we'll make the next fold together.",
+                      "voice": "Rachel",
+                      "language_code": "en",
+                      "speed": 1.05,
+                      "stability": 0.5,
+                      "timestamps": false
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -213,16 +251,16 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "QKTPQMIP4AZY1LGE",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-27T10:51:18"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation error. Check the input parameter types, text length, and numeric ranges.",
             "content": {
               "application/json": {
                 "schema": {
@@ -432,7 +470,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task creation error. Retry the request after checking the service status.",
             "content": {
               "application/json": {
                 "schema": {

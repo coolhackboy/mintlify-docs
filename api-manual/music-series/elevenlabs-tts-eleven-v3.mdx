@@ -28,16 +28,15 @@ Turn text into spoken audio with ElevenLabs V3, with selectable voices, language
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted.
-
 ### Text
 
 - `text`: Required. Supply the text to speak. Length: **1-5,000 characters**.
-- The value must not be blank when supplied.
+- Leading and trailing whitespace is trimmed before the character limit is checked.
 
 ### Voice
 
 - `voice`: Optional. Select the voice. String. Default: `Rachel`.
+- Available values: `Aria`, `Roger`, `Sarah`, `Laura`, `Charlie`, `George`, `Callum`, `River`, `Liam`, `Charlotte`, `Alice`, `Matilda`, `Will`, `Jessica`, `Eric`, `Chris`, `Brian`, `Daniel`, `Lily`, `Bill`, `Rachel`.
 
 ### Stability
 
@@ -49,7 +48,7 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ### Language Code
 
-- `language_code`: Optional. String.
+- `language_code`: Optional. ISO 639-1 language code, such as `en` for English or `zh` for Chinese.
 
 ### Apply Text Normalization
 
@@ -59,12 +58,157 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 - Read every item in the returned `files` array.
 - Generated audio uses `file_type: "audio"`.
-- Timestamp and alignment files may use `file_type: "other"`. Preserve optional file metadata when present.
+- Read returned `timestamps.json` as a separate item with `file_type: "other"`. Preserve optional file metadata when present.
 
-## Pricing
+## Examples
 
-Usage is based on the length of `text`.
+Each example pairs a request with its completed task response and generated audio. Submit the request to `POST https://api.vidgo.ai/api/generate/submit`, then query `GET https://api.vidgo.ai/api/generate/status/{task_id}` with the task ID returned by your submission.
 
-Check the Vidgo dashboard for the current rate.
+<AccordionGroup>
 
-Credits are deducted on submission and refunded if the task fails.
+<Accordion title="Stars in the attic">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/tts/eleven-v3",
+  "input": {
+    "text": "[whispers] Wait... that ticking is coming from inside the wall. [curious] This little brass key fits the crack. One turn, and... [excited] the whole ceiling is full of stars! [laughs] Grandpa, you built a planetarium in the attic. [exhales] All these years, it was waiting for us.",
+    "voice": "Charlotte",
+    "language_code": "en",
+    "stability": 0.5,
+    "timestamps": false,
+    "apply_text_normalization": "auto"
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "LPV36KJQ0Y2SYT21",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/01/speech.mp3",
+        "file_type": "audio",
+        "file_name": "speech.mp3"
+      }
+    ],
+    "created_time": "2026-09-27T10:45:57",
+    "error_message": null,
+    "progress": 100
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/01/speech.mp3" aria-label="Stars in the attic" />
+
+[Download audio](https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/01/speech.mp3)
+
+</Accordion>
+
+<Accordion title="My first dumpling">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/tts/eleven-v3",
+  "input": {
+    "text": "[sighs] 我练了一个下午，面团还是歪歪扭扭的。奶奶看了一眼，说：别急，手放轻一点。[curious] 这样吗？先对折，再慢慢捏紧……[laughs] 真的站住了！虽然像只胖企鹅，但这是我第一次包好饺子。原来，有些本事不是听懂的，是一起做着学会的。",
+    "voice": "Rachel",
+    "language_code": "zh",
+    "stability": 0.5,
+    "timestamps": false,
+    "apply_text_normalization": "auto"
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "VLXQ5DI7PNWFRJQ4",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/02/speech.mp3",
+        "file_type": "audio",
+        "file_name": "speech.mp3"
+      }
+    ],
+    "created_time": "2026-09-27T10:46:38",
+    "error_message": null,
+    "progress": 100
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/02/speech.mp3" aria-label="My first dumpling" />
+
+[Download audio](https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/02/speech.mp3)
+
+</Accordion>
+
+<Accordion title="The character of sound">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/tts/eleven-v3",
+  "input": {
+    "text": "[curious] Why does a violin sound different from a flute when both play the same note? Their fundamental frequency can match, but the overtones do not. [excited] Those extra vibrations give each instrument its own sound. At 440 Hz, the pitch is A; the pattern above it is what makes the voice of the instrument recognizable.",
+    "voice": "George",
+    "language_code": "en",
+    "stability": 0.5,
+    "timestamps": true,
+    "apply_text_normalization": "on"
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "0E09515629QS87GR",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/03/speech.mp3",
+        "file_type": "audio",
+        "file_name": "speech.mp3"
+      },
+      {
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/03/timestamps.json",
+        "file_type": "other",
+        "file_name": "timestamps.json"
+      }
+    ],
+    "created_time": "2026-09-27T10:47:13",
+    "error_message": null,
+    "progress": 100
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/03/speech.mp3" aria-label="The character of sound" />
+
+[Download audio](https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/03/speech.mp3)
+
+[Download timestamps.json](https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/03/timestamps.json)
+
+</Accordion>
+
+</AccordionGroup>

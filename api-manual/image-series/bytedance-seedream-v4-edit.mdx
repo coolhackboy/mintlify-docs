@@ -31,6 +31,7 @@ Transform images with Seedream 4 using multiple visual references, with batch va
 ### Image Count
 
 - `n`: Optional. Number of images to generate. Integer from `1` to `15`. Default: `1`.
+- The number of `image_urls` plus `n` totals 15 or fewer.
 
 ## Key Features
 
@@ -43,19 +44,13 @@ Transform images with Seedream 4 using multiple visual references, with batch va
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Input image URLs use HTTP(S) and point to publicly accessible image files.
 
 ### Prompt
 
 - `prompt`: Required. Describe the requested changes. Length: **1-5,000 characters**.
-- The value must not be blank when supplied.
+- Include at least one non-whitespace character.
 
 ### Image URLs
 
 - `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-10 items. Each item must be an HTTP(S) URL.
-
-## Pricing
-
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.

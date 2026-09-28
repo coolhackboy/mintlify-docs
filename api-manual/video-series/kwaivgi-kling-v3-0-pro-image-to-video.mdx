@@ -26,7 +26,7 @@ Animate image references with Kling 3.0 Pro, with support for multiple shots, in
 ## Key Features
 
 - Generate video from image input.
-- Accepts at least 1 image in `image_urls`.
+- Provide 1–2 images in `image_urls`.
 - Describe individual shots with `multi_prompt` and enable `multi_shots`.
 - Supply additional subject references through `kling_elements`.
 
@@ -34,24 +34,24 @@ Animate image references with Kling 3.0 Pro, with support for multiple shots, in
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Use the input fields listed below. Send durations as JSON integers and switches as JSON booleans. Use public HTTP(S) media URLs with a hostname and URL-based access.
 
 - Each `multi_prompt` shot requires a nonblank `prompt` and an integer `duration` from **1 to 12 seconds**.
-- The shot durations must sum to the requested `duration`. Set `multi_shots: true` when using `multi_prompt`; enabling `multi_shots` also requires `multi_prompt`.
-- When supplying `kling_elements`, provide exactly one starting image in `image_urls`.
+- The shot durations must sum to the requested `duration`. Set `multi_shots: true` and `sound: true` when using `multi_prompt`.
+- When supplying `kling_elements`, provide `image_urls` and reference the element by `@element_name` in the prompt.
 
 ### Image URLs
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply at least 1 item. Each item must be an HTTP(S) URL.
+- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1–2 items: the start frame first, followed by an optional end frame. For multiple shots, provide one start frame. Each item must be an HTTP(S) URL.
 
 ### Prompt
 
-- `prompt`: Optional. Describe the scene and desired motion. Length: **1-2,500 characters**.
-- The value must not be blank when supplied.
+- `prompt`: Required when `multi_shots` is `false`. Describe the scene and desired motion. Length: **1-2,500 characters**.
+- Use nonblank text for each prompt.
 
 ### Multi-Prompt
 
-- `multi_prompt`: Optional. Supply an array. Each item is an object.
+- `multi_prompt`: Required when `multi_shots` is `true`. Supply a nonempty array. Each item is an object.
 
 - `multi_prompt[].prompt`: Required. Maximum length: **2,500 characters**.
 - `multi_prompt[].duration`: Required. Duration in seconds. Integer from `1` to `12`.
@@ -63,23 +63,17 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ### Sound
 
-- `sound`: Optional. Control audio generation. Use `true` or `false`. Default: `true`.
+- `sound`: Optional. Set `true` to generate audio or `false` for a silent single shot. Multiple shots require `true`. Default: `true`.
 
 ### Kling Elements
 
 - `kling_elements`: Optional. Provide element-reference objects. Supply an array. Each item is an object.
 
-- `kling_elements[].name`: Required. String.
+- `kling_elements[].name`: Required. Nonblank element name used in `@element_name` references.
 - `kling_elements[].description`: Optional. String.
-- `kling_elements[].element_input_urls`: Optional. Supply an array. Each item must be an HTTP(S) URL.
-- `kling_elements[].element_input_video_urls`: Optional. Supply an array. Each item must be an HTTP(S) URL.
+- `kling_elements[].element_input_urls`: Provide 2–4 JPG/PNG image URLs, up to 10 MB per image, when defining the element with images.
+- `kling_elements[].element_input_video_urls`: Provide one MP4/MOV video URL, up to 50 MB, when defining the element with video. Choose one media type per element.
 
 ### Aspect Ratio
 
-- `aspect_ratio`: Optional. Accepted values: `1:1`, `16:9`, `9:16`.
-
-## Pricing
-
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.
+- `aspect_ratio`: Optional. Accepted values: `1:1`, `16:9`, `9:16`. The first frame determines the output aspect ratio.

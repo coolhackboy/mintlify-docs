@@ -28,11 +28,11 @@ Create spoken narration with ElevenLabs Turbo v2.5, shaping pacing, vocal style,
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted.
+The parameters below define the `input` object for this model.
 
 ### Voice
 
-- `voice`: Optional. Select the voice. String. Default: `Rachel`.
+- `voice`: Optional. Select a voice name or compatible voice ID. String. Default: `Rachel`.
 
 ### Stability
 
@@ -64,16 +64,15 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ### Language Code
 
-- `language_code`: Optional. String. Also accepts `null`.
+- `language_code`: Optional. Set the spoken language with an ISO 639-1 code, such as `en`, `fr`, `de`, `ja`, `vi`, `hu`, or `no`. Also accepts `null`.
 
 ### Apply Text Normalization
 
-- `apply_text_normalization`: Optional. Select text normalization behavior. Accepted values: `auto`, `on`, `off`. Default: `auto`.
+- `apply_text_normalization`: Optional. Control how numbers, dates, and currencies are prepared for speech: `auto` selects normalization automatically, `on` enables it, and `off` reads the supplied text directly. Default: `auto`.
 
 ### Text
 
-- `text`: Required. Supply the text to speak. Length: **1-40,000 characters**.
-- The value must not be blank when supplied.
+- `text`: Required. Supply the text to speak. Length: **1-40,000 Unicode characters** after trimming leading and trailing whitespace. Include at least one visible text character.
 
 ## Output Files
 
@@ -81,10 +80,162 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 - Generated audio uses `file_type: "audio"`.
 - Timestamp and alignment files may use `file_type: "other"`. Preserve optional file metadata when present.
 
-## Pricing
+## Examples
 
-Usage counts trimmed `text` in UTF-16 code units. `previous_text` and `next_text` do not add billable characters.
+Each example pairs a request with its completed task response and generated audio. Submit the request to `POST https://api.vidgo.ai/api/generate/submit`, then query `GET https://api.vidgo.ai/api/generate/status/{task_id}` with the task ID returned by your submission.
 
-Check the Vidgo dashboard for the current rate.
+<AccordionGroup>
 
-Credits are deducted on submission and refunded if the task fails.
+<Accordion title="One fold at a time">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/tts/turbo-v2.5",
+  "input": {
+    "similarity_boost": 0.75,
+    "style": 0,
+    "apply_text_normalization": "auto",
+    "text": "Almost there. Fold the top corner down until it meets the center crease. Now press along the edge with your fingertip. That's it. Turn the paper over, and we'll make the next fold together.",
+    "voice": "Rachel",
+    "language_code": "en",
+    "speed": 1.05,
+    "stability": 0.5,
+    "timestamps": false
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "QKTPQMIP4AZY1LGE",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/tts/turbo-v2.5/v1/01/output.mp3",
+        "file_type": "audio"
+      }
+    ],
+    "created_time": "2026-09-27T10:51:18",
+    "error_message": null,
+    "progress": 100
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/tts/turbo-v2.5/v1/01/output.mp3" aria-label="One fold at a time" />
+
+[Download audio](https://cdn.vidgo.ai/apis/models/elevenlabs/tts/turbo-v2.5/v1/01/output.mp3)
+
+</Accordion>
+
+<Accordion title="Finding north in the night sky">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/tts/turbo-v2.5",
+  "input": {
+    "similarity_boost": 0.75,
+    "style": 0,
+    "apply_text_normalization": "auto",
+    "text": "今晚，我们先找到北斗七星，再从勺口两颗星的方向寻找北极星。它看起来并不耀眼，却能帮我们辨认北方。在黑暗中安静地等待片刻，你会发现，夜空远比第一眼看到的更丰富。",
+    "voice": "Aria",
+    "language_code": "zh",
+    "speed": 0.95,
+    "stability": 0.6,
+    "timestamps": true
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "2OAYYBTX2HQT9R8P",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/tts/turbo-v2.5/v1/02/output.mp3",
+        "file_type": "audio"
+      },
+      {
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/tts/turbo-v2.5/v1/02/attachment-1.json",
+        "file_type": "other"
+      }
+    ],
+    "created_time": "2026-09-27T10:54:18",
+    "error_message": null,
+    "progress": 100
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/tts/turbo-v2.5/v1/02/output.mp3" aria-label="Finding north in the night sky" />
+
+[Download audio](https://cdn.vidgo.ai/apis/models/elevenlabs/tts/turbo-v2.5/v1/02/output.mp3)
+
+[Download attachment-1.json](https://cdn.vidgo.ai/apis/models/elevenlabs/tts/turbo-v2.5/v1/02/attachment-1.json)
+
+</Accordion>
+
+<Accordion title="Two cups of tea">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/tts/turbo-v2.5",
+  "input": {
+    "similarity_boost": 0.75,
+    "style": 0,
+    "apply_text_normalization": "auto",
+    "text": "Hoy volví a la casa de mi abuela. En la cocina seguía el reloj de siempre, cinco minutos adelantado. Preparé dos tazas de té por costumbre y, al darme cuenta, sonreí. Algunos gestos también guardan recuerdos.",
+    "voice": "Sarah",
+    "language_code": "es",
+    "speed": 0.98,
+    "stability": 0.45,
+    "timestamps": false,
+    "previous_text": "Hacía años que no cruzaba aquella puerta.",
+    "next_text": "Después abrí las ventanas para dejar entrar la luz."
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "KAQOQIL83QO5TWA6",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/tts/turbo-v2.5/v1/03/output.mp3",
+        "file_type": "audio"
+      }
+    ],
+    "created_time": "2026-09-27T10:52:07",
+    "error_message": null,
+    "progress": 100
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/tts/turbo-v2.5/v1/03/output.mp3" aria-label="Two cups of tea" />
+
+[Download audio](https://cdn.vidgo.ai/apis/models/elevenlabs/tts/turbo-v2.5/v1/03/output.mp3)
+
+</Accordion>
+
+</AccordionGroup>

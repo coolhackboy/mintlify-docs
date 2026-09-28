@@ -23,7 +23,7 @@
         ],
         "summary": "Seedream 4.5 Text to Image",
         "operationId": "submit_bytedance_seedream_v4_5_text_to_image",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.\n\nCustom size width and height must both be positive.",
+        "description": "Submit an asynchronous image generation task. Provide a prompt containing 1–3,000 characters. Custom size width and height are positive integers.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,10 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "bytedance/seedream/v4.5/text-to-image"
+                    "example": "bytedance/seedream/v4.5/text-to-image",
+                    "enum": [
+                      "bytedance/seedream/v4.5/text-to-image"
+                    ]
                   },
                   "input": {
                     "type": "object",
@@ -50,7 +53,7 @@
                         "type": "string",
                         "maxLength": 3000,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Describe the desired image using 1–3,000 characters, including at least one non-whitespace character."
                       },
                       "size": {
                         "oneOf": [
@@ -68,12 +71,12 @@
                               "2:3",
                               "21:9"
                             ],
-                            "description": "Size."
+                            "description": "Resolution or aspect-ratio preset."
                           },
                           {
                             "type": "string",
                             "pattern": "^\\s*\\d+\\s*[xX]\\s*\\d+\\s*$",
-                            "description": "Size."
+                            "description": "Custom dimensions, for example 1920x4096. Width and height are positive integers."
                           },
                           {
                             "type": "object",
@@ -84,31 +87,33 @@
                             "properties": {
                               "width": {
                                 "type": "integer",
-                                "description": "Width."
+                                "description": "Output width in pixels; a positive integer.",
+                                "minimum": 1
                               },
                               "height": {
                                 "type": "integer",
-                                "description": "Height."
+                                "description": "Output height in pixels; a positive integer.",
+                                "minimum": 1
                               }
                             },
                             "additionalProperties": false,
-                            "description": "Size."
+                            "description": "Custom dimensions as an object with positive integer width and height."
                           }
                         ],
                         "default": "1:1",
-                        "description": "Size."
+                        "description": "Output size: 2K, 4K, a ratio preset, a WIDTHxHEIGHT string, or an object with positive integer width and height. Default: 1:1."
                       },
                       "n": {
                         "type": "integer",
                         "minimum": 1,
                         "maximum": 15,
                         "default": 1,
-                        "description": "N."
+                        "description": "Number of images to generate, from 1 to 15. Default: 1."
                       },
                       "enable_safety_checker": {
                         "type": "boolean",
                         "default": true,
-                        "description": "Enable safety checker."
+                        "description": "Set true to enable safety checking or false to disable it. Default: true."
                       }
                     },
                     "additionalProperties": false
@@ -116,19 +121,43 @@
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Optional public HTTP(S) URL for task completion notifications."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
                 "basic": {
-                  "summary": "Basic workflow",
+                  "summary": "Verified default: Aurora Ridge Station Cutaway",
                   "value": {
                     "model": "bytedance/seedream/v4.5/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1",
+                      "prompt": "A detailed isometric cutaway illustration of a small polar research station standing on steel stilts on an Antarctic ice shelf, shown like a page from a science museum guidebook. The roof and front wall are removed so six rooms are visible, each with a small clean sans-serif label plate printed exactly: \"LAB\" (a scientist examining an ice core under a lamp), \"GALLEY\" (two people cooking soup at a steaming stove), \"BUNKS\" (stacked beds with colorful quilts), \"RADIO\" (an operator with headphones in front of dials), \"GREENHOUSE\" (lettuce and tomatoes under pink grow lights) and \"GARAGE\" (an orange snowcat being repaired). A banner across the top reads exactly \"AURORA RIDGE STATION\", and a small thermometer sign beside the entrance reads \"-38°C\". Tiny figures, pipes, ladders and cables connect the rooms logically. Outside: blowing snow, a weather mast, a pale green aurora in the dark sky. Crisp linework, soft flat colors, consistent isometric perspective, every label spelled correctly and legible, no extra text, no watermark.",
+                      "size": "4:3",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "verified-2": {
+                  "summary": "Verified example: Net Mender in the Monsoon",
+                  "value": {
+                    "model": "bytedance/seedream/v4.5/text-to-image",
+                    "input": {
+                      "prompt": "A vertical documentary portrait photograph of an elderly South Indian fisherwoman mending a fishing net under the palm-thatched roof of a wooden pier in Kerala during a monsoon evening. She sits cross-legged, wearing a faded turquoise cotton sari with a thin gold border and a small silver nose stud; her deeply lined face, silver hair tied back and weathered hands pulling green nylon mesh are in sharp focus. Blue-hour light from the backwaters mixes with the warm glow of a single hanging kerosene lantern beside her. Heavy rain falls in streaks beyond the roof edge, drops glint on the net, wet planks reflect the lantern, and a few moored wooden boats fade into the misty background. Natural skin texture with pores and fine wrinkles, calm dignified expression looking at her work, 85mm lens, shallow depth of field, believable hands with five fingers, no text, no watermark.",
+                      "size": "3:4",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "verified-3": {
+                  "summary": "Verified example: Inside the Rotating Habitat",
+                  "value": {
+                    "model": "bytedance/seedream/v4.5/text-to-image",
+                    "input": {
+                      "prompt": "An ultra-wide cinematic panorama from inside a gigantic rotating cylindrical space habitat. The camera stands on a gravel path in the foreground among ripening wheat and small orchards; the farmland, rivers, winding roads and small white villages continuously curve upward on both sides and arc overhead, so the opposite side of the cylinder is visible high in the sky, upside down, with tiny fields and lakes. A long glowing sun-line runs along the central axis, casting soft morning light and thin wispy clouds drifting in the middle of the cylinder. At the far end, a huge circular end-cap window shows black space, stars and a slice of a blue planet. A cyclist rides along the path for scale. Coherent curved perspective, consistent lighting, atmospheric haze with distance, grounded realistic sci-fi concept art with photographic detail, no text, no logos, no watermark.",
+                      "size": "21:9",
                       "n": 1,
                       "enable_safety_checker": true
                     }
@@ -139,12 +168,39 @@
                   "value": {
                     "model": "bytedance/seedream/v4.5/text-to-image",
                     "input": {
-                      "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "size": "1:1",
+                      "prompt": "A detailed isometric cutaway illustration of a small polar research station standing on steel stilts on an Antarctic ice shelf, shown like a page from a science museum guidebook. The roof and front wall are removed so six rooms are visible, each with a small clean sans-serif label plate printed exactly: \"LAB\" (a scientist examining an ice core under a lamp), \"GALLEY\" (two people cooking soup at a steaming stove), \"BUNKS\" (stacked beds with colorful quilts), \"RADIO\" (an operator with headphones in front of dials), \"GREENHOUSE\" (lettuce and tomatoes under pink grow lights) and \"GARAGE\" (an orange snowcat being repaired). A banner across the top reads exactly \"AURORA RIDGE STATION\", and a small thermometer sign beside the entrance reads \"-38°C\". Tiny figures, pipes, ladders and cables connect the rooms logically. Outside: blowing snow, a weather mast, a pale green aurora in the dark sky. Crisp linework, soft flat colors, consistent isometric perspective, every label spelled correctly and legible, no extra text, no watermark.",
+                      "size": "4:3",
                       "n": 1,
                       "enable_safety_checker": true
                     },
                     "callback_url": "https://your-domain.com/callback"
+                  }
+                },
+                "custom-string": {
+                  "summary": "Custom size string",
+                  "value": {
+                    "model": "bytedance/seedream/v4.5/text-to-image",
+                    "input": {
+                      "prompt": "A detailed isometric cutaway illustration of a small polar research station standing on steel stilts on an Antarctic ice shelf, shown like a page from a science museum guidebook. The roof and front wall are removed so six rooms are visible, each with a small clean sans-serif label plate printed exactly: \"LAB\" (a scientist examining an ice core under a lamp), \"GALLEY\" (two people cooking soup at a steaming stove), \"BUNKS\" (stacked beds with colorful quilts), \"RADIO\" (an operator with headphones in front of dials), \"GREENHOUSE\" (lettuce and tomatoes under pink grow lights) and \"GARAGE\" (an orange snowcat being repaired). A banner across the top reads exactly \"AURORA RIDGE STATION\", and a small thermometer sign beside the entrance reads \"-38°C\". Tiny figures, pipes, ladders and cables connect the rooms logically. Outside: blowing snow, a weather mast, a pale green aurora in the dark sky. Crisp linework, soft flat colors, consistent isometric perspective, every label spelled correctly and legible, no extra text, no watermark.",
+                      "size": "1920x4096",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "custom-object": {
+                  "summary": "Custom size object",
+                  "value": {
+                    "model": "bytedance/seedream/v4.5/text-to-image",
+                    "input": {
+                      "prompt": "A detailed isometric cutaway illustration of a small polar research station standing on steel stilts on an Antarctic ice shelf, shown like a page from a science museum guidebook. The roof and front wall are removed so six rooms are visible, each with a small clean sans-serif label plate printed exactly: \"LAB\" (a scientist examining an ice core under a lamp), \"GALLEY\" (two people cooking soup at a steaming stove), \"BUNKS\" (stacked beds with colorful quilts), \"RADIO\" (an operator with headphones in front of dials), \"GREENHOUSE\" (lettuce and tomatoes under pink grow lights) and \"GARAGE\" (an orange snowcat being repaired). A banner across the top reads exactly \"AURORA RIDGE STATION\", and a small thermometer sign beside the entrance reads \"-38°C\". Tiny figures, pipes, ladders and cables connect the rooms logically. Outside: blowing snow, a weather mast, a pale green aurora in the dark sky. Crisp linework, soft flat colors, consistent isometric perspective, every label spelled correctly and legible, no extra text, no watermark.",
+                      "size": {
+                        "width": 2304,
+                        "height": 3072
+                      },
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
                   }
                 }
               }
@@ -200,16 +256,16 @@
                 "example": {
                   "code": 200,
                   "data": {
-                    "task_id": "task-unified-example",
+                    "task_id": "PGQCZ3X31DC6OEXQ",
                     "status": "running",
-                    "created_time": "2026-09-10T08:00:00"
+                    "created_time": "2026-09-25T16:14:03"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -239,7 +295,7 @@
             }
           },
           "401": {
-            "description": "Invalid credentials",
+            "description": "Authentication error",
             "content": {
               "application/json": {
                 "schema": {
@@ -359,7 +415,7 @@
             }
           },
           "429": {
-            "description": "Rate or API key credit limit exceeded",
+            "description": "Request rate or account limit reached",
             "content": {
               "application/json": {
                 "schema": {
@@ -389,7 +445,7 @@
             }
           },
           "500": {
-            "description": "Internal error",
+            "description": "Internal server error",
             "content": {
               "application/json": {
                 "schema": {
@@ -419,7 +475,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task creation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -449,7 +505,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Service temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

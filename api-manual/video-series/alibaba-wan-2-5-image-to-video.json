@@ -21,7 +21,7 @@
         "tags": [
           "Video Series"
         ],
-        "summary": "Wan 2.5 Image to Video",
+        "summary": "Submit Wan 2.5 Image to Video Task",
         "operationId": "submit_alibaba_wan_2_5_image_to_video",
         "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nThis workflow currently accepts five-second outputs; the longer-duration price is awaiting confirmation.",
         "requestBody": {
@@ -51,18 +51,18 @@
                         "type": "string",
                         "maxLength": 1500,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Describe the subject, scene, and motion. Use 1–1500 characters after trimming surrounding whitespace."
                       },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
                           "format": "uri",
-                          "description": "Image urls."
+                          "description": "Publicly accessible HTTP(S) image URL."
                         },
                         "minItems": 1,
                         "maxItems": 1,
-                        "description": "Image urls."
+                        "description": "Provide exactly one publicly accessible HTTP(S) image URL."
                       },
                       "resolution": {
                         "type": "string",
@@ -72,27 +72,29 @@
                           "1080p"
                         ],
                         "default": "720p",
-                        "description": "Resolution."
+                        "description": "Output resolution: 480p, 720p, or 1080p. Default: 720p."
                       },
                       "duration": {
                         "type": "integer",
                         "enum": [
-                          5
+                          5,
+                          10
                         ],
                         "default": 5,
-                        "description": "Duration."
+                        "description": "Video duration: 5 or 10 seconds. Default: 5."
                       },
                       "audio": {
                         "type": "string",
-                        "description": "Audio."
+                        "description": "Optional audio file URL to supply a recording for the video.",
+                        "example": "https://example.com/audio.mp3"
                       },
                       "negative_prompt": {
                         "type": "string",
-                        "description": "Negative prompt."
+                        "description": "Optional description of elements to exclude from the scene."
                       },
                       "seed": {
                         "type": "integer",
-                        "description": "Seed."
+                        "description": "Optional integer random seed for reusing generation settings."
                       }
                     },
                     "additionalProperties": false
@@ -103,7 +105,7 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place generation parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -197,7 +199,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Input validation, media access, or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -407,7 +409,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Generation task creation error",
             "content": {
               "application/json": {
                 "schema": {

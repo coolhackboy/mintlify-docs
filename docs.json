@@ -31,6 +31,9 @@
     "/api-manual/image-series/nano-banana.json",
     "/api-manual/image-series/nano-banana-2.json",
     "/api-manual/image-series/nano-banana-2-new.json",
+    "/api-manual/image-series/blackforestlabs-flux-schnell.json",
+    "/api-manual/image-series/blackforestlabs-flux-dev.json",
+    "/api-manual/image-series/blackforestlabs-flux-dev-image-to-image.json",
     "/api-manual/image-series/flux-2.json",
     "/api-manual/image-series/flux-kontext.json",
     "/api-manual/image-series/seedream-4.json",
@@ -43,6 +46,7 @@
     "/api-manual/image-series/qwen-image-3-0-pro-text-to-image.json",
     "/api-manual/image-series/qwen-image-3-0-pro-edit.json",
     "/api-manual/image-series/z-image.json",
+    "/api-manual/image-series/alibaba-z-image-turbo.json",
     "/api-manual/image-series/grok-imagine-image.json",
     "/api-manual/video-series/sora-2-official.json",
     "/api-manual/video-series/sora-2-pro-official.json",
@@ -73,6 +77,7 @@
     "/api-manual/video-series/kling-1-6.json",
     "/api-manual/video-series/grok-imagine.json",
     "/api-manual/video-series/grok-imagine-video-1-5.json",
+    "/api-manual/video-series/xai-grok-imagine-video-v1-5-image-to-video.json",
     "/api-manual/video-series/happy-horse.json",
     "/api-manual/video-series/hailuo-2-3.json",
     "/api-manual/video-series/hailuo-02.json",
@@ -291,14 +296,16 @@
                 "group": "OpenAI",
                 "pages": [
                   "api-manual/image-series/gpt-4o-image",
-                  "api-manual/image-series/gpt-image-1.5",
+                  "api-manual/image-series/openai-gpt-image-1-5-text-to-image",
+                  "api-manual/image-series/openai-gpt-image-1-5-edit",
                   "api-manual/image-series/gpt-image-2"
                 ]
               },
               {
                 "group": "Google",
                 "pages": [
-                  "api-manual/image-series/nano-banana",
+                  "api-manual/image-series/google-nano-banana-text-to-image",
+                  "api-manual/image-series/google-nano-banana-edit",
                   "api-manual/image-series/nano-banana-2",
                   "api-manual/image-series/nano-banana-2-new",
                   "api-manual/image-series/google-nano-banana-2-lite-text-to-image",
@@ -308,16 +315,30 @@
               {
                 "group": "Flux",
                 "pages": [
+                  "api-manual/image-series/blackforestlabs-flux-schnell",
+                  "api-manual/image-series/blackforestlabs-flux-dev",
+                  "api-manual/image-series/blackforestlabs-flux-dev-image-to-image",
                   "api-manual/image-series/flux-2",
-                  "api-manual/image-series/flux-kontext"
+                  "api-manual/image-series/blackforestlabs-flux-2-pro-text-to-image",
+                  "api-manual/image-series/blackforestlabs-flux-2-pro-edit",
+                  "api-manual/image-series/blackforestlabs-flux-2-flex-text-to-image",
+                  "api-manual/image-series/blackforestlabs-flux-2-flex-edit",
+                  "api-manual/image-series/blackforestlabs-flux-kontext-pro-text-to-image",
+                  "api-manual/image-series/blackforestlabs-flux-kontext-pro",
+                  "api-manual/image-series/blackforestlabs-flux-kontext-max-text-to-image",
+                  "api-manual/image-series/blackforestlabs-flux-kontext-max"
                 ]
               },
               {
                 "group": "Seedream",
                 "pages": [
                   "api-manual/image-series/seedream-4",
-                  "api-manual/image-series/seedream-4-5",
-                  "api-manual/image-series/seedream-5-0-lite",
+                  "api-manual/image-series/bytedance-seedream-v4-text-to-image",
+                  "api-manual/image-series/bytedance-seedream-v4-edit",
+                  "api-manual/image-series/bytedance-seedream-v4-5-text-to-image",
+                  "api-manual/image-series/bytedance-seedream-v4-5-edit",
+                  "api-manual/image-series/bytedance-seedream-v5-lite-text-to-image",
+                  "api-manual/image-series/bytedance-seedream-v5-lite-edit",
                   "api-manual/image-series/seedream-v5-0-pro",
                   "api-manual/image-series/seedream-v5-0-pro-edit"
                 ]
@@ -341,13 +362,14 @@
                   "api-manual/image-series/alibaba-wan-2-7-image-edit",
                   "api-manual/image-series/alibaba-wan-2-7-text-to-image-pro",
                   "api-manual/image-series/alibaba-wan-2-7-image-edit-pro",
-                  "api-manual/image-series/z-image"
+                  "api-manual/image-series/alibaba-z-image-turbo"
                 ]
               },
               {
                 "group": "Grok (xAI)",
                 "pages": [
-                  "api-manual/image-series/grok-imagine-image",
+                  "api-manual/image-series/xai-grok-imagine-image-text-to-image",
+                  "api-manual/image-series/xai-grok-imagine-image-edit",
                   "api-manual/image-series/xai-grok-imagine-image-v2-0-text-to-image",
                   "api-manual/image-series/xai-grok-imagine-image-v2-0-edit",
                   "api-manual/image-series/xai-grok-imagine-image-quality-text-to-image",
@@ -435,8 +457,9 @@
               {
                 "group": "Grok (xAI)",
                 "pages": [
-                  "api-manual/video-series/grok-imagine",
-                  "api-manual/video-series/grok-imagine-video-1-5"
+                  "api-manual/video-series/xai-grok-imagine-video-text-to-video",
+                  "api-manual/video-series/xai-grok-imagine-video-image-to-video",
+                  "api-manual/video-series/xai-grok-imagine-video-v1-5-image-to-video"
                 ]
               },
               {

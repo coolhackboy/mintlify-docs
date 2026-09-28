@@ -23,7 +23,7 @@
         ],
         "summary": "Kling 3.0 4K Text to Video",
         "operationId": "submit_kwaivgi_kling_v3_0_4k_text_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.\n\nEach multi_prompt shot needs a nonblank prompt and positive integer duration. Shot durations must sum to the requested duration. When multi_shots is available, enable it with multi_prompt; multi_shots=true also requires multi_prompt.",
+        "description": "Generate a single shot with prompt or a sequence with multi_prompt. Multiple shots use multi_shots=true and sound=true; their durations add up to duration (3–15 seconds).",
         "requestBody": {
           "required": true,
           "content": {
@@ -44,15 +44,17 @@
                     "type": "object",
                     "required": [
                       "duration",
-                      "prompt",
                       "sound"
                     ],
+                    "description": "Input parameters for generation",
                     "properties": {
                       "prompt": {
                         "type": "string",
+                        "description": "Required when multi_shots=false. Describe the scene, action and camera movement in 1–2,500 characters.",
                         "maxLength": 2500,
+                        "example": "A street musician playing violin on a rainy evening, reflections shimmering on wet cobblestones",
                         "minLength": 1,
-                        "description": "Prompt."
+                        "pattern": "\\S"
                       },
                       "multi_prompt": {
                         "type": "array",
@@ -65,38 +67,86 @@
                           "properties": {
                             "prompt": {
                               "type": "string",
+                              "description": "Prompt text for this shot",
                               "maxLength": 2500,
-                              "description": "Prompt."
+                              "minLength": 1,
+                              "pattern": "\\S"
                             },
                             "duration": {
                               "type": "integer",
+                              "description": "Duration in seconds for this shot (1-12)",
                               "minimum": 1,
-                              "maximum": 12,
-                              "description": "Duration."
+                              "maximum": 12
                             }
                           },
-                          "additionalProperties": false,
-                          "description": "Multi prompt."
+                          "additionalProperties": false
                         },
-                        "description": "Multi prompt."
+                        "description": "Required when multi_shots=true. Supply shot prompts and integer durations of 1–12 seconds. Their sum must equal duration, from 3 to 15 seconds.",
+                        "example": [
+                          {
+                            "prompt": "A surfer paddling out into the ocean as waves build on the horizon",
+                            "duration": 4
+                          },
+                          {
+                            "prompt": "The surfer catches a massive wave and rides it toward the shore at sunset",
+                            "duration": 5
+                          }
+                        ],
+                        "minItems": 1
                       },
                       "duration": {
                         "type": "integer",
+                        "description": "Integer duration from 3 to 15 seconds. In multi-shot mode, equal to the sum of multi_prompt durations.",
                         "minimum": 3,
                         "maximum": 15,
-                        "description": "Duration."
+                        "example": 5
                       },
                       "multi_shots": {
                         "type": "boolean",
+                        "description": "Use false with prompt for a single shot, or true with multi_prompt and sound=true for multiple shots. Default: false.",
                         "default": false,
-                        "description": "Multi shots."
+                        "example": false
                       },
                       "sound": {
                         "type": "boolean",
-                        "description": "Sound."
+                        "description": "Set true to generate audio or false for a silent single shot. Multi-shot generation requires true.",
+                        "example": true
                       }
                     },
-                    "additionalProperties": false
+                    "additionalProperties": false,
+                    "oneOf": [
+                      {
+                        "properties": {
+                          "multi_shots": {
+                            "enum": [
+                              false
+                            ]
+                          }
+                        },
+                        "required": [
+                          "prompt"
+                        ]
+                      },
+                      {
+                        "properties": {
+                          "multi_shots": {
+                            "enum": [
+                              true
+                            ]
+                          },
+                          "sound": {
+                            "enum": [
+                              true
+                            ]
+                          }
+                        },
+                        "required": [
+                          "multi_shots",
+                          "multi_prompt",
+                          "sound"
+                        ]
+                      }
+                    ]
                   },
                   "callback_url": {
                     "type": "string",
@@ -104,7 +154,7 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Place model and callback_url at the request root, and generation parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -194,7 +244,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account authorization error",
             "content": {
               "application/json": {
                 "schema": {
@@ -404,7 +454,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Generation task submission error",
             "content": {
               "application/json": {
                 "schema": {

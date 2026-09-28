@@ -23,7 +23,7 @@
         ],
         "summary": "Kling 3.0 Pro Image to Video",
         "operationId": "submit_kwaivgi_kling_v3_0_pro_image_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nEach multi_prompt shot needs a nonblank prompt and positive integer duration. Shot durations must sum to the requested duration. When multi_shots is available, enable it with multi_prompt; multi_shots=true also requires multi_prompt.\n\nkling_elements requires exactly one starting image.",
+        "description": "Generate a single shot with prompt or a sequence with multi_prompt. Multiple shots use multi_shots=true and sound=true; their durations add up to duration (3–15 seconds).",
         "requestBody": {
           "required": true,
           "content": {
@@ -46,22 +46,28 @@
                       "duration",
                       "image_urls"
                     ],
+                    "description": "Input parameters for generation",
                     "properties": {
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "format": "uri",
-                          "description": "Image urls."
+                          "format": "uri"
                         },
+                        "description": "Provide a start frame at image_urls[0] and an optional end frame at image_urls[1]. Use 1–2 images for a single shot and one start frame for multiple shots.",
+                        "example": [
+                          "https://example.com/start-frame.png"
+                        ],
                         "minItems": 1,
-                        "description": "Image urls."
+                        "maxItems": 2
                       },
                       "prompt": {
                         "type": "string",
+                        "description": "Required when multi_shots=false. Describe the scene, action and camera movement in 1–2,500 characters.",
                         "maxLength": 2500,
+                        "example": "A street musician playing violin on a rainy evening, reflections shimmering on wet cobblestones",
                         "minLength": 1,
-                        "description": "Prompt."
+                        "pattern": "\\S"
                       },
                       "multi_prompt": {
                         "type": "array",
@@ -74,36 +80,51 @@
                           "properties": {
                             "prompt": {
                               "type": "string",
+                              "description": "Prompt text for this shot",
                               "maxLength": 2500,
-                              "description": "Prompt."
+                              "minLength": 1,
+                              "pattern": "\\S"
                             },
                             "duration": {
                               "type": "integer",
+                              "description": "Duration in seconds for this shot (1-12)",
                               "minimum": 1,
-                              "maximum": 12,
-                              "description": "Duration."
+                              "maximum": 12
                             }
                           },
-                          "additionalProperties": false,
-                          "description": "Multi prompt."
+                          "additionalProperties": false
                         },
-                        "description": "Multi prompt."
+                        "description": "Required when multi_shots=true. Supply shot prompts and integer durations of 1–12 seconds. Their sum must equal duration, from 3 to 15 seconds.",
+                        "example": [
+                          {
+                            "prompt": "A surfer paddling out into the ocean as waves build on the horizon",
+                            "duration": 4
+                          },
+                          {
+                            "prompt": "The surfer catches a massive wave and rides it toward the shore at sunset",
+                            "duration": 5
+                          }
+                        ],
+                        "minItems": 1
                       },
                       "duration": {
                         "type": "integer",
+                        "description": "Integer duration from 3 to 15 seconds. In multi-shot mode, equal to the sum of multi_prompt durations.",
                         "minimum": 3,
                         "maximum": 15,
-                        "description": "Duration."
+                        "example": 5
                       },
                       "multi_shots": {
                         "type": "boolean",
+                        "description": "Use false with prompt for a single shot, or true with multi_prompt and sound=true for multiple shots. Default: false.",
                         "default": false,
-                        "description": "Multi shots."
+                        "example": false
                       },
                       "sound": {
                         "type": "boolean",
+                        "description": "Set true to generate audio or false for a silent single shot. Multi-shot generation requires true. Default: true.",
                         "default": true,
-                        "description": "Sound."
+                        "example": true
                       },
                       "kling_elements": {
                         "type": "array",
@@ -115,47 +136,123 @@
                           "properties": {
                             "name": {
                               "type": "string",
-                              "description": "Name."
+                              "description": "Element name used in @element_name references",
+                              "minLength": 1,
+                              "pattern": "\\S"
                             },
                             "description": {
                               "type": "string",
-                              "description": "Description."
+                              "description": "Element description"
                             },
                             "element_input_urls": {
                               "type": "array",
                               "items": {
                                 "type": "string",
-                                "format": "uri",
-                                "description": "Element input urls."
+                                "format": "uri"
                               },
-                              "description": "Element input urls."
+                              "description": "Array of 2-4 image URLs (JPG/PNG, max 10MB each)",
+                              "minItems": 2,
+                              "maxItems": 4
                             },
                             "element_input_video_urls": {
                               "type": "array",
                               "items": {
                                 "type": "string",
-                                "format": "uri",
-                                "description": "Element input video urls."
+                                "format": "uri"
                               },
-                              "description": "Element input video urls."
+                              "description": "Array with 1 video URL (MP4/MOV, max 50MB)",
+                              "minItems": 1,
+                              "maxItems": 1
                             }
                           },
                           "additionalProperties": false,
-                          "description": "Kling elements."
+                          "oneOf": [
+                            {
+                              "required": [
+                                "element_input_urls"
+                              ],
+                              "not": {
+                                "required": [
+                                  "element_input_video_urls"
+                                ]
+                              }
+                            },
+                            {
+                              "required": [
+                                "element_input_video_urls"
+                              ],
+                              "not": {
+                                "required": [
+                                  "element_input_urls"
+                                ]
+                              }
+                            }
+                          ]
                         },
-                        "description": "Kling elements."
+                        "description": "Reference elements in prompts with @element_name. Provide image_urls together with kling_elements.",
+                        "example": [
+                          {
+                            "name": "element_robot",
+                            "description": "robot character",
+                            "element_input_urls": [
+                              "https://example.com/robot-front.jpeg",
+                              "https://example.com/robot-side.png"
+                            ]
+                          },
+                          {
+                            "name": "element_dancer",
+                            "description": "dancer reference motion",
+                            "element_input_video_urls": [
+                              "https://example.com/dancer-motion.mp4"
+                            ]
+                          }
+                        ]
                       },
                       "aspect_ratio": {
                         "type": "string",
+                        "description": "Output aspect ratio: 1:1, 16:9 or 9:16. The first frame determines the output aspect ratio.",
                         "enum": [
                           "1:1",
                           "16:9",
                           "9:16"
                         ],
-                        "description": "Aspect ratio."
+                        "example": "1:1"
                       }
                     },
-                    "additionalProperties": false
+                    "additionalProperties": false,
+                    "oneOf": [
+                      {
+                        "properties": {
+                          "multi_shots": {
+                            "enum": [
+                              false
+                            ]
+                          }
+                        },
+                        "required": [
+                          "prompt"
+                        ]
+                      },
+                      {
+                        "properties": {
+                          "multi_shots": {
+                            "enum": [
+                              true
+                            ]
+                          },
+                          "sound": {
+                            "enum": [
+                              true
+                            ]
+                          }
+                        },
+                        "required": [
+                          "multi_shots",
+                          "multi_prompt",
+                          "sound"
+                        ]
+                      }
+                    ]
                   },
                   "callback_url": {
                     "type": "string",
@@ -163,7 +260,7 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Place model and callback_url at the request root, and generation parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -257,7 +354,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account authorization error",
             "content": {
               "application/json": {
                 "schema": {
@@ -467,7 +564,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Generation task submission error",
             "content": {
               "application/json": {
                 "schema": {

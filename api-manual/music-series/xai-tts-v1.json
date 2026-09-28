@@ -23,7 +23,7 @@
         ],
         "summary": "xAI TTS 1",
         "operationId": "submit_xai_tts_v1",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, text must not be blank.\n\nUsage is based on text length.\n\nThe bit_rate output option applies only to MP3.\n\nRead every item in files. Generated audio uses file_type=audio; timestamp and alignment files may use other. Optional file metadata is retained when available.",
+        "description": "Generate speech from 1–15,000 characters using one of five voices. Place speech settings inside input. Retrieve generated audio through the task status endpoint; audio entries in files use file_type: audio.",
         "requestBody": {
           "required": true,
           "content": {
@@ -38,7 +38,10 @@
                 "properties": {
                   "model": {
                     "type": "string",
-                    "example": "xai/tts/v1"
+                    "example": "xai/tts/v1",
+                    "enum": [
+                      "xai/tts/v1"
+                    ]
                   },
                   "input": {
                     "type": "object",
@@ -51,7 +54,7 @@
                         "type": "string",
                         "minLength": 1,
                         "maxLength": 15000,
-                        "description": "Text."
+                        "description": "Text to speak, from 1 to 15,000 characters after trimming leading and trailing whitespace. Use [laugh], [pause], [sigh], <whisper>text</whisper>, or <slow>text</slow> to direct delivery."
                       },
                       "voice": {
                         "type": "string",
@@ -63,7 +66,7 @@
                           "leo"
                         ],
                         "default": "eve",
-                        "description": "Voice."
+                        "description": "Choose eve, ara, rex, sal, or leo for your narrator or character. Default: eve."
                       },
                       "language_code": {
                         "type": "string",
@@ -91,7 +94,7 @@
                           "vi"
                         ],
                         "default": "auto",
-                        "description": "Language code."
+                        "description": "Choose a listed BCP-47 language code, or auto for automatic language detection."
                       },
                       "output_format": {
                         "type": "object",
@@ -107,7 +110,7 @@
                               "alaw"
                             ],
                             "default": "mp3",
-                            "description": "Codec."
+                            "description": "Audio encoding: mp3, wav, pcm, mulaw, or alaw. Default: mp3."
                           },
                           "sample_rate": {
                             "type": "integer",
@@ -120,7 +123,7 @@
                               48000
                             ],
                             "default": 24000,
-                            "description": "Sample rate."
+                            "description": "Sample rate in Hz: 8000, 16000, 22050, 24000, 44100, or 48000. Default: 24000."
                           },
                           "bit_rate": {
                             "type": "integer",
@@ -134,43 +137,31 @@
                               null
                             ],
                             "default": 128000,
-                            "description": "Bit rate."
+                            "description": "MP3 bitrate in bits per second: 32000, 64000, 96000, 128000, 192000, or null. MP3 default: 128000. For wav, pcm, mulaw, and alaw, omit bit_rate or set it to null."
                           }
                         },
-                        "description": "Output format."
+                        "description": "An object containing codec, sample_rate, and the MP3 bit_rate setting."
                       }
                     }
                   },
                   "callback_url": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
+                    "description": "Provide a public HTTP(S) callback_url to receive task completion notifications. HTTPS is recommended."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Place model and callback_url at the root. Put text, voice, language_code, and output_format inside input."
               },
-              "examples": {
-                "basic": {
-                  "summary": "Basic workflow",
-                  "value": {
-                    "model": "xai/tts/v1",
-                    "input": {
-                      "text": "A quiet forest under soft morning light, with natural detail.",
-                      "voice": "eve",
-                      "language_code": "auto"
-                    }
-                  }
-                },
-                "callback": {
-                  "summary": "Receive a completion callback",
-                  "value": {
-                    "model": "xai/tts/v1",
-                    "input": {
-                      "text": "A quiet forest under soft morning light, with natural detail.",
-                      "voice": "eve",
-                      "language_code": "auto"
-                    },
-                    "callback_url": "https://your-domain.com/callback"
+              "example": {
+                "model": "xai/tts/v1",
+                "input": {
+                  "text": "Welcome to our story. [pause] <whisper>Listen closely.</whisper> [laugh] Let us begin.",
+                  "voice": "eve",
+                  "language_code": "auto",
+                  "output_format": {
+                    "codec": "mp3",
+                    "sample_rate": 24000,
+                    "bit_rate": 128000
                   }
                 }
               }
@@ -235,7 +226,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Review the request parameters and account balance.",
             "content": {
               "application/json": {
                 "schema": {
@@ -385,7 +376,7 @@
             }
           },
           "429": {
-            "description": "Rate or API key credit limit exceeded",
+            "description": "Request limit reached. Retry after the interval indicated by the service.",
             "content": {
               "application/json": {
                 "schema": {
@@ -445,7 +436,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task submission failed. Retry the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -475,7 +466,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Service temporarily unavailable. Retry later.",
             "content": {
               "application/json": {
                 "schema": {

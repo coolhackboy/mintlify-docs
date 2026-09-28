@@ -35,14 +35,14 @@ Generate speech with Gemini 3.1 Flash TTS, using style instructions and selectab
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted.
+Use the fields in the parameter reference to configure speech generation.
 
-- When supplying `speakers`, provide exactly two distinct `speaker_id` aliases using only letters, digits, and underscores. Omit the top-level `input.voice` field.
+- When supplying `speakers`, provide exactly two distinct `speaker_id` aliases using only letters, digits, and underscores. Speech uses the voice assigned to each speaker.
 
 ### Text
 
 - `text`: Required. Supply the text to speak. Length: **1-50,000 characters**.
-- The value must not be blank when supplied.
+- Include the words to speak, with optional audio tags such as `[short pause]`, `[whispering]`, and `[laughing]`. For dialogue, prefix each turn with its matching `speaker_id` followed by a colon.
 
 ### Style Instructions
 
@@ -89,7 +89,7 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ### Language Code
 
-- `language_code`: Optional. String.
+- `language_code`: Optional. Select a value below, or omit it to detect the language from `text`.
 
 <Accordion title="Supported language code values">
 
@@ -187,7 +187,7 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 - `speakers`: Optional. Supply exactly 2 items. Each item is an object.
 
-- `speakers[].voice`: Optional. String. Default: `Kore`.
+- `speakers[].voice`: Required. Select a voice for this speaker.
 
 <Accordion title="Supported voice values">
 
@@ -233,12 +233,4 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 - Read every item in the returned `files` array.
 - Generated audio uses `file_type: "audio"`.
-- Timestamp and alignment files may use `file_type: "other"`. Preserve optional file metadata when present.
-
-## Pricing
-
-Usage is based on the combined length of `text` and `style_instructions`.
-
-Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.
+- Read the audio URL from `files[].file_url`.
