@@ -23,7 +23,7 @@
         ],
         "summary": "Hunyuan 3D v3.1 Pro Text to 3D",
         "operationId": "submit_hunyuan_3d_v3_1_pro_text_to_3d",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.\n\nA custom face_count can affect usage.\n\nRead every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.",
+        "description": "Generate a 3D asset with the input parameters below. Place model and callback_url at the request root. Read the returned files array for model assets, previews, and companion files.",
         "requestBody": {
           "required": true,
           "content": {
@@ -45,9 +45,9 @@
                     "properties": {
                       "prompt": {
                         "type": "string",
+                        "description": "Describe the desired 3D object in 1–1024 characters.",
                         "minLength": 1,
-                        "maxLength": 1024,
-                        "description": "Prompt."
+                        "maxLength": 1024
                       },
                       "generate_type": {
                         "type": "string",
@@ -55,14 +55,18 @@
                           "Normal",
                           "Geometry"
                         ],
-                        "description": "Generate type."
+                        "description": "Choose Normal for textured generation or Geometry for a geometry-only white model."
                       },
                       "face_count": {
                         "type": "integer",
                         "minimum": 40000,
                         "maximum": 1500000,
                         "default": 500000,
-                        "description": "Face count."
+                        "description": "Set an integer target face count from 40000 to 1500000. Default: 500000."
+                      },
+                      "enable_pbr": {
+                        "type": "boolean",
+                        "description": "Set true to generate PBR materials in textured mode. Geometry-only generation takes precedence over this setting."
                       }
                     },
                     "additionalProperties": false,
@@ -76,7 +80,7 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Place model and callback_url at the request root and generation parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -85,7 +89,9 @@
                     "model": "hunyuan-3d/v3.1/pro/text-to-3d",
                     "input": {
                       "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "face_count": 500000
+                      "face_count": 500000,
+                      "enable_pbr": true,
+                      "generate_type": "Normal"
                     }
                   }
                 },
@@ -95,7 +101,9 @@
                     "model": "hunyuan-3d/v3.1/pro/text-to-3d",
                     "input": {
                       "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "face_count": 500000
+                      "face_count": 500000,
+                      "enable_pbr": true,
+                      "generate_type": "Normal"
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -162,7 +170,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account balance check failed",
             "content": {
               "application/json": {
                 "schema": {
@@ -372,7 +380,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Generation task creation failed",
             "content": {
               "application/json": {
                 "schema": {

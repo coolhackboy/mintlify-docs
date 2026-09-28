@@ -33,12 +33,12 @@ Create 3D objects from text with Tripo3D P1, with optional textures and a compac
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted.
+Use the `input` fields listed below for this workflow.
 
 ### Prompt
 
 - `prompt`: Required. Describe the desired 3D object. Length: **1-1,024 characters**.
-- The value must not be blank when supplied.
+- Provide a non-empty string describing the object.
 
 ### Texture
 
@@ -52,10 +52,5 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 - Read every item in the returned `files` array.
 - Model assets use `file_type: "3d"`; previews use `file_type: "image"`.
-- Additional artifacts may use `file_type: "other"`. Retain available textures, animation artifacts, and optional file metadata.
-
-## Pricing
-
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.
+- Supporting files use `file_type: "other"`. Preserve each returned file and its `label`, `format`, `content_type`, `file_name`, and `file_size` metadata when present.
+- Use the `model_glb` file for 3D preview and the `thumbnail` file as its cover image when these labels are present.

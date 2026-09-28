@@ -23,7 +23,7 @@
         ],
         "summary": "Tripo3D H3.1 Image to 3D",
         "operationId": "submit_tripo3d_h3_1_image_to_3d",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nInput URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nTexture quality, detailed geometry, and quad topology affect usage. All returned geometry, previews, textures, and animation artifacts remain in the files array.\n\nRead every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.",
+        "description": "Place the model ID and optional callback_url at the request root, and generation parameters inside input. Use public HTTP(S) image URLs. Read all returned files: 3D models, preview images, and accompanying assets, with their available metadata.",
         "requestBody": {
           "required": true,
           "content": {
@@ -43,48 +43,39 @@
                   "input": {
                     "type": "object",
                     "properties": {
-                      "negative_prompt": {
-                        "type": "string",
-                        "maxLength": 1024,
-                        "description": "Negative prompt."
-                      },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
                           "format": "uri",
-                          "description": "Image urls."
+                          "description": "Public HTTP(S) image URL."
                         },
                         "minItems": 1,
                         "maxItems": 1,
-                        "description": "Image urls."
+                        "description": "One public HTTP(S) image URL."
                       },
                       "face_limit": {
                         "type": "integer",
                         "minimum": 1000,
                         "maximum": 2000000,
-                        "description": "Face limit."
+                        "description": "Target face count, from 1,000 to 2,000,000."
                       },
                       "texture": {
                         "type": "boolean",
                         "default": true,
-                        "description": "Texture."
+                        "description": "Generate textures. Default: true."
                       },
                       "pbr": {
                         "type": "boolean",
-                        "description": "Pbr."
+                        "description": "Generate physically based rendering materials when texture is true."
                       },
                       "model_seed": {
                         "type": "integer",
-                        "description": "Model seed."
-                      },
-                      "image_seed": {
-                        "type": "integer",
-                        "description": "Image seed."
+                        "description": "Integer seed for model generation."
                       },
                       "texture_seed": {
                         "type": "integer",
-                        "description": "Texture seed."
+                        "description": "Integer seed for texture generation."
                       },
                       "texture_quality": {
                         "type": "string",
@@ -93,7 +84,7 @@
                           "detailed"
                         ],
                         "default": "standard",
-                        "description": "Texture quality."
+                        "description": "Texture detail when texture is true: standard or detailed. Default: standard."
                       },
                       "geometry_quality": {
                         "type": "string",
@@ -102,16 +93,16 @@
                           "detailed"
                         ],
                         "default": "standard",
-                        "description": "Geometry quality."
+                        "description": "Geometry detail: standard or detailed. Default: standard."
                       },
                       "auto_size": {
                         "type": "boolean",
-                        "description": "Auto size."
+                        "description": "Automatically scale the generated model."
                       },
                       "quad": {
                         "type": "boolean",
                         "default": false,
-                        "description": "Quad."
+                        "description": "Generate quad mesh topology. Default: false."
                       }
                     },
                     "additionalProperties": false,
@@ -125,7 +116,7 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the root. Set generation parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -221,7 +212,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Check the request parameters and account status before submitting again.",
             "content": {
               "application/json": {
                 "schema": {
@@ -371,7 +362,7 @@
             }
           },
           "429": {
-            "description": "Rate or API key credit limit exceeded",
+            "description": "Retry after the request limit resets.",
             "content": {
               "application/json": {
                 "schema": {
@@ -431,7 +422,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Task creation failed. Retry the request.",
             "content": {
               "application/json": {
                 "schema": {

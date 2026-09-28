@@ -23,7 +23,7 @@
         ],
         "summary": "Hunyuan 3D v3.1 Rapid Image to 3D",
         "operationId": "submit_hunyuan_3d_v3_1_rapid_image_to_3d",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nRead every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.",
+        "description": "Generate a 3D asset with the input parameters below. Place model and callback_url at the request root. Read the returned files array for model assets, previews, and companion files.",
         "requestBody": {
           "required": true,
           "content": {
@@ -45,23 +45,26 @@
                     "properties": {
                       "prompt": {
                         "type": "string",
-                        "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Optionally describe the desired 3D object using a nonblank string.",
+                        "minLength": 1
                       },
                       "image_urls": {
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "format": "uri",
-                          "description": "Image urls."
+                          "format": "uri"
                         },
                         "minItems": 1,
                         "maxItems": 1,
-                        "description": "Image urls."
+                        "description": "Provide exactly one publicly accessible HTTP(S) image URL."
                       },
                       "enable_geometry": {
                         "type": "boolean",
-                        "description": "Enable geometry."
+                        "description": "Set true to generate a geometry-only white model."
+                      },
+                      "enable_pbr": {
+                        "type": "boolean",
+                        "description": "Set true to generate PBR materials in textured mode. Geometry-only generation takes precedence over this setting."
                       }
                     },
                     "additionalProperties": false,
@@ -75,7 +78,7 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Place model and callback_url at the request root and generation parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -85,7 +88,9 @@
                     "input": {
                       "image_urls": [
                         "https://example.com/image.png"
-                      ]
+                      ],
+                      "enable_pbr": true,
+                      "enable_geometry": false
                     }
                   }
                 },
@@ -96,7 +101,9 @@
                     "input": {
                       "image_urls": [
                         "https://example.com/image.png"
-                      ]
+                      ],
+                      "enable_pbr": true,
+                      "enable_geometry": false
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }
@@ -163,7 +170,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Request validation or account balance check failed",
             "content": {
               "application/json": {
                 "schema": {
@@ -373,7 +380,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Generation task creation failed",
             "content": {
               "application/json": {
                 "schema": {

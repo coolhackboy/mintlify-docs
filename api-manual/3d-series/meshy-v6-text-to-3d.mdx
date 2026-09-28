@@ -26,7 +26,7 @@ Build 3D assets from text with Meshy 6, with mesh topology, material, and textur
 
 ### Target Polycount
 
-- `target_polycount`: Optional. Set the target polygon count. Integer, at least `1`. Default: `30000`.
+- `target_polycount`: Optional. Set the target polygon count. Integer. Default: `30000`.
 
 ### Topology
 
@@ -42,15 +42,14 @@ Build 3D assets from text with Meshy 6, with mesh topology, material, and textur
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+Place the parameters listed below inside `input`. Use publicly accessible HTTP(S) URLs for images and texture references.
 
 - `enable_animation: true` requires `enable_rigging: true`.
-- `texture_prompt` and `texture_image_url` are mutually exclusive.
 
 ### Prompt
 
 - `prompt`: Required. Describe the desired 3D object. Length: **1-600 characters**.
-- The value must not be blank when supplied.
+- Write a description of the object, its shape, and its materials.
 
 ### Seed
 
@@ -78,11 +77,11 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ### Texture Prompt
 
-- `texture_prompt`: Optional. Describe the desired texture; do not combine with `texture_image_url`.
+- `texture_prompt`: Optional. Describe the desired texture.
 
 ### Texture Image URL
 
-- `texture_image_url`: Optional. Provide a texture reference URL; do not combine with `texture_prompt`. Use a publicly accessible HTTP(S) URL.
+- `texture_image_url`: Optional. Provide a texture reference URL. Use a publicly accessible HTTP(S) URL.
 
 ### Rigging
 
@@ -108,10 +107,4 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 - Read every item in the returned `files` array.
 - Model assets use `file_type: "3d"`; previews use `file_type: "image"`.
-- Additional artifacts may use `file_type: "other"`. Retain available textures, animation artifacts, and optional file metadata.
-
-## Pricing
-
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.
+- Read supporting files with `file_type: "other"` alongside the returned textures, animation assets, and file metadata.
