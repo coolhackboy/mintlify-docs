@@ -22,7 +22,7 @@ Generate 3D objects from text with Hunyuan 3D v3.1 Pro, with control over mesh c
 
 ### Generate Type
 
-- `generate_type`: Optional. Accepted values: `Normal`, `Geometry`.
+- `generate_type`: Optional. Choose `Normal` for a textured model or `Geometry` for a geometry-only white model.
 
 ### Face Count
 
@@ -37,23 +37,19 @@ Generate 3D objects from text with Hunyuan 3D v3.1 Pro, with control over mesh c
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted.
+Use the input parameters listed below.
 
 ### Prompt
 
 - `prompt`: Required. Describe the desired 3D object. Length: **1-1,024 characters**.
-- The value must not be blank when supplied.
+- Use a nonblank string when providing this parameter.
+
+### PBR
+
+- `enable_pbr`: Optional. Set `true` to generate PBR materials in textured mode. Geometry-only generation takes precedence over this setting.
 
 ## Output Files
 
 - Read every item in the returned `files` array.
 - Model assets use `file_type: "3d"`; previews use `file_type: "image"`.
-- Additional artifacts may use `file_type: "other"`. Retain available textures, animation artifacts, and optional file metadata.
-
-## Pricing
-
-A custom `face_count` can affect usage.
-
-Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.
+- Additional artifacts may use `file_type: "other"`. Retain returned textures, material files, and file metadata.

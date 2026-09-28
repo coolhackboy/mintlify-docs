@@ -23,7 +23,7 @@
         ],
         "summary": "Meshy 6 Image to 3D",
         "operationId": "submit_meshy_v6_image_to_3d",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nInput URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nAnimation requires rigging. Texture prompt and texture image are mutually exclusive.\n\nRead every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.",
+        "description": "Place the parameters listed below inside input. Use publicly accessible HTTP(S) URLs for images and texture references. Set enable_rigging to true when enabling animation. Read files for generated models, preview images, textures, and animation assets; each item provides a file_url and file_type, with file metadata when present.",
         "requestBody": {
           "required": true,
           "content": {
@@ -52,7 +52,7 @@
                         },
                         "minItems": 1,
                         "maxItems": 1,
-                        "description": "Image urls."
+                        "description": "Provide exactly 1 image."
                       },
                       "topology": {
                         "type": "string",
@@ -61,18 +61,17 @@
                           "triangle"
                         ],
                         "default": "triangle",
-                        "description": "Topology."
+                        "description": "Choose triangle or quad mesh topology. Default: triangle."
                       },
                       "target_polycount": {
                         "type": "integer",
                         "default": 30000,
-                        "minimum": 1,
-                        "description": "Target polycount."
+                        "description": "Set the target polygon count as an integer. Default: 30000."
                       },
                       "should_remesh": {
                         "type": "boolean",
                         "default": true,
-                        "description": "Should remesh."
+                        "description": "Enable the remeshing stage to apply mesh topology and polygon targets. Default: true."
                       },
                       "symmetry_mode": {
                         "type": "string",
@@ -82,16 +81,16 @@
                           "on"
                         ],
                         "default": "auto",
-                        "description": "Symmetry mode."
+                        "description": "Choose off, auto, or on to control symmetry. Default: auto."
                       },
                       "should_texture": {
                         "type": "boolean",
                         "default": true,
-                        "description": "Should texture."
+                        "description": "Generate textures for the model. Default: true."
                       },
                       "enable_pbr": {
                         "type": "boolean",
-                        "description": "Enable pbr."
+                        "description": "Generate metallic, roughness, and normal maps for PBR materials."
                       },
                       "pose_mode": {
                         "type": "string",
@@ -101,39 +100,39 @@
                           ""
                         ],
                         "default": "",
-                        "description": "Pose mode."
+                        "description": "Choose a-pose, t-pose, or an empty string for the model pose. Default: empty string."
                       },
                       "texture_prompt": {
                         "type": "string",
-                        "description": "Texture prompt."
+                        "description": "Describe colors, surface patterns, and materials to guide texturing."
                       },
                       "texture_image_url": {
                         "type": "string",
                         "format": "uri",
-                        "description": "Texture image url."
+                        "description": "Provide a publicly accessible HTTP(S) image URL to guide texturing."
                       },
                       "enable_rigging": {
                         "type": "boolean",
-                        "description": "Enable rigging."
+                        "description": "Add a skeleton to a humanoid character for posing and animation."
                       },
                       "rigging_height_meters": {
                         "type": "number",
                         "default": 1.7,
-                        "description": "Rigging height meters."
+                        "description": "Set character height in meters when rigging is enabled. Default: 1.7."
                       },
                       "enable_animation": {
                         "type": "boolean",
-                        "description": "Enable animation."
+                        "description": "Apply an animation preset with enable_rigging set to true."
                       },
                       "animation_action_id": {
                         "type": "integer",
                         "default": 1001,
-                        "description": "Animation action id."
+                        "description": "Set the integer animation preset ID. Default: 1001."
                       },
                       "enable_safety_checker": {
                         "type": "boolean",
                         "default": true,
-                        "description": "Enable safety checker."
+                        "description": "Enable safety checking for generation inputs. Default: true."
                       }
                     },
                     "additionalProperties": false,
@@ -147,7 +146,7 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Place model and optional callback_url at the request root, and generation parameters inside input."
               },
               "examples": {
                 "basic": {
@@ -253,7 +252,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Input validation, media access, or account balance error",
             "content": {
               "application/json": {
                 "schema": {
@@ -463,7 +462,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Generation task creation failed",
             "content": {
               "application/json": {
                 "schema": {
@@ -493,7 +492,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "Model configuration requires attention",
             "content": {
               "application/json": {
                 "schema": {
