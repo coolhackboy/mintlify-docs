@@ -45,18 +45,6 @@
                     "required": [
                       "prompt"
                     ],
-                    "anyOf": [
-                      {
-                        "required": [
-                          "start_image_url"
-                        ]
-                      },
-                      {
-                        "required": [
-                          "end_image_url"
-                        ]
-                      }
-                    ],
                     "properties": {
                       "prompt": {
                         "type": "string",
@@ -98,7 +86,8 @@
                         "example": "low quality, blur"
                       }
                     },
-                    "additionalProperties": false
+                    "additionalProperties": false,
+                    "description": "Provide at least one of `start_image_url`, `end_image_url`."
                   },
                   "callback_url": {
                     "type": "string",

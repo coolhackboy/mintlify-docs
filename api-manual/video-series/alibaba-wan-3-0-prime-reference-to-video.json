@@ -154,60 +154,6 @@
                     },
                     "allOf": [
                       {
-                        "anyOf": [
-                          {
-                            "required": [
-                              "reference_file_urls"
-                            ],
-                            "properties": {
-                              "reference_file_urls": {
-                                "minItems": 1
-                              }
-                            }
-                          },
-                          {
-                            "required": [
-                              "reference_image_urls"
-                            ],
-                            "properties": {
-                              "reference_image_urls": {
-                                "minItems": 1
-                              }
-                            }
-                          },
-                          {
-                            "required": [
-                              "reference_link_urls"
-                            ],
-                            "properties": {
-                              "reference_link_urls": {
-                                "minItems": 1
-                              }
-                            }
-                          },
-                          {
-                            "required": [
-                              "reference_video_urls"
-                            ],
-                            "properties": {
-                              "reference_video_urls": {
-                                "minItems": 1
-                              }
-                            }
-                          },
-                          {
-                            "required": [
-                              "reference_audio_urls"
-                            ],
-                            "properties": {
-                              "reference_audio_urls": {
-                                "minItems": 1
-                              }
-                            }
-                          }
-                        ]
-                      },
-                      {
                         "not": {
                           "required": [
                             "reference_file_urls",
@@ -218,7 +164,8 @@
                     ],
                     "required": [
                       "prompt"
-                    ]
+                    ],
+                    "description": "Provide at least one nonempty reference list: `reference_file_urls`, `reference_image_urls`, `reference_link_urls`, `reference_video_urls`, `reference_audio_urls`."
                   },
                   "callback_url": {
                     "type": "string",

@@ -120,49 +120,7 @@
                         ]
                       }
                     },
-                    "additionalProperties": false,
-                    "oneOf": [
-                      {
-                        "properties": {
-                          "multi_shots": {
-                            "enum": [
-                              false
-                            ]
-                          }
-                        },
-                        "required": [
-                          "prompt"
-                        ],
-                        "not": {
-                          "required": [
-                            "multi_prompt"
-                          ]
-                        }
-                      },
-                      {
-                        "properties": {
-                          "multi_shots": {
-                            "enum": [
-                              true
-                            ]
-                          },
-                          "sound": {
-                            "enum": [
-                              true
-                            ]
-                          }
-                        },
-                        "required": [
-                          "multi_shots",
-                          "multi_prompt"
-                        ],
-                        "not": {
-                          "required": [
-                            "prompt"
-                          ]
-                        }
-                      }
-                    ]
+                    "additionalProperties": false
                   },
                   "callback_url": {
                     "type": "string",

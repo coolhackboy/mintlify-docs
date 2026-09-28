@@ -38,7 +38,7 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "A couple of doors open sequentially, revealing living rooms, kitchens, bedrooms, and offices with residents inside",
-                      "aspect_ratio": "16:9",
+                      "aspect_ratio": "3:2",
                       "duration": 6,
                       "mode": "normal"
                     }

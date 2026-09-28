@@ -43,7 +43,8 @@
                   "input": {
                     "type": "object",
                     "required": [
-                      "prompt"
+                      "prompt",
+                      "image_urls"
                     ],
                     "properties": {
                       "prompt": {
@@ -54,7 +55,7 @@
                       },
                       "image_urls": {
                         "type": "array",
-                        "minItems": 3,
+                        "minItems": 1,
                         "maxItems": 3,
                         "items": {
                           "type": "string",
@@ -94,23 +95,7 @@
                         "description": "Aspect ratio."
                       }
                     },
-                    "additionalProperties": false,
-                    "allOf": [
-                      {
-                        "anyOf": [
-                          {
-                            "required": [
-                              "image_urls"
-                            ],
-                            "properties": {
-                              "image_urls": {
-                                "minItems": 1
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    ]
+                    "additionalProperties": false
                   },
                   "callback_url": {
                     "type": "string",

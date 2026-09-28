@@ -180,52 +180,7 @@
                         "description": "Audio encoding, sample rate, and bitrate. Default: mp3_44100_128."
                       }
                     },
-                    "required": [],
-                    "oneOf": [
-                      {
-                        "required": [
-                          "text"
-                        ],
-                        "not": {
-                          "anyOf": [
-                            {
-                              "required": [
-                                "composition_plan"
-                              ]
-                            },
-                            {
-                              "required": [
-                                "respect_sections_durations"
-                              ]
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "required": [
-                          "composition_plan"
-                        ],
-                        "not": {
-                          "anyOf": [
-                            {
-                              "required": [
-                                "text"
-                              ]
-                            },
-                            {
-                              "required": [
-                                "duration"
-                              ]
-                            },
-                            {
-                              "required": [
-                                "is_instrumental"
-                              ]
-                            }
-                          ]
-                        }
-                      }
-                    ]
+                    "description": "Provide exactly one of `text` or `composition_plan`. With `text`, omit `respect_sections_durations`. With `composition_plan`, omit `duration` and `is_instrumental`."
                   },
                   "callback_url": {
                     "type": "string",

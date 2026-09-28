@@ -107,10 +107,6 @@
               "resolution"
             ],
             "additionalProperties": false,
-            "anyOf": [
-              { "required": ["reference_image_urls"] },
-              { "required": ["reference_video_urls"] }
-            ],
             "properties": {
               "prompt": {
                 "type": "string",
@@ -179,7 +175,8 @@
                   "format": "uri"
                 }
               }
-            }
+            },
+            "description": "Provide at least one of `reference_image_urls`, `reference_video_urls`."
           }
         }
       },

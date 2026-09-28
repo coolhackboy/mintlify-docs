@@ -54,7 +54,7 @@
                         "type": "string",
                         "minLength": 1,
                         "maxLength": 15000,
-                        "description": "Text to speak, from 1 to 15,000 characters after trimming leading and trailing whitespace. Use [laugh], [pause], [sigh], <whisper>text</whisper>, or <slow>text</slow> to direct delivery."
+                        "description": "Text to speak, from 1 to 15,000 characters after trimming leading and trailing whitespace. Use `[laugh]`, `[pause]`, `[sigh]`, `<whisper>text</whisper>`, or `<slow>text</slow>` to direct delivery."
                       },
                       "voice": {
                         "type": "string",

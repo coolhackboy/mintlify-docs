@@ -187,7 +187,8 @@
                                 ]
                               }
                             }
-                          ]
+                          ],
+                          "description": "Provide exactly one reference source: `element_input_urls` or `element_input_video_urls`. Do not send both."
                         },
                         "description": "Reference elements in prompts with @element_name. Provide image_urls together with kling_elements.",
                         "example": [
@@ -269,6 +270,7 @@
                     "model": "kwaivgi/kling-v3.0-pro/image-to-video",
                     "input": {
                       "duration": 3,
+                      "prompt": "A gentle camera push brings the scene to life.",
                       "image_urls": [
                         "https://example.com/image.png"
                       ],
@@ -283,6 +285,7 @@
                     "model": "kwaivgi/kling-v3.0-pro/image-to-video",
                     "input": {
                       "duration": 3,
+                      "prompt": "A gentle camera push brings the scene to life.",
                       "image_urls": [
                         "https://example.com/image.png"
                       ],

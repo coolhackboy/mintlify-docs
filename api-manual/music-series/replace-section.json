@@ -43,7 +43,8 @@
                       "tags": "pop, upbeat",
                       "title": "Summer Dreams",
                       "infill_start_s": 30.00,
-                      "infill_end_s": 60.00
+                      "infill_end_s": 60.00,
+                      "full_lyrics": "Complete song lyrics including the new chorus and all unchanged sections"
                     }
                   }
                 },

@@ -118,7 +118,7 @@
             "required": [
               "prompt"
             ],
-            "description": "Image generation parameters. size is required for text-to-image and optional when image_urls supplies an editing reference.",
+            "description": "Image generation parameters. size is required for text-to-image and optional when image_urls supplies an editing reference.\n\nProvide at least one of `size`, `image_urls`.",
             "anyOf": [
               {
                 "required": [

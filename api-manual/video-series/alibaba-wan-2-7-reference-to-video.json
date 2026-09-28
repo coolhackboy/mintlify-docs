@@ -113,35 +113,10 @@
                       }
                     },
                     "additionalProperties": false,
-                    "allOf": [
-                      {
-                        "anyOf": [
-                          {
-                            "required": [
-                              "reference_image_urls"
-                            ],
-                            "properties": {
-                              "reference_image_urls": {
-                                "minItems": 1
-                              }
-                            }
-                          },
-                          {
-                            "required": [
-                              "reference_video_urls"
-                            ],
-                            "properties": {
-                              "reference_video_urls": {
-                                "minItems": 1
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    ],
                     "required": [
                       "prompt"
-                    ]
+                    ],
+                    "description": "Provide at least one nonempty reference list: `reference_image_urls`, `reference_video_urls`."
                   },
                   "callback_url": {
                     "type": "string",

@@ -46,7 +46,7 @@
                       "prompt",
                       "duration"
                     ],
-                    "description": "Input parameters for generation. PoYo selects the generation workflow from the provided image fields.",
+                    "description": "Input parameters for generation. PoYo selects the generation workflow from the provided image fields.\n\nChoose either the first-frame workflow with `start_image_url`, or the Elements workflow with `image_urls`. Do not combine `image_urls` with first-frame controls.",
                     "additionalProperties": false,
                     "properties": {
                       "prompt": {
@@ -113,43 +113,7 @@
                           "https://example.com/reference-1.png"
                         ]
                       }
-                    },
-                    "oneOf": [
-                      {
-                        "required": [
-                          "start_image_url"
-                        ],
-                        "not": {
-                          "required": [
-                            "image_urls"
-                          ]
-                        }
-                      },
-                      {
-                        "required": [
-                          "image_urls"
-                        ],
-                        "not": {
-                          "anyOf": [
-                            {
-                              "required": [
-                                "start_image_url"
-                              ]
-                            },
-                            {
-                              "required": [
-                                "end_image_url"
-                              ]
-                            },
-                            {
-                              "required": [
-                                "cfg_scale"
-                              ]
-                            }
-                          ]
-                        }
-                      }
-                    ]
+                    }
                   },
                   "callback_url": {
                     "type": "string",

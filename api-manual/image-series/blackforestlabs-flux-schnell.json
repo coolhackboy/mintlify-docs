@@ -121,24 +121,10 @@
               },
               "size": {
                 "type": "string",
-                "description": "Output canvas. Presets: 1:1 (512×512), 1:1 HD (1024×1024), 4:3 (1024×768), 3:4 (768×1024), 16:9 (1024×576), 9:16 (576×1024). Custom WIDTHxHEIGHT dimensions are positive integers.",
-                "oneOf": [
-                  {
-                    "enum": [
-                      "1:1",
-                      "1:1 HD",
-                      "4:3",
-                      "3:4",
-                      "16:9",
-                      "9:16"
-                    ]
-                  },
-                  {
-                    "pattern": "^\\d+x\\d+$"
-                  }
-                ],
+                "description": "Output canvas. Presets: 1:1 (512×512), 1:1 HD (1024×1024), 4:3 (1024×768), 3:4 (768×1024), 16:9 (1024×576), 9:16 (576×1024). Custom WIDTHxHEIGHT dimensions are positive integers.\n\nUse a preset (`1:1`, `1:1 HD`, `4:3`, `3:4`, `16:9`, `9:16`) or custom `WIDTHxHEIGHT` dimensions.",
                 "default": "1:1",
-                "example": "4:3"
+                "example": "4:3",
+                "pattern": "^(?:1:1|1:1\\ HD|4:3|3:4|16:9|9:16|(?:\\d+x\\d+))$"
               },
               "n": {
                 "type": "integer",

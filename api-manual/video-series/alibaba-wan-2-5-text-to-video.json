@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API - Wan 2.5 Text to Video",
-    "description": "Create five-second video scenes from text with Wan 2.5, with audio input and prompt controls to shape the look of each clip.",
+    "description": "Create 5 or 10 second video scenes from text with Wan 2.5, with audio input and prompt controls to shape the look of each clip.",
     "version": "1.0.0"
   },
   "servers": [
@@ -23,7 +23,7 @@
         ],
         "summary": "Submit Wan 2.5 Text to Video Task",
         "operationId": "submit_alibaba_wan_2_5_text_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.\n\nThis workflow currently accepts five-second outputs; the longer-duration price is awaiting confirmation.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.\n\nSet duration to 5 or 10 seconds. If omitted, duration defaults to 5 seconds.",
         "requestBody": {
           "required": true,
           "content": {
@@ -63,7 +63,7 @@
                           "1920*1080",
                           "1080*1920"
                         ],
-                        "description": "Frame dimensions in pixels, width*height: 832*480, 480*832, 1280*720, 720*1280, 1920*1080, 1080*1920."
+                        "description": "Frame dimensions in pixels (`width*height`): `832*480`, `480*832`, `1280*720`, `720*1280`, `1920*1080`, `1080*1920`."
                       },
                       "duration": {
                         "type": "integer",
@@ -111,13 +111,13 @@
                   }
                 },
                 "callback": {
-                  "summary": "Receive a completion callback",
+                  "summary": "10-second video with a completion callback",
                   "value": {
                     "model": "alibaba/wan-2.5/text-to-video",
                     "input": {
                       "aspect_ratio": "832*480",
                       "prompt": "A quiet forest under soft morning light, with natural detail.",
-                      "duration": 5
+                      "duration": 10
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }

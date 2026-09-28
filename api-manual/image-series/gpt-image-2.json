@@ -253,20 +253,10 @@
                 "example": "low"
               },
               "size": {
-                "description": "Image size. Use auto, a supported aspect ratio, or a custom WIDTHxHEIGHT value. If size is omitted or set to auto, the request is processed at the 1K tier.",
-                "oneOf": [
-                  {
-                    "type": "string",
-                    "enum": ["auto", "1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "16:9", "9:16", "21:9"],
-                    "description": "Preset size or aspect ratio"
-                  },
-                  {
-                    "type": "string",
-                    "pattern": "^\\d{3,4}x\\d{3,4}$",
-                    "description": "Custom dimensions as WIDTHxHEIGHT"
-                  }
-                ],
-                "example": "16:9"
+                "description": "Image size. Use auto, a supported aspect ratio, or a custom WIDTHxHEIGHT value. If size is omitted or set to auto, the request is processed at the 1K tier.\n\nUse a preset (`auto`, `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `16:9`, `9:16`, `21:9`) or custom `WIDTHxHEIGHT` dimensions.",
+                "example": "16:9",
+                "type": "string",
+                "pattern": "^(?:auto|1:1|2:3|3:2|3:4|4:3|4:5|5:4|16:9|9:16|21:9|(?:\\d{3,4}x\\d{3,4}))$"
               },
               "resolution": {
                 "type": "string",

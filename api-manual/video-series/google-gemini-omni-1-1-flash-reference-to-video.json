@@ -43,7 +43,8 @@
                   "input": {
                     "type": "object",
                     "required": [
-                      "prompt"
+                      "prompt",
+                      "reference_image_urls"
                     ],
                     "properties": {
                       "prompt": {
@@ -111,20 +112,6 @@
                             "reference_video_urls"
                           ]
                         }
-                      },
-                      {
-                        "anyOf": [
-                          {
-                            "required": [
-                              "reference_image_urls"
-                            ],
-                            "properties": {
-                              "reference_image_urls": {
-                                "minItems": 1
-                              }
-                            }
-                          }
-                        ]
                       }
                     ],
                     "additionalProperties": false

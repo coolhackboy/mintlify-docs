@@ -71,24 +71,9 @@
                         "oneOf": [
                           {
                             "type": "string",
-                            "enum": [
-                              "2K",
-                              "3K",
-                              "1:1",
-                              "4:3",
-                              "3:4",
-                              "16:9",
-                              "9:16",
-                              "3:2",
-                              "2:3",
-                              "21:9"
-                            ],
-                            "description": "Resolution or aspect-ratio preset."
-                          },
-                          {
-                            "type": "string",
-                            "pattern": "^\\s*\\d+\\s*[xX]\\s*\\d+\\s*$",
-                            "description": "Custom dimensions, for example 2304x1728. Width and height are positive integers."
+                            "pattern": "^(?:2K|3K|1:1|4:3|3:4|16:9|9:16|3:2|2:3|21:9|(?:\\s*\\d+\\s*[xX]\\s*\\d+\\s*))$",
+                            "description": "Use a preset (`2K`, `3K`, `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`) or custom `WIDTHxHEIGHT` dimensions.",
+                            "title": "Size string"
                           },
                           {
                             "type": "object",
@@ -109,7 +94,8 @@
                               }
                             },
                             "additionalProperties": false,
-                            "description": "Custom dimensions as an object with positive integer width and height."
+                            "description": "Custom dimensions as an object with positive integer width and height.",
+                            "title": "Width and height"
                           }
                         ],
                         "default": "1:1",

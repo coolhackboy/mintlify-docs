@@ -57,7 +57,8 @@
                           "format": "uri",
                           "description": "Reference image urls."
                         },
-                        "description": "Reference images: 1–9 for reference-to-video, or up to 5 optional images for video-edit. Describe referenced subjects in the prompt; specific character markers are not required."
+                        "description": "Reference images: 1–9 for reference-to-video, or up to 5 optional images for video-edit. Describe referenced subjects in the prompt; specific character markers are not required.",
+                        "minItems": 1
                       },
                       "aspect_ratio": {
                         "type": "string",
@@ -99,24 +100,9 @@
                       }
                     },
                     "additionalProperties": false,
-                    "allOf": [
-                      {
-                        "anyOf": [
-                          {
-                            "required": [
-                              "reference_image_urls"
-                            ],
-                            "properties": {
-                              "reference_image_urls": {
-                                "minItems": 1
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    ],
                     "required": [
-                      "prompt"
+                      "prompt",
+                      "reference_image_urls"
                     ]
                   },
                   "callback_url": {

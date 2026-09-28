@@ -101,7 +101,6 @@
           "input": {
             "type": "object",
             "required": [
-              "image_urls",
               "duration",
               "multi_shots",
               "sound"
@@ -114,7 +113,7 @@
                   "type": "string",
                   "format": "uri"
                 },
-                "description": "Array of image URLs. For single shot mode (multi_shots: false), provide start and end frame URLs. For multi-shot mode (multi_shots: true), provide only the start frame URL. **Required** when `kling_elements` is provided",
+                "description": "Optional for text-to-video. For image-to-video in single-shot mode (multi_shots: false), provide a start frame and an optional end frame. For multi-shot mode (multi_shots: true), provide only the start frame URL. **Required** when `kling_elements` is provided.",
                 "example": [
                   "https://cdn.vidgo.ai/temp/start-frame.png"
                 ]

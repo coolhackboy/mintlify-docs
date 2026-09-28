@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API - Wan 2.5 Image to Video",
-    "description": "Animate a reference image into a five-second clip with Wan 2.5, with audio input and video output up to 1080p.",
+    "description": "Animate a reference image into a 5 or 10 second clip with Wan 2.5, with audio input and video output up to 1080p.",
     "version": "1.0.0"
   },
   "servers": [
@@ -23,7 +23,7 @@
         ],
         "summary": "Submit Wan 2.5 Image to Video Task",
         "operationId": "submit_alibaba_wan_2_5_image_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nThis workflow currently accepts five-second outputs; the longer-duration price is awaiting confirmation.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nSet duration to 5 or 10 seconds. If omitted, duration defaults to 5 seconds.",
         "requestBody": {
           "required": true,
           "content": {
@@ -123,7 +123,7 @@
                   }
                 },
                 "callback": {
-                  "summary": "Receive a completion callback",
+                  "summary": "10-second video with a completion callback",
                   "value": {
                     "model": "alibaba/wan-2.5/image-to-video",
                     "input": {
@@ -132,7 +132,7 @@
                       ],
                       "prompt": "A quiet forest under soft morning light, with natural detail.",
                       "resolution": "720p",
-                      "duration": 5
+                      "duration": 10
                     },
                     "callback_url": "https://your-domain.com/callback"
                   }

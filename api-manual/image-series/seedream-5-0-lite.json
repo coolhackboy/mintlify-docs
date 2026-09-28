@@ -137,19 +137,25 @@
     },
     "schemas": {
       "SubmitRequest": {
-        "anyOf": [
-          {
-            "$ref": "#/components/schemas/LiteSubmitRequest"
-          },
-          {
-            "$ref": "#/components/schemas/LiteEditSubmitRequest"
-          }
+        "type": "object",
+        "description": "Use `seedream-5.0-lite` for generation or `seedream-5.0-lite-edit` for editing.",
+        "required": [
+          "model",
+          "input"
         ],
-        "discriminator": {
-          "propertyName": "model",
-          "mapping": {
-            "seedream-5.0-lite": "#/components/schemas/LiteSubmitRequest",
-            "seedream-5.0-lite-edit": "#/components/schemas/LiteEditSubmitRequest"
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "seedream-5.0-lite"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Webhook callback URL for result notifications",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "$ref": "#/components/schemas/LiteInput"
           }
         }
       },
@@ -193,7 +199,9 @@
       },
       "LiteInput": {
         "type": "object",
-        "required": ["prompt"],
+        "required": [
+          "prompt"
+        ],
         "description": "Input parameters for Seedream-5.0-Lite text-to-image or image-to-image generation",
         "properties": {
           "prompt": {
@@ -210,8 +218,10 @@
             },
             "minItems": 1,
             "maxItems": 10,
-            "description": "Optional reference image URLs for image-to-image generation on seedream-5.0-lite. Supported formats: JPEG, PNG",
-            "example": ["https://cdn.vidgo.ai/temp/reference1.jpg"]
+            "description": "Optional reference image URLs for image-to-image generation on seedream-5.0-lite. Supported formats: JPEG, PNG\n\nRequired when model is `seedream-5.0-lite-edit`.",
+            "example": [
+              "https://cdn.vidgo.ai/temp/reference1.jpg"
+            ]
           },
           "size": {
             "$ref": "#/components/schemas/SizeParameter"
@@ -266,20 +276,17 @@
         "oneOf": [
           {
             "type": "string",
-            "description": "Resolution preset or aspect-ratio preset",
-            "enum": ["2K", "3K", "1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "21:9"],
-            "example": "16:9"
-          },
-          {
-            "type": "string",
-            "description": "Custom dimensions as WIDTHxHEIGHT",
-            "pattern": "^\\d+[xX]\\d+$",
-            "example": "2304x1728"
+            "pattern": "^(?:2K|3K|1:1|4:3|3:4|16:9|9:16|3:2|2:3|21:9|(?:\\d+[xX]\\d+))$",
+            "description": "Use a preset (`2K`, `3K`, `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`) or custom `WIDTHxHEIGHT` dimensions.",
+            "title": "Size string"
           },
           {
             "type": "object",
             "description": "Structured custom dimensions",
-            "required": ["width", "height"],
+            "required": [
+              "width",
+              "height"
+            ],
             "properties": {
               "width": {
                 "type": "integer",
@@ -296,7 +303,8 @@
             "example": {
               "width": 2304,
               "height": 1728
-            }
+            },
+            "title": "Width and height"
           }
         ]
       },

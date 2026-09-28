@@ -195,6 +195,7 @@
                     "model": "kwaivgi/kling-v3.0-4k/image-to-video",
                     "input": {
                       "duration": 3,
+                      "prompt": "A gentle camera push brings the scene to life.",
                       "image_urls": [
                         "https://example.com/image.png"
                       ],
@@ -209,6 +210,7 @@
                     "model": "kwaivgi/kling-v3.0-4k/image-to-video",
                     "input": {
                       "duration": 3,
+                      "prompt": "A gentle camera push brings the scene to life.",
                       "image_urls": [
                         "https://example.com/image.png"
                       ],

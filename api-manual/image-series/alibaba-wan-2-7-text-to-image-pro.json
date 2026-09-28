@@ -67,7 +67,8 @@
                               "576x1024",
                               "1024x576"
                             ],
-                            "example": "1024x1024"
+                            "example": "1024x1024",
+                            "title": "Size string"
                           },
                           {
                             "type": "object",
@@ -91,7 +92,8 @@
                               "width": 1280,
                               "height": 720
                             },
-                            "additionalProperties": false
+                            "additionalProperties": false,
+                            "title": "Width and height"
                           }
                         ],
                         "default": "1024x1024",
