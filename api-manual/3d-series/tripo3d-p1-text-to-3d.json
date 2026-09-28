@@ -23,7 +23,7 @@
         ],
         "summary": "Tripo3D P1 Text to 3D",
         "operationId": "submit_tripo3d_p1_text_to_3d",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.\n\nRead every item in files. Model assets use file_type=3d, previews use image, and additional artifacts may use other. Optional file metadata is retained when available.",
+        "description": "Place the workflow fields below inside input. Read every item in files: model assets use file_type=3d, previews use image, and supporting files use other. Preserve the returned file metadata.",
         "requestBody": {
           "required": true,
           "content": {
@@ -47,22 +47,22 @@
                         "type": "string",
                         "maxLength": 1024,
                         "minLength": 1,
-                        "description": "Prompt."
+                        "description": "Describe the 3D object in a non-empty string of 1 to 1,024 characters."
                       },
                       "face_limit": {
                         "type": "integer",
                         "minimum": 48,
                         "maximum": 20000,
-                        "description": "Face limit."
+                        "description": "Target face count, an integer from 48 to 20000."
                       },
                       "texture": {
                         "type": "boolean",
                         "default": true,
-                        "description": "Texture."
+                        "description": "Generate textures when true. Default: true."
                       },
                       "model_seed": {
                         "type": "integer",
-                        "description": "Model seed."
+                        "description": "Integer seed for reproducible geometry."
                       }
                     },
                     "additionalProperties": false,
@@ -76,7 +76,7 @@
                     "description": "Optional public HTTP(S) endpoint for task completion notifications. HTTPS is recommended. Omit, use null, or use an empty string to disable callbacks."
                   }
                 },
-                "description": "Keep model and callback_url at the root. Unknown root fields are ignored; unsupported input fields are rejected."
+                "description": "Set model and optional callback_url at the request root. Place the fields listed for this workflow inside input."
               },
               "examples": {
                 "basic": {
@@ -162,7 +162,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, unsupported tier, inaccessible media, or insufficient credits",
+            "description": "Check input values, media accessibility, and available account credits.",
             "content": {
               "application/json": {
                 "schema": {
@@ -372,7 +372,7 @@
             }
           },
           "502": {
-            "description": "Unable to create the upstream generation task",
+            "description": "Unable to create the generation task",
             "content": {
               "application/json": {
                 "schema": {
