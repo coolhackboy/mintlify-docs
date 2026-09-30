@@ -37,12 +37,11 @@
                   "summary": "Wan 2.2 Text-to-Video Fast",
                   "value": {
                     "model": "wan2.2-text-to-video-fast",
-                    "callback_url": "https://your-domain.com/callback",
                     "input": {
-                      "prompt": "A cinematic panda walking through neon rain in Shanghai at night",
-                      "aspect_ratio": "16:9",
+                      "prompt": "A cinematic wide shot of one vintage steam train traveling steadily from left to right across a stone viaduct above a lush tropical gorge. The camera tracks sideways smoothly at the train's speed. White steam trails behind the locomotive, drifting over the dense green canopy; a distant waterfall and soft morning mist create layers of depth. The wheels remain on the rails, the carriages stay connected, and the bridge stays rigid. Natural documentary realism, warm early sunlight, one continuous shot, no cuts, no text or logos.",
                       "resolution": "480p",
-                      "seed": 123
+                      "seed": 22400,
+                      "aspect_ratio": "16:9"
                     }
                   }
                 }
@@ -94,7 +93,7 @@
               "prompt": {
                 "type": "string",
                 "description": "Text prompt for video generation",
-                "example": "A cinematic video scene"
+                "example": "A cinematic wide shot of one vintage steam train traveling steadily from left to right across a stone viaduct above a lush tropical gorge. The camera tracks sideways smoothly at the train's speed. White steam trails behind the locomotive, drifting over the dense green canopy; a distant waterfall and soft morning mist create layers of depth. The wheels remain on the rails, the carriages stay connected, and the bridge stays rigid. Natural documentary realism, warm early sunlight, one continuous shot, no cuts, no text or logos."
               },
               "aspect_ratio": {
                 "type": "string",
@@ -119,7 +118,7 @@
               "seed": {
                 "type": "integer",
                 "description": "Optional random seed for reproducibility",
-                "example": 123
+                "example": 22400
               }
             }
           }

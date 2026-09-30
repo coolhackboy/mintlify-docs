@@ -37,14 +37,14 @@
                   "summary": "Wan 2.2 Image-to-Video Fast",
                   "value": {
                     "model": "wan2.2-image-to-video-fast",
-                    "callback_url": "https://your-domain.com/callback",
                     "input": {
-                      "prompt": "A cinematic panda walking through neon rain in Shanghai at night",
+                      "prompt": "A gentle botanical time-lapse connects the supplied first and last frames. The same single pink water lily slowly opens its existing petals outward, gradually revealing the golden center, ending in the open flower pose of the last image. Keep the flower center, stem, lily pad, water surface, greenhouse background and soft lighting stable. Locked macro camera throughout. Smooth organic unfurling, intact petals, no new flowers or objects, no camera movement, no cuts or abrupt morphs.",
+                      "resolution": "720p",
+                      "seed": 22405,
                       "image_urls": [
-                        "https://cdn.vidgo.ai/temp/start-image.jpg"
-                      ],
-                      "resolution": "480p",
-                      "seed": 224
+                        "https://cdn.vidgo.ai/apis/models/alibaba/wan/v2.2-a14b/image-to-video/turbo/v1/03/start.png",
+                        "https://cdn.vidgo.ai/apis/models/alibaba/wan/v2.2-a14b/image-to-video/turbo/v1/03/end.png"
+                      ]
                     }
                   }
                 }
@@ -97,7 +97,7 @@
               "prompt": {
                 "type": "string",
                 "description": "Text prompt for the motion and scene",
-                "example": "A cinematic video scene"
+                "example": "A gentle botanical time-lapse connects the supplied first and last frames. The same single pink water lily slowly opens its existing petals outward, gradually revealing the golden center, ending in the open flower pose of the last image. Keep the flower center, stem, lily pad, water surface, greenhouse background and soft lighting stable. Locked macro camera throughout. Smooth organic unfurling, intact petals, no new flowers or objects, no camera movement, no cuts or abrupt morphs."
               },
               "image_urls": {
                 "type": "array",
@@ -109,7 +109,8 @@
                 "maxItems": 2,
                 "description": "Reference image URLs. The first image is required; the optional second image is used as the last frame.",
                 "example": [
-                  "https://cdn.vidgo.ai/temp/start-image.jpg"
+                  "https://cdn.vidgo.ai/apis/models/alibaba/wan/v2.2-a14b/image-to-video/turbo/v1/03/start.png",
+                  "https://cdn.vidgo.ai/apis/models/alibaba/wan/v2.2-a14b/image-to-video/turbo/v1/03/end.png"
                 ]
               },
               "resolution": {
@@ -120,12 +121,12 @@
                   "720p"
                 ],
                 "default": "480p",
-                "example": "480p"
+                "example": "720p"
               },
               "seed": {
                 "type": "integer",
                 "description": "Optional random seed for reproducibility",
-                "example": 224
+                "example": 22405
               }
             }
           }
