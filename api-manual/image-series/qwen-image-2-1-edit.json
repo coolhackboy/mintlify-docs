@@ -1,0 +1,307 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Qwen Image 2.1 Image Edit",
+    "description": "Edit one image with Qwen Image 2.1 using text instructions and reference images.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit Qwen Image 2.1 Image Edit Task",
+        "operationId": "submitQwenImage21ImageEditTask",
+        "tags": [
+          "Qwen Image 2.1 Image Edit"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "reference-edit": {
+                  "summary": "Edit with reference images",
+                  "value": {
+                    "model": "qwen-image-2.1/edit",
+                    "input": {
+                      "prompt": "Preserve the product and replace the background with a warm modern studio.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-product.png"
+                      ],
+                      "size": "auto",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "mask-edit": {
+                  "summary": "Edit a masked region",
+                  "value": {
+                    "model": "qwen-image-2.1/edit",
+                    "input": {
+                      "prompt": "Replace the masked area with a small vase of flowers.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-product.png"
+                      ],
+                      "mask_url": "https://cdn.vidgo.ai/temp/edit-mask.png",
+                      "background": "opaque",
+                      "size": "auto",
+                      "prompt_extend": false
+                    }
+                  }
+                },
+                "transparent-background": {
+                  "summary": "Edit an image with a transparent background",
+                  "value": {
+                    "model": "qwen-image-2.1/edit",
+                    "input": {
+                      "prompt": "Keep the silver robot and remove its background.",
+                      "background": "transparent",
+                      "output_format": "webp",
+                      "resolution": "2K",
+                      "seed": 20261009,
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-product.png"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submission result. A task ID identifies asynchronous work; generation may still be running.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "Use `Authorization: Bearer VIDGO_API_KEY`."
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "qwen-image-2.1/edit"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional webhook URL for completion or failure notifications.",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt",
+              "image_urls"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 5000,
+                "pattern": "\\S",
+                "description": "Text instructions describing the edit.\n\nInclude at least one non-whitespace character."
+              },
+              "size": {
+                "type": "string",
+                "description": "Output aspect ratio.\n\nauto follows the reference image.\n\nIgnored when mask_url is supplied.",
+                "enum": [
+                  "1:1",
+                  "4:3",
+                  "3:4",
+                  "3:2",
+                  "2:3",
+                  "16:9",
+                  "9:16",
+                  "21:9",
+                  "9:21",
+                  "auto"
+                ],
+                "default": "auto"
+              },
+              "resolution": {
+                "type": "string",
+                "enum": [
+                  "1K",
+                  "2K"
+                ],
+                "default": "1K",
+                "description": "Output resolution tier."
+              },
+              "image_urls": {
+                "type": "array",
+                "maxItems": 10,
+                "items": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https?://"
+                },
+                "description": "Required reference images for editing, in prompt order.",
+                "minItems": 1
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "png",
+                  "jpeg",
+                  "webp"
+                ],
+                "default": "png",
+                "description": "Output image format.\n\nTransparent output requires PNG or WebP."
+              },
+              "enable_safety_checker": {
+                "type": "boolean",
+                "default": true,
+                "description": "Enable content safety checking."
+              },
+              "background": {
+                "type": "string",
+                "enum": [
+                  "opaque",
+                  "transparent"
+                ],
+                "default": "opaque",
+                "description": "Background mode.\n\nTransparent output requires PNG or WebP."
+              },
+              "mask_url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https?://",
+                "description": "Optional local-edit mask.\n\nRequires exactly one reference image and an opaque background.\n\nWhite areas change and black areas stay unchanged.\n\nMatch the reference aspect ratio; the mask is scaled to the reference.\n\nsize and prompt_extend are ignored."
+              },
+              "prompt_extend": {
+                "type": "boolean",
+                "default": true,
+                "description": "Enhance the prompt before generation.\n\nIgnored when mask_url is supplied."
+              },
+              "seed": {
+                "type": "integer",
+                "description": "Optional random seed.\n\nOmit to use a random seed."
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-example-001"
+              },
+              "status": {
+                "type": "string",
+                "example": "running"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-10-09T10:30:00"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "error"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

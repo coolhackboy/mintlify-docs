@@ -1,0 +1,46 @@
+---
+title: "GPT Image 2.5 Flare Image Edit"
+description: "Edit one image with GPT Image 2.5 Flare using text instructions and reference images."
+icon: "image"
+openapi: "/api-manual/image-series/gpt-image-2-5-flare-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
+
+# GPT Image 2.5 Flare Image Edit
+
+## Usage Guide
+
+Edit one image with GPT Image 2.5 Flare using text instructions and reference images.
+
+- Set `model` to `gpt-image-2.5-flare/edit`.
+- Place `model` and optional `callback_url` at the request root; place workflow parameters inside `input`.
+- Each request produces one image.
+- For prompt-only generation, use [Text to Image](/api-manual/image-series/gpt-image-2-5-flare-text-to-image) with `model=gpt-image-2.5-flare/text-to-image`.
+
+## Parameter Details
+
+- `prompt` is required. Supply non-blank text of up to 32,000 characters.
+- `image_urls` is required and accepts 1 to 16 reference image URLs. Use publicly accessible HTTP(S) URLs in the same order as the references in your prompt.
+- `size` defaults to `1:1`. `auto` is available only with `resolution=1K`.
+- Custom `WIDTHxHEIGHT` dimensions require `2K` or `4K`. Both edges must be positive multiples of 16, the longest edge must not exceed 3,840 pixels, the aspect ratio must not exceed 3:1, and total pixels must be between 655,360 and 8,294,400. A 3,840-pixel edge requires `4K`.
+- `mask_url` selects the area to edit and requires the reference images in `image_urls`.
+- A transparent background requires `output_format=png` or `webp`.
+
+## Developer Notes
+
+- Submission is asynchronous. Use the task status endpoint or a completion webhook to retrieve the final image.
+- Billing is per output image and depends on `quality` and the requested `resolution` tier. Aspect-ratio requests keep the selected tier; actual image dimensions may vary.
+- Credits are deducted on submission and refunded if the task fails.
+
+## Optional parameters
+
+- `size` (string): Use `auto`, `1:1`, `2:3`, `3:2`, `4:3`, `3:4`, `4:5`, `5:4`, `16:9`, `9:16`, `21:9`, or custom `WIDTHxHEIGHT` dimensions. Default: `1:1`.
+- `resolution` (string): Output resolution tier. Accepted values: `1K`, `2K`, `4K`. Default: `1K`.
+- `output_format` (string): Output image format. Transparent output requires PNG or WebP. Accepted values: `png`, `jpeg`, `webp`. Default: `png`.
+- `quality` (string): Image quality tier. Billing depends on quality and the requested resolution tier. Accepted values: `low`, `medium`, `high`, `xhigh`, `max`. Default: `high`.
+- `background` (string): Background mode. Transparent output requires PNG or WebP. Accepted values: `auto`, `transparent`, `opaque`. Default: `auto`.
+- `mask_url` (string): Optional mask selecting the area to edit. Requires at least one reference image.

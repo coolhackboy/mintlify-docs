@@ -1,0 +1,39 @@
+---
+title: "Seedream 5.0 Flash Text to Image"
+description: "Generate one image with Seedream 5.0 Flash using a text prompt."
+icon: "image"
+openapi: "/api-manual/image-series/seedream-v5-0-flash.json POST /api/generate/submit"
+---
+
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
+
+# Seedream 5.0 Flash Text to Image
+
+## Usage Guide
+
+Generate one image with Seedream 5.0 Flash using a text prompt.
+
+- Set `model` to `seedream-v5.0-flash`.
+- Place `model` and optional `callback_url` at the request root; place workflow parameters inside `input`.
+- Each request produces one image.
+- For reference-image editing, use [Image Edit](/api-manual/image-series/seedream-v5-0-flash-edit) with `model=seedream-v5.0-flash/edit`.
+
+## Parameter Details
+
+- `prompt` is required. Supply non-blank text of up to 5,000 characters.
+
+## Developer Notes
+
+- Submission is asynchronous. Use the task status endpoint or a completion webhook to retrieve the final image.
+- Billing is per output image. Text-to-image and editing use the same rate across the supported resolution tiers.
+- Credits are deducted on submission and refunded if the task fails.
+
+## Optional parameters
+
+- `size` (string): Output aspect ratio. Accepted values: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `2:3`, `3:2`, `21:9`. Default: `1:1`.
+- `resolution` (string): Output resolution tier. Accepted values: `1K`, `1.5K`, `2K`. Default: `1K`.
+- `output_format` (string): Output image format. Accepted values: `jpeg`, `png`. If omitted, the format is selected by the upstream model.
+- `enable_safety_checker` (boolean): Enable content safety checking. Default: `true`.

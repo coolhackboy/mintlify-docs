@@ -1,0 +1,39 @@
+---
+title: "Nano Banana 2.1 Image Edit"
+description: "Edit one image with Nano Banana 2.1 using text instructions and reference images."
+icon: "image"
+openapi: "/api-manual/image-series/nano-banana-2-1-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+</Tip>
+
+# Nano Banana 2.1 Image Edit
+
+## Usage Guide
+
+Edit one image with Nano Banana 2.1 using text instructions and reference images.
+
+- Set `model` to `nano-banana-2.1/edit`.
+- Place `model` and optional `callback_url` at the request root; place workflow parameters inside `input`.
+- Each request produces one image.
+- For prompt-only generation, use [Text to Image](/api-manual/image-series/nano-banana-2-1-text-to-image) with `model=nano-banana-2.1/text-to-image`.
+
+## Parameter Details
+
+- `prompt` is required. Supply non-blank text of up to 20,000 characters.
+- `image_urls` is required and accepts 1 to 10 reference image URLs. Use publicly accessible HTTP(S) URLs in the same order as the references in your prompt.
+- `size` defaults to `auto`. `auto` follows the reference image aspect ratio.
+
+## Developer Notes
+
+- Submission is asynchronous. Use the task status endpoint or a completion webhook to retrieve the final image.
+- Billing is per output image and depends on `resolution`. Text-to-image and editing use the same rate at each tier.
+- Credits are deducted on submission and refunded if the task fails.
+
+## Optional parameters
+
+- `size` (string): Output aspect ratio. auto follows the reference image. Accepted values: `auto`, `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`. Default: `auto`.
+- `resolution` (string): Output resolution tier. Accepted values: `1K`, `2K`, `4K`. Default: `1K`.

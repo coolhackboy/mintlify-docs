@@ -1,0 +1,309 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - GPT Image 2.5 Sunburst Image Edit",
+    "description": "Edit one image with GPT Image 2.5 Sunburst using text instructions and reference images.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit GPT Image 2.5 Sunburst Image Edit Task",
+        "operationId": "submitGPTImage25SunburstImageEditTask",
+        "tags": [
+          "GPT Image 2.5 Sunburst Image Edit"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "reference-edit": {
+                  "summary": "Edit with reference images",
+                  "value": {
+                    "model": "gpt-image-2.5-sunburst/edit",
+                    "input": {
+                      "prompt": "Preserve the product and replace the background with a warm modern studio.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-product.png"
+                      ],
+                      "size": "1:1",
+                      "resolution": "2K"
+                    }
+                  }
+                },
+                "mask-edit": {
+                  "summary": "Edit a masked region",
+                  "value": {
+                    "model": "gpt-image-2.5-sunburst/edit",
+                    "input": {
+                      "prompt": "Replace the masked area with a small vase of flowers.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-product.png"
+                      ],
+                      "mask_url": "https://cdn.vidgo.ai/temp/edit-mask.png",
+                      "size": "auto"
+                    }
+                  }
+                },
+                "transparent-background": {
+                  "summary": "Edit an image with a transparent background",
+                  "value": {
+                    "model": "gpt-image-2.5-sunburst/edit",
+                    "input": {
+                      "prompt": "Keep the silver robot and remove its background.",
+                      "background": "transparent",
+                      "output_format": "webp",
+                      "resolution": "4K",
+                      "quality": "xhigh",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-product.png"
+                      ]
+                    }
+                  }
+                },
+                "custom-size": {
+                  "summary": "Edit with custom dimensions",
+                  "value": {
+                    "model": "gpt-image-2.5-sunburst/edit",
+                    "input": {
+                      "prompt": "Preserve the product and place it in a panoramic city garden.",
+                      "size": "2304x1536",
+                      "resolution": "2K",
+                      "quality": "medium",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-product.png"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submission result. A task ID identifies asynchronous work; generation may still be running.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "Use `Authorization: Bearer VIDGO_API_KEY`."
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "gpt-image-2.5-sunburst/edit"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional webhook URL for completion or failure notifications.",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt",
+              "image_urls"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32000,
+                "pattern": "\\S",
+                "description": "Text instructions describing the edit.\n\nInclude at least one non-whitespace character."
+              },
+              "size": {
+                "type": "string",
+                "description": "Output aspect ratio or WIDTHxHEIGHT.\n\nDefaults to 1:1.\n\nauto requires 1K.\n\nCustom dimensions require 2K or 4K, multiples of 16, maximum edge 3840, aspect ratio at most 3:1, and 655360–8294400 pixels.\n\nA 3840-pixel edge requires 4K.",
+                "pattern": "^(?:auto|1:1|2:3|3:2|4:3|3:4|4:5|5:4|16:9|9:16|21:9|\\s*\\d+\\s*[xX]\\s*\\d+\\s*)$",
+                "default": "1:1"
+              },
+              "resolution": {
+                "type": "string",
+                "enum": [
+                  "1K",
+                  "2K",
+                  "4K"
+                ],
+                "default": "1K",
+                "description": "Output resolution tier."
+              },
+              "image_urls": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https?://"
+                },
+                "description": "Required reference images for editing, in prompt order.",
+                "minItems": 1
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "png",
+                  "jpeg",
+                  "webp"
+                ],
+                "default": "png",
+                "description": "Output image format.\n\nTransparent output requires PNG or WebP."
+              },
+              "quality": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high",
+                  "xhigh",
+                  "max"
+                ],
+                "default": "high",
+                "description": "Image quality tier.\n\nBilling depends on quality and the requested resolution tier."
+              },
+              "background": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "transparent",
+                  "opaque"
+                ],
+                "default": "auto",
+                "description": "Background mode.\n\nTransparent output requires PNG or WebP."
+              },
+              "mask_url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https?://",
+                "description": "Optional mask selecting the area to edit.\n\nRequires at least one reference image."
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-example-001"
+              },
+              "status": {
+                "type": "string",
+                "example": "running"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-10-09T10:30:00"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "error"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

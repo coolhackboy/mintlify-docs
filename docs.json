@@ -28,9 +28,15 @@
     "/api-manual/image-series/gpt-4o-image.json",
     "/api-manual/image-series/gpt-image-1.5.json",
     "/api-manual/image-series/gpt-image-2.json",
+    "/api-manual/image-series/gpt-image-2-5-flare-text-to-image.json",
+    "/api-manual/image-series/gpt-image-2-5-flare-edit.json",
+    "/api-manual/image-series/gpt-image-2-5-sunburst-text-to-image.json",
+    "/api-manual/image-series/gpt-image-2-5-sunburst-edit.json",
     "/api-manual/image-series/nano-banana.json",
     "/api-manual/image-series/nano-banana-2.json",
     "/api-manual/image-series/nano-banana-2-new.json",
+    "/api-manual/image-series/nano-banana-2-1-text-to-image.json",
+    "/api-manual/image-series/nano-banana-2-1-edit.json",
     "/api-manual/image-series/blackforestlabs-flux-schnell.json",
     "/api-manual/image-series/blackforestlabs-flux-dev.json",
     "/api-manual/image-series/blackforestlabs-flux-dev-image-to-image.json",
@@ -41,10 +47,14 @@
     "/api-manual/image-series/seedream-5-0-lite.json",
     "/api-manual/image-series/seedream-v5-0-pro.json",
     "/api-manual/image-series/seedream-v5-0-pro-edit.json",
+    "/api-manual/image-series/seedream-v5-0-flash.json",
+    "/api-manual/image-series/seedream-v5-0-flash-edit.json",
     "/api-manual/image-series/qwen-image-3-0-text-to-image.json",
     "/api-manual/image-series/qwen-image-3-0-edit.json",
     "/api-manual/image-series/qwen-image-3-0-pro-text-to-image.json",
     "/api-manual/image-series/qwen-image-3-0-pro-edit.json",
+    "/api-manual/image-series/qwen-image-2-1-text-to-image.json",
+    "/api-manual/image-series/qwen-image-2-1-edit.json",
     "/api-manual/image-series/z-image.json",
     "/api-manual/image-series/alibaba-z-image-turbo.json",
     "/api-manual/image-series/grok-imagine-image.json",
@@ -297,7 +307,11 @@
                   "api-manual/image-series/gpt-4o-image",
                   "api-manual/image-series/openai-gpt-image-1-5-text-to-image",
                   "api-manual/image-series/openai-gpt-image-1-5-edit",
-                  "api-manual/image-series/gpt-image-2"
+                  "api-manual/image-series/gpt-image-2",
+                  "api-manual/image-series/gpt-image-2-5-flare-text-to-image",
+                  "api-manual/image-series/gpt-image-2-5-flare-edit",
+                  "api-manual/image-series/gpt-image-2-5-sunburst-text-to-image",
+                  "api-manual/image-series/gpt-image-2-5-sunburst-edit"
                 ]
               },
               {
@@ -308,7 +322,9 @@
                   "api-manual/image-series/nano-banana-2",
                   "api-manual/image-series/nano-banana-2-new",
                   "api-manual/image-series/google-nano-banana-2-lite-text-to-image",
-                  "api-manual/image-series/google-nano-banana-2-lite-edit"
+                  "api-manual/image-series/google-nano-banana-2-lite-edit",
+                  "api-manual/image-series/nano-banana-2-1-text-to-image",
+                  "api-manual/image-series/nano-banana-2-1-edit"
                 ]
               },
               {
@@ -339,7 +355,9 @@
                   "api-manual/image-series/bytedance-seedream-v5-lite-text-to-image",
                   "api-manual/image-series/bytedance-seedream-v5-lite-edit",
                   "api-manual/image-series/seedream-v5-0-pro",
-                  "api-manual/image-series/seedream-v5-0-pro-edit"
+                  "api-manual/image-series/seedream-v5-0-pro-edit",
+                  "api-manual/image-series/seedream-v5-0-flash",
+                  "api-manual/image-series/seedream-v5-0-flash-edit"
                 ]
               },
               {
@@ -357,6 +375,8 @@
                   "api-manual/image-series/qwen-image-3-0-edit",
                   "api-manual/image-series/qwen-image-3-0-pro-text-to-image",
                   "api-manual/image-series/qwen-image-3-0-pro-edit",
+                  "api-manual/image-series/qwen-image-2-1-text-to-image",
+                  "api-manual/image-series/qwen-image-2-1-edit",
                   "api-manual/image-series/alibaba-wan-2-7-text-to-image",
                   "api-manual/image-series/alibaba-wan-2-7-image-edit",
                   "api-manual/image-series/alibaba-wan-2-7-text-to-image-pro",
