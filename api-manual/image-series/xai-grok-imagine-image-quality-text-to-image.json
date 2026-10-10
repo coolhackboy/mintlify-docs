@@ -49,13 +49,13 @@
                       "prompt": {
                         "type": "string",
                         "minLength": 1,
-                        "description": "Required non-blank string. No maximum length is documented upstream."
+                        "description": "Required non-blank string. No maximum length is specified."
                       },
                       "n": {
                         "type": "integer",
                         "minimum": 1,
                         "default": 1,
-                        "description": "Output image count. Integer at least 1; default 1. No maximum is documented upstream. Fractional numbers, strings and booleans are rejected."
+                        "description": "Output image count. Integer at least 1; default 1. No maximum is specified. Fractional numbers, strings and booleans are rejected."
                       },
                       "aspect_ratio": {
                         "type": "string",
@@ -417,7 +417,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "The requested model is temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

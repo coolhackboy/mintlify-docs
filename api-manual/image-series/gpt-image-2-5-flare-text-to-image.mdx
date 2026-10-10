@@ -28,11 +28,11 @@ Generate one image with GPT Image 2.5 Flare using a text prompt.
 - Custom `WIDTHxHEIGHT` dimensions require `2K` or `4K`. Both edges must be positive multiples of 16, the longest edge must not exceed 3,840 pixels, the aspect ratio must not exceed 3:1, and total pixels must be between 655,360 and 8,294,400. A 3,840-pixel edge requires `4K`.
 - A transparent background requires `output_format=png` or `webp`.
 
-## Developer Notes
+## Billing
 
-- Submission is asynchronous. Use the task status endpoint or a completion webhook to retrieve the final image.
-- Billing is per output image and depends on `quality` and the requested `resolution` tier. Aspect-ratio requests keep the selected tier; actual image dimensions may vary.
-- Credits are deducted on submission and refunded if the task fails.
+Billing is per output image and depends on `quality` and the requested `resolution` tier. Aspect-ratio requests keep the selected tier; actual image dimensions may vary.
+
+Credits are deducted on submission and refunded if the task fails.
 
 ## Optional parameters
 

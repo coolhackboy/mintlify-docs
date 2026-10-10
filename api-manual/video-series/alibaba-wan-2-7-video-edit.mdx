@@ -20,7 +20,7 @@ Rework existing footage with Wan 2.7 using text and an optional reference image 
 
 ## Duration Options
 
-- **Automatic** - `duration: 0` is the default. The service detects the source-video duration, checks that it is **2-10 seconds**, then rounds down to whole seconds. The same whole-second duration is used for billing and upstream generation.
+- **Automatic** - `duration: 0` is the default. The service detects the source-video duration, checks that it is **2-10 seconds**, then rounds down to whole seconds. The same whole-second duration is used for billing and output generation.
 - **Explicit output length** - Set `duration` to `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `10` seconds.
 - With `duration: 0`, the source must be a publicly reachable HTTP(S) file no larger than **100 MiB**.
 

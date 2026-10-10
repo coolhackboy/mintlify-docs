@@ -62,7 +62,7 @@
                         },
                         "minItems": 1,
                         "maxItems": 1,
-                        "description": "Exactly one HTTP(S) image URL. The playground accepts JPG, PNG, or WebP uploads up to 10 MiB; this upload policy is not a remote file check by the PoYo handler."
+                        "description": "Exactly one HTTP(S) image URL. The playground accepts JPG, PNG, or WebP uploads up to 10 MiB."
                       },
                       "duration": {
                         "type": "integer",
@@ -430,7 +430,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "The requested model is temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

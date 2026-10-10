@@ -98,7 +98,7 @@
               },
               "aspect_ratio": {
                 "type": "string",
-                "description": "Output size preset used by the upstream model",
+                "description": "Output size preset",
                 "enum": [
                   "832*480",
                   "480*832",

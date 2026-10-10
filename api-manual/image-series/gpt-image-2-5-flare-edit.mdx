@@ -30,11 +30,11 @@ Edit one image with GPT Image 2.5 Flare using text instructions and reference im
 - `mask_url` selects the area to edit and requires the reference images in `image_urls`.
 - A transparent background requires `output_format=png` or `webp`.
 
-## Developer Notes
+## Billing
 
-- Submission is asynchronous. Use the task status endpoint or a completion webhook to retrieve the final image.
-- Billing is per output image and depends on `quality` and the requested `resolution` tier. Aspect-ratio requests keep the selected tier; actual image dimensions may vary.
-- Credits are deducted on submission and refunded if the task fails.
+Billing is per output image and depends on `quality` and the requested `resolution` tier. Aspect-ratio requests keep the selected tier; actual image dimensions may vary.
+
+Credits are deducted on submission and refunded if the task fails.
 
 ## Optional parameters
 

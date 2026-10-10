@@ -85,7 +85,7 @@
                           4
                         ],
                         "minimum": 1,
-                        "description": "Compatibility parameter accepting 1 to 4, default 1. PoYo editing produces and bills one image per request; larger values do not increase the output count.",
+                        "description": "Compatibility parameter accepting 1 to 4, default 1. Each edit request produces one image and is billed for one image; larger values do not increase the output count.",
                         "default": 1
                       },
                       "mask_url": {

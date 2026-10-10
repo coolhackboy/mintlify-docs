@@ -66,7 +66,7 @@
                       },
                       "resolution": {
                         "type": "string",
-                        "description": "Resolution passed to PoYo. Defaults to 768P.",
+                        "description": "Output resolution. Defaults to 768P.",
                         "enum": [
                           "512P",
                           "768P"
@@ -416,7 +416,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "The requested model is temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

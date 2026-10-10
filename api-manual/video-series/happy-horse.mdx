@@ -69,7 +69,7 @@ Text-to-video, image-to-video, and reference-to-video use the requested `duratio
 - `image_urls` must resolve to exactly one image and is only for image-to-video.
 - `reference_image_urls` selects reference-to-video unless `video_url` is present, in which case it is treated as optional video-edit reference imagery.
 - For text-to-video and reference-to-video, omit `video_url` and use `aspect_ratio`.
-- For video-edit, omit `duration`; the backend probes the source video duration for validation and duration-based billing.
+- For video-edit, omit `duration`; the source video duration is used for validation and duration-based billing.
 
 {/* poyo-20260910:start */}
 ## Workflow IDs

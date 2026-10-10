@@ -23,7 +23,7 @@
         ],
         "summary": "Hailuo 02 Pro Text to Video",
         "operationId": "submit_minimax_hailuo_02_pro_text_to_video",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.\n\nPro accepts 512P and 768P (default 768P). Prompts must be nonblank after trimming, with no explicit length limit in the current handler.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank.\n\nPro accepts 512P and 768P (default 768P). Prompts must not be blank after trimming.",
         "requestBody": {
           "required": true,
           "content": {
@@ -49,7 +49,7 @@
                     "properties": {
                       "prompt": {
                         "type": "string",
-                        "description": "Required nonblank prompt, trimmed before validation. No explicit length limit in the current PoYo handler.",
+                        "description": "Required nonblank prompt, trimmed before validation. No maximum prompt length is specified.",
                         "example": "A cinematic video scene",
                         "minLength": 1
                       },
@@ -60,7 +60,7 @@
                       },
                       "resolution": {
                         "type": "string",
-                        "description": "Resolution passed to PoYo. Defaults to 768P.",
+                        "description": "Output resolution. Defaults to 768P.",
                         "enum": [
                           "512P",
                           "768P"
@@ -403,7 +403,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "The requested model is temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {

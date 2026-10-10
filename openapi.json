@@ -380,7 +380,7 @@
             }
           },
           "503": {
-            "description": "Model configuration or capability is not approved",
+            "description": "The requested model is temporarily unavailable",
             "content": {
               "application/json": {
                 "schema": {
@@ -535,7 +535,7 @@
                   "failed"
                 ],
                 "example": "not_started",
-                "description": "Task status when the submit response is produced. New PoYo workflows normally return running."
+                "description": "Task status when the submit response is produced. The initial status depends on the model."
               },
               "created_time": {
                 "type": "string",

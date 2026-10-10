@@ -34,11 +34,9 @@ Set `model` and optional `callback_url` at the request root. Place all workflow 
 
 Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
 
-- Resolution is forwarded to PoYo as supplied; no fixed output duration or 1080P output is asserted by this contract.
-
 ### Prompt
 
-- `prompt`: Required. Describe the scene and desired motion. The current PoYo Pro handler has no explicit prompt length limit.
+- `prompt`: Required. Describe the scene and desired motion. No maximum prompt length is specified.
 - Whitespace is trimmed before validation; the result must not be blank.
 
 ### Image URLs
@@ -47,7 +45,7 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 
 ### End Image URL
 
-- `end_image_url`: Optional. Provide the ending frame URL. Use a publicly accessible HTTP(S) URL. Requires a starting image in `image_urls`. The current Pro handler accepts an ending frame with either resolution.
+- `end_image_url`: Optional. Provide the ending frame URL. Use a publicly accessible HTTP(S) URL. Requires a starting image in `image_urls`. The ending frame is supported at both resolutions.
 
 ### Prompt Optimizer
 

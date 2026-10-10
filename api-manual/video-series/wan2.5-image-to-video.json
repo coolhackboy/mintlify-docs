@@ -136,7 +136,7 @@
               },
               "audio": {
                 "type": "string",
-                "description": "Optional audio setting string accepted by the upstream model",
+                "description": "Optional audio setting string",
                 "example": "background_music"
               },
               "negative_prompt": {

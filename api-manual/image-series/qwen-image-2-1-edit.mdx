@@ -31,11 +31,11 @@ Edit one image with Qwen Image 2.1 using text instructions and reference images.
 - With a mask, output follows the reference aspect ratio; `size` and `prompt_extend` are ignored.
 - Reference images support JPEG, PNG, and WebP, up to 30 MB and 25 megapixels per image. Media limits are checked during generation.
 
-## Developer Notes
+## Billing
 
-- Submission is asynchronous. Use the task status endpoint or a completion webhook to retrieve the final image.
-- Billing is per output image and depends on `resolution`. Text-to-image and editing use the same rate at each tier.
-- Credits are deducted on submission and refunded if the task fails.
+Billing is per output image and depends on `resolution`. Text-to-image and editing use the same rate at each tier.
+
+Credits are deducted on submission and refunded if the task fails.
 
 ## Optional parameters
 

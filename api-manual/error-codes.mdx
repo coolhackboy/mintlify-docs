@@ -166,20 +166,12 @@ Upstream service error.
 
 ### 503 - Service Unavailable
 
-The model capability or billing configuration is not approved. An unknown or disabled public model normally returns HTTP 404.
-
-**Example:**
-
-```json
-{
-  "detail": "Model billing configuration is not approved"
-}
-```
+The requested model is temporarily unavailable. Contact support to check model availability before retrying. An unknown or disabled public model normally returns HTTP 404.
 
 ## Error Handling Best Practices
 
 <Tip>
-**Retry transient failures carefully**: For temporary 500 or 502 errors, use exponential backoff. Retrying submission can create another task. An unapproved model configuration reported as 503 requires a configuration update before retrying.
+**Retry transient failures carefully**: For temporary 500 or 502 errors, use exponential backoff. Retrying submission can create another task. For HTTP 503, contact support to check model availability before retrying.
 </Tip>
 
 <Tip>

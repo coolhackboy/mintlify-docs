@@ -161,7 +161,7 @@
               },
               "n": {
                 "type": "integer",
-                "description": "Number of images to generate. With gpt-image-1.5-edit, PoYo produces and bills one image per request; n does not increase editing outputs.",
+                "description": "Number of images to generate. With gpt-image-1.5-edit, each request produces one image and is billed for one image; n does not increase editing outputs.",
                 "enum": [1, 2, 3, 4],
                 "example": 1
               },
