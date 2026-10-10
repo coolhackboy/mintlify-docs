@@ -35,7 +35,7 @@
                 "default": {
                   "summary": "Edit reference images",
                   "value": {
-                    "model": "seedream-v5.0-flash/edit",
+                    "model": "bytedance/seedream-v5.0-flash/edit",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "Keep the product and replace the background with a bright studio.",
@@ -106,7 +106,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "example": "seedream-v5.0-flash/edit"
+            "example": "bytedance/seedream-v5.0-flash/edit"
           },
           "callback_url": {
             "type": "string",

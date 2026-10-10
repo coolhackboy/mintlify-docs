@@ -35,7 +35,7 @@
                 "reference-edit": {
                   "summary": "Edit with reference images",
                   "value": {
-                    "model": "gpt-image-2.5-flare/edit",
+                    "model": "openai/gpt-image-2.5-flare/edit",
                     "input": {
                       "prompt": "Preserve the product and replace the background with a warm modern studio.",
                       "image_urls": [
@@ -49,7 +49,7 @@
                 "mask-edit": {
                   "summary": "Edit a masked region",
                   "value": {
-                    "model": "gpt-image-2.5-flare/edit",
+                    "model": "openai/gpt-image-2.5-flare/edit",
                     "input": {
                       "prompt": "Replace the masked area with a small vase of flowers.",
                       "image_urls": [
@@ -63,7 +63,7 @@
                 "transparent-background": {
                   "summary": "Edit an image with a transparent background",
                   "value": {
-                    "model": "gpt-image-2.5-flare/edit",
+                    "model": "openai/gpt-image-2.5-flare/edit",
                     "input": {
                       "prompt": "Keep the silver robot and remove its background.",
                       "background": "transparent",
@@ -79,7 +79,7 @@
                 "custom-size": {
                   "summary": "Edit with custom dimensions",
                   "value": {
-                    "model": "gpt-image-2.5-flare/edit",
+                    "model": "openai/gpt-image-2.5-flare/edit",
                     "input": {
                       "prompt": "Preserve the product and place it in a panoramic city garden.",
                       "size": "2304x1536",
@@ -150,7 +150,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "example": "gpt-image-2.5-flare/edit"
+            "example": "openai/gpt-image-2.5-flare/edit"
           },
           "callback_url": {
             "type": "string",

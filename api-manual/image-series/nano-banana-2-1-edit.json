@@ -35,7 +35,7 @@
                 "reference-edit": {
                   "summary": "Edit with reference images",
                   "value": {
-                    "model": "nano-banana-2.1/edit",
+                    "model": "google/nano-banana-2.1/edit",
                     "input": {
                       "prompt": "Preserve the product and replace the background with a warm modern studio.",
                       "image_urls": [
@@ -105,7 +105,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "example": "nano-banana-2.1/edit"
+            "example": "google/nano-banana-2.1/edit"
           },
           "callback_url": {
             "type": "string",

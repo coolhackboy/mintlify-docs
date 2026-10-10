@@ -35,7 +35,7 @@
                 "default": {
                   "summary": "Generate one image",
                   "value": {
-                    "model": "nano-banana-2.1/text-to-image",
+                    "model": "google/nano-banana-2.1/text-to-image",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "A product photograph of a silver coffee maker in a bright studio.",
@@ -103,7 +103,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "example": "nano-banana-2.1/text-to-image"
+            "example": "google/nano-banana-2.1/text-to-image"
           },
           "callback_url": {
             "type": "string",

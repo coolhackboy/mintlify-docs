@@ -35,7 +35,7 @@
                 "default": {
                   "summary": "Generate one image",
                   "value": {
-                    "model": "gpt-image-2.5-sunburst/text-to-image",
+                    "model": "openai/gpt-image-2.5-sunburst/text-to-image",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "A product photograph of a silver coffee maker in a bright studio.",
@@ -47,7 +47,7 @@
                 "transparent-background": {
                   "summary": "Create a transparent asset",
                   "value": {
-                    "model": "gpt-image-2.5-sunburst/text-to-image",
+                    "model": "openai/gpt-image-2.5-sunburst/text-to-image",
                     "input": {
                       "prompt": "A clean cutout of a small silver robot.",
                       "background": "transparent",
@@ -60,7 +60,7 @@
                 "custom-size": {
                   "summary": "Generate with custom dimensions",
                   "value": {
-                    "model": "gpt-image-2.5-sunburst/text-to-image",
+                    "model": "openai/gpt-image-2.5-sunburst/text-to-image",
                     "input": {
                       "prompt": "A panoramic city garden with soft morning light.",
                       "size": "2304x1536",
@@ -128,7 +128,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "example": "gpt-image-2.5-sunburst/text-to-image"
+            "example": "openai/gpt-image-2.5-sunburst/text-to-image"
           },
           "callback_url": {
             "type": "string",

@@ -35,7 +35,7 @@
                 "default": {
                   "summary": "Generate one image",
                   "value": {
-                    "model": "seedream-v5.0-flash",
+                    "model": "bytedance/seedream-v5.0-flash/text-to-image",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "A product photograph of a silver coffee maker in a bright studio.",
@@ -103,7 +103,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "example": "seedream-v5.0-flash"
+            "example": "bytedance/seedream-v5.0-flash/text-to-image"
           },
           "callback_url": {
             "type": "string",

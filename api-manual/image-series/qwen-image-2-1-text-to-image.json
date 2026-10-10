@@ -35,7 +35,7 @@
                 "default": {
                   "summary": "Generate one image",
                   "value": {
-                    "model": "qwen-image-2.1/text-to-image",
+                    "model": "alibaba/qwen-image-2.1/text-to-image",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "A product photograph of a silver coffee maker in a bright studio.",
@@ -47,7 +47,7 @@
                 "transparent-background": {
                   "summary": "Create a transparent asset",
                   "value": {
-                    "model": "qwen-image-2.1/text-to-image",
+                    "model": "alibaba/qwen-image-2.1/text-to-image",
                     "input": {
                       "prompt": "A clean cutout of a small silver robot.",
                       "background": "transparent",
@@ -116,7 +116,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "example": "qwen-image-2.1/text-to-image"
+            "example": "alibaba/qwen-image-2.1/text-to-image"
           },
           "callback_url": {
             "type": "string",
