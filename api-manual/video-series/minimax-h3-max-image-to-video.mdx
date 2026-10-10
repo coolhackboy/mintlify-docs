@@ -14,18 +14,14 @@ openapi: "/api-manual/video-series/minimax-h3-max-image-to-video.json POST /api/
 
 Use `minimax/h3-max/image-to-video`. Provide `image_urls` in order: the starting frame first, then an optional ending frame. The output follows the starting image; omit `aspect_ratio`.
 
+Set `model` and optional `callback_url` at the request root. Place generation parameters inside `input`.
+
 ## Parameter Details
 
 - `prompt`: required non-empty string, up to 50,000 characters.
 - `duration`: integer from 5 through 15 seconds; defaults to 5. Fractional durations are rejected.
 - `resolution`: `480p`, `768p` or `1080p`; defaults to `768p`.
 - `image_urls`: required array of 1-2 images, in starting-frame and ending-frame order. Use public HTTP(S) download URLs. Base64 is not supported.
-
-## Developer Notes
-
-This endpoint creates one asynchronous video task. Keep `model` and `callback_url` at the request root and all business parameters inside `input`. Unknown fields and fields belonging to another input mode are rejected.
-
-Charges depend on the requested output duration and resolution. Credits are deducted when the task is submitted; a failed generation is refunded through the existing task refund process.
 
 ## Optional parameters
 

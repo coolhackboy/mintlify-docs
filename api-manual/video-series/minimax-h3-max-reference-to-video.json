@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API - MiniMax H3 Max Reference to Video",
-    "description": "Create a video from image, video and audio references; availability pending billing verification.",
+    "description": "Create a video from image, video and audio references.",
     "version": "1.0.0"
   },
   "servers": [
@@ -97,7 +97,7 @@
             "description": "Unauthorized"
           },
           "503": {
-            "description": "Reference generation is disabled pending exact billing verification. No generation task or charge is created."
+            "description": "This endpoint is currently unavailable. No generation task or charge is created."
           }
         }
       }
@@ -212,7 +212,7 @@
                   "pattern": "^https?://",
                   "description": "Publicly accessible HTTP(S) download URL."
                 },
-                "description": "MP3/WAV, at most 15 MB each, 2-15 seconds per clip and at most 15 seconds combined. Mono/stereo, 32 kHz, decoded sample count divisible by 800. Each clip must not exceed output duration. Exact audio billing is pending verification; this workflow remains disabled."
+                "description": "MP3/WAV, at most 15 MB each, 2-15 seconds per clip and at most 15 seconds combined. Mono/stereo, 32 kHz, decoded sample count divisible by 800. Each clip must not exceed output duration."
               }
             },
             "description": "At most 12 reference assets in total. Reference video and audio require at least one reference image. This workflow is not enabled yet."
