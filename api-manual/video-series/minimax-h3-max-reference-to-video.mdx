@@ -1,0 +1,39 @@
+---
+title: "MiniMax H3 Max Reference to Video"
+description: "Create a video from image, video and audio references; availability pending billing verification."
+icon: "video"
+openapi: "/api-manual/video-series/minimax-h3-max-reference-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your webhook when the task finishes or fails.
+</Tip>
+
+<Warning>This reference workflow is not enabled yet. Exact audio metering and PoYo billing reconciliation must pass before it becomes available. Requests are rejected without creating a generation task or charging credits.</Warning>
+
+## Usage Guide
+
+Use `minimax/h3-max/reference-to-video`. When this workflow becomes available, provide at least one reference image. Optionally add reference video and audio, with at most 12 assets across all lists. Refer to assets as `Image 1`, `Video 1` and `Audio 1` in list order. Starting and ending frames cannot be combined with reference assets.
+
+## Parameter Details
+
+- `prompt`: required non-empty string, up to 50,000 characters.
+- `duration`: integer from 5 through 15 seconds; defaults to 5. Fractional durations are rejected.
+- `resolution`: `480p`, `768p` or `1080p`; defaults to `768p`.
+- `aspect_ratio`: six fixed ratios (`21:9`, `16:9`, `4:3`, `1:1`, `3:4`, `9:16`) or `adaptive`; defaults to `adaptive`.
+- `reference_image_urls`: required array of 1-9 static JPEG, PNG or WebP images, at most 30 MB each. Supported shapes are `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `5:2` and `2:5`; normalize image orientation before uploading.
+- `reference_video_urls`: optional array of up to 3 MP4/MOV clips, at most 50 MB each. Each clip must be 2-15 seconds, with at most 15 seconds combined. Clips must use constant 24 fps, square pixels, zero rotation metadata, and a `16:9` or `9:16` shape. After limiting frames to the requested output duration, the counted frames must be 48, 120, 240 or 360. Other timing patterns are rejected.
+- `reference_audio_urls`: optional array of up to 3 MP3/WAV clips, at most 15 MB each. Each clip must be 2-15 seconds and no longer than the output duration, with at most 15 seconds combined. Audio must be mono or stereo at 32 kHz, with a decoded sample count divisible by 800. Exact audio tokenization remains unverified.
+- All reference URLs must be public HTTP(S) download links. Total assets across the three lists must not exceed 12.
+
+## Developer Notes
+
+When enabled, this endpoint creates one asynchronous video task. Keep `model` and `callback_url` at the request root and all business parameters inside `input`. Unknown fields and fields belonging to another input mode are rejected.
+
+Charges depend on the requested output duration and resolution. Credits are deducted when the task is submitted; a failed generation is refunded through the existing task refund process. Reference usage is measured by the server and pooled across images, video and audio against a shared allowance. Extra reference usage is prorated. Image shape and counted video frames affect usage. Client-provided token counts or metadata are rejected. If media cannot be measured reliably, the request is rejected before charging. The endpoint remains disabled until all media types and mixed references have been reconciled against actual PoYo charges.
+
+## Optional parameters
+
+- `enable_safety_checker`: boolean, defaults to `true`. Set `false` to disable it.
+- `callback_url`: optional webhook URL at the request root. Query task status if you do not use a callback.

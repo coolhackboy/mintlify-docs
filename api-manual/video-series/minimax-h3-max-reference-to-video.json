@@ -1,0 +1,262 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - MiniMax H3 Max Reference to Video",
+    "description": "Create a video from image, video and audio references; availability pending billing verification.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit MiniMax H3 Max Reference to Video Task",
+        "operationId": "submitMinimaxH3MaxReferenceToVideoTask",
+        "tags": [
+          "MiniMax H3 Max Reference to Video"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "imageReferences": {
+                  "summary": "Image references (pending availability)",
+                  "value": {
+                    "model": "minimax/h3-max/reference-to-video",
+                    "input": {
+                      "prompt": "Image 1 walks through a sunlit street",
+                      "reference_image_urls": [
+                        "https://example.com/subject.jpg"
+                      ]
+                    }
+                  }
+                },
+                "mixedReferences": {
+                  "summary": "Mixed references (pending availability)",
+                  "value": {
+                    "model": "minimax/h3-max/reference-to-video",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Image 1 follows the movement in Video 1 with the atmosphere of Audio 1",
+                      "duration": 10,
+                      "resolution": "768p",
+                      "reference_image_urls": [
+                        "https://example.com/subject.jpg"
+                      ],
+                      "reference_video_urls": [
+                        "https://example.com/motion.mp4"
+                      ],
+                      "reference_audio_urls": [
+                        "https://example.com/atmosphere.wav"
+                      ],
+                      "aspect_ratio": "adaptive",
+                      "enable_safety_checker": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1787970600-abcd1234",
+                    "status": "not_started",
+                    "created_time": "2026-08-29T10:30:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "503": {
+            "description": "Reference generation is disabled pending exact billing verification. No generation task or charge is created."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "Use `Authorization: Bearer VIDGO_API_KEY`."
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "minimax/h3-max/reference-to-video"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional webhook callback URL."
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt",
+              "reference_image_urls"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50000,
+                "pattern": "\\S",
+                "description": "Non-empty prompt describing the target video."
+              },
+              "duration": {
+                "type": "integer",
+                "minimum": 5,
+                "maximum": 15,
+                "default": 5,
+                "description": "Requested output duration in seconds."
+              },
+              "resolution": {
+                "type": "string",
+                "enum": [
+                  "480p",
+                  "768p",
+                  "1080p"
+                ],
+                "default": "768p",
+                "description": "Output resolution."
+              },
+              "enable_safety_checker": {
+                "type": "boolean",
+                "default": true,
+                "description": "Set false to disable the safety checker."
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "enum": [
+                  "21:9",
+                  "16:9",
+                  "4:3",
+                  "1:1",
+                  "3:4",
+                  "9:16",
+                  "adaptive"
+                ],
+                "default": "adaptive"
+              },
+              "reference_image_urls": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 9,
+                "items": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https?://",
+                  "description": "Publicly accessible HTTP(S) download URL."
+                },
+                "description": "Required reference images: static JPEG/PNG/WebP, at most 30 MB each. Supported shapes: 1:1, 4:3, 3:4, 16:9, 9:16, 5:2, 2:5. Normalize orientation before uploading."
+              },
+              "reference_video_urls": {
+                "type": "array",
+                "maxItems": 3,
+                "items": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https?://",
+                  "description": "Publicly accessible HTTP(S) download URL."
+                },
+                "description": "MP4/MOV, at most 50 MB each, 2-15 seconds per clip and at most 15 seconds combined. Constant 24 fps, square pixels, zero rotation, 16:9 or 9:16. After capping at output duration, counted frames must be 48, 120, 240 or 360."
+              },
+              "reference_audio_urls": {
+                "type": "array",
+                "maxItems": 3,
+                "items": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https?://",
+                  "description": "Publicly accessible HTTP(S) download URL."
+                },
+                "description": "MP3/WAV, at most 15 MB each, 2-15 seconds per clip and at most 15 seconds combined. Mono/stereo, 32 kHz, decoded sample count divisible by 800. Each clip must not exceed output duration. Exact audio billing is pending verification; this workflow remains disabled."
+              }
+            },
+            "description": "At most 12 reference assets in total. Reference video and audio require at least one reference image. This workflow is not enabled yet."
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started",
+                  "running",
+                  "failed"
+                ]
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

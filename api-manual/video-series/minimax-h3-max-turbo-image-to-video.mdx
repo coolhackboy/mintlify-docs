@@ -1,0 +1,33 @@
+---
+title: "MiniMax H3 Max Turbo Image to Video"
+description: "Animate a starting frame with an optional ending frame."
+icon: "video"
+openapi: "/api-manual/video-series/minimax-h3-max-turbo-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned. Keep it until the task reaches `finished` or `failed`.
+2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your webhook when the task finishes or fails.
+</Tip>
+
+## Usage Guide
+
+Use `minimax/h3-max-turbo/image-to-video`. Provide `image_urls` in order: the starting frame first, then an optional ending frame. The output follows the starting image; omit `aspect_ratio`.
+
+## Parameter Details
+
+- `prompt`: required non-empty string, up to 50,000 characters.
+- `duration`: integer from 5 through 15 seconds; defaults to 5. Fractional durations are rejected.
+- `resolution`: `480p`, `768p` or `1080p`; defaults to `768p`. Uppercase `P` is accepted and normalized before submission.
+- `image_urls`: required array of 1-2 images, in starting-frame and ending-frame order. Public HTTP(S) URLs and Base64 image data are supported. Base64 images are uploaded before submission.
+
+## Developer Notes
+
+This endpoint creates one asynchronous video task. Keep `model` and `callback_url` at the request root and all business parameters inside `input`. Unknown fields and fields belonging to another input mode are rejected.
+
+Charges depend on the requested output duration and resolution. Credits are deducted when the task is submitted; a failed generation is refunded through the existing task refund process.
+
+## Optional parameters
+
+- `enable_safety_checker`: boolean, defaults to `true`. Set `false` to disable it.
+- `callback_url`: optional webhook URL at the request root. Query task status if you do not use a callback.
