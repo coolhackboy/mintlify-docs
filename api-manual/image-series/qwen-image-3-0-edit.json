@@ -209,7 +209,8 @@
               },
               "created_time": {
                 "type": "string",
-                "format": "date-time"
+                "format": "date-time",
+                "example": "2026-10-10T08:00:00Z"
               }
             }
           }

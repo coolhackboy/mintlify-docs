@@ -371,12 +371,12 @@
               {
                 "group": "Alibaba",
                 "pages": [
+                  "api-manual/image-series/qwen-image-2-1-text-to-image",
+                  "api-manual/image-series/qwen-image-2-1-edit",
                   "api-manual/image-series/qwen-image-3-0-text-to-image",
                   "api-manual/image-series/qwen-image-3-0-edit",
                   "api-manual/image-series/qwen-image-3-0-pro-text-to-image",
                   "api-manual/image-series/qwen-image-3-0-pro-edit",
-                  "api-manual/image-series/qwen-image-2-1-text-to-image",
-                  "api-manual/image-series/qwen-image-2-1-edit",
                   "api-manual/image-series/alibaba-wan-2-7-text-to-image",
                   "api-manual/image-series/alibaba-wan-2-7-image-edit",
                   "api-manual/image-series/alibaba-wan-2-7-text-to-image-pro",
