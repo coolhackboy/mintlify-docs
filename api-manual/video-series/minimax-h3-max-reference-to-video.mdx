@@ -10,11 +10,9 @@ openapi: "/api-manual/video-series/minimax-h3-max-reference-to-video.json POST /
 2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your webhook when the task finishes or fails.
 </Tip>
 
-<Warning>This endpoint is currently unavailable. Requests return HTTP `503` without creating a task or charging credits.</Warning>
-
 ## Usage Guide
 
-Use `minimax/h3-max/reference-to-video`. When this workflow becomes available, provide at least one reference image. Optionally add reference video and audio, with at most 12 assets across all lists. Refer to assets as `Image 1`, `Video 1` and `Audio 1` in list order. Starting and ending frames cannot be combined with reference assets.
+Use `minimax/h3-max/reference-to-video`. Provide at least one reference image. Optionally add reference video and audio, with at most 12 assets across all lists. Refer to assets as `Image 1`, `Video 1` and `Audio 1` in list order. Starting and ending frames cannot be combined with reference assets.
 
 Set `model` and optional `callback_url` at the request root. Place generation parameters inside `input`.
 

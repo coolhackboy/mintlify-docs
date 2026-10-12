@@ -33,7 +33,7 @@
               },
               "examples": {
                 "imageReferences": {
-                  "summary": "Image references (pending availability)",
+                  "summary": "Image references",
                   "value": {
                     "model": "minimax/h3-max/reference-to-video",
                     "input": {
@@ -45,7 +45,7 @@
                   }
                 },
                 "mixedReferences": {
-                  "summary": "Mixed references (pending availability)",
+                  "summary": "Mixed references",
                   "value": {
                     "model": "minimax/h3-max/reference-to-video",
                     "callback_url": "https://your-domain.com/callback",
@@ -95,9 +95,6 @@
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "503": {
-            "description": "This endpoint is currently unavailable. No generation task or charge is created."
           }
         }
       }
@@ -211,7 +208,7 @@
                 "description": "MP3/WAV, at most 15 MB each, 2-15 seconds per clip and at most 15 seconds combined. Mono/stereo, 32 kHz, decoded sample count divisible by 800. Each clip must not exceed output duration."
               }
             },
-            "description": "At most 12 reference assets in total. Reference video and audio require at least one reference image. This workflow is not enabled yet."
+            "description": "At most 12 reference assets in total. Reference video and audio require at least one reference image."
           }
         }
       },
