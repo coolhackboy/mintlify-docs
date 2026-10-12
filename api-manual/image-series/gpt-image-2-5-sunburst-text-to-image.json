@@ -147,13 +147,11 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 32000,
-                "pattern": "\\S",
                 "description": "Text describing the desired image.\n\nInclude at least one non-whitespace character."
               },
               "size": {
                 "type": "string",
-                "description": "Output aspect ratio or WIDTHxHEIGHT.\n\nDefaults to 1:1.\n\nauto requires 1K.\n\nCustom dimensions require 2K or 4K, multiples of 16, maximum edge 3840, aspect ratio at most 3:1, and 655360–8294400 pixels.\n\nA 3840-pixel edge requires 4K.",
-                "pattern": "^(?:auto|1:1|2:3|3:2|4:3|3:4|4:5|5:4|16:9|9:16|21:9|\\s*\\d+\\s*[xX]\\s*\\d+\\s*)$",
+                "description": "Output aspect ratio or WIDTHxHEIGHT.\n\nDefaults to 1:1.\n\nauto requires 1K.\n\nCustom dimensions require 2K or 4K, multiples of 16, maximum edge 3840, aspect ratio at most 3:1, and 655360–8294400 pixels.\n\nA 3840-pixel edge requires 4K.\n\nUse a preset (`auto`, `1:1`, `2:3`, `3:2`, `4:3`, `3:4`, `4:5`, `5:4`, `16:9`, `9:16`, `21:9`) or custom `WIDTHxHEIGHT` dimensions.\n\nUse `x` or `X` between the width and height.",
                 "default": "1:1"
               },
               "resolution": {

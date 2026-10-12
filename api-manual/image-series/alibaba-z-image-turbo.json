@@ -146,7 +146,7 @@
                 "items": {
                   "type": "string",
                   "format": "uri",
-                  "pattern": "^https?://"
+                  "description": "Use a publicly accessible HTTP(S) download URL."
                 },
                 "description": "One HTTP(S) image URL used as the editing reference. Providing this field selects image editing.",
                 "example": [

@@ -125,7 +125,6 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 20000,
-                "pattern": "\\S",
                 "description": "Text instructions describing the edit.\n\nInclude at least one non-whitespace character."
               },
               "size": {
@@ -163,7 +162,7 @@
                 "items": {
                   "type": "string",
                   "format": "uri",
-                  "pattern": "^https?://"
+                  "description": "Use a publicly accessible HTTP(S) download URL."
                 },
                 "description": "Required reference images for editing, in prompt order."
               }

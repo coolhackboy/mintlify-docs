@@ -122,7 +122,6 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 5000,
-                "pattern": "\\S",
                 "description": "Text describing the desired image.\n\nInclude at least one non-whitespace character."
               },
               "size": {

@@ -237,8 +237,7 @@
                             },
                             "speaker_id": {
                               "type": "string",
-                              "pattern": "^[A-Za-z0-9_]+$",
-                              "description": "Speaker id."
+                              "description": "Speaker id.\n\nUse one or more ASCII letters, digits, or underscores."
                             }
                           },
                           "description": "Speakers."

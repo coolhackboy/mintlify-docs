@@ -276,8 +276,7 @@
         "oneOf": [
           {
             "type": "string",
-            "pattern": "^(?:2K|3K|1:1|4:3|3:4|16:9|9:16|3:2|2:3|21:9|(?:\\d+[xX]\\d+))$",
-            "description": "Use a preset (`2K`, `3K`, `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`) or custom `WIDTHxHEIGHT` dimensions.",
+            "description": "Use a preset (`2K`, `3K`, `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`) or custom `WIDTHxHEIGHT` dimensions.\n\nUse `x` or `X` between the width and height.",
             "title": "Size string"
           },
           {

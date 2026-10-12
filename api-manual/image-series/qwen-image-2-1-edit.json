@@ -157,7 +157,6 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 5000,
-                "pattern": "\\S",
                 "description": "Text instructions describing the edit.\n\nInclude at least one non-whitespace character."
               },
               "size": {
@@ -192,7 +191,7 @@
                 "items": {
                   "type": "string",
                   "format": "uri",
-                  "pattern": "^https?://"
+                  "description": "Use a publicly accessible HTTP(S) download URL."
                 },
                 "description": "Required reference images for editing, in prompt order.",
                 "minItems": 1
@@ -224,8 +223,7 @@
               "mask_url": {
                 "type": "string",
                 "format": "uri",
-                "pattern": "^https?://",
-                "description": "Optional local-edit mask.\n\nRequires exactly one reference image and an opaque background.\n\nWhite areas change and black areas stay unchanged.\n\nMatch the reference aspect ratio; the mask is scaled to the reference.\n\nsize and prompt_extend are ignored."
+                "description": "Optional local-edit mask.\n\nRequires exactly one reference image and an opaque background.\n\nWhite areas change and black areas stay unchanged.\n\nMatch the reference aspect ratio; the mask is scaled to the reference.\n\nsize and prompt_extend are ignored.\n\nUse a publicly accessible HTTP(S) download URL."
               },
               "prompt_extend": {
                 "type": "boolean",

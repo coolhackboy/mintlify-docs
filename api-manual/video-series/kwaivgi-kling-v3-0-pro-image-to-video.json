@@ -63,11 +63,10 @@
                       },
                       "prompt": {
                         "type": "string",
-                        "description": "Required when multi_shots=false. Describe the scene, action and camera movement in 1–2,500 characters.",
+                        "description": "Required when multi_shots=false. Describe the scene, action and camera movement in 1–2,500 characters.\n\nMust contain at least one non-whitespace character.",
                         "maxLength": 2500,
                         "example": "A street musician playing violin on a rainy evening, reflections shimmering on wet cobblestones",
-                        "minLength": 1,
-                        "pattern": "\\S"
+                        "minLength": 1
                       },
                       "multi_prompt": {
                         "type": "array",
@@ -80,10 +79,9 @@
                           "properties": {
                             "prompt": {
                               "type": "string",
-                              "description": "Prompt text for this shot",
+                              "description": "Prompt text for this shot\n\nMust contain at least one non-whitespace character.",
                               "maxLength": 2500,
-                              "minLength": 1,
-                              "pattern": "\\S"
+                              "minLength": 1
                             },
                             "duration": {
                               "type": "integer",
@@ -136,9 +134,8 @@
                           "properties": {
                             "name": {
                               "type": "string",
-                              "description": "Element name used in @element_name references",
-                              "minLength": 1,
-                              "pattern": "\\S"
+                              "description": "Element name used in @element_name references\n\nMust contain at least one non-whitespace character.",
+                              "minLength": 1
                             },
                             "description": {
                               "type": "string",

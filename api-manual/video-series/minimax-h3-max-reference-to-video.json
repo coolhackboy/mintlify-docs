@@ -142,8 +142,7 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 50000,
-                "pattern": "\\S",
-                "description": "Non-empty prompt describing the target video."
+                "description": "Non-empty prompt describing the target video.\n\nMust contain at least one non-whitespace character."
               },
               "duration": {
                 "type": "integer",
@@ -187,7 +186,6 @@
                 "items": {
                   "type": "string",
                   "format": "uri",
-                  "pattern": "^https?://",
                   "description": "Publicly accessible HTTP(S) download URL."
                 },
                 "description": "Required reference images: static JPEG/PNG/WebP, at most 30 MB each. Supported shapes: 1:1, 4:3, 3:4, 16:9, 9:16, 5:2, 2:5. Normalize orientation before uploading."
@@ -198,7 +196,6 @@
                 "items": {
                   "type": "string",
                   "format": "uri",
-                  "pattern": "^https?://",
                   "description": "Publicly accessible HTTP(S) download URL."
                 },
                 "description": "MP4/MOV, at most 50 MB each, 2-15 seconds per clip and at most 15 seconds combined. Constant 24 fps, square pixels, zero rotation, 16:9 or 9:16. After capping at output duration, counted frames must be 48, 120, 240 or 360."
@@ -209,7 +206,6 @@
                 "items": {
                   "type": "string",
                   "format": "uri",
-                  "pattern": "^https?://",
                   "description": "Publicly accessible HTTP(S) download URL."
                 },
                 "description": "MP3/WAV, at most 15 MB each, 2-15 seconds per clip and at most 15 seconds combined. Mono/stereo, 32 kHz, decoded sample count divisible by 800. Each clip must not exceed output duration."

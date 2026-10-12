@@ -55,7 +55,7 @@
                         "items": {
                           "type": "string",
                           "minLength": 1,
-                          "pattern": "\\S"
+                          "description": "Must contain at least one non-whitespace character."
                         },
                         "description": "Required: an array of 1–2 images. The first is the starting frame; the optional second is the ending frame. Accepts public HTTP(S) URLs, image Data URIs or raw Base64 image data.",
                         "minItems": 1,
@@ -65,8 +65,7 @@
                         "type": "string",
                         "description": "Required when multi_shots=false. Describe the scene, action and camera movement. Use nonblank text, up to 2,500 characters after trimming. Omit prompt when multi_shots=true.",
                         "maxLength": 2500,
-                        "minLength": 1,
-                        "pattern": "\\S"
+                        "minLength": 1
                       },
                       "multi_prompt": {
                         "type": "array",
@@ -81,8 +80,7 @@
                               "type": "string",
                               "description": "Required nonblank text for this shot, up to 2,500 characters after trimming.",
                               "maxLength": 2500,
-                              "minLength": 1,
-                              "pattern": "\\S"
+                              "minLength": 1
                             },
                             "duration": {
                               "type": "integer",
