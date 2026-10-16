@@ -22,7 +22,9 @@
         "summary": "Submit GPT Image 2 Task",
         "description": "Generate or edit one image using GPT Image 2 on Vidgo API. Use gpt-image-2 for prompt-based generation and gpt-image-2-edit when you need reference image URLs.",
         "operationId": "submitGPTImage2Task",
-        "tags": ["GPT Image 2"],
+        "tags": [
+          "GPT Image 2"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -113,98 +115,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid request parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "examples": {
-                  "missing_prompt": {
-                    "value": {
-                      "code": 400,
-                      "error": {
-                        "message": "prompt is required",
-                        "type": "invalid_request_error"
-                      }
-                    }
-                  },
-                  "missing_image_urls_for_edit": {
-                    "value": {
-                      "code": 400,
-                      "error": {
-                        "message": "image_urls is required for edit",
-                        "type": "invalid_request_error"
-                      }
-                    }
-                  },
-                  "image_urls_not_supported_for_generate": {
-                    "value": {
-                      "code": 400,
-                      "error": {
-                        "message": "image_urls is only supported for gpt-image-2-edit",
-                        "type": "invalid_request_error"
-                      }
-                    }
-                  },
-                  "custom_size_requires_higher_resolution": {
-                    "value": {
-                      "code": 400,
-                      "error": {
-                        "message": "custom size requires resolution 2K or 4K",
-                        "type": "invalid_request_error"
-                      }
-                    }
-                  },
-                  "true_4k_custom_size_requires_4k": {
-                    "value": {
-                      "code": 400,
-                      "error": {
-                        "message": "true 4K custom size requires resolution 4K",
-                        "type": "invalid_request_error"
-                      }
-                    }
-                  },
-                  "invalid_quality": {
-                    "value": {
-                      "code": 400,
-                      "error": {
-                        "message": "quality must be one of: low, medium, high",
-                        "type": "invalid_request_error"
-                      }
-                    }
-                  },
-                  "invalid_resolution": {
-                    "value": {
-                      "code": 400,
-                      "error": {
-                        "message": "resolution must be one of: 1K, 2K, 4K",
-                        "type": "invalid_request_error"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Invalid API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "code": 401,
-                  "error": {
-                    "message": "Unauthorized - Invalid API key",
-                    "type": "authentication_error"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -222,7 +132,10 @@
     "schemas": {
       "SubmitRequest": {
         "type": "object",
-        "required": ["model", "input"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -236,7 +149,9 @@
           },
           "input": {
             "type": "object",
-            "required": ["prompt"],
+            "required": [
+              "prompt"
+            ],
             "description": "Input parameters for GPT Image 2 generation or editing on Vidgo API.",
             "properties": {
               "prompt": {
@@ -248,7 +163,11 @@
               "quality": {
                 "type": "string",
                 "description": "Image quality tier. Defaults to low and determines the credit cost together with the effective resolution.",
-                "enum": ["low", "medium", "high"],
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ],
                 "default": "low",
                 "example": "low"
               },
@@ -260,7 +179,11 @@
               "resolution": {
                 "type": "string",
                 "description": "Requested resolution. Custom sizes require 2K or 4K. If size is auto, the effective result stays at 1K. Non-true-4K requests may be billed at the effective 2K tier.",
-                "enum": ["1K", "2K", "4K"],
+                "enum": [
+                  "1K",
+                  "2K",
+                  "4K"
+                ],
                 "example": "1K"
               },
               "image_urls": {
@@ -270,7 +193,9 @@
                   "type": "string",
                   "format": "uri"
                 },
-                "example": ["https://cdn.vidgo.ai/temp/reference-product.jpg"]
+                "example": [
+                  "https://cdn.vidgo.ai/temp/reference-product.jpg"
+                ]
               }
             }
           }
@@ -278,7 +203,10 @@
       },
       "SubmitResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -286,7 +214,11 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "created_time"],
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -294,7 +226,9 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started"],
+                "enum": [
+                  "not_started"
+                ],
                 "example": "not_started"
               },
               "created_time": {
@@ -308,7 +242,10 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["code", "error"],
+        "required": [
+          "code",
+          "error"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -316,7 +253,10 @@
           },
           "error": {
             "type": "object",
-            "required": ["message", "type"],
+            "required": [
+              "message",
+              "type"
+            ],
             "properties": {
               "message": {
                 "type": "string",

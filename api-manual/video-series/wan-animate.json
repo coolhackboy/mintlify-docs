@@ -22,7 +22,9 @@
         "summary": "Submit Wan Animate Task",
         "description": "AI-powered character animation and replacement. Accurately captures facial expressions and body movements from reference video and applies them to a target image",
         "operationId": "submitWanAnimateTask",
-        "tags": ["Wan Animate"],
+        "tags": [
+          "Wan Animate"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -84,13 +86,16 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication Get your API Key: Visit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key Add it to the request header: ``` Authorization: Bearer YOUR_API_KEY ```"
       }
     },
     "schemas": {
       "SubmitRequest": {
         "type": "object",
-        "required": ["model", "input"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -104,7 +109,10 @@
           },
           "input": {
             "type": "object",
-            "required": ["video_url", "image_urls"],
+            "required": [
+              "video_url",
+              "image_urls"
+            ],
             "description": "Input parameters for animation",
             "properties": {
               "video_url": {
@@ -122,12 +130,18 @@
                 "minItems": 1,
                 "maxItems": 1,
                 "description": "Target image URL to animate (only 1 image allowed)",
-                "example": ["https://cdn.vidgo.ai/temp/target.jpg"]
+                "example": [
+                  "https://cdn.vidgo.ai/temp/target.jpg"
+                ]
               },
               "resolution": {
                 "type": "string",
                 "description": "Output video resolution",
-                "enum": ["480p", "580p", "720p"],
+                "enum": [
+                  "480p",
+                  "580p",
+                  "720p"
+                ],
                 "default": "480p",
                 "example": "480p"
               }
@@ -137,7 +151,10 @@
       },
       "SubmitResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -146,7 +163,11 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "created_time"],
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -155,7 +176,9 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started"],
+                "enum": [
+                  "not_started"
+                ],
                 "example": "not_started",
                 "description": "Initial task status"
               },

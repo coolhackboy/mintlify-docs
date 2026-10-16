@@ -1,5 +1,5 @@
 ---
-title: "Wan Animate Video Generation"
+title: "Wan Animate Video"
 description: "AI-powered character animation and replacement based on Alibaba's Wan2.2-Animate model"
 icon: "video"
 openapi: "/api-manual/video-series/wan-animate.json POST /api/generate/submit"
@@ -10,26 +10,30 @@ openapi: "/api-manual/video-series/wan-animate.json POST /api/generate/submit"
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Wan Animate Video Generation
-
 Wan Animate is powered by Alibaba's Wan2.2-Animate model, a 14B parameter open-source model for digital human video generation. It accurately captures facial expressions and body movements from a reference video and applies them to a target image, enabling seamless character animation and replacement with realistic lighting and color preservation.
 
-## Available Models
+## Models
 
-- **wan-animate-replace** - Replace a character in a video with one from a source image while preserving expressions and movements
-- **wan-animate-move** - Animate a character image using motion from a reference video
+- **wan-animate-replace** — Replace a character in a video with one from a source image while preserving expressions and movements
+- **wan-animate-move** — Animate a character image using motion from a reference video
 
-## Resolution Options
+## Input modes
 
-- **480p** - Standard definition (default)
-- **580p** - Enhanced definition
-- **720p** - HD quality
+- **Character replacement**: Use `wan-animate-replace` to replace a character in `video_url` using the character in `image_urls`.
+- **Motion transfer**: Use `wan-animate-move` to animate the character in `image_urls` using motion from `video_url`.
 
-{/* poyo-20260910:start */}
-## Workflow IDs
+## Required parameters
+
+- `video_url` (string): Source video URL to extract motion from.
+- `image_urls` (array of strings): Target image URL to animate (only 1 image allowed).
+
+## Optional parameters
+
+- `resolution` (string): Output video resolution. Values: `480p`, `580p`, `720p`. Default: `480p`.
+
+## Notes
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
 - [alibaba/wan/v2.2-14b/animate/move](/api-manual/video-series/alibaba-wan-v2-2-14b-animate-move)
 - [alibaba/wan/v2.2-14b/animate/replace](/api-manual/video-series/alibaba-wan-v2-2-14b-animate-replace)
-{/* poyo-20260910:end */}

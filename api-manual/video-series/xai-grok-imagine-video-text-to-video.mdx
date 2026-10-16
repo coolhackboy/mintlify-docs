@@ -6,40 +6,26 @@ openapi: "/api-manual/video-series/xai-grok-imagine-video-text-to-video.json POS
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Grok Imagine Text to Video
 
 Create six- or ten-second video scenes with Grok Imagine, using text to guide the action in square, portrait, or landscape formats.
 
-## Available Models
+## Models
 
-- **xai/grok-imagine-video/text-to-video** - Generate video scenes from text prompts.
+- **xai/grok-imagine-video/text-to-video** — Generate video scenes from text prompts.
 
-## Duration Options
-
-- **6, 10 seconds** - Set `duration` as an integer. Optional; defaults to `6`.
-
-## Key Features
+## Features
 
 - Generate video scenes from text prompts.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `prompt` (string): Describe the desired scene and motion. Enter 1–5,000 characters.
 
-Use the input fields listed below.
+## Optional parameters
 
-### Prompt
-
-- `prompt`: Required. Describe the scene and desired motion. Length: **1-5,000 characters**.
-
-### Aspect Ratio
-
-- `aspect_ratio`: Optional. Accepted values: `1:1`, `2:3`, `3:2`, `16:9`, `9:16`.
-
-### Mode
-
-- `mode`: Optional. Accepted values: `fun`, `normal`, `spicy`.
+- `aspect_ratio` (string): Optional video aspect ratio: 1:1, 2:3, 3:2, 16:9, or 9:16. Values: `1:1`, `2:3`, `3:2`, `16:9`, `9:16`.
+- `mode` (string): Generation style. Choose fun, normal, or spicy. Values: `fun`, `normal`, `spicy`.
+- `duration` (integer): Video duration in seconds. Choose 6 or 10; defaults to 6. Values: `6`, `10`.

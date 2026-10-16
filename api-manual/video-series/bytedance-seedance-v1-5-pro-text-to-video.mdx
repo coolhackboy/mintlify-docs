@@ -6,49 +6,29 @@ openapi: "/api-manual/video-series/bytedance-seedance-v1-5-pro-text-to-video.jso
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Seedance 1.5 Pro Text to Video
 
 Create video scenes with Seedance 1.5 Pro, with optional generated audio and a fixed-camera setting for controlled compositions.
 
-## Available Models
+## Models
 
-- **bytedance/seedance-v1.5-pro/text-to-video** - Generate video scenes from text prompts.
+- **bytedance/seedance-v1.5-pro/text-to-video** — Generate video scenes from text prompts.
 
-## Duration Options
-
-- **4, 8, 12 seconds** - Set `duration` as an integer. Required.
-
-## Key Features
+## Features
 
 - Generate video scenes from text prompts.
 - Choose from `480p`, `720p`, `1080p` output resolutions.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `prompt` (string): Describe the scene and desired motion. Length: **3-2,500 characters**. Surrounding whitespace is trimmed before counting Unicode characters. Minimum length: 3 characters.
+- `aspect_ratio` (string): Accepted values: `1:1`, `21:9`, `4:3`, `3:4`, `16:9`, `9:16`.
+- `duration` (integer): 4, 8, 12 seconds. Required.
 
+## Optional parameters
 
-### Prompt
-
-- `prompt`: Required. Describe the scene and desired motion. Length: **3-2,500 characters**.
-- Surrounding whitespace is trimmed before counting Unicode characters.
-
-### Aspect Ratio
-
-- `aspect_ratio`: Required. Accepted values: `1:1`, `21:9`, `4:3`, `3:4`, `16:9`, `9:16`.
-
-### Resolution
-
-- `resolution`: Optional. Accepted values: `480p`, `720p`, `1080p`. Vidgo defaults to `720p` when omitted.
-
-### Fixed Lens
-
-- `fixed_lens`: Optional. Control fixed-camera generation. Use `true` or `false`.
-
-### Generate Audio
-
-- `generate_audio`: Optional. Set `true` to generate synchronized audio or `false` for a silent video. Vidgo defaults to `true` when omitted.
+- `resolution` (string): Accepted values: `480p`, `720p`, `1080p`. Vidgo defaults to `720p` when omitted.
+- `fixed_lens` (boolean): Control fixed-camera generation. Use `true` or `false`.
+- `generate_audio` (boolean): Set `true` to generate synchronized audio or `false` for a silent video. Vidgo defaults to `true` when omitted.

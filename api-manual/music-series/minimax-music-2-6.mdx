@@ -6,26 +6,23 @@ openapi: "/api-manual/music-series/minimax-music-2-6.json POST /api/generate/sub
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY` and save the returned `task_id`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the audio. With a `callback_url`, Vidgo sends a notification to your [webhook](/api-manual/task-management/webhooks) when the task reaches `finished` or `failed`.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# MiniMax Music 2.6
 
 Create complete songs and instrumental tracks from a style prompt. Describe genre, mood, instrumentation, tempo and vocal direction to guide the music.
 
-## Model
+## Models
 
-Set `model` to `minimax/music-2.6`. Place music parameters inside `input` and the optional `callback_url` at the request root.
+- **minimax/music-2.6** — Generate songs and instrumental tracks.
 
-## Music Parameters
+## Features
 
-- `prompt`: Required string of **10-2000 characters** describing the musical direction.
-- `lyrics`: Lyrics string of up to **3500 characters**. Supply lyrics when `is_instrumental` and `lyrics_optimizer` are both `false`. You can organize the words with section tags such as `[Verse]` and `[Chorus]`.
-- `lyrics_optimizer`: Boolean, default `false`. When `true` and `lyrics` is empty, generates lyrics from `prompt`.
-- `is_instrumental`: Boolean, default `false`. Set `true` for instrumental music, keep `lyrics` empty and set `lyrics_optimizer` to `false`.
+- Create songs with custom or automatically generated lyrics.
+- Generate instrumental music.
+- Configure the audio sample rate, bitrate, and format.
 
-## Creation Modes
+## Input modes
 
 ### Custom Lyrics
 
@@ -39,15 +36,29 @@ Describe the musical style, song topic and vocal character in `prompt`. Set `lyr
 
 Describe instruments, rhythm and atmosphere in `prompt`. Set `is_instrumental` to `true`, keep `lyrics` empty and set `lyrics_optimizer` to `false`.
 
-## Audio Settings
+## Required parameters
+
+- `prompt` (string): Describe the musical direction using **10-2000 characters**.
+
+- `lyrics` (string): Required when `is_instrumental` and `lyrics_optimizer` are both `false`. Supply up to **3500 characters**, optionally organized with tags such as `[Verse]` and `[Chorus]`.
+
+## Optional parameters
+
+- `lyrics_optimizer` (boolean): Boolean, default `false`. When `true` and `lyrics` is empty, generates lyrics from `prompt`.
+
+- `is_instrumental` (boolean): Boolean, default `false`. Set `true` for instrumental music, keep `lyrics` empty and set `lyrics_optimizer` to `false`.
+
+- `audio_setting` (object): Audio output settings containing sample_rate, bitrate and format.
+
+## Output Formats
 
 `audio_setting` is an optional object with these fields:
 
-- `sample_rate`: Sample rate in Hz. Values: `16000`, `24000`, `32000`, `44100`. Default: `44100`.
-- `bitrate`: Bitrate in bits per second. Values: `32000`, `64000`, `128000`, `256000`. Default: `256000`.
-- `format`: Audio format. Values: `mp3`, `wav`, `pcm`. Default: `mp3`.
+- `audio_setting.sample_rate` (integer): Sample rate in Hz. Values: `16000`, `24000`, `32000`, `44100`. Default: `44100`.
+- `audio_setting.bitrate` (integer): Bitrate in bits per second. Values: `32000`, `64000`, `128000`, `256000`. Default: `256000`.
+- `audio_setting.format` (string): Audio format. Values: `mp3`, `wav`, `pcm`. Default: `mp3`.
 
-## Retrieve the Audio
+## Output
 
 Query `GET /api/generate/status/{task_id}` using the identifier from the submission response. Continue checking while the status is `not_started` or `running`.
 

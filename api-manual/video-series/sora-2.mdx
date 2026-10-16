@@ -1,5 +1,5 @@
 ---
-title: "Sora 2 Video Generation"
+title: "Sora 2 Video"
 description: "Standard quality video generation"
 icon: "video"
 openapi: "/api-manual/video-series/sora-2.json POST /api/generate/submit"
@@ -10,33 +10,26 @@ openapi: "/api-manual/video-series/sora-2.json POST /api/generate/submit"
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Sora 2 Video Generation
-
 Generate standard quality videos using OpenAI's Sora 2 model. Supports text-to-video and image-to-video generation.
 
-## Available Models
+## Models
 
-- **sora-2** - Standard quality video generation
-- **sora-2-private** - Private deployment for standard quality
+- **sora-2** — Standard quality video generation
+- **sora-2-private** — Private deployment for standard quality
 
-## Duration Options
+## Input modes
 
-- **10 seconds** - Short video clips
-- **15 seconds** - Standard duration
+- **Text-to-video**: Omit `image_urls` and describe the scene in `prompt`.
+- **Image-to-video**: Supply `image_urls` to guide generation with reference imagery.
 
-## Advanced Parameters
+## Required parameters
 
-### Style
+- `prompt` (string): Describe the scene and desired motion. Length: up to 1,000 characters.
 
-Control the visual aesthetic of your generated videos with predefined styles:
+## Optional parameters
 
-- `thanksgiving` - Thanksgiving style
-- `comic` - Comic style
-- `news` - News style
-- `selfie` - Selfie style
-- `nostalgic` - Nostalgic/Retro style
-- `anime` - Anime style
-
-### Storyboard
-
-Enable storyboard mode for finer control over video generation details. Set to `true` to enable or `false` to disable.
+- `image_urls` (array of strings): Reference image URL (for image-to-video). Only one image is supported. Maximum file size: 10MB. Supported formats: .jpeg, .jpg, .png, .webp.
+- `duration` (integer): Video duration in seconds (10 or 15). Values: `10`, `15`.
+- `aspect_ratio` (string): Video aspect ratio. Values: `16:9`, `9:16`.
+- `style` (string): Video style. Values: `thanksgiving`, `comic`, `news`, `selfie`, `nostalgic`, `anime`.
+- `storyboard` (boolean): Whether to use storyboard for finer control over video generation details. true: Enable storyboard feature, false: Do not use storyboard.

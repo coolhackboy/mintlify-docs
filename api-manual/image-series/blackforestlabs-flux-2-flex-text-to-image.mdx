@@ -6,64 +6,43 @@ openapi: "/api-manual/image-series/blackforestlabs-flux-2-flex-text-to-image.jso
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# FLUX.2 Flex Text to Image
 
 Explore image concepts with FLUX.2 Flex, using descriptive prompts to shape composition and style in 1K or 2K output.
 
-## Available Models
+## Models
 
 - **blackforestlabs/flux-2-flex/text-to-image** - Generate images from text prompts.
 
-## Output Options
-
-### Image Size
-
-- `size`: Required. Accepted values: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `auto`.
-
-### Resolution
-
-- `resolution`: Required. Accepted values: `1K`, `2K`.
-
-## Key Features
+## Features
 
 - Generate images from text prompts.
 - Choose from `1K`, `2K` output resolutions.
 
-## Advanced Parameters
+## Required parameters
+
+- `prompt` (string): Describe the desired image. Length: **3-5,000 characters**.
+
+- `size` (string): See [Size](#size) for supported values and constraints.
+
+- `resolution` (string): See [Resolution](#resolution) for supported values and constraints.
+
+## Size
+
+- `size`: Required. Accepted values: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `auto`.
+
+## Resolution
+
+- `resolution`: Required. Accepted values: `1K`, `2K`.
+
+## Examples
+
+The API playground examples vary `prompt` and `size` with `resolution: "1K"`. The `callback` example adds a top-level `callback_url`.
+
+## Notes
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
 Send the input fields listed on this page.
-
-### Prompt
-
-- `prompt`: Required. Describe the desired image. Length: **3-5,000 characters**.
-
-## Verified Example
-
-This example was generated through the Vidgo API and is also the default example in the playground. Source and result images are hosted on the Vidgo CDN.
-
-![Tide Pool Field Notebook](https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/text-to-image/v1/02/output.jpg)
-
-```json
-{
-  "code": 200,
-  "data": {
-    "task_id": "SBR3R4D3GOFPXM1Z",
-    "status": "finished",
-    "files": [
-      {
-        "file_type": "image",
-        "file_url": "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-flex/text-to-image/v1/02/output.jpg"
-      }
-    ],
-    "created_time": "2026-09-26T11:07:50",
-    "error_message": null,
-    "progress": 100
-  }
-}
-```

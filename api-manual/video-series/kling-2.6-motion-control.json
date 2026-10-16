@@ -22,7 +22,9 @@
         "summary": "Submit Kling 2.6 Motion Control Task",
         "description": "Transfer motion from reference videos to character images with precise motion control",
         "operationId": "submitKling26MotionControlTask",
-        "tags": ["Kling 2.6 Motion Control"],
+        "tags": [
+          "Kling 2.6 Motion Control"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -93,7 +95,10 @@
     "schemas": {
       "SubmitRequest": {
         "type": "object",
-        "required": ["model"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -107,7 +112,12 @@
           },
           "input": {
             "type": "object",
-            "required": ["image_urls", "video_urls", "character_orientation", "mode"],
+            "required": [
+              "image_urls",
+              "video_urls",
+              "character_orientation",
+              "mode"
+            ],
             "description": "Input parameters for motion control generation",
             "properties": {
               "prompt": {
@@ -145,13 +155,19 @@
               "character_orientation": {
                 "type": "string",
                 "description": "Character orientation mode: 'image' matches the person's orientation in the photograph (max 10 seconds output), 'video' maintains consistency with character orientation from the reference video (max 30 seconds output)",
-                "enum": ["image", "video"],
+                "enum": [
+                  "image",
+                  "video"
+                ],
                 "example": "video"
               },
               "mode": {
                 "type": "string",
                 "description": "Output video resolution. 720p for standard quality, 1080p for higher visual quality",
-                "enum": ["720p", "1080p"],
+                "enum": [
+                  "720p",
+                  "1080p"
+                ],
                 "example": "1080p"
               }
             }
@@ -160,7 +176,10 @@
       },
       "SubmitResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -169,7 +188,11 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "created_time"],
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -178,7 +201,9 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started"],
+                "enum": [
+                  "not_started"
+                ],
                 "example": "not_started",
                 "description": "Initial task status"
               },
@@ -194,7 +219,10 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["code", "error"],
+        "required": [
+          "code",
+          "error"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -203,7 +231,10 @@
           },
           "error": {
             "type": "object",
-            "required": ["message", "type"],
+            "required": [
+              "message",
+              "type"
+            ],
             "properties": {
               "message": {
                 "type": "string",

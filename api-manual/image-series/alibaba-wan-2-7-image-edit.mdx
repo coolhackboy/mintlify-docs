@@ -6,57 +6,45 @@ openapi: "/api-manual/image-series/alibaba-wan-2-7-image-edit.json POST /api/gen
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Wan 2.7 Image Edit
 
 Rework images with text instructions and up to four visual references, exploring new compositions and variations with Wan 2.7.
 
-## Available Models
+## Models
 
 - **alibaba/wan-2.7/image-edit** - Edit images using a prompt and image references.
 
-## Output Options
-
-### Image Size
-
-- `size`: Optional. Default: `1024x1024`.
-- Presets: `512x512`, `1024x1024`, `768x1024`, `1024x768`, `576x1024`, `1024x576`.
-- For custom dimensions, supply an object with integer `width` and `height`; both must be positive.
-
-### Image Count
-
-- `n`: Optional. Number of images to generate. Integer from `1` to `4`. Default: `1`.
-
-## Key Features
+## Features
 
 - Edit images using a prompt and image references.
 - Accepts 1-4 images in `image_urls`.
 - Control the number of output images with `n`.
 
-## Advanced Parameters
+## Required parameters
+
+- `prompt` (string): Describe the requested changes. Length: **1-5,000 characters**.
+- The value must not be blank when supplied.
+
+- `image_urls` (array): Provide publicly accessible image URLs. Supply 1-4 items. Each item must be an HTTP(S) URL. Order matters: refer to them as image 1, image 2, image 3, image 4 in the prompt. A single string or Base64 image is not accepted.
+
+## Optional parameters
+
+- `n` (integer): Number of images to generate. Integer from `1` to `4`. Default: `1`.
+
+- `seed` (integer): Set the generation seed. Integer.
+
+- `size` (string | object): See [Size](#size) for supported values and constraints.
+
+## Size
+
+- `size`: Optional. Default: `1024x1024`.
+- Presets: `512x512`, `1024x1024`, `768x1024`, `1024x768`, `576x1024`, `1024x576`.
+- For custom dimensions, supply an object with integer `width` and `height`; both must be positive.
+
+## Notes
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
 Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
-
-### Prompt
-
-- `prompt`: Required. Describe the requested changes. Length: **1-5,000 characters**.
-- The value must not be blank when supplied.
-
-### Image URLs
-
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-4 items. Each item must be an HTTP(S) URL. Order matters: refer to them as image 1, image 2, image 3, image 4 in the prompt. A single string or Base64 image is not accepted.
-
-### Seed
-
-- `seed`: Optional. Set the generation seed. Integer.
-
-## Billing Factors
-
-Billing depends on the selected model variant and output image count (`n`). Output size does not add a charge. Reference images do not add a surcharge.
-
-Credits are deducted on submission and refunded if the task fails.

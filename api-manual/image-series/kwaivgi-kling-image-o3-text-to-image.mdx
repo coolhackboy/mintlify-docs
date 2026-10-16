@@ -6,43 +6,56 @@ openapi: "/api-manual/image-series/kwaivgi-kling-image-o3-text-to-image.json POS
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Kling O3 Image Text to Image
 
 Generate images up to 4K with Kling O3, creating multiple variations in a range of compositions and output formats.
 
-## Available Models
+## Models
 
 - **kwaivgi/kling-image-o3/text-to-image** - Generate images from text prompts.
 
-## Output Options
-
-### Image Size
-
-- `size`: Optional. Accepted values: `16:9`, `9:16`, `1:1`, `4:3`, `3:4`, `3:2`, `2:3`, `21:9`. Default: `16:9`.
-
-### Resolution
-
-- `resolution`: Optional. Accepted values: `1K`, `2K`, `4K`. Default: `1K`.
-
-### Image Count
-
-- `n`: Optional. Number of images to generate. Integer from `1` to `9`. Default: `1`. Fractional values, strings, and booleans are rejected.
-
-### Output Format
-
-- `output_format`: Optional. Accepted values: `jpeg`, `png`, `webp`. Default: `png`.
-
-## Key Features
+## Features
 
 - Generate images from text prompts.
 - Choose from `1K`, `2K`, `4K` output resolutions.
 - Control the number of output images with `n`.
 
-## Advanced Parameters
+## Required parameters
+
+- `prompt` (string): Describe the desired image. Length: **1-2,000 characters**.
+- The value must not be blank when supplied.
+
+## Optional parameters
+
+- `n` (integer): Number of images to generate. Integer from `1` to `9`. Default: `1`. Fractional values, strings, and booleans are rejected.
+
+- `elements` (array): Array of subject-reference objects. Refer to them in the prompt as `@Element1`, `@Element2`, etc.
+
+- `elements[].frontal_image_url` (string): Public HTTP(S) URL for the main subject view.
+
+- `elements[].reference_image_urls` (array): Array of additional public HTTP(S) image URLs.
+
+- `resolution` (string): See [Resolution](#resolution) for supported values and constraints.
+
+- `size` (string): See [Size](#size) for supported values and constraints.
+
+- `output_format` (string): See [Output Formats](#output-formats) for supported values and constraints.
+
+## Size
+
+- `size`: Optional. Accepted values: `16:9`, `9:16`, `1:1`, `4:3`, `3:4`, `3:2`, `2:3`, `21:9`. Default: `16:9`.
+
+## Resolution
+
+- `resolution`: Optional. Accepted values: `1K`, `2K`, `4K`. Default: `1K`.
+
+## Output Formats
+
+- `output_format`: Optional. Accepted values: `jpeg`, `png`, `webp`. Default: `png`.
+
+## Notes
 
 Defaults apply only when an optional input field is omitted. Explicit `null` or empty-string values are rejected. An empty `elements` array is accepted.
 
@@ -50,20 +63,4 @@ Set `model` and optional `callback_url` at the request root. Place all workflow 
 
 Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
 
-### Prompt
-
-- `prompt`: Required. Describe the desired image. Length: **1-2,000 characters**.
-- The value must not be blank when supplied.
-
-### Subject Elements
-
-- `elements`: Optional array of subject-reference objects. Refer to them in the prompt as `@Element1`, `@Element2`, etc.
-- `elements[].frontal_image_url`: Optional public HTTP(S) URL for the main subject view.
-- `elements[].reference_image_urls`: Optional array of additional public HTTP(S) image URLs.
 - Element objects may include additional fields. No element count limit is specified.
-
-## Billing Factors
-
-Billing depends on output resolution (`resolution`) and output image count (`n`). Text-to-image and image editing use the same rates. Reference images and subject elements do not add charges.
-
-Credits are deducted on submission and refunded if the task fails.

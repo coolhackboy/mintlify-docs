@@ -6,83 +6,50 @@ openapi: "/api-manual/image-series/bytedance-seedream-v4-5-edit.json POST /api/g
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Seedream 4.5 Edit
 
 Edit images with Seedream 4.5 using a text prompt and 1-10 reference images, generating 1-15 edited images per request.
 
-## Available Models
+## Models
 
 - **bytedance/seedream/v4.5/edit** - Edit images using a prompt and image references.
 
-## Output Options
+## Features
 
-### Image Size
+- Edit images using a prompt and image references.
+- Accepts 1-10 images in `image_urls`.
+- Control the number of output images with `n`.
+
+## Required parameters
+
+- `prompt` (string): Describe the requested changes. Length: **1-3,000 characters**.
+- Include at least one non-whitespace character.
+
+- `image_urls` (array): Provide publicly accessible image URLs. Supply 1-10 items. Each item must be an HTTP(S) URL pointing to a JPEG or PNG image.
+
+## Optional parameters
+
+- `n` (integer): Number of images to generate. Integer from `1` to `15`. Default: `1`.
+
+- `enable_safety_checker` (boolean): Set `true` to enable the content safety check or `false` to disable it. Default: `true`.
+
+- `size` (string | object): See [Size](#size) for supported values and constraints.
+
+## Size
 
 - `size`: Optional. Default: `1:1`.
 - Presets: `2K`, `4K`, `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`.
 - For custom dimensions, supply an object with integer `width` and `height`; both must be positive.
 - Custom dimensions also accept a `WIDTHxHEIGHT` string, using `x` or `X` between the positive dimensions.
 
-### Image Count
+## Examples
 
-- `n`: Optional. Number of images to generate. Integer from `1` to `15`. Default: `1`.
+The `basic` API playground example combines three `image_urls` entries in the order referenced by `prompt`. The `custom-string` and `custom-object` examples demonstrate the two custom `size` forms. The `callback` example adds a top-level `callback_url`.
 
-## Key Features
-
-- Edit images using a prompt and image references.
-- Accepts 1-10 images in `image_urls`.
-- Control the number of output images with `n`.
-
-## Advanced Parameters
+## Notes
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
 Input image URLs use HTTP(S) and point to publicly accessible JPEG or PNG files.
-
-### Prompt
-
-- `prompt`: Required. Describe the requested changes. Length: **1-3,000 characters**.
-- Include at least one non-whitespace character.
-
-### Image URLs
-
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-10 items. Each item must be an HTTP(S) URL pointing to a JPEG or PNG image.
-
-### Safety Checker
-
-- `enable_safety_checker`: Optional. Set `true` to enable the content safety check or `false` to disable it. Default: `true`.
-
-## Verified Example
-
-This example was generated through the Vidgo test API with the `basic` request shown in the API playground. It combines three references in order: the child, the toy sailboat, and the lakeshore. The source and result images are hosted on the Vidgo CDN.
-
-![Reference 1: child](https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4.5/edit/v1/01/input-01.png)
-
-![Reference 2: toy sailboat](https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4.5/edit/v1/01/input-02.png)
-
-![Reference 3: lakeshore](https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4.5/edit/v1/01/input-03.png)
-
-![Launching the Toy Boat](https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4.5/edit/v1/01/output.jpg)
-
-```json
-{
-  "code": 200,
-  "data": {
-    "task_id": "GAPP1TYEWHR5CQVS",
-    "status": "finished",
-    "files": [
-      {
-        "file_url": "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4.5/edit/v1/01/output.jpg",
-        "file_type": "image"
-      }
-    ],
-    "created_time": "2026-09-25T16:16:53",
-    "error_message": null,
-    "progress": 100
-  }
-}
-```

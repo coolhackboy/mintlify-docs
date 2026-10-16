@@ -19,10 +19,12 @@
   "paths": {
     "/api/generate/submit": {
       "post": {
-        "summary": "Submit GPT Image 1.5 Generation Task",
+        "summary": "Submit GPT Image 1.5 Task",
         "description": "Generate or edit images using GPT Image 1.5 models",
         "operationId": "submitGPTImage15Task",
-        "tags": ["GPT Image 1.5"],
+        "tags": [
+          "GPT Image 1.5"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -32,7 +34,7 @@
               },
               "examples": {
                 "gpt-image-1.5": {
-                  "summary": "GPT Image 1.5 Generation",
+                  "summary": "GPT Image 1.5",
                   "value": {
                     "model": "gpt-image-1.5",
                     "callback_url": "https://your-domain.com/callback",
@@ -50,7 +52,9 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "Replace the sky with a starry night sky",
-                      "image_urls": ["https://cdn.vidgo.ai/temp/original-image.jpg"],
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/original-image.jpg"
+                      ],
                       "mask_url": "https://cdn.vidgo.ai/temp/mask.png",
                       "size": "1:1"
                     }
@@ -70,40 +74,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid request parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "code": 400,
-                  "error": {
-                    "message": "Invalid request parameters",
-                    "type": "invalid_request_error"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Invalid API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "code": 401,
-                  "error": {
-                    "message": "Unauthorized - Invalid API key",
-                    "type": "authentication_error"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -115,13 +85,16 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
       }
     },
     "schemas": {
       "SubmitRequest": {
         "type": "object",
-        "required": ["model"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -135,7 +108,9 @@
           },
           "input": {
             "type": "object",
-            "required": ["prompt"],
+            "required": [
+              "prompt"
+            ],
             "description": "Input parameters for generation",
             "properties": {
               "prompt": {
@@ -156,13 +131,22 @@
               "size": {
                 "type": "string",
                 "description": "Image size ratio",
-                "enum": ["1:1", "2:3", "3:2"],
+                "enum": [
+                  "1:1",
+                  "2:3",
+                  "3:2"
+                ],
                 "example": "1:1"
               },
               "n": {
                 "type": "integer",
                 "description": "Number of images to generate. With gpt-image-1.5-edit, each request produces one image and is billed for one image; n does not increase editing outputs.",
-                "enum": [1, 2, 3, 4],
+                "enum": [
+                  1,
+                  2,
+                  3,
+                  4
+                ],
                 "example": 1
               },
               "mask_url": {
@@ -177,7 +161,10 @@
       },
       "SubmitResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -186,7 +173,11 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "created_time"],
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -195,7 +186,9 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started"],
+                "enum": [
+                  "not_started"
+                ],
                 "example": "not_started",
                 "description": "Initial task status"
               },
@@ -211,7 +204,10 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["code", "error"],
+        "required": [
+          "code",
+          "error"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -220,7 +216,10 @@
           },
           "error": {
             "type": "object",
-            "required": ["message", "type"],
+            "required": [
+              "message",
+              "type"
+            ],
             "properties": {
               "message": {
                 "type": "string",

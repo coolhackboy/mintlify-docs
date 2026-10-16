@@ -1,5 +1,5 @@
 ---
-title: "Flux.2 Image Generation"
+title: "Flux.2 Image"
 description: "32B parameter image generation model from Black Forest Labs with multi-reference support and superior text rendering"
 icon: "image"
 openapi: "/api-manual/image-series/flux-2.json POST /api/generate/submit"
@@ -10,24 +10,35 @@ openapi: "/api-manual/image-series/flux-2.json POST /api/generate/submit"
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Flux 2 Image Generation
-
 FLUX.2 is a 32 billion parameter image generation and editing model from Black Forest Labs. It combines text-to-image and multi-image editing in a single architecture, delivering photoreal images with clean typography at resolutions up to 2K. Supports referencing up to 8 images simultaneously with excellent character, product, and style consistency.
 
-## Available Models
+## Models
 
 - **flux-2-pro** - High-fidelity text-to-image generation for production deployments
 - **flux-2-pro-edit** - Advanced multi-reference image editing with up to 8 input images
 - **flux-2-flex** - Adjustable speed vs. quality balance for flexible workflows
 - **flux-2-flex-edit** - Flexible image editing with multi-reference support
 
-{/* poyo-20260910:start */}
-## Workflow IDs
+### Dedicated workflows
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
-- [blackforestlabs/flux-2-pro/text-to-image](/api-manual/image-series/blackforestlabs-flux-2-pro-text-to-image)
-- [blackforestlabs/flux-2-pro/edit](/api-manual/image-series/blackforestlabs-flux-2-pro-edit)
-- [blackforestlabs/flux-2-flex/text-to-image](/api-manual/image-series/blackforestlabs-flux-2-flex-text-to-image)
-- [blackforestlabs/flux-2-flex/edit](/api-manual/image-series/blackforestlabs-flux-2-flex-edit)
-{/* poyo-20260910:end */}
+- **blackforestlabs/flux-2-pro/text-to-image** — [Workflow page](/api-manual/image-series/blackforestlabs-flux-2-pro-text-to-image)
+- **blackforestlabs/flux-2-pro/edit** — [Workflow page](/api-manual/image-series/blackforestlabs-flux-2-pro-edit)
+- **blackforestlabs/flux-2-flex/text-to-image** — [Workflow page](/api-manual/image-series/blackforestlabs-flux-2-flex-text-to-image)
+- **blackforestlabs/flux-2-flex/edit** — [Workflow page](/api-manual/image-series/blackforestlabs-flux-2-flex-edit)
+
+## Input modes
+
+- **Generation:** select `flux-2-pro`, `flux-2-flex`. Use the input options supported by the selected model.
+- **Image editing:** select `flux-2-pro-edit`, `flux-2-flex-edit`. Supply reference images as required by the selected editing workflow.
+
+## Required parameters
+
+- `prompt` (string): Generation prompt describing the desired output Length: 0–1000 characters.
+
+- `size` (string): Image size ratio. Use 'auto' to automatically detect based on first input image Accepted values: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `auto`.
+
+- `resolution` (string): Output image resolution Accepted values: `1K`, `2K`.
+
+- `image_urls` (array): Input reference images (1-8 images). Required for edit models (flux-2-pro-edit, flux-2-flex-edit) Items: 1–8.

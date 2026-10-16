@@ -6,52 +6,33 @@ openapi: "/api-manual/music-series/xai-tts-v1.json POST /api/generate/submit"
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# xAI TTS 1
 
 Convert text into speech with xAI TTS, choosing from five voices and multiple languages for narration, dialogue, and spoken content.
 
-## Available Models
+## Models
 
-- **xai/tts/v1** - Convert text into speech.
+- **xai/tts/v1** — Convert text into speech.
 
-## Output Options
-
-### Output Format
-
-- `output_format`: Optional. Supply an object with the fields below.
-
-- `output_format.codec`: Optional. Accepted values: `mp3`, `wav`, `pcm`, `mulaw`, `alaw`. Default: `mp3`.
-- `output_format.sample_rate`: Optional. Sample rate in Hz. Accepted values: `8000`, `16000`, `22050`, `24000`, `44100`, `48000`. Default: `24000`.
-- `output_format.bit_rate`: Optional. MP3 bitrate in bits per second. Accepted values: `32000`, `64000`, `96000`, `128000`, `192000`, `null`. MP3 default: `128000`.
-- For `mp3`, use `output_format.bit_rate` to select the bitrate. For `wav`, `pcm`, `mulaw`, and `alaw`, omit `bit_rate` or set it to `null`.
-
-## Key Features
+## Features
 
 - Convert text into speech.
 - Select a voice with `voice` and specify the spoken language with `language_code`.
 - Direct pauses, laughter, sighs, whispers, and slower phrases through tags in `text`.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `text` (string): Supply the text to speak. Length: **1-15,000 characters**.
+Enter spoken text after trimming leading and trailing whitespace. Tags, punctuation, and spaces within the text count toward the length.
+Add `[laugh]`, `[pause]`, or `[sigh]` where the sound belongs. Use `<whisper>text</whisper>` for whispered passages and `<slow>text</slow>` for slower delivery.
 
-### Text
+## Optional parameters
 
-- `text`: Required. Supply the text to speak. Length: **1-15,000 characters**.
-- Enter spoken text after trimming leading and trailing whitespace. Tags, punctuation, and spaces within the text count toward the length.
-- Add `[laugh]`, `[pause]`, or `[sigh]` where the sound belongs. Use `<whisper>text</whisper>` for whispered passages and `<slow>text</slow>` for slower delivery.
+- `voice` (string): Select the voice. Accepted values: `eve`, `ara`, `rex`, `sal`, `leo`. Default: `eve`.
 
-### Voice
-
-- `voice`: Optional. Select the voice. Accepted values: `eve`, `ara`, `rex`, `sal`, `leo`. Default: `eve`.
-
-### Language Code
-
-- `language_code`: Optional. String. Default: `auto`.
+- `language_code` (string): String. Default: `auto`.
 
 <Accordion title="Supported language code values">
 
@@ -79,13 +60,24 @@ Set `model` and optional `callback_url` at the request root. Place all workflow 
 
 </Accordion>
 
-## Output Files
+- `output_format` (object): An object containing codec, sample_rate, and the MP3 bit_rate setting.
+
+## Output Formats
+
+- `output_format` (object): Supply an object with the fields below.
+
+- `output_format.codec` (string): Accepted values: `mp3`, `wav`, `pcm`, `mulaw`, `alaw`. Default: `mp3`.
+- `output_format.sample_rate` (integer): Sample rate in Hz. Accepted values: `8000`, `16000`, `22050`, `24000`, `44100`, `48000`. Default: `24000`.
+- `output_format.bit_rate` (integer): MP3 bitrate in bits per second. Accepted values: `32000`, `64000`, `96000`, `128000`, `192000`, `null`. MP3 default: `128000`.
+For `mp3`, use `output_format.bit_rate` to select the bitrate. For `wav`, `pcm`, `mulaw`, and `alaw`, omit `bit_rate` or set it to `null`.
+
+## Output
 
 - Read every item in the returned `files` array.
 - Generated audio uses `file_type: "audio"`.
 - Use `file_url` to download the generated speech.
 
-## Request Example
+## Examples
 
 ```json
 {

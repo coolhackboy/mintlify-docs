@@ -6,35 +6,37 @@ openapi: "/api-manual/video-series/hailuo-2-3.json POST /api/generate/submit"
 ---
 
 <Tip>
-  1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-  2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Hailuo 2.3
 
 `hailuo-2.3` supports prompt-only generation and optional first-frame guided generation.
 
-## Available Model
+## Models
 
-* **hailuo-2.3** - Text-to-video with optional `start_image_url`
+- **hailuo-2.3** — Text-to-video with optional `start_image_url`
 
-## Required Parameters
+## Input modes
 
-* **prompt**: Text prompt for video generation
+- **Text to video:** omit `start_image_url`.
+- **Image to video:** supply `start_image_url` as the starting frame.
 
-## Optional Parameters
+## Required parameters
 
-* **duration**: `6` or `10`. Default is `6`
-* **resolution**: `768p` or `1080p`. Default is `768p`
-* **start_image_url**: Optional first-frame image
-* **prompt_optimizer**: Optional boolean switch
+- `prompt` (string): Text prompt for video generation.
+
+## Optional parameters
+
+- `duration` (integer): `6` or `10`. Default is `6`.
+- `resolution` (string): `768p` or `1080p`. Default is `768p`.
+- `start_image_url` (string): First-frame image.
+- `prompt_optimizer` (boolean): Switch.
 
 ## Notes
 
 * `1080p` only supports `duration=6`
 
-{/* poyo-20260910:start */}
-## Workflow IDs
+### Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
@@ -42,4 +44,3 @@ Existing IDs remain available. New integrations can select a dedicated workflow:
 - [minimax/hailuo-2.3/standard/image-to-video](/api-manual/video-series/minimax-hailuo-2-3-standard-image-to-video)
 - [minimax/hailuo-2.3/pro/text-to-video](/api-manual/video-series/minimax-hailuo-2-3-pro-text-to-video)
 - [minimax/hailuo-2.3/pro/image-to-video](/api-manual/video-series/minimax-hailuo-2-3-pro-image-to-video)
-{/* poyo-20260910:end */}

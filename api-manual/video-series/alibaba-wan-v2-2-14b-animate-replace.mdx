@@ -6,52 +6,40 @@ openapi: "/api-manual/video-series/alibaba-wan-v2-2-14b-animate-replace.json POS
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. Vidgo validates the request and checks the source video before creating the task. A `task_id` is returned after the task is successfully created.
-2. Use the returned `task_id` with [Query Task Status](/api-manual/task-management/status) until the task reaches `finished` or `failed`. If you provide a `callback_url`, Vidgo also sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Wan Animate Replace
 
 Replace the character in a source video with the character from a reference image using Wan Animate Replace.
 
-## Available Models
+## Models
 
-- **alibaba/wan/v2.2-14b/animate/replace** - Replace the character in a source video with the character from a reference image using Wan Animate Replace.
+- **alibaba/wan/v2.2-14b/animate/replace** — Replace the character in a source video with the character from a reference image using Wan Animate Replace.
 
-## Source Video Requirements
-
-- `video_url` must point to a publicly accessible HTTP(S) video file.
-- The entire video file must be no larger than **100 MiB** (104,857,600 bytes), and its duration must be greater than zero.
-- Vidgo reads the source video to determine its duration for billing.
-
-## Key Features
+## Features
 
 - Replace the character in a source video with the character from a reference image using Wan Animate Replace.
 - Accepts an `image_urls` array containing exactly one image URL.
 - Supports `480p`, `580p`, and `720p` output resolutions.
 
-## Request Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. The `input` object accepts only `video_url`, `image_urls`, and `resolution`.
+- `video_url` (string): The source video containing the character to replace. The video must meet the source video requirements in Notes.
+- `image_urls` (string[]): Containing exactly one publicly accessible HTTP(S) image URL. The reference image containing the replacement character. A single URL string instead of an array, an empty array, multiple URLs, and Base64 images are rejected.
 
-Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials or whitespace.
+## Optional parameters
 
-### Source Video
+- `resolution` (string): Accepted values: `480p`, `580p`, `720p`. Defaults to `480p` only when the field is omitted. Null, empty strings, other values, and values with surrounding whitespace are rejected.
 
-- `video_url`: Required string. The source video containing the character to replace. The video must meet the source video requirements above.
+## Notes
 
-### Character Image
+- If Vidgo cannot read the source video or determine its duration, the request is rejected before task creation.
 
-- `image_urls`: Required array containing exactly one publicly accessible HTTP(S) image URL. The reference image containing the replacement character. A single URL string instead of an array, an empty array, multiple URLs, and Base64 images are rejected.
+### Source Video Requirements
 
-### Resolution
+- `video_url` must point to a publicly accessible HTTP(S) video file.
+- The entire video file must be no larger than **100 MiB** (104,857,600 bytes), and its duration must be greater than zero.
 
-- `resolution`: Optional string. Accepted values: `480p`, `580p`, `720p`. Defaults to `480p` only when the field is omitted. Null, empty strings, other values, and values with surrounding whitespace are rejected.
+### Input requirements
 
-## Billing Factors
-
-Billing depends on the selected resolution (`resolution`) and the measured source-video duration (`video_url`). Move and Replace use the same rates.
-
-Source-video duration is rounded up to whole seconds before billing. For example, a source video lasting 5.1 seconds is billed as 6 seconds. If Vidgo cannot read the video or determine its duration, the request is rejected before credits are deducted.
-
-Credits are deducted when a valid request is submitted for generation and refunded if the task fails.
+Unsupported `input` fields are rejected before task creation. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials or whitespace.

@@ -19,10 +19,12 @@
   "paths": {
     "/api/generate/submit": {
       "post": {
-        "summary": "Submit Seedream-5.0-Lite Generation Task",
+        "summary": "Submit Seedream-5.0-Lite Task",
         "description": "Submit text-to-image or image editing tasks with preset sizes, custom size strings, or structured width and height objects",
         "operationId": "submitSeedream50LiteTask",
-        "tags": ["Seedream-5.0-Lite"],
+        "tags": [
+          "Seedream-5.0-Lite"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -32,7 +34,7 @@
               },
               "examples": {
                 "seedream-5-0-lite": {
-                  "summary": "Seedream-5.0-Lite Text-to-Image Generation",
+                  "summary": "Seedream-5.0-Lite Text-to-Image",
                   "value": {
                     "model": "seedream-5.0-lite",
                     "callback_url": "https://your-domain.com/callback",
@@ -95,32 +97,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid request parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "detail": "prompt is required"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Invalid API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "detail": "Invalid API key"
-                }
-              }
-            }
           }
         }
       }
@@ -132,7 +108,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
       }
     },
     "schemas": {
@@ -161,7 +137,10 @@
       },
       "LiteSubmitRequest": {
         "type": "object",
-        "required": ["model", "input"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -180,7 +159,10 @@
       },
       "LiteEditSubmitRequest": {
         "type": "object",
-        "required": ["model", "input"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -238,7 +220,10 @@
       },
       "LiteEditInput": {
         "type": "object",
-        "required": ["prompt", "image_urls"],
+        "required": [
+          "prompt",
+          "image_urls"
+        ],
         "description": "Input parameters for Seedream-5.0-Lite edit generation",
         "properties": {
           "prompt": {
@@ -256,7 +241,10 @@
             "minItems": 1,
             "maxItems": 10,
             "description": "Reference image URLs for edit mode. Required for seedream-5.0-lite-edit. Supported formats: JPEG, PNG",
-            "example": ["https://cdn.vidgo.ai/temp/reference1.jpg", "https://cdn.vidgo.ai/temp/reference2.jpg"]
+            "example": [
+              "https://cdn.vidgo.ai/temp/reference1.jpg",
+              "https://cdn.vidgo.ai/temp/reference2.jpg"
+            ]
           },
           "size": {
             "$ref": "#/components/schemas/SizeParameter"
@@ -309,7 +297,10 @@
       },
       "SubmitResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -318,7 +309,10 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "created_time"],
+            "required": [
+              "task_id",
+              "created_time"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -337,7 +331,9 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["detail"],
+        "required": [
+          "detail"
+        ],
         "properties": {
           "detail": {
             "type": "string",

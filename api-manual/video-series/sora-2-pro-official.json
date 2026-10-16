@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API - Sora 2 Pro Official API",
-    "description": "Pro text-to-video and image-guided video generation with resolution-based billing",
+    "description": "Pro text-to-video and image-guided video generation with selectable resolution",
     "version": "1.0.0"
   },
   "servers": [
@@ -73,26 +73,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SubmitResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Invalid API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -170,7 +150,7 @@
               },
               "resolution": {
                 "type": "string",
-                "description": "Output resolution. Billing is calculated based on resolution and duration.",
+                "description": "Output resolution.",
                 "enum": [
                   "720p",
                   "1024p",
@@ -250,7 +230,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication Get your API Key: Visit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key Add it to the request header: ``` Authorization: Bearer YOUR_API_KEY ```"
       }
     }
   }

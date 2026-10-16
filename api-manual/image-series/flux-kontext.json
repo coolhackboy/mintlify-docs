@@ -22,7 +22,7 @@
         "tags": [
           "Flux Kontext"
         ],
-        "summary": "Submit Flux Kontext Generation Task",
+        "summary": "Submit Flux Kontext Task",
         "description": "Generate or edit images with Flux Kontext models through the unified submit endpoint",
         "operationId": "submitFluxKontextTask",
         "requestBody": {
@@ -34,7 +34,7 @@
               },
               "examples": {
                 "flux-kontext-pro": {
-                  "summary": "Flux Kontext Pro Image Generation",
+                  "summary": "Flux Kontext Pro Image",
                   "value": {
                     "model": "flux-kontext-pro",
                     "callback_url": "https://your-domain.com/callback",
@@ -61,7 +61,7 @@
                   }
                 },
                 "flux-kontext-max": {
-                  "summary": "Flux Kontext Max Image Generation",
+                  "summary": "Flux Kontext Max Image",
                   "value": {
                     "model": "flux-kontext-max",
                     "callback_url": "https://your-domain.com/callback",
@@ -98,40 +98,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SubmitResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "code": 400,
-                  "error": {
-                    "message": "Invalid request parameters",
-                    "type": "invalid_request_error"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Invalid API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "code": 401,
-                  "error": {
-                    "message": "Unauthorized - Invalid API key",
-                    "type": "authentication_error"
-                  }
                 }
               }
             }
@@ -295,7 +261,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
       }
     }
   }

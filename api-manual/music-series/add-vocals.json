@@ -32,7 +32,7 @@
               },
               "examples": {
                 "basic": {
-                  "summary": "Basic Vocal Generation",
+                  "summary": "Basic Vocal",
                   "value": {
                     "model": "add-vocals",
                     "callback_url": "https://your-domain.com/callback",

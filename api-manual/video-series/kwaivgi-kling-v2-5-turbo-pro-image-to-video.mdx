@@ -6,57 +6,33 @@ openapi: "/api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-image-to-video.j
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Kling 2.5 Turbo Pro Image to Video
 
 Generate video with Kling 2.5 Turbo Pro using a start frame, an end frame, or both, plus a text prompt.
 
-## Available Models
+## Models
 
-- **kwaivgi/kling-v2.5-turbo-pro/image-to-video** - Generate video from image input.
+- **kwaivgi/kling-v2.5-turbo-pro/image-to-video** — Generate video from image input.
 
-## Duration Options
-
-- **5, 10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**. Strings, booleans, fractional durations, and `null` are rejected.
-
-## Key Features
+## Features
 
 - Generate video from image input.
 - Guide generation with `start_image_url`, `end_image_url`, or both.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `prompt` (string): Describe the scene and desired motion. Length: **1-2,500 characters**. Supply a string, not a number, boolean, array, or object. Whitespace is trimmed before the 2,500 Unicode character limit is checked.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials or whitespace. Image fields do not accept arrays or Base64.
+## Optional parameters
 
-### Prompt
+- `duration` (integer): 5, 10 seconds. Optional. Default: 5 seconds. Strings, booleans, fractional durations, and `null` are rejected.
+- `start_image_url` (string): First-frame public HTTP(S) URL. Required only when `end_image_url` is omitted.
+- `end_image_url` (string): Last-frame public HTTP(S) URL. Required only when `start_image_url` is omitted. Provide at least one frame: start only, end only, or both. Omit unused URL fields; empty strings and `null` are rejected.
+- `aspect_ratio` (string): No preset choices or default value are specified. Omit when unused.
+- `negative_prompt` (string): Describe content to avoid.
 
-- `prompt`: Required. Describe the scene and desired motion. Length: **1-2,500 characters**.
-- Supply a string, not a number, boolean, array, or object. Whitespace is trimmed before the 2,500 Unicode character limit is checked.
+## Notes
 
-### Start Image URL
-
-- `start_image_url`: First-frame public HTTP(S) URL. Required only when `end_image_url` is omitted.
-
-### End Image URL
-
-- `end_image_url`: Last-frame public HTTP(S) URL. Required only when `start_image_url` is omitted.
-- Provide at least one frame: start only, end only, or both. Omit unused URL fields; empty strings and `null` are rejected.
-
-### Aspect Ratio
-
-- `aspect_ratio`: Optional string. No preset choices or default value are specified. Omit when unused.
-
-### Negative Prompt
-
-- `negative_prompt`: Optional. Describe content to avoid.
-
-## Billing Factors
-
-Billing depends on video duration (`duration`). Text-to-video and image-to-video use the same rates.
-
-Credits are deducted on submission and refunded if the task fails.
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before task creation. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials or whitespace. Image fields do not accept arrays or Base64.

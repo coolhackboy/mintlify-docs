@@ -5,8 +5,6 @@ icon: "list-check"
 openapi: "GET /api/generate/status/{task_id}"
 ---
 
-# Get Task Status
-
 Query image, video, audio, and 3D generation tasks and retrieve all returned files when complete.
 
 ## Endpoint
@@ -194,7 +192,7 @@ curl -X GET https://api.vidgo.ai/api/generate/status/task-unified-1757165031-uyu
 ```python
 import requests
 
-API_KEY = "your-api-key-here"
+API_KEY = "VIDGO_API_KEY"
 task_id = "task-unified-1757165031-uyujaw3d"
 
 response = requests.get(
@@ -218,7 +216,7 @@ elif data["status"] == "failed":
 ### JavaScript / Node.js
 
 ```javascript
-const API_KEY = 'your-api-key-here';
+const API_KEY = 'VIDGO_API_KEY';
 const taskId = 'task-unified-1757165031-uyujaw3d';
 
 const response = await fetch(
@@ -258,7 +256,7 @@ import (
 )
 
 const (
-    APIKey = "your-api-key-here"
+    APIKey = "VIDGO_API_KEY"
     BaseURL = "https://api.vidgo.ai"
 )
 
@@ -326,7 +324,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class VidgoAPI {
-    private static final String API_KEY = "your-api-key-here";
+    private static final String API_KEY = "VIDGO_API_KEY";
     private static final String BASE_URL = "https://api.vidgo.ai";
 
     public static void main(String[] args) throws Exception {
@@ -371,7 +369,7 @@ public class VidgoAPI {
 ```php
 <?php
 
-$apiKey = 'your-api-key-here';
+$apiKey = 'VIDGO_API_KEY';
 $taskId = 'task-unified-1757165031-uyujaw3d';
 $baseUrl = 'https://api.vidgo.ai';
 
@@ -407,7 +405,7 @@ require 'net/http'
 require 'json'
 require 'uri'
 
-api_key = 'your-api-key-here'
+api_key = 'VIDGO_API_KEY'
 task_id = 'task-unified-1757165031-uyujaw3d'
 base_url = 'https://api.vidgo.ai'
 
@@ -458,7 +456,7 @@ When polling for task completion, follow these recommendations:
 import requests
 import time
 
-API_KEY = "your-api-key-here"
+API_KEY = "VIDGO_API_KEY"
 BASE_URL = "https://api.vidgo.ai"
 
 def wait_for_completion(task_id, timeout=600, poll_interval=2):
@@ -506,7 +504,7 @@ def wait_for_completion(task_id, timeout=600, poll_interval=2):
 
         # Check completion
         if data["status"] == "finished":
-            print(f"闁?Task completed successfully")
+            print("Task completed successfully")
             return data
         elif data["status"] == "failed":
             raise RuntimeError(f"Task failed: {data['error_message']}")
@@ -555,7 +553,7 @@ except RuntimeError as e:
 </Info>
 
 <Tip>
-  **Webhooks**: Instead of polling, you can provide a `callback_url` when submitting tasks to receive automatic notifications. See the [Quick Start guide](/guides/getting-started/quickstart#webhook-callbacks).
+  **Webhooks**: Instead of polling, you can provide a `callback_url` when submitting tasks to receive automatic notifications. See the [Quick Start guide](/api-manual/task-management/webhooks).
 </Tip>
 
 ## Next Steps

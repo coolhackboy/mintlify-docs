@@ -6,59 +6,36 @@ openapi: "/api-manual/video-series/alibaba-happyhorse-1-1-image-to-video.json PO
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Happy Horse 1.1 Image to Video
 
 Bring a still image into motion with Happy Horse 1.1, creating video scenes up to fifteen seconds long in a range of screen formats.
 
-## Available Models
+## Models
 
-- **alibaba/happyhorse-1.1/image-to-video** - Generate video from image input.
+- **alibaba/happyhorse-1.1/image-to-video** — Generate video from image input.
 
-## Duration Options
-
-- **3-15 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**.
-
-## Key Features
+## Features
 
 - Generate video from image input.
 - Accepts exactly 1 image in `image_urls`.
 - Choose from `720p`, `1080p` output resolutions.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `image_urls` (string[]): Supply exactly 1 item. Each item may be a public HTTP(S) URL, image Data URI, or raw Base64. Image order is preserved.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials. Image inputs also accept image Data URIs or raw Base64. Image conversion and media validation complete before credits are deducted.
+## Optional parameters
+
+- `prompt` (string): Describe the scene and desired motion. Maximum: **2,500 Unicode characters**. Leading and trailing whitespace is trimmed. Omitted, null, empty, and whitespace-only values are treated as omitted. Minimum length: 0 characters.
+- `resolution` (string): Accepted values: `720p`, `1080p`. Default: `1080p`.
+- `duration` (integer): 3-15 seconds. Optional. Default: 5 seconds.
+- `seed` (integer): Set the generation seed. Integer from `0` to `2147483647`.
+- `enable_safety_checker` (boolean): Control safety checking. Use `true` or `false`.
+
+## Notes
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before task creation. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials. Image inputs also accept image Data URIs or raw Base64. Image conversion and media validation complete before task creation.
 
 `duration` and `seed` also accept integer strings such as `"5"`; decimal numbers such as `5.0` and decimal strings such as `"5.0"` are rejected. Null or empty values use the default duration or omit the seed. Supported boolean fields also accept `0`/`1` and case-insensitive strings `true`/`false`, `1`/`0`, `yes`/`no`, `y`/`n`, and `on`/`off`; null omits the field. Surrounding whitespace is trimmed, and resolution values are case-insensitive.
-
-### Prompt
-
-- `prompt`: Optional. Describe the scene and desired motion. Maximum: **2,500 Unicode characters**.
-- Leading and trailing whitespace is trimmed. Omitted, null, empty, and whitespace-only values are treated as omitted.
-
-### Image URLs
-
-- `image_urls`: Required. Supply exactly 1 item. Each item may be a public HTTP(S) URL, image Data URI, or raw Base64. Image order is preserved.
-
-### Resolution
-
-- `resolution`: Optional. Accepted values: `720p`, `1080p`. Default: `1080p`.
-
-### Seed
-
-- `seed`: Optional. Set the generation seed. Integer from `0` to `2147483647`.
-
-### Safety Checker
-
-- `enable_safety_checker`: Optional. Control safety checking. Use `true` or `false`.
-
-## Pricing
-
-Usage equals output seconds multiplied by the selected resolution rate. See [Pricing](https://vidgo.ai/apis/api-pricing) for current rates.
-
-Credits are deducted on submission and refunded if the task fails.

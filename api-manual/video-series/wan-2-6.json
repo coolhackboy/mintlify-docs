@@ -19,10 +19,12 @@
   "paths": {
     "/api/generate/submit": {
       "post": {
-        "summary": "Submit Wan 2.6 Video Generation Task",
+        "summary": "Submit Wan 2.6 Video Task",
         "description": "Generate videos with Wan 2.6 models using text-to-video, image-to-video, or video-to-video workflows",
         "operationId": "submitWan26Task",
-        "tags": ["Wan 2.6"],
+        "tags": [
+          "Wan 2.6"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -51,7 +53,9 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "A warm, cinematic zoom-in on the subject with gentle camera motion.",
-                      "image_urls": ["https://cdn.vidgo.ai/temp/image.jpg"],
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/image.jpg"
+                      ],
                       "duration": 5,
                       "resolution": "1080p",
                       "multi_shots": false
@@ -65,7 +69,9 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "Restyle the clip into a dreamy, pastel-toned aesthetic with soft lighting.",
-                      "video_urls": ["https://cdn.vidgo.ai/temp/video.mp4"],
+                      "video_urls": [
+                        "https://cdn.vidgo.ai/temp/video.mp4"
+                      ],
                       "duration": 5,
                       "resolution": "1080p",
                       "multi_shots": false
@@ -97,13 +103,16 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication Get your API Key: Visit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key Add it to the request header: ``` Authorization: Bearer YOUR_API_KEY ```"
       }
     },
     "schemas": {
       "SubmitRequest": {
         "type": "object",
-        "required": ["model"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -117,7 +126,9 @@
           },
           "input": {
             "type": "object",
-            "required": ["prompt"],
+            "required": [
+              "prompt"
+            ],
             "description": "Input parameters for generation",
             "properties": {
               "prompt": {
@@ -135,7 +146,9 @@
                 "minItems": 1,
                 "maxItems": 1,
                 "description": "Reference image URLs for image-to-video (wan2.6-image-to-video only). Max 1 image; supported formats: .jpeg, .jpg, .png, .webp; max size 10MB",
-                "example": ["https://cdn.vidgo.ai/temp/image.jpg"]
+                "example": [
+                  "https://cdn.vidgo.ai/temp/image.jpg"
+                ]
               },
               "video_urls": {
                 "type": "array",
@@ -146,18 +159,27 @@
                 "minItems": 1,
                 "maxItems": 3,
                 "description": "Reference video URLs for video-to-video (wan2.6-video-to-video only). Max 3 videos; supported formats: .mp4, .mov, .mkv; max size 10MB",
-                "example": ["https://cdn.vidgo.ai/temp/video.mp4"]
+                "example": [
+                  "https://cdn.vidgo.ai/temp/video.mp4"
+                ]
               },
               "duration": {
                 "type": "integer",
                 "description": "Video duration in seconds (15 seconds supported for text-to-video and image-to-video)",
-                "enum": [5, 10, 15],
+                "enum": [
+                  5,
+                  10,
+                  15
+                ],
                 "example": 5
               },
               "resolution": {
                 "type": "string",
                 "description": "Output video resolution",
-                "enum": ["720p", "1080p"],
+                "enum": [
+                  "720p",
+                  "1080p"
+                ],
                 "example": "1080p"
               },
               "multi_shots": {
@@ -171,7 +193,10 @@
       },
       "SubmitResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -180,7 +205,11 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "created_time"],
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -189,7 +218,9 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started"],
+                "enum": [
+                  "not_started"
+                ],
                 "example": "not_started",
                 "description": "Initial task status"
               },
@@ -205,7 +236,10 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["code", "error"],
+        "required": [
+          "code",
+          "error"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -214,7 +248,10 @@
           },
           "error": {
             "type": "object",
-            "required": ["message", "type"],
+            "required": [
+              "message",
+              "type"
+            ],
             "properties": {
               "message": {
                 "type": "string",

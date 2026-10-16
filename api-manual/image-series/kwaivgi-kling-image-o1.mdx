@@ -6,37 +6,17 @@ openapi: "/api-manual/image-series/kwaivgi-kling-image-o1.json POST /api/generat
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Kling O1 Image Edit
 
 Edit images with Kling O1 using visual references and subject elements, with batch output and resolutions up to 2K.
 
-## Available Models
+## Models
 
 - **kwaivgi/kling-image-o1** - Edit images using a prompt and image references.
 
-## Output Options
-
-### Image Size
-
-- `size`: Optional. Accepted values: `auto`, `16:9`, `9:16`, `1:1`, `4:3`, `3:4`, `3:2`, `2:3`, `21:9`. Default: `auto`.
-
-### Resolution
-
-- `resolution`: Optional. Accepted values: `1K`, `2K`. Default: `1K`.
-
-### Image Count
-
-- `n`: Optional. Number of images to generate. Integer from `1` to `9`. Default: `1`.
-
-### Output Format
-
-- `output_format`: Optional. Accepted values: `jpeg`, `png`, `webp`. Default: `png`.
-
-## Key Features
+## Features
 
 - Edit images using a prompt and image references.
 - Accepts 1-10 images in `image_urls`.
@@ -44,27 +24,42 @@ Edit images with Kling O1 using visual references and subject elements, with bat
 - Supply additional subject references through `elements`.
 - Control the number of output images with `n`.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
-
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
-
-### Prompt
-
-- `prompt`: Required. Describe the desired image. Length: **1-2,000 characters**.
+- `prompt` (string): Describe the desired image. Length: **1-2,000 characters**.
 - The value must not be blank when supplied.
 
-### Image URLs
+- `image_urls` (array): Provide publicly accessible image URLs. Supply 1-10 items. Each item must be an HTTP(S) URL. A single URL string and Base64 inputs are not accepted.
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-10 items. Each item must be an HTTP(S) URL. A single URL string and Base64 inputs are not accepted.
+## Optional parameters
 
-### Subject Elements
+- `n` (integer): Number of images to generate. Integer from `1` to `9`. Default: `1`.
 
-- `elements`: Optional array of subject-reference objects. Refer to them in the prompt as `@Element1`, `@Element2`, etc., in array order. Additional object properties are preserved. No element or additional-view count limit is specified.
+- `elements` (array): Array of subject-reference objects. Refer to them in the prompt as `@Element1`, `@Element2`, etc., in array order. Additional object properties are preserved. No element or additional-view count limit is specified.
 
-- `elements[].frontal_image_url`: Optional. Use a publicly accessible HTTP(S) URL.
-- `elements[].reference_image_urls`: Optional. Supply an array. Each item must be an HTTP(S) URL.
+- `elements[].frontal_image_url` (string): Use a publicly accessible HTTP(S) URL.
+
+- `elements[].reference_image_urls` (array): Supply an array. Each item must be an HTTP(S) URL.
+
+- `resolution` (string): See [Resolution](#resolution) for supported values and constraints.
+
+- `size` (string): See [Size](#size) for supported values and constraints.
+
+- `output_format` (string): See [Output Formats](#output-formats) for supported values and constraints.
+
+## Size
+
+- `size`: Optional. Accepted values: `auto`, `16:9`, `9:16`, `1:1`, `4:3`, `3:4`, `3:2`, `2:3`, `21:9`. Default: `auto`.
+
+## Resolution
+
+- `resolution`: Optional. Accepted values: `1K`, `2K`. Default: `1K`.
+
+## Output Formats
+
+- `output_format`: Optional. Accepted values: `jpeg`, `png`, `webp`. Default: `png`.
+
+## Examples
 
 ### Tested multi-image example
 
@@ -85,8 +80,8 @@ Send only the input fields supported by this workflow. Unsupported `input` field
 }
 ```
 
-## Billing Factors
+## Notes
 
-Billing depends on output image count (`n`). Both supported resolutions use the same rate. Reference images and subject elements do not add charges.
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
-Credits are deducted on submission and refunded if the task fails.
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.

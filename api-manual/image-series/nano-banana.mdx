@@ -1,5 +1,5 @@
 ---
-title: "Nano Banana Image Generation"
+title: "Nano Banana Image"
 description: "Fast image generation powered by Gemini 2.5 Flash"
 icon: "image"
 openapi: "/api-manual/image-series/nano-banana.json POST /api/generate/submit"
@@ -10,20 +10,31 @@ openapi: "/api-manual/image-series/nano-banana.json POST /api/generate/submit"
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Nano Banana Image Generation
-
 Fast and efficient image generation powered by Google's Gemini 2.5 Flash model. Ideal for quick iterations and high-throughput applications.
 
-## Available Models
+## Models
 
 - **nano-banana** - Text-to-image and image-to-image generation
 - **nano-banana-edit** - Advanced image editing capabilities
 
-{/* poyo-20260910:start */}
-## Workflow IDs
+### Dedicated workflows
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
-- [google/nano-banana/text-to-image](/api-manual/image-series/google-nano-banana-text-to-image)
-- [google/nano-banana/edit](/api-manual/image-series/google-nano-banana-edit)
-{/* poyo-20260910:end */}
+- **google/nano-banana/text-to-image** — [Workflow page](/api-manual/image-series/google-nano-banana-text-to-image)
+- **google/nano-banana/edit** — [Workflow page](/api-manual/image-series/google-nano-banana-edit)
+
+## Input modes
+
+- **Generation:** select `nano-banana`. Use the input options supported by the selected model.
+- **Image editing:** select `nano-banana-edit`. Supply reference images as required by the selected editing workflow.
+
+## Required parameters
+
+- `prompt` (string): Generation prompt describing the desired output Length: 0–5000 characters.
+
+## Optional parameters
+
+- `image_urls` (array): Reference image URLs (for image editing)
+
+- `size` (string): Image size ratio Accepted values: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`.

@@ -6,33 +6,29 @@ openapi: "/api-manual/image-series/nano-banana-2-1-text-to-image.json POST /api/
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Nano Banana 2.1 Text to Image
-
-## Usage Guide
-
 Generate one image with Nano Banana 2.1 using a text prompt.
+
+## Models
+
+- **google/nano-banana-2.1/text-to-image** — Generate one image with Nano Banana 2.1 using a text prompt.
+
+## Required parameters
+
+- `prompt` (string): Supply non-blank text of up to 20,000 characters.
+
+## Optional parameters
+
+- `size` (string): Output aspect ratio. Accepted values: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`. Default: `1:1`.
+
+- `resolution` (string): Output resolution tier. Accepted values: `1K`, `2K`, `4K`. Default: `1K`.
+
+## Notes
 
 - Set `model` to `google/nano-banana-2.1/text-to-image`.
 - Place `model` and optional `callback_url` at the request root; place workflow parameters inside `input`.
 - Each request produces one image.
 - For reference-image editing, use [Image Edit](/api-manual/image-series/nano-banana-2-1-edit) with `model=google/nano-banana-2.1/edit`.
-
-## Parameter Details
-
-- `prompt` is required. Supply non-blank text of up to 20,000 characters.
-- `size` defaults to `1:1`.
-
-## Billing
-
-Billing is per output image and depends on `resolution`. Text-to-image and editing use the same rate at each tier.
-
-Credits are deducted on submission and refunded if the task fails.
-
-## Optional parameters
-
-- `size` (string): Output aspect ratio. Accepted values: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`. Default: `1:1`.
-- `resolution` (string): Output resolution tier. Accepted values: `1K`, `2K`, `4K`. Default: `1K`.

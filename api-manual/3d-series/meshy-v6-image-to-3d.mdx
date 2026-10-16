@@ -6,97 +6,65 @@ openapi: "/api-manual/3d-series/meshy-v6-image-to-3d.json POST /api/generate/sub
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Meshy 6 Image to 3D
 
 Turn a reference image into a textured 3D asset with Meshy 6, with remeshing, material controls, and optional rigging and animation.
 
-## Available Models
+## Models
 
-- **meshy/v6/image-to-3d** - Generate a 3D model from an image.
+- **meshy/v6/image-to-3d** — Generate a 3D model from an image.
 
-## Output Options
-
-### Target Polycount
-
-- `target_polycount`: Optional. Set the target polygon count. Integer. Default: `30000`.
-
-### Topology
-
-- `topology`: Optional. Select the mesh topology. Accepted values: `quad`, `triangle`. Default: `triangle`.
-
-## Key Features
+## Features
 
 - Generate a 3D model from an image.
 - Accepts exactly 1 image in `image_urls`.
 - Retrieve model assets and available previews or supporting files from the task result.
 - Optionally add textures, rigging, and animation.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `image_urls` (array): Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
 
-Place the parameters listed below inside `input`. Use publicly accessible HTTP(S) URLs for images and texture references.
+## Optional parameters
 
-- `enable_animation: true` requires `enable_rigging: true`.
+- `should_remesh` (boolean): Control remeshing. Use `true` or `false`. Default: `true`.
 
-### Image URLs
+- `symmetry_mode` (string): Select how symmetry is handled. Accepted values: `off`, `auto`, `on`. Default: `auto`.
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
+- `should_texture` (boolean): Control texture generation. Use `true` or `false`. Default: `true`.
 
-### Remeshing
+- `enable_pbr` (boolean): Control physically based rendering (PBR) materials. Use `true` or `false`.
 
-- `should_remesh`: Optional. Control remeshing. Use `true` or `false`. Default: `true`.
+- `pose_mode` (string): Select a pose, or send an empty string for no pose selection. Accepted values: `a-pose`, `t-pose`, `""`. Default: `""`.
 
-### Symmetry Mode
+- `texture_prompt` (string): Describe the desired texture.
 
-- `symmetry_mode`: Optional. Select how symmetry is handled. Accepted values: `off`, `auto`, `on`. Default: `auto`.
+- `texture_image_url` (string): Provide a texture reference URL. Use a publicly accessible HTTP(S) URL.
 
-### Textures
+- `enable_rigging` (boolean): Request rigging for the generated model. Use `true` or `false`.
 
-- `should_texture`: Optional. Control texture generation. Use `true` or `false`. Default: `true`.
+- `rigging_height_meters` (number): Set the rigging height in meters. Number. Default: `1.7`.
 
-### PBR
+- `enable_animation` (boolean): Request animation; rigging must also be enabled. Use `true` or `false`.
 
-- `enable_pbr`: Optional. Control physically based rendering (PBR) materials. Use `true` or `false`.
+- `animation_action_id` (integer): Select the animation action. Integer. Default: `1001`.
 
-### Pose Mode
+- `enable_safety_checker` (boolean): Control safety checking. Use `true` or `false`. Default: `true`.
 
-- `pose_mode`: Optional. Select a pose, or send an empty string for no pose selection. Accepted values: `a-pose`, `t-pose`, `""`. Default: `""`.
+- `target_polycount` (integer): Set the target polygon count. Integer. Default: `30000`.
 
-### Texture Prompt
+- `topology` (string): Select the mesh topology. Accepted values: `quad`, `triangle`. Default: `triangle`.
 
-- `texture_prompt`: Optional. Describe the desired texture.
-
-### Texture Image URL
-
-- `texture_image_url`: Optional. Provide a texture reference URL. Use a publicly accessible HTTP(S) URL.
-
-### Rigging
-
-- `enable_rigging`: Optional. Request rigging for the generated model. Use `true` or `false`.
-
-### Rigging Height
-
-- `rigging_height_meters`: Optional. Set the rigging height in meters. Number. Default: `1.7`.
-
-### Animation
-
-- `enable_animation`: Optional. Request animation; rigging must also be enabled. Use `true` or `false`.
-
-### Animation Action ID
-
-- `animation_action_id`: Optional. Select the animation action. Integer. Default: `1001`.
-
-### Safety Checker
-
-- `enable_safety_checker`: Optional. Control safety checking. Use `true` or `false`. Default: `true`.
-
-## Output Files
+## Output
 
 - Read every item in the returned `files` array.
 - Model assets use `file_type: "3d"`; previews use `file_type: "image"`.
 - Read supporting files with `file_type: "other"` alongside the returned textures, animation assets, and file metadata.
+
+## Notes
+
+Use publicly accessible HTTP(S) URLs for images and texture references.
+
+- `enable_animation: true` requires `enable_rigging: true`.

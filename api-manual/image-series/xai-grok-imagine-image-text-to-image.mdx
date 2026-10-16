@@ -6,34 +6,34 @@ openapi: "/api-manual/image-series/xai-grok-imagine-image-text-to-image.json POS
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Grok Imagine Text to Image
 
 Turn text prompts into images with Grok Imagine, exploring visual ideas in square, portrait, and landscape formats.
 
-## Available Models
+## Models
 
 - **xai/grok-imagine-image/text-to-image** - Generate images from text prompts.
 
-## Output Options
-
-### Image Size
-
-- `size`: Optional. Accepted values: `1:1`, `2:3`, `3:2`, `9:16`, `16:9`.
-
-## Key Features
+## Features
 
 - Generate images from text prompts.
 
-## Advanced Parameters
+## Required parameters
+
+- `prompt` (string): Describe the desired image. Length: **1-5,000 characters**.
+
+## Optional parameters
+
+- `size` (string): See [Size](#size) for supported values and constraints.
+
+## Size
+
+- `size`: Optional. Accepted values: `1:1`, `2:3`, `3:2`, `9:16`, `16:9`.
+
+## Notes
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
 Use the input fields listed below.
-
-### Prompt
-
-- `prompt`: Required. Describe the desired image. Length: **1-5,000 characters**.

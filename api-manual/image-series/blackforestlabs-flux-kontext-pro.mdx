@@ -6,71 +6,48 @@ openapi: "/api-manual/image-series/blackforestlabs-flux-kontext-pro.json POST /a
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Flux Kontext Pro Edit
 
 Edit images with FLUX Kontext Pro using text instructions, with support for character consistency and changes to specific visual details.
 
-## Available Models
+## Models
 
 - **blackforestlabs/flux-kontext-pro** - Edit one source image with a text prompt.
 
-## Output Options
-
-### Image Size
-
-- `size`: Optional. Output aspect ratio. Accepted values: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `21:9`, `9:21`. Default: `1:1`.
-
-### Output Format
-
-- `output_format`: Optional. Output image file format. Accepted values: `png`, `jpg`.
-
-## Key Features
+## Features
 
 - Edit one source image with a text prompt.
 - Provide the source image as a single item in `image_urls`.
 
-## Advanced Parameters
+## Required parameters
+
+- `prompt` (string): Describe the requested changes. Length: **1-2,000 characters**.
+- Include at least one non-whitespace character.
+
+- `image_urls` (array): Provide exactly 1 publicly accessible HTTP(S) image URL as the source image.
+
+## Optional parameters
+
+- `size` (string): See [Size](#size) for supported values and constraints.
+
+- `output_format` (string): See [Output Formats](#output-formats) for supported values and constraints.
+
+## Size
+
+- `size`: Optional. Output aspect ratio. Accepted values: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `21:9`, `9:21`. Default: `1:1`.
+
+## Output Formats
+
+- `output_format`: Optional. Output image file format. Accepted values: `png`, `jpg`.
+
+## Examples
+
+The API playground examples edit one reference image in `image_urls` using a text prompt. They demonstrate different `size` values and PNG or JPG output. The `callback` example adds a top-level `callback_url`.
+
+## Notes
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
 Input image URLs use HTTP(S) and point to publicly accessible image files.
-
-### Prompt
-
-- `prompt`: Required. Describe the requested changes. Length: **1-2,000 characters**.
-- Include at least one non-whitespace character.
-
-### Image URLs
-
-- `image_urls`: Required. Provide exactly 1 publicly accessible HTTP(S) image URL as the source image.
-
-## Verified Example
-
-This example was generated through the Vidgo API and is also the default example in the playground. Source and result images are hosted on the Vidgo CDN.
-
-![Source image 1](https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-pro/v1/02/input-01.png)
-
-![Renaming a Fishing Boat in Chiloé](https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-pro/v1/02/output.jpg)
-
-```json
-{
-  "code": 200,
-  "data": {
-    "task_id": "KH8OWRITIOASWYGA",
-    "status": "finished",
-    "files": [
-      {
-        "file_type": "image",
-        "file_url": "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-pro/v1/02/output.jpg"
-      }
-    ],
-    "created_time": "2026-09-26T11:02:37",
-    "error_message": null,
-    "progress": 100
-  }
-}
-```

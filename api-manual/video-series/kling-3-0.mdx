@@ -1,31 +1,56 @@
 ---
-title: "Kling 3.0 Video Generation"
+title: "Kling 3.0 Video"
 description: "Next-generation video generation with standard and pro resolution"
 icon: "video"
 openapi: "/api-manual/video-series/kling-3-0.json POST /api/generate/submit"
 ---
 
 <Tip>
-  1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-  2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-## Available Models
+Next-generation video generation with standard and pro resolution
 
-* **kling-3.0/standard** - HD resolution (~720p/1K)
-* **kling-3.0/pro** - Full HD resolution (1080p/2K), sharper and more detailed output
+## Models
 
-## Key Features
+- **kling-3.0/standard** — HD resolution (~720p/1K)
+- **kling-3.0/pro** — Full HD resolution (1080p/2K), sharper and more detailed output
 
-* **Native Audio**: Controlled by `input.sound`. Set `true` to enable sound effects and `false` to disable them. When `multi_shots` is `true`, `sound` must be `true`
-* **Flexible Duration**: 3 to 15 seconds
-* **Aspect Ratios**: 1:1 (square), 16:9 (landscape), and 9:16 (portrait)
-* **Modes**: Text-to-video and image-to-video (start and end frames)
-* **Multi-Shot**: Multi-shot storytelling with per-shot prompts and durations
-* **Element References**: Define reusable elements (via images or video) and reference them in prompts using `@element_name` syntax. `image_urls` is required when using element references
+## Features
 
-{/* poyo-20260910:start */}
-## Workflow IDs
+- **Native Audio**: Controlled by `input.sound`. Set `true` to enable sound effects and `false` to disable them. When `multi_shots` is `true`, `sound` must be `true`
+- **Flexible Duration**: 3 to 15 seconds
+- **Aspect Ratios**: 1:1 (square), 16:9 (landscape), and 9:16 (portrait)
+- **Modes**: Text-to-video and image-to-video (start and end frames)
+- **Multi-Shot**: Multi-shot storytelling with per-shot prompts and durations
+- **Element References**: Define reusable elements (via images or video) and reference them in prompts using `@element_name` syntax. `image_urls` is required when using element references
+
+## Input modes
+
+- **Text to video:** omit `image_urls`.
+- **Image to video:** supply `image_urls` for the start frame and optional end frame.
+
+- **Single shot:** use `prompt` and omit `multi_prompt`. Set `multi_shots` to `false`.
+- **Multiple shots:** use `multi_prompt` instead of a top-level `prompt`. Set `multi_shots` to `true`. Multi-shot generation requires `sound: true`.
+
+## Required parameters
+
+- `duration` (integer): Video duration in seconds. For single shot mode, duration can be 3-15 seconds. For multi-shot mode, duration is the total duration of all shots.
+- `multi_shots` (boolean): Enable multi-shot mode. When true, use multi_prompt array instead of prompt string. When false, use prompt string. Default is false.
+- `sound` (boolean): Whether to enable sound effects. true enables sound effects, false disables them. When multi_shots is true, this field must be true. Default: `true`.
+
+## Optional parameters
+
+- `image_urls` (string[]): For text-to-video. For image-to-video in single-shot mode (multi_shots: false), provide a start frame and an optional end frame. For multi-shot mode (multi_shots: true), provide only the start frame URL. **Required** when `kling_elements` is provided.
+- `prompt` (string): Video generation prompt. Required when multi_shots is false. You can reference elements using @element_name syntax (e.g., @element_dog). Maximum length: 2,500 characters.
+- `multi_prompt` (object[]): Array of prompt objects for multi-shot mode. Required when multi_shots is true. Each object contains a prompt and duration. Total duration of all shots cannot exceed 15 seconds.
+- `kling_elements` (object[]): Array of element objects that can be referenced in prompts using @element_name syntax. Elements can be defined using images (2-4 images) or a single video. When provided, `image_urls` is required.
+- `aspect_ratio` (string): Video aspect ratio. When the input does not contain reference images (image_urls), the default is 1:1 if the aspect_ratio parameter is not passed; when the input contains the first frame image, the aspect_ratio parameter will be ignored, and the output will use the aspect ratio of the first frame image. Accepted values: `1:1`, `16:9`, `9:16`.
+
+## Notes
+
+### Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
@@ -33,4 +58,3 @@ Existing IDs remain available. New integrations can select a dedicated workflow:
 - [kwaivgi/kling-v3.0-std/image-to-video](/api-manual/video-series/kwaivgi-kling-v3-0-std-image-to-video)
 - [kwaivgi/kling-v3.0-pro/text-to-video](/api-manual/video-series/kwaivgi-kling-v3-0-pro-text-to-video)
 - [kwaivgi/kling-v3.0-pro/image-to-video](/api-manual/video-series/kwaivgi-kling-v3-0-pro-image-to-video)
-{/* poyo-20260910:end */}

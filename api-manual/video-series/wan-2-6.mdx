@@ -1,5 +1,5 @@
 ---
-title: "Wan 2.6 Video Generation"
+title: "Wan 2.6 Video"
 description: "Multi-shot 1080p video generation with Alibaba Wan 2.6"
 icon: "video"
 openapi: "/api-manual/video-series/wan-2-6.json POST /api/generate/submit"
@@ -10,29 +10,43 @@ openapi: "/api-manual/video-series/wan-2-6.json POST /api/generate/submit"
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Wan 2.6 Video Generation
+Wan 2.6 is Alibaba's video generation model family. It supports text-to-video, image-to-video, and video-to-video workflows with stable character identity, multi-shot composition, and 1080p output.
 
-Wan 2.6 is Alibaba's latest video generation model family. It supports text-to-video, image-to-video, and video-to-video workflows with stable character identity, multi-shot composition, and 1080p output.
+## Models
 
-## Available Models
+- **wan2.6-text-to-video** — Generate videos from text prompts
+- **wan2.6-image-to-video** — Animate a reference image with a prompt
+- **wan2.6-video-to-video** — Edit or restyle an input video using a prompt
 
-- **wan2.6-text-to-video** - Generate videos from text prompts
-- **wan2.6-image-to-video** - Animate a reference image with a prompt
-- **wan2.6-video-to-video** - Edit or restyle an input video using a prompt
-
-## Key Features
+## Features
 
 - **Duration**: 5, 10, or 15 seconds (video-to-video up to 10 seconds)
 - **Resolution**: 720p or 1080p
 - **Multi-Shots**: Toggle multi-shot composition for cinematic transitions
 - **Prompt Length**: Up to 5,000 characters
 
-{/* poyo-20260910:start */}
-## Workflow IDs
+## Input modes
+
+- **Text-to-video**: Use `wan2.6-text-to-video` with `prompt`.
+- **Image-to-video**: Use `wan2.6-image-to-video` with `image_urls` and `prompt`.
+- **Video-to-video**: Use `wan2.6-video-to-video` with `video_urls` and `prompt`. The maximum output duration is 10 seconds.
+
+## Required parameters
+
+- `prompt` (string): Text prompt for video generation. Length: up to 5,000 characters.
+
+## Optional parameters
+
+- `image_urls` (array of strings): Reference image URLs for image-to-video (wan2.6-image-to-video only). Max 1 image; supported formats: .jpeg, .jpg, .png, .webp; max size 10MB. Exactly 1 item.
+- `video_urls` (array of strings): Reference video URLs for video-to-video (wan2.6-video-to-video only). Max 3 videos; supported formats: .mp4, .mov, .mkv; max size 10MB.
+- `duration` (integer): Video duration in seconds (15 seconds supported for text-to-video and image-to-video). Values: `5`, `10`, `15`.
+- `resolution` (string): Output video resolution. Values: `720p`, `1080p`.
+- `multi_shots` (boolean): Enable multi-shot composition (single continuous shot when false).
+
+## Notes
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
 - [alibaba/wan-2.6/text-to-video](/api-manual/video-series/alibaba-wan-2-6-text-to-video)
 - [alibaba/wan-2.6/image-to-video](/api-manual/video-series/alibaba-wan-2-6-image-to-video)
 - [alibaba/wan-2.6/reference-to-video](/api-manual/video-series/alibaba-wan-2-6-reference-to-video)
-{/* poyo-20260910:end */}

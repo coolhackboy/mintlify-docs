@@ -6,38 +6,36 @@ openapi: "/api-manual/image-series/openai-gpt-image-1-5-text-to-image.json POST 
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# GPT Image 1.5 Text to Image
 
 Turn written image concepts into square, portrait, or landscape visuals with GPT Image 1.5, with up to four variations per request.
 
-## Available Models
+## Models
 
 - **openai/gpt-image-1.5/text-to-image** - Generate images from text prompts.
 
-## Output Options
-
-### Image Size
-
-- `size`: Optional. Accepted values: `1024x1024`, `1024x1536`, `1536x1024`. Default: `1024x1024`.
-
-### Image Count
-
-- `n`: Optional. Number of images to generate. Accepted values: `1`, `2`, `3`, `4`. Default: `1`.
-
-## Key Features
+## Features
 
 - Generate images from text prompts.
 - Control the number of output images with `n`.
 
-## Advanced Parameters
+## Required parameters
+
+- `prompt` (string): Describe the desired image. Length: **1-1,000 characters**.
+- Include at least one non-whitespace character.
+
+## Optional parameters
+
+- `n` (integer): Number of images to generate. Accepted values: `1`, `2`, `3`, `4`. Default: `1`.
+
+- `size` (string): See [Size](#size) for supported values and constraints.
+
+## Size
+
+- `size`: Optional. Accepted values: `1024x1024`, `1024x1536`, `1536x1024`. Default: `1024x1024`.
+
+## Notes
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
-
-### Prompt
-
-- `prompt`: Required. Describe the desired image. Length: **1-1,000 characters**.
-- Include at least one non-whitespace character.

@@ -4,8 +4,6 @@ description: "Receive automatic callback notifications when music generation tas
 icon: "music"
 ---
 
-# Music Webhook Callbacks
-
 Instead of polling the [Query Music Detail](/api-manual/music-series/query-music-detail) endpoint, you can provide a `callback_url` when submitting music generation tasks to receive automatic notifications when generation completes.
 
 ## How It Works
@@ -33,7 +31,7 @@ Content-Type: application/json
   "data": {
     "task_id": "8FDN1I7M7Q68DDG8",
     "status": "finished",
-    "files": [...],
+    "files": [],
     "created_time": "2025-11-25T08:50:13",
     "error_message": null
   }
@@ -41,7 +39,7 @@ Content-Type: application/json
 ```
 
 <Note>
-The `files` array content varies depending on which model created the task. See [Response Fields](#response-fields-files-data) below for details.
+The envelope example omits generated files. The `files` array content varies depending on which model created the task. See [Response Fields](#response-fields-files-data) below for details.
 </Note>
 
 ## Response Fields (files data)
@@ -51,15 +49,15 @@ The `files` array content varies depending on which model created the task.
 | Model | Field | Type | Description |
 |-------|-------|------|-------------|
 | `generate-music`, `extend-music`, `upload-and-cover-audio`, `upload-and-extend-audio`, `add-instrumental`, `add-vocals`, `replace-section` | `audio_id` | string | Unique identifier for the audio file |
-| 閳?| `audio_url` | string | Direct download URL for the audio file |
-| 閳?| `image_url` | string | Cover image URL |
-| 閳?| `title` | string | Track title |
-| 閳?| `tags` | string | Style tags |
-| 閳?| `duration` | number | Audio duration in seconds |
-| 閳?| `prompt` | string | Generation prompt used |
+| `generate-music`, `extend-music`, `upload-and-cover-audio`, `upload-and-extend-audio`, `add-instrumental`, `add-vocals`, `replace-section` | `audio_url` | string | Direct download URL for the audio file |
+| `generate-music`, `extend-music`, `upload-and-cover-audio`, `upload-and-extend-audio`, `add-instrumental`, `add-vocals`, `replace-section` | `image_url` | string | Cover image URL |
+| `generate-music`, `extend-music`, `upload-and-cover-audio`, `upload-and-extend-audio`, `add-instrumental`, `add-vocals`, `replace-section` | `title` | string | Track title |
+| `generate-music`, `extend-music`, `upload-and-cover-audio`, `upload-and-extend-audio`, `add-instrumental`, `add-vocals`, `replace-section` | `tags` | string | Style tags |
+| `generate-music`, `extend-music`, `upload-and-cover-audio`, `upload-and-extend-audio`, `add-instrumental`, `add-vocals`, `replace-section` | `duration` | number | Audio duration in seconds |
+| `generate-music`, `extend-music`, `upload-and-cover-audio`, `upload-and-extend-audio`, `add-instrumental`, `add-vocals`, `replace-section` | `prompt` | string | Generation prompt used |
 | `get-timestamped-lyrics` | `timestampe_lyrics` | string | Lyrics with timestamps |
 | `generate-lyrics` | `title` | string | Lyrics title |
-| 閳?| `text` | string | Complete lyrics content |
+| `generate-lyrics` | `text` | string | Complete lyrics content |
 | `boost-music-style` | `style` | string | Enhanced music style |
 | `convert-to-wav` | `wav_url` | string | URL to converted WAV file |
 | `separate-vocals` | `separate_vocals` | string (JSON) | JSON string containing separated audio URLs. [See details](#separate-vocals) |

@@ -32,7 +32,7 @@
               },
               "examples": {
                 "basic": {
-                  "summary": "Basic Instrumental Generation",
+                  "summary": "Basic Instrumental",
                   "value": {
                     "model": "add-instrumental",
                     "callback_url": "https://your-domain.com/callback",

@@ -6,29 +6,32 @@ openapi: "/api-manual/video-series/runway-gen-4-5.json POST /api/generate/submit
 ---
 
 <Tip>
-  1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-  2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Runway Gen-4.5
 
 `runway-gen-4.5` is exposed through the unified submit endpoint with text-to-video and optional single-image guidance.
 
-## Available Model
+## Models
 
-* **runway-gen-4.5** - Text-to-video generation
+- **runway-gen-4.5** — Text-to-video generation
 
-## Required Parameters
+## Input modes
 
-* **prompt**: Text prompt for generation
+- **Text-to-video**: Omit `image_urls` and describe the scene in `prompt`.
+- **Image-to-video**: Supply `image_urls` to guide generation with reference imagery.
 
-## Optional Parameters
+## Required parameters
 
-* **duration**: `5` or `10`. Default is `5`
-* **aspect_ratio**: `16:9`, `9:16`, `4:3`, `3:4`, `1:1`, or `21:9`. Default is `16:9`
-* **image_urls**: Optional image URL list. At most `1` image
-* **seed**: Optional integer seed
+- `prompt` (string): Text prompt for generation.
+
+## Optional parameters
+
+- `duration` (integer): Output duration in seconds. Values: `5`, `10`. Default: `5`.
+- `aspect_ratio` (string): Optional aspect ratio. Values: `16:9`, `9:16`, `4:3`, `3:4`, `1:1`, `21:9`. Default: `16:9`.
+- `image_urls` (array of strings): Optional reference image list. Supports at most one image URL.
+- `seed` (integer): Optional integer seed.
 
 ## Notes
 
-* `image_urls` is optional. If provided, only one image URL is allowed
+- `image_urls` is optional. If provided, only one image URL is allowed

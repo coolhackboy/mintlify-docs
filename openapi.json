@@ -22,7 +22,7 @@
   "paths": {
     "/api/generate/submit": {
       "post": {
-        "summary": "Submit Generation Task",
+        "summary": "Submit Task",
         "description": "Submit an image, video, audio, or 3D generation task with model and input. Parameters and limits depend on the selected workflow.",
         "operationId": "submitGenerationTask",
         "tags": [
@@ -37,7 +37,7 @@
               },
               "examples": {
                 "gpt-4o-image": {
-                  "summary": "GPT-4o Image Generation",
+                  "summary": "GPT-4o Image",
                   "value": {
                     "model": "gpt-4o-image",
                     "callback_url": "https://your-domain.com/callback",
@@ -64,7 +64,7 @@
                   }
                 },
                 "nano-banana": {
-                  "summary": "Nano Banana Image Generation",
+                  "summary": "Nano Banana Image",
                   "value": {
                     "model": "nano-banana",
                     "callback_url": "https://your-domain.com/callback",
@@ -89,7 +89,7 @@
                   }
                 },
                 "sora-2": {
-                  "summary": "Sora 2 Video Generation",
+                  "summary": "Sora 2 Video",
                   "value": {
                     "model": "sora-2",
                     "callback_url": "https://your-domain.com/callback",
@@ -101,7 +101,7 @@
                   }
                 },
                 "sora-2-pro": {
-                  "summary": "Sora 2 Pro Video Generation",
+                  "summary": "Sora 2 Pro Video",
                   "value": {
                     "model": "sora-2-pro",
                     "callback_url": "https://your-domain.com/callback",
@@ -113,7 +113,7 @@
                   }
                 },
                 "veo3.1-fast": {
-                  "summary": "VEO 3.1 Fast Video Generation",
+                  "summary": "VEO 3.1 Fast Video",
                   "value": {
                     "model": "veo3.1-fast",
                     "callback_url": "https://your-domain.com/callback",

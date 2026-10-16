@@ -19,10 +19,12 @@
   "paths": {
     "/api/generate/submit": {
       "post": {
-        "summary": "Submit Kling 1.6 Video Generation Task",
+        "summary": "Submit Kling 1.6 Video Task",
         "description": "Generate videos with Kling 1.6 Standard or Pro. Vidgo automatically selects text-to-video, image-to-video, or Elements based on the input image fields.",
         "operationId": "submitKling16Task",
-        "tags": ["Kling 1.6"],
+        "tags": [
+          "Kling 1.6"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -171,7 +173,10 @@
     "schemas": {
       "SubmitRequest": {
         "type": "object",
-        "required": ["model", "input"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -185,7 +190,10 @@
           },
           "input": {
             "type": "object",
-            "required": ["prompt", "duration"],
+            "required": [
+              "prompt",
+              "duration"
+            ],
             "description": "Input parameters for generation. Vidgo selects the workflow from the provided image fields.",
             "additionalProperties": false,
             "properties": {
@@ -198,13 +206,20 @@
               "duration": {
                 "type": "integer",
                 "description": "Output duration in seconds",
-                "enum": [5, 10],
+                "enum": [
+                  5,
+                  10
+                ],
                 "example": 5
               },
               "aspect_ratio": {
                 "type": "string",
                 "description": "Video aspect ratio. Supported for text-to-video, Elements, and Pro image-to-video. Standard image-to-video does not support aspect_ratio",
-                "enum": ["1:1", "16:9", "9:16"],
+                "enum": [
+                  "1:1",
+                  "16:9",
+                  "9:16"
+                ],
                 "example": "16:9"
               },
               "negative_prompt": {
@@ -252,7 +267,10 @@
       },
       "SubmitResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -261,7 +279,11 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "created_time"],
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -270,7 +292,11 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started", "running", "failed"],
+                "enum": [
+                  "not_started",
+                  "running",
+                  "failed"
+                ],
                 "example": "running",
                 "description": "Initial task status returned by the submit endpoint"
               },

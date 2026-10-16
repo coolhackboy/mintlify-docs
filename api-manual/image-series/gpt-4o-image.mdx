@@ -1,5 +1,5 @@
 ---
-title: "GPT-4o Image Generation"
+title: "GPT-4o Image"
 description: "High-quality image generation and editing with GPT-4o"
 icon: "image"
 openapi: "/api-manual/image-series/gpt-4o-image.json POST /api/generate/submit"
@@ -10,13 +10,32 @@ openapi: "/api-manual/image-series/gpt-4o-image.json POST /api/generate/submit"
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# GPT-4o Image Generation
-
 Generate high-quality images using OpenAI's GPT-4o model. Supports text-to-image, image-to-image, and advanced image editing capabilities.
 
-## Available Models
+## Models
 
 - **gpt-4o-image** - Text-to-image and image-to-image generation
 - **gpt-4o-image-edit** - Advanced image editing with mask support
 
-Generation with `gpt-4o-image` uses `n` to select and bill the requested image count. Editing with `gpt-4o-image-edit` produces and bills one image per request; `n` does not increase editing outputs.
+## Input modes
+
+- **Generation:** select `gpt-4o-image`. Use the input options supported by the selected model.
+- **Image editing:** select `gpt-4o-image-edit`. Supply reference images as required by the selected editing workflow.
+
+## Required parameters
+
+- `prompt` (string): Generation prompt describing the desired output Length: 0–1000 characters.
+
+## Optional parameters
+
+- `image_urls` (array): Reference image URLs (for image editing)
+
+- `size` (string): Image size ratio Accepted values: `1:1`, `2:3`, `3:2`.
+
+- `n` (integer): Number of images to generate. With gpt-4o-image-edit, each request produces one image and is billed for one image; n does not increase editing outputs. Accepted values: `1`, `2`, `3`, `4`.
+
+- `mask_url` (string): Mask image URL for editing
+
+## Output
+
+With `gpt-4o-image`, `n` selects the requested output image count. Editing with `gpt-4o-image-edit` produces one image per request; `n` does not increase editing outputs.

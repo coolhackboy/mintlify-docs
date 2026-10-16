@@ -1,5 +1,5 @@
 ---
-title: "VEO 3.1 Video Generation"
+title: "VEO 3.1 Video"
 description: "Fast and high-quality 8-second video generation with Google's VEO 3.1"
 icon: "video"
 openapi: "/api-manual/video-series/veo-3-1.json POST /api/generate/submit"
@@ -10,41 +10,35 @@ openapi: "/api-manual/video-series/veo-3-1.json POST /api/generate/submit"
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# VEO 3.1 Video Generation
-
 Generate fast or high-quality 8-second videos with Google's VEO 3.1 model. Supports text-to-video and image-to-video generation.
 
-## Available Models
+## Models
 
-- **veo3.1-fast** - Fast 8-second generation
-- **veo3.1-quality** - High-quality 8-second generation
+- **veo3.1-fast** — Fast 8-second generation
+- **veo3.1-quality** — High-quality 8-second generation
 
-## Duration Options
-
-- **8 seconds** - Fixed duration for all generations
-
-## Key Features
+## Features
 
 - Asynchronous processing that returns a `task_id` for status tracking
 - Supports text-to-video and image-to-video generation
 - Supports up to 4k output resolution
 - Generated video URLs are valid for 24 hours
 
-## Advanced Parameters
+## Input modes
 
-### Generation Type
+- **Text-to-video**: Omit `image_urls`.
+- **Image-to-video**: Supply one reference image.
+- **First and last frame**: Supply two images in start-frame, end-frame order and use `generation_type: "frame"`.
+- **Reference-to-video**: Supply three images and use `generation_type: "reference"`. The mode is inferred from image count when `generation_type` is omitted.
 
-- `frame` - Frame-to-video (two images)
-- `reference` - Reference image video (three images)
-- If omitted, inferred by `image_urls` count: 2 images for `frame`, 3 images for `reference`
+## Required parameters
 
-### Image URLs
+- `prompt` (string): Describe the scene and desired motion. Length: up to 1,000 characters.
 
-- Supports up to 3 images
-- Frame mode: first image is the start frame, second image is the end frame
-- Maximum file size: 10MB
-- Supported formats: .jpeg, .jpg, .png, .webp
+## Optional parameters
 
-### Resolution
-
-- `720p` (default), `1080p`, or `4k`
+- `image_urls` (array of strings): Reference image URLs for image-to-video. Supports public http/https URLs; maximum 3 images; frame mode: first image is the start frame, second image is the end frame; maximum file size 10MB; supported formats: .jpeg, .jpg, .png, .webp.
+- `generation_type` (string): Video generation type. `frame` (Frame-to-video, two images) or `reference` (Reference image video, three images). If omitted, inferred by `image_urls` count: 2 for `frame`, 3 for `reference`.
+- `duration` (integer): Video duration in seconds (fixed at 8). Values: `8`.
+- `aspect_ratio` (string): Video aspect ratio. Values: `16:9`, `9:16`.
+- `resolution` (string): Output resolution. `720p` (default), `1080p` (Full HD), or `4k` (Ultra HD).

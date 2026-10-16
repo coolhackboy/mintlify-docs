@@ -6,41 +6,31 @@ openapi: "/api-manual/video-series/xai-grok-imagine-video-image-to-video.json PO
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Grok Imagine Image to Video
 
 Animate a still image with Grok Imagine, using text to shape the scene in six- or ten-second video clips.
 
-## Available Models
+## Models
 
-- **xai/grok-imagine-video/image-to-video** - Generate video from image input.
+- **xai/grok-imagine-video/image-to-video** — Generate video from image input.
 
-## Duration Options
-
-- **6, 10 seconds** - Set `duration` as an integer. Optional; defaults to `6`.
-
-## Key Features
+## Features
 
 - Generate video from image input.
 - Accepts exactly 1 image in `image_urls`.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `prompt` (string): Describe the desired scene and motion. Enter 1–5,000 characters.
+- `image_urls` (array of strings): Provide exactly one publicly accessible HTTP(S) image URL.
 
-Use the input fields listed below. Supply publicly accessible HTTP(S) URLs for reference images.
+## Optional parameters
 
-### Prompt
+- `mode` (string): Generation style. Choose fun, normal, or spicy. Values: `fun`, `normal`, `spicy`.
+- `duration` (integer): Video duration in seconds. Choose 6 or 10; defaults to 6. Values: `6`, `10`.
 
-- `prompt`: Required. Describe the scene and desired motion. Length: **1-5,000 characters**.
+## Notes
 
-### Image URLs
-
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
-
-### Mode
-
-- `mode`: Optional. Accepted values: `fun`, `normal`, `spicy`.
+Supply publicly accessible HTTP(S) URLs for reference images.

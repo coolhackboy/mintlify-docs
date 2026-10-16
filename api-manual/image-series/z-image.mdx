@@ -1,5 +1,5 @@
 ---
-title: "Z-Image Generation"
+title: "Z-Image"
 description: "High-quality image generation with Z-Image"
 icon: "image"
 openapi: "/api-manual/image-series/z-image.json POST /api/generate/submit"
@@ -10,10 +10,14 @@ openapi: "/api-manual/image-series/z-image.json POST /api/generate/submit"
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Z-Image Generation
-
 Generate high-quality images using the Z-Image model. Supports text-to-image generation with flexible aspect ratios.
 
-## Available Models
+## Models
 
 - **z-image** - Text-to-image generation
+
+## Required parameters
+
+- `prompt` (string): Generation prompt describing the desired output Length: 0–1000 characters.
+
+- `size` (string): Image size ratio Accepted values: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`.

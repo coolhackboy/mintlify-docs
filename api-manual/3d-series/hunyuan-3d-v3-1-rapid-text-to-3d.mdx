@@ -6,45 +6,33 @@ openapi: "/api-manual/3d-series/hunyuan-3d-v3-1-rapid-text-to-3d.json POST /api/
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Hunyuan 3D v3.1 Rapid Text to 3D
 
 Turn written object concepts into 3D models with Hunyuan 3D v3.1 Rapid, with an option to generate geometry for further modeling.
 
-## Available Models
+## Models
 
-- **hunyuan-3d/v3.1/rapid/text-to-3d** - Generate a 3D model from a text prompt.
+- **hunyuan-3d/v3.1/rapid/text-to-3d** — Generate a 3D model from a text prompt.
 
-## Output Options
-
-### Enable Geometry
-
-- `enable_geometry`: Optional. Set `true` for a geometry-only white model or `false` for textured generation.
-
-## Key Features
+## Features
 
 - Generate a 3D model from a text prompt.
 - Retrieve model assets and available previews or supporting files from the task result.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `prompt` (string): Describe the desired 3D object. Length: **1-200 characters**.
+Use a nonblank string when providing this parameter.
 
-Use the input parameters listed below.
+## Optional parameters
 
-### Prompt
+- `enable_pbr` (boolean): Set `true` to generate PBR materials in textured mode. Geometry-only generation takes precedence over this setting.
 
-- `prompt`: Required. Describe the desired 3D object. Length: **1-200 characters**.
-- Use a nonblank string when providing this parameter.
+- `enable_geometry` (boolean): Set `true` for a geometry-only white model or `false` for textured generation.
 
-### PBR
-
-- `enable_pbr`: Optional. Set `true` to generate PBR materials in textured mode. Geometry-only generation takes precedence over this setting.
-
-## Output Files
+## Output
 
 - Read every item in the returned `files` array.
 - Model assets use `file_type: "3d"`; previews use `file_type: "image"`.

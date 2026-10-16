@@ -6,74 +6,52 @@ openapi: "/api-manual/3d-series/tripo3d-h3-1-image-to-3d.json POST /api/generate
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Tripo3D H3.1 Image to 3D
 
 Convert a reference image into a 3D model with Tripo3D H3.1, with controls for geometry detail, textures, and mesh topology.
 
-## Available Models
+## Models
 
-- **tripo3d/h3.1/image-to-3d** - Generate a 3D model from an image.
+- **tripo3d/h3.1/image-to-3d** — Generate a 3D model from an image.
 
-## Output Options
-
-### Face Limit
-
-- `face_limit`: Optional. Set the face-count limit. Integer from `1000` to `2000000`.
-
-### Geometry Quality
-
-- `geometry_quality`: Optional. Accepted values: `standard`, `detailed`. Default: `standard`.
-
-## Key Features
+## Features
 
 - Generate a 3D model from an image.
 - Accepts exactly 1 image in `image_urls`.
 - Retrieve model assets and available previews or supporting files from the task result.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `image_urls` (array): Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
 
-Use the input parameters listed below for this generation workflow. Use publicly accessible HTTP(S) image URLs with a hostname.
+## Optional parameters
 
-### Image URLs
+- `texture` (boolean): Control texture generation. Use `true` or `false`. Default: `true`.
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
+- `pbr` (boolean): Generate physically based rendering (PBR) materials when `texture` is `true`. Use `true` or `false`.
 
-### Texture
+- `model_seed` (integer): Set the model-generation seed. Integer.
 
-- `texture`: Optional. Control texture generation. Use `true` or `false`. Default: `true`.
+- `texture_seed` (integer): Set the texture-generation seed. Integer.
 
-### PBR
+- `texture_quality` (string): Accepted values: `standard`, `detailed`. Default: `standard`.
 
-- `pbr`: Optional. Generate physically based rendering (PBR) materials when `texture` is `true`. Use `true` or `false`.
+- `auto_size` (boolean): Control automatic model sizing. Use `true` or `false`.
 
-### Model Seed
+- `quad` (boolean): Request quad topology. Use `true` or `false`. Default: `false`.
 
-- `model_seed`: Optional. Set the model-generation seed. Integer.
+- `face_limit` (integer): Set the face-count limit. Integer from `1000` to `2000000`.
 
-### Texture Seed
+- `geometry_quality` (string): Accepted values: `standard`, `detailed`. Default: `standard`.
 
-- `texture_seed`: Optional. Set the texture-generation seed. Integer.
-
-### Texture Quality
-
-- `texture_quality`: Optional. Accepted values: `standard`, `detailed`. Default: `standard`.
-
-### Auto Size
-
-- `auto_size`: Optional. Control automatic model sizing. Use `true` or `false`.
-
-### Quad
-
-- `quad`: Optional. Request quad topology. Use `true` or `false`. Default: `false`.
-
-## Output Files
+## Output
 
 - Read every item in the returned `files` array.
 - Model assets use `file_type: "3d"`; previews use `file_type: "image"`.
 - Additional artifacts may use `file_type: "other"`. Retain accompanying assets and available `label`, `format`, `content_type`, `file_name`, and `file_size` metadata.
+
+## Notes
+
+Use the input parameters listed below for this generation workflow. Use publicly accessible HTTP(S) image URLs with a hostname.

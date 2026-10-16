@@ -6,83 +6,57 @@ openapi: "/api-manual/3d-series/hunyuan-3d-v3-1-pro-image-to-3d.json POST /api/g
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Hunyuan 3D v3.1 Pro Image to 3D
 
 Reconstruct 3D objects with Hunyuan 3D v3.1 Pro using a primary image and additional views, with support for PBR materials.
 
-## Available Models
+## Models
 
-- **hunyuan-3d/v3.1/pro/image-to-3d** - Generate a 3D model from an image.
+- **hunyuan-3d/v3.1/pro/image-to-3d** — Generate a 3D model from an image.
 
-## Output Options
-
-### Generate Type
-
-- `generate_type`: Optional. Choose `Normal` for a textured model or `Geometry` for a geometry-only white model.
-
-### Face Count
-
-- `face_count`: Optional. Set the target face count. Integer from `40000` to `1500000`. Default: `500000`.
-
-## Key Features
+## Features
 
 - Generate a 3D model from an image.
 - Accepts exactly 1 image in `image_urls`.
 - Retrieve model assets and available previews or supporting files from the task result.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `image_urls` (array): Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
 
-Use the input parameters listed below. Provide publicly accessible HTTP(S) URLs for image inputs.
+## Optional parameters
 
-### Prompt
+- `prompt` (string): Describe the desired 3D object. Minimum length: **1 character**.
+Use a nonblank string when providing this parameter.
 
-- `prompt`: Optional. Describe the desired 3D object. Minimum length: **1 character**.
-- Use a nonblank string when providing this parameter.
+- `enable_pbr` (boolean): Set `true` to generate PBR materials in textured mode. Geometry-only generation takes precedence over this setting.
 
-### Image URLs
+- `back_image_url` (string): Provide the back view as an image URL. Use a publicly accessible HTTP(S) URL.
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
+- `left_image_url` (string): Provide the left view as an image URL. Use a publicly accessible HTTP(S) URL.
 
-### PBR
+- `right_image_url` (string): Provide the right view as an image URL. Use a publicly accessible HTTP(S) URL.
 
-- `enable_pbr`: Optional. Set `true` to generate PBR materials in textured mode. Geometry-only generation takes precedence over this setting.
+- `top_image_url` (string): Provide the top view as an image URL. Use a publicly accessible HTTP(S) URL.
 
-### Back Image URL
+- `bottom_image_url` (string): Provide the bottom view as an image URL. Use a publicly accessible HTTP(S) URL.
 
-- `back_image_url`: Optional. Provide the back view as an image URL. Use a publicly accessible HTTP(S) URL.
+- `left_front_image_url` (string): Provide the left front view as an image URL. Use a publicly accessible HTTP(S) URL.
 
-### Left Image URL
+- `right_front_image_url` (string): Provide the right front view as an image URL. Use a publicly accessible HTTP(S) URL.
 
-- `left_image_url`: Optional. Provide the left view as an image URL. Use a publicly accessible HTTP(S) URL.
+- `generate_type` (string): Choose `Normal` for a textured model or `Geometry` for a geometry-only white model.
 
-### Right Image URL
+- `face_count` (integer): Set the target face count. Integer from `40000` to `1500000`. Default: `500000`.
 
-- `right_image_url`: Optional. Provide the right view as an image URL. Use a publicly accessible HTTP(S) URL.
-
-### Top Image URL
-
-- `top_image_url`: Optional. Provide the top view as an image URL. Use a publicly accessible HTTP(S) URL.
-
-### Bottom Image URL
-
-- `bottom_image_url`: Optional. Provide the bottom view as an image URL. Use a publicly accessible HTTP(S) URL.
-
-### Left Front Image URL
-
-- `left_front_image_url`: Optional. Provide the left front view as an image URL. Use a publicly accessible HTTP(S) URL.
-
-### Right Front Image URL
-
-- `right_front_image_url`: Optional. Provide the right front view as an image URL. Use a publicly accessible HTTP(S) URL.
-
-## Output Files
+## Output
 
 - Read every item in the returned `files` array.
 - Model assets use `file_type: "3d"`; previews use `file_type: "image"`.
 - Additional artifacts may use `file_type: "other"`. Retain returned textures, material files, and file metadata.
+
+## Notes
+
+Provide publicly accessible HTTP(S) URLs for image inputs.

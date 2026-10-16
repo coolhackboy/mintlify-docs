@@ -6,28 +6,26 @@ openapi: "/api-manual/video-series/kling-3-0-motion-control.json POST /api/gener
 ---
 
 <Tip>
-  1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-  2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Kling 3.0 Motion Control
 
 `kling-3.0-motion-control` combines one reference image and one reference video to transfer motion to the target character.
 
-## Available Model
+## Models
 
-* **kling-3.0-motion-control** - Motion transfer from reference video to reference image
+- **kling-3.0-motion-control** — Motion transfer from reference video to reference image
 
-## Required Parameters
+## Required parameters
 
-* **image_urls**: Exactly `1` reference image
-* **video_urls**: Exactly `1` reference video
-* **character_orientation**: `image` or `video`
+- `image_urls` (string[]): Exactly `1` reference image. Minimum items: 1. Maximum items: 1.
+- `video_urls` (string[]): Exactly `1` reference video. Minimum items: 1. Maximum items: 1.
+- `character_orientation` (string): `image` or `video`.
 
-## Optional Parameters
+## Optional parameters
 
-* **prompt**: Optional scene prompt
-* **resolution**: `720p` or `1080p`. Default is `720p`
+- `prompt` (string): Scene prompt.
+- `resolution` (string): `720p` or `1080p`. Default is `720p`.
 
 ## Notes
 
@@ -37,11 +35,9 @@ openapi: "/api-manual/video-series/kling-3-0-motion-control.json POST /api/gener
 * When `character_orientation=image`, the reference video must not exceed `10` seconds
 * When `character_orientation=video`, the reference video must not exceed `30` seconds
 
-{/* poyo-20260910:start */}
-## Workflow IDs
+### Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
 - [kwaivgi/kling-v3.0-std/motion-control](/api-manual/video-series/kwaivgi-kling-v3-0-std-motion-control)
 - [kwaivgi/kling-v3.0-pro/motion-control](/api-manual/video-series/kwaivgi-kling-v3-0-pro-motion-control)
-{/* poyo-20260910:end */}

@@ -1,16 +1,23 @@
 ---
-title: "Kling 1.6 Video Generation"
+title: "Kling 1.6 Video"
 description: "Kling 1.6 Standard and Pro video generation through the Vidgo API"
 icon: "video"
 openapi: "/api-manual/video-series/kling-1-6.json POST /api/generate/submit"
 ---
 
 <Tip>
-1. After submission, a `task_id` will be returned. If you provided a `callback_url`, Vidgo sends a POST request when the task becomes `finished` or `failed`.
-2. You can always retrieve the result through the unified Query Task Status endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-## Input Routing
+Kling 1.6 Standard and Pro video generation through the Vidgo API
+
+## Models
+
+- **kling-1.6/standard** — Kling 1.6 video generation
+- **kling-1.6/pro** — Kling 1.6 video generation
+
+## Input modes
 
 The supplied image fields determine the generation workflow.
 All Kling 1.6 requests require `prompt` and `duration`.
@@ -22,7 +29,23 @@ All Kling 1.6 requests require `prompt` and `duration`.
 
 `image_urls` cannot be used together with `start_image_url`, `end_image_url`, or `cfg_scale`.
 
-## Parameter Compatibility
+## Required parameters
+
+- `prompt` (string): Text prompt for video generation. Required for every Kling 1.6 workflow. Maximum length: 2,500 characters.
+- `duration` (integer): Output duration in seconds. Accepted values: `5`, `10`.
+
+## Optional parameters
+
+- `aspect_ratio` (string): Video aspect ratio. Supported for text-to-video, Elements, and Pro image-to-video. Standard image-to-video does not support aspect_ratio. Accepted values: `1:1`, `16:9`, `9:16`.
+- `negative_prompt` (string): Negative prompt describing unwanted visual artifacts or motion. Maximum length: 2,500 characters.
+- `cfg_scale` (number): Prompt guidance scale for text-to-video and image-to-video. Must be between 0 and 1. Not supported when image_urls is provided.
+- `start_image_url` (string): First frame image URL for image-to-video. Cannot be used with image_urls.
+- `end_image_url` (string): Last frame image URL for Pro image-to-video. Requires start_image_url and kling-1.6/pro. Cannot be used with image_urls.
+- `image_urls` (string[]): 1 to 4 reference image URLs for Elements. Cannot be used with start_image_url, end_image_url, or cfg_scale.
+
+## Notes
+
+### Parameter Compatibility
 
 | Model and workflow | How Vidgo detects it | Supported parameters |
 | --- | --- | --- |
@@ -39,14 +62,13 @@ Notes:
 - `prompt` and `negative_prompt` support up to 2500 characters.
 - `cfg_scale` must be between 0 and 1 when provided.
 
-## Response and Status
+### Response and Status
 
 The submit endpoint returns a Vidgo `task_id`. Use it with the unified Query Task Status endpoint to retrieve the final video URL.
 
 Initial submit responses include `status`, which is usually `running` after the upstream video task has been created. If submission fails during upstream task creation, the status may be `failed` and the task can be inspected through the status endpoint.
 
-{/* poyo-20260910:start */}
-## Workflow IDs
+### Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
@@ -54,4 +76,3 @@ Existing IDs remain available. New integrations can select a dedicated workflow:
 - [kwaivgi/kling-video/v1.6/standard/image-to-video](/api-manual/video-series/kwaivgi-kling-video-v1-6-standard-image-to-video)
 - [kwaivgi/kling-video/v1.6/pro/text-to-video](/api-manual/video-series/kwaivgi-kling-video-v1-6-pro-text-to-video)
 - [kwaivgi/kling-video/v1.6/pro/image-to-video](/api-manual/video-series/kwaivgi-kling-video-v1-6-pro-image-to-video)
-{/* poyo-20260910:end */}

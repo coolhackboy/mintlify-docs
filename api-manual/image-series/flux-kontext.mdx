@@ -1,5 +1,5 @@
 ---
-title: "Flux Kontext Image Generation"
+title: "Flux Kontext Image"
 description: "Image generation and image editing models powered by Black Forest Labs Flux Kontext"
 icon: "image"
 openapi: "/api-manual/image-series/flux-kontext.json POST /api/generate/submit"
@@ -10,16 +10,40 @@ openapi: "/api-manual/image-series/flux-kontext.json POST /api/generate/submit"
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Flux Kontext Image Generation
-
 Flux Kontext is powered by Black Forest Labs. It supports both text-to-image generation and image editing through the same unified submit endpoint.
 
-## Available Models
+## Models
 
 - **flux-kontext-pro** - Flux Kontext Pro text-to-image generation
 - **flux-kontext-pro-edit** - Flux Kontext Pro image editing, `image_urls` is required
 - **flux-kontext-max** - Flux Kontext Max text-to-image generation
 - **flux-kontext-max-edit** - Flux Kontext Max image editing, `image_urls` is required
+
+### Dedicated workflows
+
+Existing IDs remain available. New integrations can select a dedicated workflow:
+
+- **blackforestlabs/flux-kontext-pro/text-to-image** — [Workflow page](/api-manual/image-series/blackforestlabs-flux-kontext-pro-text-to-image)
+- **blackforestlabs/flux-kontext-pro** — [Workflow page](/api-manual/image-series/blackforestlabs-flux-kontext-pro)
+- **blackforestlabs/flux-kontext-max/text-to-image** — [Workflow page](/api-manual/image-series/blackforestlabs-flux-kontext-max-text-to-image)
+- **blackforestlabs/flux-kontext-max** — [Workflow page](/api-manual/image-series/blackforestlabs-flux-kontext-max)
+
+## Input modes
+
+- **Generation:** select `flux-kontext-pro`, `flux-kontext-max`. Use the input options supported by the selected model.
+- **Image editing:** select `flux-kontext-pro-edit`, `flux-kontext-max-edit`. Supply reference images as required by the selected editing workflow.
+
+## Required parameters
+
+- `prompt` (string): Generation or editing prompt describing the desired output Length: 0–2000 characters.
+
+- `image_urls` (array): Input image URLs. Required for edit models (flux-kontext-pro-edit, flux-kontext-max-edit). Only the first image is used. Items: 1–1.
+
+## Optional parameters
+
+- `size` (string): Output aspect ratio. Defaults to 1:1 when omitted. Accepted values: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `21:9`, `9:21`.
+
+- `output_format` (string): Output image format. Accepted values: `png`, `jpg`.
 
 ## Notes
 
@@ -28,15 +52,3 @@ Flux Kontext is powered by Black Forest Labs. It supports both text-to-image gen
 - `image_urls` is required for edit models
 - Only `image_urls[0]` is used as the input image
 - Other downstream fields are not exposed in the current API and use system defaults
-- Credits are charged directly according to the configured model price
-
-{/* poyo-20260910:start */}
-## Workflow IDs
-
-Existing IDs remain available. New integrations can select a dedicated workflow:
-
-- [blackforestlabs/flux-kontext-pro/text-to-image](/api-manual/image-series/blackforestlabs-flux-kontext-pro-text-to-image)
-- [blackforestlabs/flux-kontext-pro](/api-manual/image-series/blackforestlabs-flux-kontext-pro)
-- [blackforestlabs/flux-kontext-max/text-to-image](/api-manual/image-series/blackforestlabs-flux-kontext-max-text-to-image)
-- [blackforestlabs/flux-kontext-max](/api-manual/image-series/blackforestlabs-flux-kontext-max)
-{/* poyo-20260910:end */}

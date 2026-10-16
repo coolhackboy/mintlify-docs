@@ -6,55 +6,41 @@ openapi: "/api-manual/music-series/elevenlabs-tts-eleven-v3.json POST /api/gener
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# ElevenLabs V3 TTS
 
 Turn text into spoken audio with ElevenLabs V3, with selectable voices, language control, and optional timestamps for narration and dialogue.
 
-## Available Models
+## Models
 
-- **elevenlabs/tts/eleven-v3** - Convert text into speech.
+- **elevenlabs/tts/eleven-v3** — Convert text into speech.
 
-## Key Features
+## Features
 
 - Convert text into speech.
 - Optionally request timestamps alongside the generated audio.
 - Select a voice with `voice` and specify the spoken language with `language_code`.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `text` (string): Supply the text to speak. Length: **1-5,000 characters**.
+Leading and trailing whitespace is trimmed before the character limit is checked.
 
-### Text
+## Optional parameters
 
-- `text`: Required. Supply the text to speak. Length: **1-5,000 characters**.
-- Leading and trailing whitespace is trimmed before the character limit is checked.
+- `voice` (string): Select the voice. String. Default: `Rachel`.
+Available values: `Aria`, `Roger`, `Sarah`, `Laura`, `Charlie`, `George`, `Callum`, `River`, `Liam`, `Charlotte`, `Alice`, `Matilda`, `Will`, `Jessica`, `Eric`, `Chris`, `Brian`, `Daniel`, `Lily`, `Bill`, `Rachel`.
 
-### Voice
+- `stability` (number): Control voice stability. Number from `0` to `1`. Default: `0.5`.
 
-- `voice`: Optional. Select the voice. String. Default: `Rachel`.
-- Available values: `Aria`, `Roger`, `Sarah`, `Laura`, `Charlie`, `George`, `Callum`, `River`, `Liam`, `Charlotte`, `Alice`, `Matilda`, `Will`, `Jessica`, `Eric`, `Chris`, `Brian`, `Daniel`, `Lily`, `Bill`, `Rachel`.
+- `timestamps` (boolean): Request timestamp information with the audio. Use `true` or `false`. Default: `false`.
 
-### Stability
+- `language_code` (string): ISO 639-1 language code, such as `en` for English or `zh` for Chinese.
 
-- `stability`: Optional. Control voice stability. Number from `0` to `1`. Default: `0.5`.
+- `apply_text_normalization` (string): Select text normalization behavior. Accepted values: `auto`, `on`, `off`. Default: `auto`.
 
-### Timestamps
-
-- `timestamps`: Optional. Request timestamp information with the audio. Use `true` or `false`. Default: `false`.
-
-### Language Code
-
-- `language_code`: Optional. ISO 639-1 language code, such as `en` for English or `zh` for Chinese.
-
-### Apply Text Normalization
-
-- `apply_text_normalization`: Optional. Select text normalization behavior. Accepted values: `auto`, `on`, `off`. Default: `auto`.
-
-## Output Files
+## Output
 
 - Read every item in the returned `files` array.
 - Generated audio uses `file_type: "audio"`.

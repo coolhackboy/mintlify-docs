@@ -6,38 +6,36 @@ openapi: "/api-manual/image-series/google-nano-banana-edit.json POST /api/genera
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Nano Banana Edit
 
 Use Nano Banana to reinterpret existing images through text instructions and visual references for new scenes, styles, and compositions.
 
-## Available Models
+## Models
 
 - **google/nano-banana/edit** - Edit images using a prompt and image references.
 
-## Output Options
-
-### Image Size
-
-- `size`: Optional. Accepted values: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`.
-
-## Key Features
+## Features
 
 - Edit images using a prompt and image references.
 - Accepts at least 1 image in `image_urls`.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
-
-### Prompt
-
-- `prompt`: Required. Describe the requested changes. Length: **1-5,000 characters**.
+- `prompt` (string): Describe the requested changes. Length: **1-5,000 characters**.
 - Include at least one non-whitespace character.
 
-### Image URLs
+- `image_urls` (array): Provide publicly accessible image URLs. Supply at least 1 item. Each item must be an HTTP(S) URL.
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply at least 1 item. Each item must be an HTTP(S) URL.
+## Optional parameters
+
+- `size` (string): See [Size](#size) for supported values and constraints.
+
+## Size
+
+- `size`: Optional. Accepted values: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`.
+
+## Notes
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.

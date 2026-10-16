@@ -10,15 +10,13 @@ openapi: "/api-manual/video-series/kling-2.6-motion-control.json POST /api/gener
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Kling 2.6 Motion Control
-
 Transfer motion from reference videos to character images with precise motion control. Create dynamic character animations by combining static images with motion reference videos while controlling scene details through text prompts.
 
-## Available Model
+## Models
 
-- **kling-2.6-motion-control** - Motion transfer from video to character image
+- **kling-2.6-motion-control** — Motion transfer from video to character image
 
-## Key Features
+## Features
 
 - **Motion Transfer**: Transfer real human motion, gestures, and expressions from reference videos to character images
 - **Character Animation**: Animate static characters with dynamic motion patterns
@@ -26,24 +24,27 @@ Transfer motion from reference videos to character images with precise motion co
 - **Scene Control**: Control scene details and environment through optional text prompts
 - **Flexible Resolution**: Choose between 720p (standard) or 1080p (high quality) output
 
-## Required Parameters
+## Required parameters
 
-- **image_urls**: Single character image showing the subject's head, shoulders, and torso
-- **video_urls**: Single reference video (3-30 seconds) for motion transfer
-- **character_orientation**:
-  - `"image"` - Matches the person's orientation in the photograph (maximum 10-second output)
+- `image_urls` (string[]): Single character image showing the subject's head, shoulders, and torso. Minimum items: 1. Maximum items: 1.
+- `video_urls` (string[]): Single reference video (3-30 seconds) for motion transfer.
+- `character_orientation` (string): Character orientation mode: 'image' matches the person's orientation in the photograph (max 10 seconds output), 'video' maintains consistency with character orientation from the reference video (max 30 seconds output).
+- `mode` (string): Output resolution (`"720p"` or `"1080p"`).
+
+## Optional parameters
+
+- `prompt` (string): Text description of the desired output scene (max 2,500 characters).
+
+## Notes
+
+### Input requirements
+
+- `"image"` - Matches the person's orientation in the photograph (maximum 10-second output)
   - `"video"` - Maintains consistency with character orientation from the reference video (maximum 30-second output)
-- **mode**: Output resolution (`"720p"` or `"1080p"`)
 
-## Optional Parameters
-
-- **prompt**: Text description of the desired output scene (max 2,500 characters)
-
-{/* poyo-20260910:start */}
-## Workflow IDs
+### Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
 - [kwaivgi/kling-v2.6-std/motion-control](/api-manual/video-series/kwaivgi-kling-v2-6-std-motion-control)
 - [kwaivgi/kling-v2.6-pro/motion-control](/api-manual/video-series/kwaivgi-kling-v2-6-pro-motion-control)
-{/* poyo-20260910:end */}

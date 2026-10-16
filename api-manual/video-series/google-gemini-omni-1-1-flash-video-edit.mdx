@@ -6,60 +6,40 @@ openapi: "/api-manual/video-series/google-gemini-omni-1-1-flash-video-edit.json 
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Gemini Omni 1.1 Flash Video Edit
 
 Rework existing video with Gemini Omni 1.1 Flash, using written instructions to guide changes to the scene with output up to 4K.
 
-## Available Models
+## Models
 
-- **google/gemini-omni-1.1-flash/video-edit** - Edit an existing video using written instructions.
+- **google/gemini-omni-1.1-flash/video-edit** — Edit an existing video using written instructions.
 
-## Duration Options
-
-- **Source video: 3-10 seconds** - Output duration follows the reference video.
-
-## Key Features
+## Features
 
 - Edit an existing video using written instructions.
 - Optionally add up to five reference images to guide the edit.
 - Choose from `360p`, `720p`, `1080p`, `4k` output resolutions.
 - Supports landscape (`16:9`) and portrait (`9:16`) framing.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place the parameters below inside `input`.
+- `prompt` (string): Describe the requested changes to the video. The prompt must not be blank when supplied. Maximum length: **20,000 characters**.
+- `reference_video_urls` (string[]): Provide an array containing exactly one publicly accessible source video URL. The source video must be directly downloadable over HTTP(S) and no larger than **100 MiB** for duration inspection.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+## Optional parameters
 
-### Prompt
+- `reference_image_urls` (string[]): Provide up to 5 images. Omit `reference_image_urls` or send an empty array when no reference images are needed. Minimum items: 0. Maximum items: 5.
+- `resolution` (string): `360p`, `720p`, `1080p`, `4k`. Default: `720p`.
+- `aspect_ratio` (string): `16:9`, `9:16`. Default: `16:9`.
 
-- `prompt`: Required. Describe the requested changes to the video.
-- The prompt must not be blank when supplied. Maximum length: **20,000 characters**.
+## Notes
 
-### Reference Inputs
+### Duration Options
 
-- `reference_image_urls`: Optional; provide up to 5 images.
-- Omit `reference_image_urls` or send an empty array when no reference images are needed.
+- **Source video: 3-10 seconds** - Output duration follows the reference video.
 
-### Source Video
+### Input requirements
 
-- `reference_video_urls`: Required. Provide an array containing exactly one publicly accessible source video URL.
-- The source video must be directly downloadable over HTTP(S) and no larger than **100 MiB** for duration inspection.
-
-### Resolution
-
-- `resolution`: `360p`, `720p`, `1080p`, `4k`. Default: `720p`.
-
-### Aspect Ratio
-
-- `aspect_ratio`: `16:9`, `9:16`. Default: `16:9`.
-
-## Pricing
-
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before task creation. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.

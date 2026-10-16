@@ -6,51 +6,37 @@ openapi: "/api-manual/video-series/kwaivgi-kling-video-ai-avatar-v2-pro.json POS
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Kling Avatar 2.0 Pro
 
 Create a speaking avatar with Kling Avatar 2.0 Pro, combining a character image and an audio performance with optional text direction.
 
-## Available Models
+## Models
 
-- **kwaivgi/kling-video/ai-avatar/v2/pro** - Animate a character image with driving audio.
+- **kwaivgi/kling-video/ai-avatar/v2/pro** — Animate a character image with driving audio.
 
-## Duration Options
-
-- **Driving audio: 2-60 seconds** - The service detects the duration of `audio_url`.
-- The audio must be publicly reachable over HTTP(S) and no larger than **5 MiB**.
-
-## Key Features
+## Features
 
 - Animate a character image with driving audio.
 - Accepts exactly 1 image in `image_urls`.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `image_urls` (string[]): Supply exactly 1 item. Each item may be a public HTTP(S) URL, image Data URI, or raw Base64. Image order is preserved.
+- `audio_url` (string): Provide the input audio URL. Use a publicly accessible HTTP(S) URL.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials. Image inputs also accept image Data URIs or raw Base64. Image conversion and media validation complete before credits are deducted.
+## Optional parameters
 
-### Image URLs
+- `prompt` (string): Describe the scene and desired motion. Maximum **2500 characters** after trimming. Leading and trailing whitespace is trimmed. Omitted, null, empty, and whitespace-only values are treated as omitted.
 
-- `image_urls`: Required. Supply exactly 1 item. Each item may be a public HTTP(S) URL, image Data URI, or raw Base64. Image order is preserved.
+## Notes
 
-### Audio URL
+### Duration Options
 
-- `audio_url`: Required. Provide the input audio URL. Use a publicly accessible HTTP(S) URL.
+- **Driving audio: 2-60 seconds** - The service detects the duration of `audio_url`.
+- The audio must be publicly reachable over HTTP(S) and no larger than **5 MiB**.
 
-### Prompt
+### Input requirements
 
-- `prompt`: Optional. Describe the scene and desired motion. Maximum **2500 characters** after trimming.
-- Leading and trailing whitespace is trimmed. Omitted, null, empty, and whitespace-only values are treated as omitted.
-
-## Pricing
-
-Usage is based on the detected driving-audio duration, rounded up to a whole second.
-
-Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before task creation. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials. Image inputs also accept image Data URIs or raw Base64. Image conversion and media validation complete before task creation.

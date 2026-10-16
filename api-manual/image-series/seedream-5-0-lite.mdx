@@ -1,5 +1,5 @@
 ---
-title: "Seedream-5.0-Lite Image Generation"
+title: "Seedream-5.0-Lite Image"
 description: "Seedream 5.0 Lite image generation and editing with preset sizes, custom dimensions, and up to 10 reference images"
 icon: "image"
 openapi: "/api-manual/image-series/seedream-5-0-lite.json POST /api/generate/submit"
@@ -10,24 +10,38 @@ openapi: "/api-manual/image-series/seedream-5-0-lite.json POST /api/generate/sub
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Seedream-5.0-Lite Image Generation
-
 Seedream-5.0-Lite is an image generation and editing model for async production workflows. It supports text-to-image, reference-based editing, flexible preset sizes, and custom dimensions through the same unified Vidgo API submit and status endpoints.
 
-## Available Models
+## Models
 
 - **seedream-5.0-lite** - Text-to-image and image-to-image generation with preset or custom output sizes
 - **seedream-5.0-lite-edit** - Image editing with 1 to 10 JPEG or PNG reference images
 
-## Request Notes
+### Dedicated workflows
 
-- `model` must be `seedream-5.0-lite` or `seedream-5.0-lite-edit`
-- `input.prompt` is required and supports up to 2000 characters
-- `input.n` accepts integers from `1` to `15`
-- `input.image_urls` is optional for `seedream-5.0-lite` image-to-image requests and required for `seedream-5.0-lite-edit`; both accept `1` to `10` URLs
-- successful submit responses return `task_id` and `created_time`; query final task state through the unified status endpoint
+Existing IDs remain available. New integrations can select a dedicated workflow:
 
-## Size Parameter
+- **bytedance/seedream/v5/lite/text-to-image** — [Workflow page](/api-manual/image-series/bytedance-seedream-v5-lite-text-to-image)
+- **bytedance/seedream/v5/lite/edit** — [Workflow page](/api-manual/image-series/bytedance-seedream-v5-lite-edit)
+
+## Input modes
+
+- **Generation:** select `seedream-5.0-lite`. Use the input options supported by the selected model.
+- **Image editing:** select `seedream-5.0-lite-edit`. Supply reference images as required by the selected editing workflow.
+
+## Required parameters
+
+- `prompt` (string): Supports up to 2000 characters
+
+- `image_urls` (array): For `seedream-5.0-lite` image-to-image requests and required for `seedream-5.0-lite-edit`; both accept `1` to `10` URLs
+
+## Optional parameters
+
+- `n` (integer): Accepts integers from `1` to `15`
+
+- `size` (string | object): See [Size](#size) for supported values and constraints.
+
+## Size
 
 `input.size` supports four accepted forms:
 
@@ -40,7 +54,9 @@ Object-style `size` is supported for both `seedream-5.0-lite` and `seedream-5.0-
 
 Use preset sizes when you want quick resolution or aspect-ratio control. Use custom strings or objects when your workflow needs exact dimensions.
 
-## Custom Size Example
+## Examples
+
+### Custom Size Example
 
 ```json
 {
@@ -56,7 +72,7 @@ Use preset sizes when you want quick resolution or aspect-ratio control. Use cus
 }
 ```
 
-## Edit Mode Example
+### Edit Mode Example
 
 ```json
 {
@@ -73,7 +89,13 @@ Use preset sizes when you want quick resolution or aspect-ratio control. Use cus
 }
 ```
 
-## Error Response Shape
+## Notes
+
+- `model` must be `seedream-5.0-lite` or `seedream-5.0-lite-edit`
+
+- successful submit responses return `task_id` and `created_time`; query final task state through the unified status endpoint
+
+### Error response shape
 
 Validation and authentication failures follow the unified Vidgo API error shape:
 
@@ -82,12 +104,3 @@ Validation and authentication failures follow the unified Vidgo API error shape:
   "detail": "prompt is required"
 }
 ```
-
-{/* poyo-20260910:start */}
-## Workflow IDs
-
-Existing IDs remain available. New integrations can select a dedicated workflow:
-
-- [bytedance/seedream/v5/lite/text-to-image](/api-manual/image-series/bytedance-seedream-v5-lite-text-to-image)
-- [bytedance/seedream/v5/lite/edit](/api-manual/image-series/bytedance-seedream-v5-lite-edit)
-{/* poyo-20260910:end */}

@@ -1,33 +1,36 @@
 ---
 title: "Sora 2 Pro Official"
-description: "Pro text-to-video and image-guided video generation with resolution-based billing"
+description: "Pro text-to-video and image-guided video generation with selectable resolution"
 icon: "video"
 openapi: "/api-manual/video-series/sora-2-pro-official.json POST /api/generate/submit"
 ---
 
 <Tip>
 1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Sora 2 Pro Official
 
 `sora-2-pro-official` supports text-to-video generation and optional single-image guided generation with fixed 4s, 8s, 12s, 16s, and 20s durations.
 
-## Available Model
+## Models
 
-- **sora-2-pro-official** - Pro text-to-video and image-guided video generation
+- **sora-2-pro-official** — Pro text-to-video and image-guided video generation
 
-## Required Parameters
+## Input modes
 
-- **prompt**: Text prompt for video generation
+- **Text-to-video**: Omit `image_urls` and describe the scene in `prompt`.
+- **Image-to-video**: Supply `image_urls` to guide generation with reference imagery.
 
-## Optional Parameters
+## Required parameters
 
-- **duration**: `4`, `8`, `12`, `16`, or `20`. Default is `4`
-- **resolution**: `720p`, `1024p`, or `1080p`. Default is `1024p`
-- **aspect_ratio**: `16:9` or `9:16` for text-to-video; `auto`, `16:9`, or `9:16` for image-to-video. Default is `16:9` for text-to-video and `auto` for image-to-video
-- **image_urls**: Optional reference image array. Maximum `1` image
+- `prompt` (string): Describe the scene and desired motion.
+
+## Optional parameters
+
+- `image_urls` (array of strings): Optional reference image URLs. Only one image is supported.
+- `duration` (integer): Output duration in seconds. Values: `4`, `8`, `12`, `16`, `20`. Default: `4`.
+- `aspect_ratio` (string): Video aspect ratio. `auto` is only supported when `image_urls` is provided. Values: `auto`, `16:9`, `9:16`. Default: `16:9`.
+- `resolution` (string): Output resolution. Values: `720p`, `1024p`, `1080p`. Default: `1024p`.
 
 ## Notes
 
@@ -35,11 +38,7 @@ openapi: "/api-manual/video-series/sora-2-pro-official.json POST /api/generate/s
 - `aspect_ratio=auto` is only valid when `image_urls` is provided.
 - Query status through the standard task status API.
 
-{/* poyo-20260910:start */}
-## Workflow IDs
-
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
 - [openai/sora-2-pro/text-to-video](/api-manual/video-series/openai-sora-2-pro-text-to-video)
 - [openai/sora-2-pro/image-to-video](/api-manual/video-series/openai-sora-2-pro-image-to-video)
-{/* poyo-20260910:end */}

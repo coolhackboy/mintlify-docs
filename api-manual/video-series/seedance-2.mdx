@@ -1,44 +1,48 @@
 ---
-title: "Seedance 2 Video Generation"
+title: "Seedance 2 Video"
 description: "Text-to-video, first and last frame, and multimodal reference generation with Seedance 2 and Seedance 2 Fast"
 icon: "video"
 openapi: "/api-manual/video-series/seedance-2.json POST /api/generate/submit"
 ---
 
 <Tip>
-1. After submission, a `task_id` is returned immediately. If you provide a `callback_url`, Vidgo sends a POST request to that URL when the task reaches `finished` or `failed`.
-2. You can always fetch the latest task result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Seedance 2 Video Generation
 
 Seedance 2 is ByteDance's multimodal video family for API-based generation. On Vidgo API, you can choose between **seedance-2** for higher fidelity and **seedance-2-fast** for lower-latency generation, while keeping a single submit and status API.
 
-## Available Models
+## Models
 
-- **seedance-2**: Higher-quality video generation with multimodal references and native audio support
-- **seedance-2-fast**: Faster generation path with the same submit schema and lower per-second pricing
+- **seedance-2** — Higher-quality video generation with multimodal references and native audio support
+- **seedance-2-fast** — Faster generation path with the same submit schema
 
-## Supported Generation Modes
+## Input modes
 
 - **Text to Video**: Generate directly from a prompt
 - **First and Last Frame**: Guide motion between one or two frame anchors via `image_urls`
 - **Multimodal Reference**: Add reference images, videos, and audio through `reference_image_urls`, `reference_video_urls`, and `reference_audio_urls`
 
-## Input Rules
+## Required parameters
 
-- `resolution`: `seedance-2` supports `480p`, `720p`, `1080p`, and `4k`; `seedance-2-fast` supports `480p` and `720p`
-- `duration` accepts integer values from `4` to `15`
-- `image_urls` supports up to `2` items
-- `image_urls` is mutually exclusive with all `reference_*_urls` fields
-- `reference_image_urls` supports up to `9` items; `reference_video_urls` and `reference_audio_urls` each support up to `3` items
-- `reference_audio_urls` requires at least one `reference_image_urls` or `reference_video_urls` item
-- Total reference inputs across image, video, and audio fields can contain at most `12` files
-- `aspect_ratio` supports `auto`, `1:1`, `21:9`, `4:3`, `3:4`, `16:9`, and `9:16`
-- `generate_audio`, `return_last_frame`, and `web_search` are optional boolean controls
+- `prompt` (string): Text prompt describing the target video.
+- `resolution` (string): Output resolution. `seedance-2` supports `480p`, `720p`, `1080p`, and `4k`. `seedance-2-fast` supports `480p` and `720p` only.
+- `duration` (integer): Video duration in seconds. Seedance 2 accepts integer values from 4 to 15.
 
-## Seedance 2 vs Seedance 1.5 Pro vs Seedance 1.0 Pro
+## Optional parameters
 
-- **Seedance 2** adds multimodal reference image, video, and audio guidance with first and last frame control in one API shape.
-- **Seedance 1.5 Pro** focuses on high-quality text-to-video and image-to-video generation with optional audio but without the same multimodal reference set.
-- **Seedance 1.0 Pro** remains a strong option for earlier Seedance use cases, but Seedance 2 expands creative control and API flexibility for newer production pipelines.
+- `image_urls` (array of strings): Optional first and last frame image URLs. When two values are supplied, the first is the start frame and the second is the end frame. Do not use together with `reference_image_urls`, `reference_video_urls`, or `reference_audio_urls`. At most 2 items.
+- `reference_image_urls` (array of strings): Optional reference image URLs for multimodal guidance. Supports up to 9 items. Mutually exclusive with `image_urls`.
+- `reference_video_urls` (array of strings): Optional reference video URLs for multimodal guidance. Supports up to 3 items. Mutually exclusive with `image_urls`.
+- `reference_audio_urls` (array of strings): Optional reference audio URLs for multimodal guidance. Supports up to 3 items and requires at least one `reference_image_urls` or `reference_video_urls` item. Mutually exclusive with `image_urls`.
+- `generate_audio` (boolean): Whether to generate native audio with the video output.
+- `return_last_frame` (boolean): Whether to include the final frame image in the result when available.
+- `web_search` (boolean): Whether to allow web context for prompts that need current facts.
+- `aspect_ratio` (string): Optional output aspect ratio. Values: `auto`, `1:1`, `21:9`, `4:3`, `3:4`, `16:9`, `9:16`.
+- `seed` (integer): Optional random seed for more repeatable results.
+
+## Notes
+
+- `image_urls` is mutually exclusive with all `reference_*_urls` fields.
+- `reference_audio_urls` requires at least one reference image or reference video.
+- Total reference inputs across image, video, and audio fields must not exceed 12 files.

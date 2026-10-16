@@ -6,49 +6,32 @@ openapi: "/api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-text-to-video.js
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Kling 2.5 Turbo Pro Text to Video
 
 Create five- or ten-second scenes with Kling 2.5 Turbo Pro, using text to direct subjects, action, and visual style.
 
-## Available Models
+## Models
 
-- **kwaivgi/kling-v2.5-turbo-pro/text-to-video** - Generate video scenes from text prompts.
+- **kwaivgi/kling-v2.5-turbo-pro/text-to-video** — Generate video scenes from text prompts.
 - For frame guidance, use the [image-to-video endpoint](/api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-image-to-video).
 
-## Duration Options
-
-- **5, 10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**. Strings, booleans, fractional durations, and `null` are rejected.
-
-## Key Features
+## Features
 
 - Generate video scenes from text prompts.
 - Use `negative_prompt` to describe content to avoid.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `prompt` (string): Describe the scene and desired motion. Length: **1-2,500 characters**. Supply a string, not a number, boolean, array, or object. Whitespace is trimmed before the 2,500 Unicode character limit is checked.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted.
+## Optional parameters
 
-### Prompt
+- `duration` (integer): 5, 10 seconds. Optional. Default: 5 seconds. Strings, booleans, fractional durations, and `null` are rejected.
+- `aspect_ratio` (string): No preset choices or default value are specified. Omit when unused.
+- `negative_prompt` (string): Describe content to avoid.
 
-- `prompt`: Required. Describe the scene and desired motion. Length: **1-2,500 characters**.
-- Supply a string, not a number, boolean, array, or object. Whitespace is trimmed before the 2,500 Unicode character limit is checked.
+## Notes
 
-### Aspect Ratio
-
-- `aspect_ratio`: Optional string. No preset choices or default value are specified. Omit when unused.
-
-### Negative Prompt
-
-- `negative_prompt`: Optional. Describe content to avoid.
-
-## Billing Factors
-
-Billing depends on video duration (`duration`). Text-to-video and image-to-video use the same rates.
-
-Credits are deducted on submission and refunded if the task fails.
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before task creation.

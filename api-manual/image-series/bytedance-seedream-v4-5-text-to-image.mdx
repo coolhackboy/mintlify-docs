@@ -6,70 +6,45 @@ openapi: "/api-manual/image-series/bytedance-seedream-v4-5-text-to-image.json PO
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Seedream 4.5 Text to Image
 
 Develop visual concepts with Seedream 4.5, generating multiple images from a prompt to explore different styles and compositions.
 
-## Available Models
+## Models
 
 - **bytedance/seedream/v4.5/text-to-image** - Generate images from text prompts.
 
-## Output Options
+## Features
 
-### Image Size
+- Generate images from text prompts.
+- Control the number of output images with `n`.
+
+## Required parameters
+
+- `prompt` (string): Describe the desired image. Length: **1-3,000 characters**.
+- Include at least one non-whitespace character.
+
+## Optional parameters
+
+- `n` (integer): Number of images to generate. Integer from `1` to `15`. Default: `1`.
+
+- `enable_safety_checker` (boolean): Set `true` to enable the content safety check or `false` to disable it. Default: `true`.
+
+- `size` (string | object): See [Size](#size) for supported values and constraints.
+
+## Size
 
 - `size`: Optional. Default: `1:1`.
 - Presets: `2K`, `4K`, `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`.
 - For custom dimensions, supply an object with integer `width` and `height`; both must be positive.
 - Custom dimensions also accept a `WIDTHxHEIGHT` string, using `x` or `X` between the positive dimensions.
 
-### Image Count
+## Examples
 
-- `n`: Optional. Number of images to generate. Integer from `1` to `15`. Default: `1`.
+The `basic` API playground example uses a text prompt with `size: "4:3"`. The `custom-string` and `custom-object` examples demonstrate the two custom `size` forms. The `callback` example adds a top-level `callback_url`.
 
-## Key Features
-
-- Generate images from text prompts.
-- Control the number of output images with `n`.
-
-## Advanced Parameters
+## Notes
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
-
-### Prompt
-
-- `prompt`: Required. Describe the desired image. Length: **1-3,000 characters**.
-- Include at least one non-whitespace character.
-
-### Safety Checker
-
-- `enable_safety_checker`: Optional. Set `true` to enable the content safety check or `false` to disable it. Default: `true`.
-
-## Verified Example
-
-This example was generated through the Vidgo test API with the `basic` request shown in the API playground. The result image is hosted on the Vidgo CDN.
-
-![Aurora Ridge Station Cutaway](https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4.5/text-to-image/v1/01/output.jpg)
-
-```json
-{
-  "code": 200,
-  "data": {
-    "task_id": "PGQCZ3X31DC6OEXQ",
-    "status": "finished",
-    "files": [
-      {
-        "file_url": "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4.5/text-to-image/v1/01/output.jpg",
-        "file_type": "image"
-      }
-    ],
-    "created_time": "2026-09-25T16:14:03",
-    "error_message": null,
-    "progress": 100
-  }
-}
-```

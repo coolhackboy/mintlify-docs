@@ -6,43 +6,43 @@ openapi: "/api-manual/image-series/bytedance-seedream-v4-text-to-image.json POST
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Seedream 4 Text to Image
 
 Generate image sets with Seedream 4, with output up to 4K for illustrations, design concepts, and visual variations.
 
-## Available Models
+## Models
 
 - **bytedance/seedream/v4/text-to-image** - Generate images from text prompts.
 
-## Output Options
-
-### Image Size
-
-- `size`: Optional. Accepted values: `1:1`, `3:4`, `4:3`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`. Default: `1:1`.
-
-### Resolution
-
-- `resolution`: Optional. Accepted values: `1K`, `2K`, `4K`. Default: `2K`.
-
-### Image Count
-
-- `n`: Optional. Number of images to generate. Integer from `1` to `15`. Default: `1`.
-
-## Key Features
+## Features
 
 - Generate images from text prompts.
 - Choose from `1K`, `2K`, `4K` output resolutions.
 - Control the number of output images with `n`.
 
-## Advanced Parameters
+## Required parameters
+
+- `prompt` (string): Describe the desired image. Length: **1-5,000 characters**.
+- Include at least one non-whitespace character.
+
+## Optional parameters
+
+- `n` (integer): Number of images to generate. Integer from `1` to `15`. Default: `1`.
+
+- `size` (string): See [Size](#size) for supported values and constraints.
+
+- `resolution` (string): See [Resolution](#resolution) for supported values and constraints.
+
+## Size
+
+- `size`: Optional. Accepted values: `1:1`, `3:4`, `4:3`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`. Default: `1:1`.
+
+## Resolution
+
+- `resolution`: Optional. Accepted values: `1K`, `2K`, `4K`. Default: `2K`.
+
+## Notes
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
-
-### Prompt
-
-- `prompt`: Required. Describe the desired image. Length: **1-5,000 characters**.
-- Include at least one non-whitespace character.

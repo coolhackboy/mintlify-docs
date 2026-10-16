@@ -6,38 +6,32 @@ openapi: "/api-manual/video-series/veo3-1-text-to-video.json POST /api/generate/
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. If `callback_url` is provided, Vidgo sends the result after the task finishes or fails.
-2. You can always retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Veo 3.1 Quality Text to Video
 
 Generate an 8-second video with the Google Veo 3.1 Quality model.
 
-## Available Models
+## Models
 
-- **veo3.1/text-to-video** - Veo 3.1 Quality text to video generation
+- **veo3.1/text-to-video** — Veo 3.1 Quality text to video generation
 
-## Duration Options
-
-- **8 seconds** - Fixed duration for this model.
-
-## Key Features
+## Features
 
 - Generate directly from a text prompt without image input.
 - Supports up to `4k` output resolution.
+
+## Required parameters
+
+- `prompt` (string): Prompt describing the target video.
+
+## Optional parameters
+
+- `duration` (integer): Veo 3.1 output duration is fixed at 8 seconds. Values: `8`. Default: `8`.
+- `aspect_ratio` (string): Output aspect ratio. Values: `16:9`, `9:16`.
+- `resolution` (string): Output resolution. Values: `720p`, `1080p`, `4k`. Default: `720p`.
+
+## Notes
+
+- The output duration is fixed at 8 seconds.
 - Generated video URLs are temporary and should be downloaded promptly.
-
-## Advanced Parameters
-
-### Generation Type
-
-- The model ID fixes generation to `text-to-video`.
-
-### Resolution
-
-- `720p` (default), `1080p`, or `4k`.
-
-## Pricing
-
-Pricing varies by model variant and resolution. Check the Vidgo dashboard for the current rate.

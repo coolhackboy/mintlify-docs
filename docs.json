@@ -13,7 +13,7 @@
     "auth": {
       "method": "bearer",
       "name": "Authorization",
-      "inputPlaceholder": "YOUR_API_KEY"
+      "inputPlaceholder": "VIDGO_API_KEY"
     },
     "playground": {
       "mode": "simple"

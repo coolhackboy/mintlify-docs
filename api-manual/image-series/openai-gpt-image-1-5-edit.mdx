@@ -6,47 +6,41 @@ openapi: "/api-manual/image-series/openai-gpt-image-1-5-edit.json POST /api/gene
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# GPT Image 1.5 Edit
 
 Make targeted image changes with GPT Image 1.5 using text instructions, reference images, and optional masks for selected areas.
 
-## Available Models
+## Models
 
 - **openai/gpt-image-1.5/edit** - Edit images using a prompt and image references.
 
-## Output Options
-
-### Image Size
-
-- `size`: Optional. Accepted values: `1024x1024`, `1024x1536`, `1536x1024`. Default: `1024x1024`.
-
-### Image Count
-
-- `n`: Optional compatibility parameter. Accepted values: `1`, `2`, `3`, `4`. Default: `1`. Each edit request produces one image and is billed for one image; larger values do not increase the output count.
-
-## Key Features
+## Features
 
 - Edit images using a prompt and image references.
 - Accepts at least 1 image in `image_urls`.
 - Each editing request produces one image and is billed as one image.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
-
-### Prompt
-
-- `prompt`: Required. Describe the requested changes. Length: **1-1,000 characters**.
+- `prompt` (string): Describe the requested changes. Length: **1-1,000 characters**.
 - Include at least one non-whitespace character.
 
-### Image URLs
+- `image_urls` (array): Provide publicly accessible image URLs. Supply at least 1 item. Each item must be an HTTP(S) URL.
 
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply at least 1 item. Each item must be an HTTP(S) URL.
+## Optional parameters
 
-### Mask URL
+- `n` (integer): Compatibility parameter. Accepted values: `1`, `2`, `3`, `4`. Default: `1`. Each edit request produces one image and is billed for one image; larger values do not increase the output count.
 
-- `mask_url`: Optional. Publicly accessible HTTP(S) URL of a mask image that selects the area to edit.
+- `mask_url` (string): Publicly accessible HTTP(S) URL of a mask image that selects the area to edit.
+
+- `size` (string): See [Size](#size) for supported values and constraints.
+
+## Size
+
+- `size`: Optional. Accepted values: `1024x1024`, `1024x1536`, `1536x1024`. Default: `1024x1024`.
+
+## Notes
+
+Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.

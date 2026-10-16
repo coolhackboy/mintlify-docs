@@ -6,74 +6,42 @@ openapi: "/api-manual/video-series/alibaba-wan-2-7-reference-to-video.json POST 
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Wan 2.7 Video Reference to Video
 
 Combine image and video references to guide Wan 2.7 scenes, with support for multiple shots and output up to 1080p.
 
-## Available Models
+## Models
 
-- **alibaba/wan-2.7/reference-to-video** - Generate video guided by reference material and a prompt.
+- **alibaba/wan-2.7/reference-to-video** — Generate video guided by reference material and a prompt.
 
-## Duration Options
-
-- **2-10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**.
-
-## Key Features
+## Features
 
 - Generate video guided by reference material and a prompt.
 - Use reference images to guide the generated scene.
 - Use video references to guide the generated scene.
 - Choose from `720p`, `1080p` output resolutions.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `prompt` (string): Describe the scene and desired motion. Maximum: **5,000 Unicode characters**. Leading and trailing whitespace is trimmed. A nonblank prompt is required.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials. Image inputs also accept image Data URIs or raw Base64. Image conversion and media validation complete before credits are deducted.
+## Optional parameters
+
+- `reference_image_urls` (string[]): Supply up to 9 items. Each item may be a public HTTP(S) URL, image Data URI, or raw Base64. Image order is preserved. Maximum items: 9.
+- `reference_video_urls` (string[]): Provide reference video URLs. Supply an array. Each item must be an HTTP(S) URL.
+- `aspect_ratio` (string): Accepted values: `16:9`, `9:16`, `1:1`, `4:3`, `3:4`. Default: `16:9`.
+- `resolution` (string): Accepted values: `720p`, `1080p`. Default: `720p`.
+- `duration` (integer): 2-10 seconds. Optional. Default: 5 seconds.
+- `multi_shots` (boolean): Enable multi-shot generation. Use `true` or `false`.
+- `seed` (integer): Set the generation seed. Integer from `0` to `2147483647`.
+- `enable_safety_checker` (boolean): Control safety checking. Use `true` or `false`.
+
+## Notes
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before task creation. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials. Image inputs also accept image Data URIs or raw Base64. Image conversion and media validation complete before task creation.
 
 - Provide at least one nonempty reference array: `reference_image_urls` or `reference_video_urls`.
 
 `duration` and `seed` also accept integer strings such as `"5"`; decimal numbers such as `5.0` and decimal strings such as `"5.0"` are rejected. Null or empty values use the default duration or omit the seed. Supported boolean fields also accept `0`/`1` and case-insensitive strings `true`/`false`, `1`/`0`, `yes`/`no`, `y`/`n`, and `on`/`off`; null omits the field. Surrounding whitespace is trimmed, and resolution values are case-insensitive.
-
-### Prompt
-
-- `prompt`: Required. Describe the scene and desired motion. Maximum: **5,000 Unicode characters**.
-- Leading and trailing whitespace is trimmed. A nonblank prompt is required.
-
-### Reference Images
-
-- `reference_image_urls`: Optional. Supply up to 9 items. Each item may be a public HTTP(S) URL, image Data URI, or raw Base64. Image order is preserved.
-
-### Reference Videos
-
-- `reference_video_urls`: Optional. Provide reference video URLs. Supply an array. Each item must be an HTTP(S) URL.
-
-### Aspect Ratio
-
-- `aspect_ratio`: Optional. Accepted values: `16:9`, `9:16`, `1:1`, `4:3`, `3:4`. Default: `16:9`.
-
-### Resolution
-
-- `resolution`: Optional. Accepted values: `720p`, `1080p`. Default: `720p`.
-
-### Multi-Shot Generation
-
-- `multi_shots`: Optional. Enable multi-shot generation. Use `true` or `false`.
-
-### Seed
-
-- `seed`: Optional. Set the generation seed. Integer from `0` to `2147483647`.
-
-### Safety Checker
-
-- `enable_safety_checker`: Optional. Control safety checking. Use `true` or `false`.
-
-## Pricing
-
-Usage equals output seconds multiplied by the selected resolution rate. See [Pricing](https://vidgo.ai/apis/api-pricing) for current rates.
-
-Credits are deducted on submission and refunded if the task fails.

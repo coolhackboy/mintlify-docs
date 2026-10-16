@@ -106,67 +106,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "examples": {
-                  "lite-4k": {
-                    "summary": "Lite does not support 4K",
-                    "value": {
-                      "code": 400,
-                      "message": "veo3.1-lite-official does not support 4k resolution"
-                    }
-                  },
-                  "lite-reference": {
-                    "summary": "Lite does not support reference generation",
-                    "value": {
-                      "code": 400,
-                      "message": "veo3.1-lite-official does not support reference mode"
-                    }
-                  },
-                  "reference-duration": {
-                    "summary": "Reference generation requires 8 seconds",
-                    "value": {
-                      "code": 400,
-                      "message": "reference mode supports 8s duration only"
-                    }
-                  },
-                  "auto-aspect-ratio": {
-                    "summary": "auto aspect ratio requires one or two images",
-                    "value": {
-                      "code": 400,
-                      "message": "aspect_ratio auto is supported only with one or two image_urls"
-                    }
-                  },
-                  "prompt-too-long": {
-                    "summary": "Prompt length exceeds limit",
-                    "value": {
-                      "code": 400,
-                      "message": "prompt must be 1000 characters or fewer for veo-3.1-official"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - invalid API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "code": 401,
-                  "message": "Unauthorized"
-                }
-              }
-            }
           }
         }
       }
@@ -333,7 +272,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication Get your API Key: Visit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key Add it to the request header: ``` Authorization: Bearer YOUR_API_KEY ```"
       }
     }
   }

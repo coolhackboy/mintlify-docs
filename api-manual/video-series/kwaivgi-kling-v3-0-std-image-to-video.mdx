@@ -6,74 +6,46 @@ openapi: "/api-manual/video-series/kwaivgi-kling-v3-0-std-image-to-video.json PO
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Kling 3.0 Standard Image to Video
 
 Animate image references with Kling 3.0 Standard, with support for multiple shots, individual shot prompts, and optional sound.
 
-## Available Models
+## Models
 
-- **kwaivgi/kling-v3.0-std/image-to-video** - Generate video from image input.
+- **kwaivgi/kling-v3.0-std/image-to-video** — Generate video from image input.
 
-## Duration Options
-
-- **3-15 seconds** - Set `duration` as an integer. Required.
-- With `multi_prompt`, the shot durations must add up to the requested `duration`.
-
-## Key Features
+## Features
 
 - Generate video from image input.
 - Provide 1–2 images in `image_urls`.
 - Describe individual shots with `multi_prompt` and enable `multi_shots`.
 - Supply additional subject references through `kling_elements`.
 
-## Advanced Parameters
+## Input modes
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- **Single shot:** use `prompt` and omit `multi_prompt`. Set `multi_shots` to `false`.
+- **Multiple shots:** use `multi_prompt` instead of a top-level `prompt`. Set `multi_shots` to `true`. Multi-shot generation requires `sound: true`.
 
-Use the input fields listed below. Send durations as JSON integers and switches as JSON booleans. Use public HTTP(S) media URLs with a hostname and URL-based access.
+## Required parameters
+
+- `image_urls` (string[]): Provide publicly accessible image URLs. Supply 1–2 items: the start frame first, followed by an optional end frame. For multiple shots, provide one start frame. Each item must be an HTTP(S) URL.
+- `duration` (integer): 3-15 seconds. Required. With `multi_prompt`, the shot durations must add up to the requested `duration`.
+
+## Optional parameters
+
+- `prompt` (string): Required when `multi_shots` is `false`. Describe the scene and desired motion. Length: **1-2,500 characters**. Use nonblank text for each prompt.
+- `multi_prompt` (object[]): Required when `multi_shots` is `true`. Supply a nonempty array. Each item is an object. `multi_prompt[].prompt`: Required. Maximum length: **2,500 characters**. `multi_prompt[].duration`: Required. Duration in seconds. Integer from `1` to `12`. Each shot duration is measured in seconds. Minimum items: 1.
+- `multi_shots` (boolean): Enable multi-shot generation. Use `true` or `false`. Default: `false`.
+- `sound` (boolean): Set `true` to generate audio or `false` for a silent single shot. Multiple shots require `true`. Default: `true`.
+- `kling_elements` (object[]): Provide element-reference objects. Supply an array. Each item is an object. `kling_elements[].name`: Required. Nonblank element name used in `@element_name` references. `kling_elements[].description`: Optional. String. `kling_elements[].element_input_urls`: Provide 2–4 JPG/PNG image URLs, up to 10 MB per image, when defining the element with images. `kling_elements[].element_input_video_urls`: Provide one MP4/MOV video URL, up to 50 MB, when defining the element with video. Choose one media type per element.
+- `aspect_ratio` (string): Accepted values: `1:1`, `16:9`, `9:16`. The first frame determines the output aspect ratio.
+
+## Notes
+
+Use the documented input fields. Send durations as JSON integers and switches as JSON booleans. Use public HTTP(S) media URLs with a hostname and URL-based access.
 
 - Each `multi_prompt` shot requires a nonblank `prompt` and an integer `duration` from **1 to 12 seconds**.
 - The shot durations must sum to the requested `duration`. Set `multi_shots: true` and `sound: true` when using `multi_prompt`.
 - When supplying `kling_elements`, provide `image_urls` and reference the element by `@element_name` in the prompt.
-
-### Image URLs
-
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1–2 items: the start frame first, followed by an optional end frame. For multiple shots, provide one start frame. Each item must be an HTTP(S) URL.
-
-### Prompt
-
-- `prompt`: Required when `multi_shots` is `false`. Describe the scene and desired motion. Length: **1-2,500 characters**.
-- Use nonblank text for each prompt.
-
-### Multi-Prompt
-
-- `multi_prompt`: Required when `multi_shots` is `true`. Supply a nonempty array. Each item is an object.
-
-- `multi_prompt[].prompt`: Required. Maximum length: **2,500 characters**.
-- `multi_prompt[].duration`: Required. Duration in seconds. Integer from `1` to `12`.
-- Each shot duration is measured in seconds.
-
-### Multi-Shot Generation
-
-- `multi_shots`: Optional. Enable multi-shot generation. Use `true` or `false`. Default: `false`.
-
-### Sound
-
-- `sound`: Optional. Set `true` to generate audio or `false` for a silent single shot. Multiple shots require `true`. Default: `true`.
-
-### Kling Elements
-
-- `kling_elements`: Optional. Provide element-reference objects. Supply an array. Each item is an object.
-
-- `kling_elements[].name`: Required. Nonblank element name used in `@element_name` references.
-- `kling_elements[].description`: Optional. String.
-- `kling_elements[].element_input_urls`: Provide 2–4 JPG/PNG image URLs, up to 10 MB per image, when defining the element with images.
-- `kling_elements[].element_input_video_urls`: Provide one MP4/MOV video URL, up to 50 MB, when defining the element with video. Choose one media type per element.
-
-### Aspect Ratio
-
-- `aspect_ratio`: Optional. Accepted values: `1:1`, `16:9`, `9:16`. The first frame determines the output aspect ratio.

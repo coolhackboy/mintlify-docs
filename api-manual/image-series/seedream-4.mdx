@@ -1,5 +1,5 @@
 ---
-title: "Seedream-4 Image Generation"
+title: "Seedream-4 Image"
 description: "Image generation model powered by ByteDance Seedream-4 with support for text-to-image and image editing"
 icon: "image"
 openapi: "/api-manual/image-series/seedream-4.json POST /api/generate/submit"
@@ -10,14 +10,38 @@ openapi: "/api-manual/image-series/seedream-4.json POST /api/generate/submit"
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Seedream-4 Image Generation
-
 Seedream-4 is powered by ByteDance Seedream-4. It supports both text-to-image generation and image editing through the same unified submit endpoint.
 
-## Available Models
+## Models
 
 - **seedream-4** - Text-to-image generation, optionally with reference images
 - **seedream-4-edit** - Image editing mode. `image_urls` is required
+
+### Dedicated workflows
+
+Existing IDs remain available. New integrations can select a dedicated workflow:
+
+- **bytedance/seedream/v4/text-to-image** — [Workflow page](/api-manual/image-series/bytedance-seedream-v4-text-to-image)
+- **bytedance/seedream/v4/edit** — [Workflow page](/api-manual/image-series/bytedance-seedream-v4-edit)
+
+## Input modes
+
+- **Generation:** select `seedream-4`. Use the input options supported by the selected model.
+- **Image editing:** select `seedream-4-edit`. Supply reference images as required by the selected editing workflow.
+
+## Required parameters
+
+- `prompt` (string): Generation prompt describing the desired output Length: 0–2000 characters.
+
+- `image_urls` (array): Reference image URLs for image editing. Required for seedream-4-edit. The total of image_urls plus n must not exceed 15. Items: 1–10.
+
+## Optional parameters
+
+- `size` (string): Output aspect ratio. Supported values: 1:1, 3:4, 4:3, 16:9, 9:16, 3:2, 2:3, 21:9. For text-to-image requests, defaults to 1:1 when omitted.
+
+- `resolution` (string): Output resolution preset. Accepted values: `1K`, `2K`, `4K`. Default: `2K`.
+
+- `n` (integer): Number of images to generate. Credits are pre-deducted based on this count and partially refunded if the final number of generated images is smaller. The total of image_urls plus n must not exceed 15. Default: `1`. Range: 1–15.
 
 ## Notes
 
@@ -25,13 +49,3 @@ Seedream-4 is powered by ByteDance Seedream-4. It supports both text-to-image ge
 - `resolution` supports `1K`, `2K`, `4K`, with default `2K`
 - `n` supports `1-15`
 - The total of `image_urls` plus `n` must not exceed `15`
-- Credits are pre-deducted as `base credits * n`. If fewer images are returned than requested, the unused portion is refunded automatically
-
-{/* poyo-20260910:start */}
-## Workflow IDs
-
-Existing IDs remain available. New integrations can select a dedicated workflow:
-
-- [bytedance/seedream/v4/text-to-image](/api-manual/image-series/bytedance-seedream-v4-text-to-image)
-- [bytedance/seedream/v4/edit](/api-manual/image-series/bytedance-seedream-v4-edit)
-{/* poyo-20260910:end */}

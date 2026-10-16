@@ -6,35 +6,49 @@ openapi: "/api-manual/image-series/seedream-v5-0-pro.json POST /api/generate/sub
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. If `callback_url` is provided, Vidgo sends the result after the task finishes or fails.
-2. You can always retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Seedream 5.0 Pro Text to Image
 
 Seedream 5.0 Pro is designed for complex prompts, structured layouts, multilingual typography, and product visuals.
 
-## Available Models
+## Models
 
 - **seedream-v5.0-pro** - Flagship text-to-image generation
 
-## Size Parameter
+## Required parameters
+
+- `prompt` (string): Text instruction describing the image to generate or edit. Length: 0–10000 characters.
+
+## Optional parameters
+
+- `size` (string): See [Size](#size) for supported values and constraints.
+
+- `resolution` (string): See [Resolution](#resolution) for supported values and constraints.
+
+- `output_format` (string): Output image format. Accepted values: `png`, `jpeg`.
+
+- `enable_safety_checker` (boolean): Whether to enable content safety checking.
+
+## Size
 
 `input.size` controls the output aspect ratio and defaults to `1:1`:
 
 - Ratio presets: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `2:3`, `3:2`, `21:9`
 
-## Resolution Parameter
+## Resolution
 
 `input.resolution` controls output resolution and defaults to `1K`:
 
 - Resolution presets: `1K`, `2K`
 
-## Pricing
+## Output
 
-Each request generates one image and uses the current Seedream 5.0 Pro model price.
+Each request generates one image.
 
-## How to Call
+## Examples
+
+### How to Call
 
 Use the unified submit endpoint: `POST /api/generate/submit`
 

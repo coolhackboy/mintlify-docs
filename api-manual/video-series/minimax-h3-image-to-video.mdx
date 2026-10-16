@@ -6,32 +6,35 @@ openapi: "/api-manual/video-series/minimax-h3-image-to-video.json POST /api/gene
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. If `callback_url` is provided, Vidgo sends the result after the task finishes or fails.
-2. You can always retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-## Available Models
+MiniMax H3 image to video model with fixed 2K output
 
-- **minimax/h3/image-to-video** - MiniMax H3 image to video generation with 2K output
+## Models
 
-## Capabilities
+- **minimax/h3/image-to-video** — MiniMax H3 image to video generation with 2K output
+
+## Features
 
 - **Image To Video**: Generate from one starting frame and an optional ending frame.
 - **2K Output**: Output resolution is fixed at `2K`.
 
-## Input Modes
+## Required parameters
+
+- `prompt` (string): Prompt describing the target video. Length: 1–2,000 characters.
+- `image_urls` (array of strings): Starting frame and optional ending frame. 1–2 items.
+
+## Optional parameters
+
+- `duration` (integer): Output duration in seconds. Range: 5–15. Default: `5`.
+- `resolution` (string): Output resolution is fixed at 2K. Values: `2K`. Default: `2K`.
+
+## Notes
 
 - `image_urls` is required.
 - All media URLs must be publicly accessible and directly downloadable.
 
-## Parameter Notes
-
-- `prompt` is required and accepts up to 2,000 characters.
-- `duration` accepts an integer from `5` through `15` seconds and defaults to `5`.
-- `resolution` accepts only `2K`.
 - The output aspect ratio follows the first image.
 - `image_urls` accepts one starting frame and one optional ending frame.
-
-## Billing
-
-Video generation is billed by output duration.

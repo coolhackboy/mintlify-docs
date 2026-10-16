@@ -6,34 +6,39 @@ openapi: "/api-manual/video-series/seedance-2-0-reference-to-video.json POST /ap
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. If `callback_url` is provided, Vidgo sends the result after the task finishes or fails.
-2. You can always retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-## Available Models
+Seedance 2.0 reference to video model with multimodal generation and optional audio
 
-- **seedance-2.0/reference-to-video** - Seedance 2.0 reference to video generation
+## Models
 
-## Key Features
+- **seedance-2.0/reference-to-video** — Seedance 2.0 reference to video generation
+
+## Features
 
 - **Reference To Video**: Guide generation with reference images, videos, and optional audio.
 - **Optional Audio**: Request generated audio together with the video.
 
-## Variant Notes
+## Required parameters
 
-- This public model ID uses the `seedance-2` provider variant.
-- Supported resolutions are `480p`, `720p`, `1080p`, and `4k`.
+- `prompt` (string): Prompt describing the target video. Length: 1–20,000 characters.
+- `duration` (integer): Output duration in seconds. Range: 4–15.
+- `resolution` (string): Output resolution. Values: `480p`, `720p`, `1080p`, `4k`.
 
-## Important Notes
+## Optional parameters
 
-- `prompt` is required and accepts up to 20,000 characters.
-- `duration` supports integer values from `4` to `15`.
-- Reference input supports up to 9 images, 3 videos, and 3 audio files, with at most 12 files in total. Reference audio requires at least one reference image or reference video.
-- `aspect_ratio` accepts `auto`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, or `9:16`.
+- `aspect_ratio` (string): Output aspect ratio. Values: `auto`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, `9:16`.
+- `generate_audio` (boolean): Whether to generate an audio track.
+- `reference_image_urls` (array of strings): Reference images. 1–9 items.
+- `reference_video_urls` (array of strings): Reference videos. 1–3 items.
+- `reference_audio_urls` (array of strings): Reference audio. Requires a reference image or video. At most 3 items.
+- `return_last_frame` (boolean): Whether to return the final generated frame.
+- `web_search` (boolean): Whether to enable web-assisted generation when supported.
+- `seed` (integer): Optional deterministic seed.
+## Notes
+
 - Provide at least one reference image or reference video. Reference audio cannot be used alone.
-- All remote URLs must be publicly accessible and directly downloadable.
-
-## Credits Reference
-
-- Usage is calculated from selected resolution and billed duration. Each reference-video duration, rounded down separately, is added to output duration.
-- Check the Vidgo dashboard for the current model rate before submitting production traffic.
+- Reference input supports up to 9 images, 3 videos, and 3 audio files, with at most 12 files in total.
+- All media URLs must be publicly accessible and directly downloadable.

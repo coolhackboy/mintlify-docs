@@ -22,7 +22,7 @@
         "tags": [
           "Kling 3.0"
         ],
-        "summary": "Submit Kling 3.0 Video Generation Task",
+        "summary": "Submit Kling 3.0 Video Task",
         "description": "Generate high-quality videos using Kling 3.0 with standard and pro resolution options",
         "operationId": "submitKling30Task",
         "requestBody": {
@@ -85,7 +85,8 @@
       "SubmitRequest": {
         "type": "object",
         "required": [
-          "model"
+          "model",
+          "input"
         ],
         "properties": {
           "model": {

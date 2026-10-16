@@ -6,58 +6,35 @@ openapi: "/api-manual/video-series/minimax-hailuo-02-standard-image-to-video.jso
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Hailuo 02 Image to Video
 
 Animate still images with Hailuo 02 Standard, with text guidance, prompt refinement, and an optional closing frame to shape the shot.
 
-## Available Models
+## Models
 
-- **minimax/hailuo-02/standard/image-to-video** - Generate video from image input.
+- **minimax/hailuo-02/standard/image-to-video** — Generate video from image input.
 
-## Duration Options
-
-- **6, 10 seconds** - Set `duration` as an integer. Optional. Default: **6 seconds**.
-
-## Key Features
+## Features
 
 - Generate video from image input.
 - Accepts exactly 1 image in `image_urls`.
 - Optionally supply an ending frame with `end_image_url`.
 - Accepts `512P` or `768P` resolution; defaults to `768P`.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `prompt` (string): Required nonblank prompt, trimmed before validation. Maximum 1500 Unicode characters.
+- `image_urls` (array of strings): Reference image URLs for image-to-video generation (required for image-to-video). Exactly 1 item.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+## Optional parameters
 
-### Prompt
+- `end_image_url` (string): Optional last-frame image URL; requires image_urls. Standard requires 768P when using an end frame.
+- `duration` (integer): Video duration in seconds. Defaults to `6`. Values: `6`, `10`.
+- `resolution` (string): Output resolution. Defaults to `768P`. Values: `512P`, `768P`.
+- `prompt_optimizer` (boolean): Enable AI-powered prompt optimization.
 
-- `prompt`: Required. Describe the scene and desired motion. Length: **1-1,500 characters**.
-- Whitespace is trimmed before validation; the result must not be blank.
+## Notes
 
-### Image URLs
-
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply exactly 1 item. Each item must be an HTTP(S) URL.
-
-### End Image URL
-
-- `end_image_url`: Optional. Provide the ending frame URL. Use a publicly accessible HTTP(S) URL. Requires a starting image in `image_urls`. Standard requires `768P` when an ending frame is supplied.
-
-### Resolution
-
-- `resolution`: Optional. Accepted values: `512P`, `768P`. Default: `768P`.
-
-### Prompt Optimizer
-
-- `prompt_optimizer`: Optional. Control automatic prompt optimization. Use `true` or `false`.
-
-## Billing Factors
-
-Billing depends on output resolution (`resolution`) and video duration (`duration`). Usage is charged per generated second using the Standard model tier.
-
-Credits are deducted on submission and refunded if the task fails.
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.

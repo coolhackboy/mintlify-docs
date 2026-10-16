@@ -1,21 +1,28 @@
 ---
 title: "Kling 2.6 Pro Text to Video"
-description: "Kling 2.6 Pro Text to Video API parameters and billing factors"
+description: "Generate five- or ten-second video scenes with Kling 2.6 Pro, with optional audio."
 icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-v2-6-pro-text-to-video.json POST /api/generate/submit"
 ---
 
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
 Submit `kwaivgi/kling-v2.6-pro/text-to-video` through `POST /api/generate/submit`. Query the returned `task_id` with [Task Status](/api-manual/task-management/status), or provide a top-level `callback_url`.
 
-## Parameters
+## Models
 
-- `prompt`: Required nonblank string, 1 to 1,000 characters after trimming leading and trailing whitespace.
-- `duration`: Required integer: 5 or 10 seconds. Strings and fractional durations are rejected.
-- `aspect_ratio`: Required: 16:9, 9:16 or 1:1. Controls the output video aspect ratio.
-- `sound`: Required boolean: true for audio, false for no audio.
-- Use standard JSON types. Unknown input fields and invalid values are rejected before submission and charging.
-- URLs using `example.com` or `your-domain.com` are placeholders. Replace them with your own publicly accessible image URLs and callback endpoint where applicable.
+- **kwaivgi/kling-v2.6-pro/text-to-video** — Kling 2.6 Pro video generation
 
-## Billing Factors
+## Required parameters
 
-Billing depends on video duration (`duration`) and whether audio is generated (`sound`). The Pro text-to-video and image-to-video endpoints use the same rates.
+- `prompt` (string): Nonblank string, 1 to 1,000 characters after trimming leading and trailing whitespace.
+- `sound` (boolean): True for audio, false for no audio.
+- `aspect_ratio` (string): 16:9, 9:16 or 1:1. Controls the output video aspect ratio.
+- `duration` (integer): 5 or 10 seconds. Strings and fractional durations are rejected.
+
+## Notes
+
+Use standard JSON types. Unknown input fields and invalid values are rejected before task creation. URLs using `example.com` or `your-domain.com` are placeholders. Replace them with your own publicly accessible image URLs and callback endpoint where applicable.

@@ -6,46 +6,38 @@ openapi: "/api-manual/image-series/google-nano-banana-2-lite-edit.json POST /api
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Nano Banana 2 Lite Edit
 
 Combine text instructions with up to fourteen reference images in Nano Banana 2 Lite to explore new scenes and visual variations.
 
-## Available Models
+## Models
 
 - **google/nano-banana-2-lite/edit** - Edit images using a prompt and image references.
 
-## Output Options
-
-### Aspect Ratio
-
-- `size`: Optional. Accepted values: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`. If omitted, no explicit aspect ratio is specified; there is no default. `auto` is not accepted.
-
-## Key Features
+## Features
 
 - Edit images using a prompt and image references.
 - Accepts 1-14 images in `image_urls`.
 
-## Advanced Parameters
+## Required parameters
+
+- `prompt` (string): Describe the requested changes. Minimum length: **1 character**.
+- The value must not be blank when supplied. No maximum prompt length is specified.
+
+- `image_urls` (array): Provide publicly accessible image URLs. Supply 1-14 items. Each item must be an HTTP(S) URL.
+
+## Optional parameters
+
+- `size` (string): See [Size](#size) for supported values and constraints.
+
+## Size
+
+- `size`: Optional. Accepted values: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`. If omitted, no explicit aspect ratio is specified; there is no default. `auto` is not accepted.
+
+## Notes
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
 Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
-
-### Prompt
-
-- `prompt`: Required. Describe the requested changes. Minimum length: **1 character**.
-- The value must not be blank when supplied. No maximum prompt length is specified.
-
-### Image URLs
-
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-14 items. Each item must be an HTTP(S) URL.
-
-## Billing Factors
-
-Billed per generation. Text-to-image and image editing use the same billing rate. The selected aspect ratio (`size`) and reference image count do not add charges.
-
-Credits are deducted on submission and refunded if the task fails.

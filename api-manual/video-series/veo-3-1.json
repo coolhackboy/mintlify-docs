@@ -19,10 +19,12 @@
   "paths": {
     "/api/generate/submit": {
       "post": {
-        "summary": "Submit VEO 3.1 Video Generation Task",
+        "summary": "Submit VEO 3.1 Video Task",
         "description": "Fast and high-quality 8-second video generation using Google's VEO 3.1",
         "operationId": "submitVEO3Task",
-        "tags": ["VEO 3.1"],
+        "tags": [
+          "VEO 3.1"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -32,7 +34,7 @@
               },
               "examples": {
                 "veo3.1-fast": {
-                  "summary": "VEO 3.1 Fast video generation",
+                  "summary": "VEO 3.1 Fast video",
                   "value": {
                     "model": "veo3.1-fast",
                     "callback_url": "https://your-domain.com/callback",
@@ -44,7 +46,7 @@
                   }
                 },
                 "veo3.1-quality": {
-                  "summary": "VEO 3.1 Quality 4k generation",
+                  "summary": "VEO 3.1 Quality 4k",
                   "value": {
                     "model": "veo3.1-quality",
                     "callback_url": "https://your-domain.com/callback",
@@ -70,40 +72,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid request parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "code": 400,
-                  "error": {
-                    "message": "Invalid request parameters",
-                    "type": "invalid_request_error"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Invalid API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "code": 401,
-                  "error": {
-                    "message": "Unauthorized - Invalid API key",
-                    "type": "authentication_error"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -115,13 +83,16 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication Get your API Key: Visit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key Add it to the request header: ``` Authorization: Bearer VIDGO_API_KEY ```"
       }
     },
     "schemas": {
       "SubmitRequest": {
         "type": "object",
-        "required": ["model"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -135,7 +106,9 @@
           },
           "input": {
             "type": "object",
-            "required": ["prompt"],
+            "required": [
+              "prompt"
+            ],
             "description": "Input parameters for generation",
             "properties": {
               "prompt": {
@@ -157,25 +130,37 @@
               "generation_type": {
                 "type": "string",
                 "description": "Video generation type. `frame` (Frame-to-video, two images) or `reference` (Reference image video, three images). If omitted, inferred by `image_urls` count: 2 for `frame`, 3 for `reference`.",
-                "enum": ["frame", "reference"],
+                "enum": [
+                  "frame",
+                  "reference"
+                ],
                 "example": "frame"
               },
               "duration": {
                 "type": "integer",
                 "description": "Video duration in seconds (fixed at 8).",
-                "enum": [8],
+                "enum": [
+                  8
+                ],
                 "example": 8
               },
               "aspect_ratio": {
                 "type": "string",
                 "description": "Video aspect ratio",
-                "enum": ["16:9", "9:16"],
+                "enum": [
+                  "16:9",
+                  "9:16"
+                ],
                 "example": "16:9"
               },
               "resolution": {
                 "type": "string",
                 "description": "Output resolution. `720p` (default), `1080p` (Full HD), or `4k` (Ultra HD).",
-                "enum": ["720p", "1080p", "4k"],
+                "enum": [
+                  "720p",
+                  "1080p",
+                  "4k"
+                ],
                 "default": "720p",
                 "example": "1080p"
               }
@@ -185,7 +170,10 @@
       },
       "SubmitResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -194,7 +182,11 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "created_time"],
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -203,7 +195,9 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started"],
+                "enum": [
+                  "not_started"
+                ],
                 "example": "not_started",
                 "description": "Initial task status"
               },
@@ -219,7 +213,10 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["code", "error"],
+        "required": [
+          "code",
+          "error"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -228,7 +225,10 @@
           },
           "error": {
             "type": "object",
-            "required": ["message", "type"],
+            "required": [
+              "message",
+              "type"
+            ],
             "properties": {
               "message": {
                 "type": "string",

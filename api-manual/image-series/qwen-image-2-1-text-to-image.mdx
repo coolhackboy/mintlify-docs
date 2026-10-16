@@ -6,39 +6,41 @@ openapi: "/api-manual/image-series/qwen-image-2-1-text-to-image.json POST /api/g
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Qwen Image 2.1 Text to Image
-
-## Usage Guide
-
 Generate one image with Qwen Image 2.1 using a text prompt.
+
+## Models
+
+- **alibaba/qwen-image-2.1/text-to-image** — Generate one image with Qwen Image 2.1 using a text prompt.
+
+## Required parameters
+
+- `prompt` (string): Supply non-blank text of up to 5,000 characters.
+
+## Optional parameters
+
+- `size` (string): Output aspect ratio. Accepted values: `1:1`, `4:3`, `3:4`, `3:2`, `2:3`, `16:9`, `9:16`, `21:9`, `9:21`. Default: `1:1`.
+
+- `resolution` (string): Output resolution tier. Accepted values: `1K`, `2K`. Default: `1K`.
+
+- `output_format` (string): Output image format. Transparent output requires PNG or WebP. Accepted values: `png`, `jpeg`, `webp`. Default: `png`.
+
+- `enable_safety_checker` (boolean): Enable content safety checking. Default: `true`.
+
+- `background` (string): Background mode. Transparent output requires PNG or WebP. Accepted values: `opaque`, `transparent`. Default: `opaque`.
+
+- `prompt_extend` (boolean): Enhance the prompt before generation. Default: `true`.
+
+- `seed` (integer): Random seed. Omit to use a random seed.
+
+## Notes
 
 - Set `model` to `alibaba/qwen-image-2.1/text-to-image`.
 - Place `model` and optional `callback_url` at the request root; place workflow parameters inside `input`.
 - Each request produces one image.
 - For reference-image editing, use [Image Edit](/api-manual/image-series/qwen-image-2-1-edit) with `model=alibaba/qwen-image-2.1/edit`.
 
-## Parameter Details
-
-- `prompt` is required. Supply non-blank text of up to 5,000 characters.
-- `size` defaults to `1:1`.
 - A transparent background requires `output_format=png` or `webp`.
-
-## Billing
-
-Billing is per output image and depends on `resolution`. Text-to-image and editing use the same rate at each tier.
-
-Credits are deducted on submission and refunded if the task fails.
-
-## Optional parameters
-
-- `size` (string): Output aspect ratio. Accepted values: `1:1`, `4:3`, `3:4`, `3:2`, `2:3`, `16:9`, `9:16`, `21:9`, `9:21`. Default: `1:1`.
-- `resolution` (string): Output resolution tier. Accepted values: `1K`, `2K`. Default: `1K`.
-- `output_format` (string): Output image format. Transparent output requires PNG or WebP. Accepted values: `png`, `jpeg`, `webp`. Default: `png`.
-- `enable_safety_checker` (boolean): Enable content safety checking. Default: `true`.
-- `background` (string): Background mode. Transparent output requires PNG or WebP. Accepted values: `opaque`, `transparent`. Default: `opaque`.
-- `prompt_extend` (boolean): Enhance the prompt before generation. Default: `true`.
-- `seed` (integer): Optional random seed. Omit to use a random seed.

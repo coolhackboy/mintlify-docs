@@ -19,10 +19,12 @@
   "paths": {
     "/api/generate/submit": {
       "post": {
-        "summary": "Submit Hailuo 02 Video Generation Task",
+        "summary": "Submit Hailuo 02 Video Task",
         "description": "Generate high-quality videos using Hailuo 02 models",
         "operationId": "submitHailuo02Task",
-        "tags": ["Hailuo 02"],
+        "tags": [
+          "Hailuo 02"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -50,7 +52,9 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "Epic aerial shot: samurai stands atop mountain peak as storm of sakura petals sweeps across wind",
-                      "image_urls": ["https://cdn.vidgo.ai/temp/image.png"],
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/image.png"
+                      ],
                       "end_image_url": "https://cdn.vidgo.ai/temp/end_image.png",
                       "duration": 10,
                       "resolution": "768P",
@@ -76,7 +80,9 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "The camera slowly pans across the landscape",
-                      "image_urls": ["https://cdn.vidgo.ai/temp/image.png"],
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/image.png"
+                      ],
                       "end_image_url": "https://cdn.vidgo.ai/temp/end_image.png",
                       "prompt_optimizer": true
                     }
@@ -113,7 +119,10 @@
     "schemas": {
       "SubmitRequest": {
         "type": "object",
-        "required": ["model"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -127,7 +136,9 @@
           },
           "input": {
             "type": "object",
-            "required": ["prompt"],
+            "required": [
+              "prompt"
+            ],
             "description": "Input parameters for generation",
             "properties": {
               "prompt": {
@@ -155,13 +166,19 @@
               "duration": {
                 "type": "integer",
                 "description": "Video duration in seconds (hailuo-02 only)",
-                "enum": [6, 10],
+                "enum": [
+                  6,
+                  10
+                ],
                 "example": 6
               },
               "resolution": {
                 "type": "string",
                 "description": "Output resolution (hailuo-02 image-to-video only)",
-                "enum": ["512P", "768P"],
+                "enum": [
+                  "512P",
+                  "768P"
+                ],
                 "example": "768P"
               },
               "prompt_optimizer": {
@@ -175,7 +192,10 @@
       },
       "SubmitResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -184,7 +204,11 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "created_time"],
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -193,7 +217,9 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started"],
+                "enum": [
+                  "not_started"
+                ],
                 "example": "not_started",
                 "description": "Initial task status"
               },
@@ -209,7 +235,10 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["code", "error"],
+        "required": [
+          "code",
+          "error"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -218,7 +247,10 @@
           },
           "error": {
             "type": "object",
-            "required": ["message", "type"],
+            "required": [
+              "message",
+              "type"
+            ],
             "properties": {
               "message": {
                 "type": "string",

@@ -7,37 +7,36 @@ openapi: "/api-manual/video-series/sora-2-official.json POST /api/generate/submi
 
 <Tip>
 1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Sora 2 Official
 
 `sora-2-official` supports text-to-video generation and optional single-image guided generation with fixed 4s, 8s, 12s, 16s, and 20s durations.
 
-## Available Model
+## Models
 
-- **sora-2-official** - Text-to-video with optional reference image
+- **sora-2-official** — Text-to-video with optional reference image
 
-## Required Parameters
+## Input modes
 
-- **prompt**: Text prompt for video generation
+- **Text-to-video**: Omit `image_urls` and describe the scene in `prompt`.
+- **Image-to-video**: Supply `image_urls` to guide generation with reference imagery.
 
-## Optional Parameters
+## Required parameters
 
-- **duration**: `4`, `8`, `12`, `16`, or `20`. Default is `4`
-- **aspect_ratio**: `16:9` or `9:16`. Default is `16:9`
-- **image_urls**: Optional reference image array. Maximum `1` image
+- `prompt` (string): Describe the scene and desired motion.
+
+## Optional parameters
+
+- `duration` (integer): Output duration in seconds. Values: `4`, `8`, `12`, `16`, `20`. Default: `4`.
+- `aspect_ratio` (string): Video aspect ratio. Values: `16:9`, `9:16`. Default: `16:9`.
+- `image_urls` (array of strings): Optional reference image URLs. Only one image is supported.
 
 ## Notes
 
 - `image_urls` is optional. If provided, only one image is supported.
 - This page only describes the unified submit request. Query status through the standard task status API.
 
-{/* poyo-20260910:start */}
-## Workflow IDs
-
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
 - [openai/sora-2/text-to-video](/api-manual/video-series/openai-sora-2-text-to-video)
 - [openai/sora-2/image-to-video](/api-manual/video-series/openai-sora-2-image-to-video)
-{/* poyo-20260910:end */}

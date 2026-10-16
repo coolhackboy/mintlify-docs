@@ -6,29 +6,27 @@ openapi: "/api-manual/video-series/xai-grok-imagine-video-v1-5-image-to-video.js
 ---
 
 <Tip>
-Submit the request with `VIDGO_API_KEY` and save the returned `task_id`. Use [Query Task Status](/api-manual/task-management/status) to retrieve the video. Provide `callback_url` to receive a [webhook](/api-manual/task-management/webhooks) when the task reaches `finished` or `failed`.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-## Grok Imagine Video 1.5 Image to Video
+Animate a single image using a prompt that describes subject motion, camera movement, and sound. The image supplies the first frame and determines the video’s aspect ratio.
 
-Animate a single image using a prompt that describes subject motion, camera movement, and sound. The image supplies the first frame and determines the video's aspect ratio.
+## Models
 
-## Request
+- **xai/grok-imagine-video-v1.5/image-to-video** — Image-to-video generation with first-frame guidance
 
-Set `model` to `xai/grok-imagine-video-v1.5/image-to-video`. Place the following parameters inside `input`. Set optional `callback_url` at the request root.
+## Required parameters
 
-### prompt
+- `prompt` (string): Describe subject motion, camera movement, and sound in 1–4096 characters.
+- `image_urls` (array of strings): Provide exactly one publicly accessible HTTP(S) image URL as the first frame.
 
-Required string. Describe the scene and desired motion in **1–4,096 characters**, including at least one non-whitespace character.
+## Optional parameters
 
-### image_urls
+- `resolution` (string): Output resolution. Default: `720p`. Values: `480p`, `720p`, `1080p`.
+- `duration` (integer): Integer video duration from 1 to 15 seconds. Default: `6`.
 
-Required array containing **exactly one** publicly accessible HTTP(S) image URL. Use a URL with a hostname and credential-free access.
+## Notes
 
-### resolution
-
-Optional string: `480p`, `720p`, or `1080p`. Default: `720p`.
-
-### duration
-
-Optional integer from **1 to 15** seconds. Default: **6**.
+- The prompt must contain at least one non-whitespace character.
+- Use a publicly accessible HTTP(S) image URL with a hostname and no embedded credentials.

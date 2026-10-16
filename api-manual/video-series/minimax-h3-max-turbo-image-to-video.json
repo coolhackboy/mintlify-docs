@@ -95,12 +95,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid request parameters"
-          },
-          "401": {
-            "description": "Unauthorized"
           }
         }
       }
@@ -145,7 +139,7 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 50000,
-                "description": "Non-empty prompt describing the target video.\n\nMust contain at least one non-whitespace character."
+                "description": "Non-empty prompt describing the target video. Must contain at least one non-whitespace character."
               },
               "duration": {
                 "type": "integer",

@@ -6,50 +6,31 @@ openapi: "/api-manual/video-series/alibaba-wan-2-5-image-to-video.json POST /api
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. Save the returned `task_id` to track generation.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. With a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task reaches `finished` or `failed`.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Wan 2.5 Image to Video
 
 Animate one reference image into a 5 or 10 second video with synchronized audio and output up to 1080p.
 
-## Available Model
+## Models
 
-- `alibaba/wan-2.5/image-to-video`: Animate a reference image using a motion prompt.
+- `alibaba/wan-2.5/image-to-video` — Animate a reference image using a motion prompt.
 
-## Request Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place the following generation parameters inside `input`.
+- `prompt` (string): Describe the subject, scene, and motion. Use 1–1500 characters after trimming surrounding whitespace.
+- `image_urls` (string[]): Provide exactly one publicly accessible HTTP(S) image URL.
 
-### prompt
+## Optional parameters
 
-- `prompt` (string, required): Describe the subject, scene, and motion. Use 1–1500 characters after trimming surrounding whitespace.
+- `resolution` (string): Output resolution: 480p, 720p, or 1080p. Default: 720p.
+- `duration` (integer): Video duration: 5 or 10 seconds. Default: 5.
+- `audio` (string): Audio file URL to supply a recording for the video.
+- `negative_prompt` (string): Description of elements to exclude from the scene.
+- `seed` (integer): Random seed for reusing generation settings.
 
-### image_urls
+## Notes
 
-- `image_urls` (string[], required): Provide exactly one publicly accessible HTTP(S) image URL.
-
-### resolution
-
-- `resolution` (string, optional): Output resolution: 480p, 720p, or 1080p. Default: 720p.
-
-### duration
-
-- `duration` (integer, optional): Video duration: 5 or 10 seconds. Default: 5.
-
-### audio
-
-- `audio` (string, optional): Optional audio file URL to supply a recording for the video.
-
-### negative_prompt
-
-- `negative_prompt` (string, optional): Optional description of elements to exclude from the scene.
-
-### seed
-
-- `seed` (integer, optional): Optional integer random seed for reusing generation settings.
-
-## Retrieve the Video
+### Retrieve the Video
 
 Query the task with `task_id`. Continue polling while `status` is `not_started` or `running`. At `finished`, read the video URL from `data.files[].file_url`. At `failed`, read `data.error_message` for the error details.

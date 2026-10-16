@@ -19,10 +19,12 @@
   "paths": {
     "/api/generate/submit": {
       "post": {
-        "summary": "Submit Z-Image Generation Task",
+        "summary": "Submit Z-Image Task",
         "description": "Generate images using Z-Image model",
         "operationId": "submitZImageTask",
-        "tags": ["Z-Image"],
+        "tags": [
+          "Z-Image"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -32,7 +34,7 @@
               },
               "examples": {
                 "z-image": {
-                  "summary": "Z-Image Generation",
+                  "summary": "Z-Image",
                   "value": {
                     "model": "z-image",
                     "callback_url": "https://your-domain.com/callback",
@@ -67,13 +69,16 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
       }
     },
     "schemas": {
       "SubmitRequest": {
         "type": "object",
-        "required": ["model"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -87,7 +92,10 @@
           },
           "input": {
             "type": "object",
-            "required": ["prompt", "size"],
+            "required": [
+              "prompt",
+              "size"
+            ],
             "description": "Input parameters for generation",
             "properties": {
               "prompt": {
@@ -99,7 +107,13 @@
               "size": {
                 "type": "string",
                 "description": "Image size ratio",
-                "enum": ["1:1", "4:3", "3:4", "16:9", "9:16"],
+                "enum": [
+                  "1:1",
+                  "4:3",
+                  "3:4",
+                  "16:9",
+                  "9:16"
+                ],
                 "example": "1:1"
               }
             }
@@ -108,7 +122,10 @@
       },
       "SubmitResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -117,7 +134,11 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "created_time"],
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -126,7 +147,9 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started"],
+                "enum": [
+                  "not_started"
+                ],
                 "example": "not_started",
                 "description": "Initial task status"
               },
@@ -142,7 +165,10 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["code", "error"],
+        "required": [
+          "code",
+          "error"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -151,7 +177,10 @@
           },
           "error": {
             "type": "object",
-            "required": ["message", "type"],
+            "required": [
+              "message",
+              "type"
+            ],
             "properties": {
               "message": {
                 "type": "string",

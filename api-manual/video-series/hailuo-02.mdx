@@ -1,5 +1,5 @@
 ---
-title: "Hailuo 02 Video Generation"
+title: "Hailuo 02 Video"
 description: "Advanced video generation with Hailuo 02"
 icon: "video"
 openapi: "/api-manual/video-series/hailuo-02.json POST /api/generate/submit"
@@ -10,16 +10,14 @@ openapi: "/api-manual/video-series/hailuo-02.json POST /api/generate/submit"
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Hailuo 02 Video Generation
-
 Generate high-quality videos using Hailuo 02 models. Create professional content with text-to-video and image-to-video capabilities.
 
-## Available Models
+## Models
 
-- **hailuo-02** - Standard video generation (768P/512P, up to 10 seconds)
-- **hailuo-02-pro** - Professional video generation (1080P, 6 seconds)
+- **hailuo-02** — Standard video generation (768P/512P, up to 10 seconds)
+- **hailuo-02-pro** — Professional video generation (1080P, 6 seconds)
 
-## Key Features
+## Features
 
 - **Flexible Modes**: Text-to-video and image-to-video
 - **Multiple Resolutions**: 512P, 768P (Standard) and 1080P (Pro)
@@ -27,8 +25,27 @@ Generate high-quality videos using Hailuo 02 models. Create professional content
 - **Prompt Optimizer**: Optional AI-powered prompt enhancement
 - **End Frame Control**: Specify ending frame for image-to-video (optional)
 
-{/* poyo-20260910:start */}
-## Workflow IDs
+## Input modes
+
+- **Text to video:** omit image fields.
+- **Image to video:** supply `image_urls` as the starting image.
+- **First and last frames:** provide `end_image_url` together with `image_urls`.
+
+## Required parameters
+
+- `prompt` (string): Generation prompt describing the desired video. Maximum length: 1,500 characters.
+
+## Optional parameters
+
+- `image_urls` (string[]): Reference image URLs for image-to-video generation (required for image-to-video). Maximum items: 1.
+- `end_image_url` (string): URL of the image to use as the last frame (image-to-video only).
+- `duration` (integer): Video duration in seconds (hailuo-02 only). Accepted values: `6`, `10`.
+- `resolution` (string): Output resolution (hailuo-02 image-to-video only). Accepted values: `512P`, `768P`.
+- `prompt_optimizer` (boolean): Enable AI-powered prompt optimization.
+
+## Notes
+
+### Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
@@ -36,4 +53,3 @@ Existing IDs remain available. New integrations can select a dedicated workflow:
 - [minimax/hailuo-02/standard/image-to-video](/api-manual/video-series/minimax-hailuo-02-standard-image-to-video)
 - [minimax/hailuo-02/pro/text-to-video](/api-manual/video-series/minimax-hailuo-02-pro-text-to-video)
 - [minimax/hailuo-02/pro/image-to-video](/api-manual/video-series/minimax-hailuo-02-pro-image-to-video)
-{/* poyo-20260910:end */}

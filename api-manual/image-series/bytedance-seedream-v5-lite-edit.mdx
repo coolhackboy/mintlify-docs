@@ -6,52 +6,47 @@ openapi: "/api-manual/image-series/bytedance-seedream-v5-lite-edit.json POST /ap
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Seedream 5.0 Lite Edit
 
 Remix existing visuals with Seedream 5.0 Lite using text instructions and multiple reference images, with support for batch output.
 
-## Available Models
+## Models
 
 - **bytedance/seedream/v5/lite/edit** - Edit images using a prompt and image references.
 
-## Output Options
+## Features
 
-### Image Size
+- Edit images using a prompt and image references.
+- Accepts 1-10 images in `image_urls`.
+- Control the number of output images with `n`.
+
+## Required parameters
+
+- `prompt` (string): Describe the requested changes. Length: **3-3,000 characters**.
+
+- `image_urls` (array): Provide publicly accessible image URLs. Supply 1-10 items. Each item must be an HTTP(S) URL pointing to a JPEG or PNG image.
+
+## Optional parameters
+
+- `n` (integer): Number of images to generate. Integer from `1` to `15`. Default: `1`.
+
+- `enable_safety_checker` (boolean): Set `true` to enable the content safety check or `false` to disable it. Default: `true`.
+
+- `size` (string | object): See [Size](#size) for supported values and constraints.
+
+## Size
 
 - `size`: Optional. Default: `1:1`.
 - Presets: `2K`, `3K`, `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`.
 - For custom dimensions, supply an object with integer `width` and `height`; both must be positive.
 - Custom dimensions also accept a `WIDTHxHEIGHT` string, using `x` or `X` between the positive dimensions.
 
-### Image Count
-
-- `n`: Optional. Number of images to generate. Integer from `1` to `15`. Default: `1`.
-
-## Key Features
-
-- Edit images using a prompt and image references.
-- Accepts 1-10 images in `image_urls`.
-- Control the number of output images with `n`.
-
-## Advanced Parameters
+## Notes
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
 Input image URLs use HTTP(S) and point to publicly accessible JPEG or PNG files.
 
-### Prompt
-
-- `prompt`: Required. Describe the requested changes. Length: **3-3,000 characters**.
 - Length is counted after leading and trailing whitespace is trimmed.
-
-### Image URLs
-
-- `image_urls`: Required. Provide publicly accessible image URLs. Supply 1-10 items. Each item must be an HTTP(S) URL pointing to a JPEG or PNG image.
-
-### Safety Checker
-
-- `enable_safety_checker`: Optional. Set `true` to enable the content safety check or `false` to disable it. Default: `true`.

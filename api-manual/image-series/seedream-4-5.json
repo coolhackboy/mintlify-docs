@@ -19,10 +19,12 @@
   "paths": {
     "/api/generate/submit": {
       "post": {
-        "summary": "Submit Seedream-4.5 Generation Task",
+        "summary": "Submit Seedream-4.5 Task",
         "description": "Advanced image generation and editing with multi-reference support and up to 4K resolution",
         "operationId": "submitSeedream45Task",
-        "tags": ["Seedream-4.5"],
+        "tags": [
+          "Seedream-4.5"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -32,7 +34,7 @@
               },
               "examples": {
                 "seedream-4-5": {
-                  "summary": "Seedream-4.5 Text-to-Image Generation",
+                  "summary": "Seedream-4.5 Text-to-Image",
                   "value": {
                     "model": "seedream-4.5",
                     "callback_url": "https://your-domain.com/callback",
@@ -73,40 +75,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid request parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "code": 400,
-                  "error": {
-                    "message": "Invalid request parameters",
-                    "type": "invalid_request_error"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Invalid API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "code": 401,
-                  "error": {
-                    "message": "Unauthorized - Invalid API key",
-                    "type": "authentication_error"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -118,13 +86,16 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
       }
     },
     "schemas": {
       "SubmitRequest": {
         "type": "object",
-        "required": ["model", "input"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -138,7 +109,9 @@
           },
           "input": {
             "type": "object",
-            "required": ["prompt"],
+            "required": [
+              "prompt"
+            ],
             "description": "Input parameters for generation",
             "properties": {
               "prompt": {
@@ -156,12 +129,26 @@
                 "minItems": 1,
                 "maxItems": 10,
                 "description": "Reference image URLs for image-to-image or editing (1-10 images). Required for seedream-4.5-edit model. Supported formats: JPEG, PNG",
-                "example": ["https://cdn.vidgo.ai/temp/reference1.jpg", "https://cdn.vidgo.ai/temp/reference2.jpg"]
+                "example": [
+                  "https://cdn.vidgo.ai/temp/reference1.jpg",
+                  "https://cdn.vidgo.ai/temp/reference2.jpg"
+                ]
               },
               "size": {
                 "type": "string",
                 "description": "Specify the output image dimensions. Two methods are available, but they cannot be used at the same time.\n\nMethod 1: Specify the resolution of the generated image, and describe its aspect ratio, shape, or purpose in the prompt using natural language. You let the model determine the width and height. Optional values: 2K, 4K\n\nMethod 2: Specify the aspect ratio of the generated image. Optional values: 1:1, 4:3, 3:4, 16:9, 9:16, 3:2, 2:3, 21:9",
-                "enum": ["2K", "4K", "1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "21:9"],
+                "enum": [
+                  "2K",
+                  "4K",
+                  "1:1",
+                  "4:3",
+                  "3:4",
+                  "16:9",
+                  "9:16",
+                  "3:2",
+                  "2:3",
+                  "21:9"
+                ],
                 "default": "1:1",
                 "example": "16:9"
               },
@@ -179,7 +166,10 @@
       },
       "SubmitResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -188,7 +178,11 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "created_time"],
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -197,7 +191,9 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started"],
+                "enum": [
+                  "not_started"
+                ],
                 "example": "not_started",
                 "description": "Initial task status"
               },
@@ -213,7 +209,10 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["code", "error"],
+        "required": [
+          "code",
+          "error"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -222,7 +221,10 @@
           },
           "error": {
             "type": "object",
-            "required": ["message", "type"],
+            "required": [
+              "message",
+              "type"
+            ],
             "properties": {
               "message": {
                 "type": "string",

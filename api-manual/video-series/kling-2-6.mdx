@@ -1,5 +1,5 @@
 ---
-title: "Kling 2.6 Video Generation"
+title: "Kling 2.6 Video"
 description: "Advanced video generation with native audio support"
 icon: "video"
 openapi: "/api-manual/video-series/kling-2-6.json POST /api/generate/submit"
@@ -10,20 +10,35 @@ openapi: "/api-manual/video-series/kling-2-6.json POST /api/generate/submit"
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Kling 2.6 Video Generation
-
 Generate high-quality videos with native audio support using Kling 2.6. Create cinematic content with synchronized dialogue, singing, sound effects, and ambient audio.
 
-## Available Model
+## Models
 
-- **kling-2.6** - Video generation with native audio (text-to-video and image-to-video)
+- **kling-2.6** — Video generation with native audio (text-to-video and image-to-video)
 
-## Key Features
+## Features
 
 - **Native Audio**: Synchronized speech, singing, sound effects, and ambient sounds
 - **Flexible Duration**: 5 or 10 seconds
 - **Aspect Ratios**: 1:1 (square), 16:9 (landscape), and 9:16 (portrait)
 - **Modes**: Text-to-video and image-to-video
+
+## Input modes
+
+- **Text to video:** omit image fields.
+- **Image to video:** supply `image_urls` as the starting image and optionally `end_image_url`.
+
+## Required parameters
+
+- `prompt` (string): Generation prompt describing the desired output. Maximum length: 1,000 characters.
+- `sound` (boolean): When true: generated video contains sound; must be false when end_image_url has a value.
+- `aspect_ratio` (string): Video aspect ratio (text-to-video only). Accepted values: `1:1`, `16:9`, `9:16`.
+- `duration` (integer): Video duration in seconds. Accepted values: `5`, `10`.
+
+## Optional parameters
+
+- `image_urls` (string[]): Reference image URLs (for image-to-video).
+- `end_image_url` (string): URL of the image to use as the last frame (image-to-video only).
 
 ## Notes
 

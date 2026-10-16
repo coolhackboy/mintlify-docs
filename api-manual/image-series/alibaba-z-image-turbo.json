@@ -70,12 +70,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid request parameters"
-          },
-          "401": {
-            "description": "Unauthorized"
           }
         },
         "description": "Generate an image from a prompt or edit one reference image."

@@ -19,7 +19,7 @@
   "paths": {
     "/api/generate/detail/music": {
       "get": {
-        "summary": "Query Music Generation Detail",
+        "summary": "Query Music Detail",
         "description": "Retrieve detailed results and status of a music generation task",
         "operationId": "queryMusicDetail",
         "tags": ["Music Generation"],
@@ -45,7 +45,7 @@
                 },
                 "examples": {
                   "generate-music": {
-                    "summary": "Music Generation (generate-music, extend-music, etc.)",
+                    "summary": "Music (generate-music, extend-music, etc.)",
                     "value": {
                       "code": 200,
                       "data": {
@@ -231,7 +231,7 @@
                     }
                   },
                   "create-music-video": {
-                    "summary": "Music Video Generation",
+                    "summary": "Music Video",
                     "value": {
                       "code": 200,
                       "data": {

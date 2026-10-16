@@ -1,5 +1,5 @@
 ---
-title: "Seedance 1.5 Pro Video Generation"
+title: "Seedance 1.5 Pro Video"
 description: "High-quality text-to-video and image-to-video generation with Seedance 1.5 Pro"
 icon: "video"
 openapi: "/api-manual/video-series/seedance-1-5-pro.json POST /api/generate/submit"
@@ -10,15 +10,13 @@ openapi: "/api-manual/video-series/seedance-1-5-pro.json POST /api/generate/subm
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Seedance 1.5 Pro Video Generation
-
 Generate high-quality videos from text prompts or reference images using Seedance 1.5 Pro by ByteDance. Control aspect ratio, resolution, duration, and optional audio generation.
 
-## Available Model
+## Models
 
-- **seedance-1.5-pro** - Text-to-video and image-to-video generation with enhanced fidelity
+- **seedance-1.5-pro** — Text-to-video and image-to-video generation with enhanced fidelity
 
-## Key Features
+## Features
 
 - **Flexible Modes**: Supports text-to-video and image-to-video generation
 - **Aspect Ratio Control**: Flexible output aspect ratios
@@ -27,11 +25,27 @@ Generate high-quality videos from text prompts or reference images using Seedanc
 - **Fixed Lens**: Lock the camera lens for steady framing
 - **Audio Generation**: Optionally generate an audio track
 
-{/* poyo-20260910:start */}
-## Workflow IDs
+## Input modes
+
+- **Text-to-video**: Omit `image_urls` and describe the scene in `prompt`.
+- **Image-to-video**: Supply `image_urls` to guide generation with reference imagery.
+
+## Required parameters
+
+- `prompt` (string): Describe the scene and desired motion.
+- `aspect_ratio` (string): Select the frame dimensions. Values: `1:1`, `21:9`, `4:3`, `3:4`, `16:9`, `9:16`.
+- `duration` (integer): Video duration in seconds. Values: `4`, `8`, `12`.
+
+## Optional parameters
+
+- `image_urls` (array of strings): Optional reference image URL for image-to-video generation. File URL after upload, not file content; Accepted types: image/jpeg, image/png, image/webp; Max size: 10.0MB. At most 2 items.
+- `resolution` (string): Standard (480p) / High (720p) / Ultra (1080p). Values: `480p`, `720p`, `1080p`.
+- `fixed_lens` (boolean): Whether to keep the camera lens fixed.
+- `generate_audio` (boolean): Whether to generate an audio track.
+
+## Notes
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
 - [bytedance/seedance-v1.5-pro/text-to-video](/api-manual/video-series/bytedance-seedance-v1-5-pro-text-to-video)
 - [bytedance/seedance-v1.5-pro/image-to-video](/api-manual/video-series/bytedance-seedance-v1-5-pro-image-to-video)
-{/* poyo-20260910:end */}

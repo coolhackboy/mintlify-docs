@@ -6,62 +6,36 @@ openapi: "/api-manual/video-series/alibaba-wan-2-7-text-to-video.json POST /api/
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Wan 2.7 Video Text to Video
 
 Create 5, 10, or 15-second videos with Wan 2.7 using written scenes and optional audio input at up to 1080p.
 
-## Available Models
+## Models
 
-- **alibaba/wan-2.7/text-to-video** - Generate video scenes from text prompts.
+- **alibaba/wan-2.7/text-to-video** — Generate video scenes from text prompts.
 
-## Duration Options
-
-- **5, 10, 15 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**.
-
-## Key Features
+## Features
 
 - Generate video scenes from text prompts.
 - Choose from `720p`, `1080p` output resolutions.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `prompt` (string): Describe the scene and desired motion. Maximum: **5,000 Unicode characters**. Leading and trailing whitespace is trimmed. A nonblank prompt is required.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+## Optional parameters
+
+- `audio_url` (string): Provide the input audio URL. Use a publicly accessible HTTP(S) URL.
+- `aspect_ratio` (string): Accepted values: `16:9`, `9:16`, `1:1`, `4:3`, `3:4`. Default: `16:9`.
+- `resolution` (string): Accepted values: `720p`, `1080p`. Default: `720p`.
+- `duration` (integer): 5, 10, 15 seconds. Optional. Default: 5 seconds.
+- `seed` (integer): Set the generation seed. Integer from `0` to `2147483647`.
+- `enable_safety_checker` (boolean): Control safety checking. Use `true` or `false`.
+
+## Notes
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before task creation. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
 
 `duration` and `seed` also accept integer strings such as `"5"`; decimal numbers such as `5.0` and decimal strings such as `"5.0"` are rejected. Null or empty values use the default duration or omit the seed. Supported boolean fields also accept `0`/`1` and case-insensitive strings `true`/`false`, `1`/`0`, `yes`/`no`, `y`/`n`, and `on`/`off`; null omits the field. Surrounding whitespace is trimmed, and resolution values are case-insensitive.
-
-### Prompt
-
-- `prompt`: Required. Describe the scene and desired motion. Maximum: **5,000 Unicode characters**.
-- Leading and trailing whitespace is trimmed. A nonblank prompt is required.
-
-### Audio URL
-
-- `audio_url`: Optional. Provide the input audio URL. Use a publicly accessible HTTP(S) URL.
-
-### Aspect Ratio
-
-- `aspect_ratio`: Optional. Accepted values: `16:9`, `9:16`, `1:1`, `4:3`, `3:4`. Default: `16:9`.
-
-### Resolution
-
-- `resolution`: Optional. Accepted values: `720p`, `1080p`. Default: `720p`.
-
-### Seed
-
-- `seed`: Optional. Set the generation seed. Integer from `0` to `2147483647`.
-
-### Safety Checker
-
-- `enable_safety_checker`: Optional. Control safety checking. Use `true` or `false`.
-
-## Pricing
-
-Usage equals output seconds multiplied by the selected resolution rate. See [Pricing](https://vidgo.ai/apis/api-pricing) for current rates.
-
-Credits are deducted on submission and refunded if the task fails.

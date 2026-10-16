@@ -90,12 +90,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid request parameters"
-          },
-          "401": {
-            "description": "Unauthorized"
           }
         }
       }

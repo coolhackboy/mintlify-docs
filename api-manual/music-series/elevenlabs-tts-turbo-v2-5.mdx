@@ -6,75 +6,49 @@ openapi: "/api-manual/music-series/elevenlabs-tts-turbo-v2-5.json POST /api/gene
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# ElevenLabs TTS Turbo v2.5
 
 Create spoken narration with ElevenLabs Turbo v2.5, shaping pacing, vocal style, and voice similarity with optional text alignment.
 
-## Available Models
+## Models
 
-- **elevenlabs/tts/turbo-v2.5** - Convert text into speech.
+- **elevenlabs/tts/turbo-v2.5** — Convert text into speech.
 
-## Key Features
+## Features
 
 - Convert text into speech.
 - Optionally request timestamps alongside the generated audio.
 - Select a voice with `voice` and specify the spoken language with `language_code`.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `text` (string): Supply the text to speak. Length: **1-40,000 Unicode characters** after trimming leading and trailing whitespace. Include at least one visible text character.
 
-The parameters below define the `input` object for this model.
+## Optional parameters
 
-### Voice
+- `voice` (string): Select a voice name or compatible voice ID. String. Default: `Rachel`.
 
-- `voice`: Optional. Select a voice name or compatible voice ID. String. Default: `Rachel`.
+- `stability` (number): Control voice stability. Number from `0` to `1`. Default: `0.5`.
 
-### Stability
+- `similarity_boost` (number): Control voice similarity. Number from `0` to `1`. Default: `0.75`.
 
-- `stability`: Optional. Control voice stability. Number from `0` to `1`. Default: `0.5`.
+- `style` (number): Set the voice style strength. Number from `0` to `1`. Default: `0`.
 
-### Similarity Boost
+- `speed` (number): Set the speech speed. Number from `0.7` to `1.2`. Default: `1`.
 
-- `similarity_boost`: Optional. Control voice similarity. Number from `0` to `1`. Default: `0.75`.
+- `timestamps` (boolean): Request timestamp information with the audio. Use `true` or `false`. Default: `false`.
 
-### Style
+- `previous_text` (string): Supply preceding text as speech context. String. Also accepts `null`.
 
-- `style`: Optional. Set the voice style strength. Number from `0` to `1`. Default: `0`.
+- `next_text` (string): Supply following text as speech context. String. Also accepts `null`.
 
-### Speed
+- `language_code` (string): Set the spoken language with an ISO 639-1 code, such as `en`, `fr`, `de`, `ja`, `vi`, `hu`, or `no`. Also accepts `null`.
 
-- `speed`: Optional. Set the speech speed. Number from `0.7` to `1.2`. Default: `1`.
+- `apply_text_normalization` (string): Control how numbers, dates, and currencies are prepared for speech: `auto` selects normalization automatically, `on` enables it, and `off` reads the supplied text directly. Default: `auto`.
 
-### Timestamps
-
-- `timestamps`: Optional. Request timestamp information with the audio. Use `true` or `false`. Default: `false`.
-
-### Previous Text
-
-- `previous_text`: Optional. Supply preceding text as speech context. String. Also accepts `null`.
-
-### Next Text
-
-- `next_text`: Optional. Supply following text as speech context. String. Also accepts `null`.
-
-### Language Code
-
-- `language_code`: Optional. Set the spoken language with an ISO 639-1 code, such as `en`, `fr`, `de`, `ja`, `vi`, `hu`, or `no`. Also accepts `null`.
-
-### Apply Text Normalization
-
-- `apply_text_normalization`: Optional. Control how numbers, dates, and currencies are prepared for speech: `auto` selects normalization automatically, `on` enables it, and `off` reads the supplied text directly. Default: `auto`.
-
-### Text
-
-- `text`: Required. Supply the text to speak. Length: **1-40,000 Unicode characters** after trimming leading and trailing whitespace. Include at least one visible text character.
-
-## Output Files
+## Output
 
 - Read every item in the returned `files` array.
 - Generated audio uses `file_type: "audio"`.
@@ -239,3 +213,7 @@ Each example pairs a request with its completed task response and generated audi
 </Accordion>
 
 </AccordionGroup>
+
+## Notes
+
+The parameters below define the `input` object for this model.

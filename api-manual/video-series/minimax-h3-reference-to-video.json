@@ -69,12 +69,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid request parameters"
-          },
-          "401": {
-            "description": "Unauthorized"
           }
         }
       }
@@ -150,7 +144,7 @@
               },
               "reference_image_urls": {
                 "type": "array",
-                "description": "Reference images. The first five are included in the duration price.",
+                "description": "Reference images.",
                 "minItems": 1,
                 "maxItems": 9,
                 "items": {
@@ -160,7 +154,7 @@
               },
               "reference_video_urls": {
                 "type": "array",
-                "description": "Reference videos whose durations are included in billing.",
+                "description": "Reference videos.",
                 "minItems": 1,
                 "maxItems": 3,
                 "items": {

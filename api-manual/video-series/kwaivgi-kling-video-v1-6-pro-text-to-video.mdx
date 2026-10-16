@@ -1,38 +1,38 @@
 ---
 title: "Kling 1.6 Pro Text to Video"
-description: "Kling 1.6 Pro Text to Video parameters and billing factors."
+description: "Kling 1.6 Pro Text to Video generation parameters."
 icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-video-v1-6-pro-text-to-video.json POST /api/generate/submit"
 ---
 
-# Kling 1.6 Pro Text to Video
-
-Public model ID: `kwaivgi/kling-video/v1.6/pro/text-to-video`.
-
 <Tip>
-Submit with `VIDGO_API_KEY`, then use [Query Task Status](/api-manual/task-management/status) with the returned `task_id`. Optional root-level `callback_url` enables [webhook notifications](/api-manual/task-management/webhooks).
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-## Input workflow
+Generate videos from a scene and motion prompt with Kling 1.6 Pro.
+
+## Models
+
+- **kwaivgi/kling-video/v1.6/pro/text-to-video** — Kling 1.6 Pro video generation
+
+## Required parameters
+
+- `prompt` (string): Nonblank string, at most 2,500 Unicode characters after trimming.
+- `duration` (integer): 5 or 10 seconds. No API default.
+
+## Optional parameters
+
+- `aspect_ratio` (string): 1:1, 16:9 or 9:16. No API default.
+- `negative_prompt` (string): At most 2,500 Unicode characters.
+- `cfg_scale` (number): Finite number from 0 to 1. No API default.
+
+## Notes
+
+### Input requirements
 
 This endpoint generates videos from text prompts.
 
-## Parameters
-
-Place generation parameters inside `input`. Keep `model` and optional `callback_url` at the request root. Unsupported input fields are rejected before credits are deducted.
-
-| Parameter | Requirement | Description |
-| --- | --- | --- |
-| `prompt` | Required | Required nonblank string, at most 2,500 Unicode characters after trimming. |
-| `duration` | Required | Required integer: 5 or 10 seconds. No API default. |
-| `aspect_ratio` | Optional | Optional: 1:1, 16:9 or 9:16. No API default. |
-| `negative_prompt` | Optional | Optional string, at most 2,500 Unicode characters. |
-| `cfg_scale` | Optional | Optional finite number from 0 to 1. No API default. |
+### Input requirements
 
 Optional parameters have no documented API defaults.
-
-## Billing Factors
-
-Billing depends on the selected model tier (Standard or Pro) and video duration (`duration`). Usage is charged per generated second. Within a tier, text-to-video, first-frame animation, and Elements use the same rate.
-
-Credits are deducted on submission and refunded if the task fails.

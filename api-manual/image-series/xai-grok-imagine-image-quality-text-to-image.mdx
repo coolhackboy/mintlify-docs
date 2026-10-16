@@ -6,51 +6,45 @@ openapi: "/api-manual/image-series/xai-grok-imagine-image-quality-text-to-image.
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Grok Imagine Image Quality Text to Image
 
 Create image variations in 1K or 2K with Grok Imagine Image Quality, with framing options for portraits, landscapes, and square designs.
 
-## Available Models
+## Models
 
 - **xai/grok-imagine-image-quality/text-to-image** - Generate images from text prompts.
 
-## Output Options
-
-### Aspect Ratio
-
-- `aspect_ratio`: Optional. Accepted values: `1:1`, `2:3`, `3:2`, `9:16`, `16:9`. Default: `1:1`.
-
-### Resolution
-
-- `resolution`: Optional. Accepted values: `1K`, `2K`. Default: `1K`.
-
-### Image Count
-
-- `n`: Optional. Number of images to generate. Integer, at least `1`. Default: `1`. No maximum is specified; fractional numbers, strings, and booleans are rejected.
-
-## Key Features
+## Features
 
 - Generate images from text prompts.
 - Choose from `1K`, `2K` output resolutions.
 - Control the number of output images with `n`.
 
-## Advanced Parameters
+## Required parameters
+
+- `prompt` (string): Describe the desired image. Minimum length: **1 character**.
+- The value must be a string and must not be blank. No maximum prompt length is specified.
+
+## Optional parameters
+
+- `n` (integer): Number of images to generate. Integer, at least `1`. Default: `1`. No maximum is specified; fractional numbers, strings, and booleans are rejected.
+
+- `aspect_ratio` (string): Aspect ratio. Accepted values: `1:1`, `2:3`, `3:2`, `9:16`, `16:9`. Default: `1:1`.
+
+- `resolution` (string): See [Resolution](#resolution) for supported values and constraints.
+
+## Size
+
+- `aspect_ratio`: Optional. Accepted values: `1:1`, `2:3`, `3:2`, `9:16`, `16:9`. Default: `1:1`.
+
+## Resolution
+
+- `resolution`: Optional. Accepted values: `1K`, `2K`. Default: `1K`.
+
+## Notes
 
 Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
 
 Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted.
-
-### Prompt
-
-- `prompt`: Required. Describe the desired image. Minimum length: **1 character**.
-- The value must be a string and must not be blank. No maximum prompt length is specified.
-
-## Billing Factors
-
-Billing depends on output resolution (`resolution`) and output image count (`n`).
-
-Credits are deducted on submission and refunded if the task fails.

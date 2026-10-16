@@ -61,12 +61,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid request parameters"
-          },
-          "401": {
-            "description": "Unauthorized"
           }
         }
       }
@@ -130,7 +124,7 @@
               },
               "aspect_ratio": {
                 "type": "string",
-                "description": "Output aspect ratio. Image-to-video accepts only auto when provided.",
+                "description": "Output aspect ratio.",
                 "enum": [
                   "auto",
                   "21:9",
@@ -157,7 +151,7 @@
               },
               "reference_video_urls": {
                 "type": "array",
-                "description": "Reference videos. Their whole-second durations are included in billing.",
+                "description": "Reference videos.",
                 "minItems": 1,
                 "maxItems": 3,
                 "items": {

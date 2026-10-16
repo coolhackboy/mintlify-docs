@@ -6,34 +6,36 @@ openapi: "/api-manual/video-series/seedance-2-0-fast-image-to-video.json POST /a
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. If `callback_url` is provided, Vidgo sends the result after the task finishes or fails.
-2. You can always retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-## Available Models
+Seedance 2.0 Fast image to video model with multimodal generation and optional audio
 
-- **seedance-2.0-fast/image-to-video** - Seedance 2.0 Fast image to video generation
+## Models
 
-## Key Features
+- **seedance-2.0-fast/image-to-video** — Seedance 2.0 Fast image to video generation
+
+## Features
 
 - **Image To Video**: Control the starting frame and optional ending frame with up to two images.
 - **Optional Audio**: Request generated audio together with the video.
 
-## Variant Notes
+## Required parameters
 
-- This public model ID uses the `seedance-2-fast` provider variant.
-- Supported resolutions are `480p` and `720p`.
+- `prompt` (string): Prompt describing the target video. Length: 1–20,000 characters.
+- `duration` (integer): Output duration in seconds. Range: 4–15.
+- `resolution` (string): Output resolution. Values: `480p`, `720p`.
+- `image_urls` (array of strings): Starting frame and optional ending frame. 1–2 items.
 
-## Important Notes
+## Optional parameters
 
-- `prompt` is required and accepts up to 20,000 characters.
-- `duration` supports integer values from `4` to `15`.
-- `image_urls` accepts one starting frame and one optional ending frame.
-- `aspect_ratio` accepts `auto`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, or `9:16`.
-- `image_urls` is required.
-- All remote URLs must be publicly accessible and directly downloadable.
+- `aspect_ratio` (string): Output aspect ratio. Image-to-video accepts only auto when provided. Values: `auto`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, `9:16`.
+- `generate_audio` (boolean): Whether to generate an audio track.
+- `return_last_frame` (boolean): Whether to return the final generated frame.
+- `web_search` (boolean): Whether to enable web-assisted generation when supported.
+- `seed` (integer): Optional deterministic seed.
+## Notes
 
-## Credits Reference
-
-- Usage is calculated from output duration and selected resolution.
-- Check the Vidgo dashboard for the current model rate before submitting production traffic.
+- Supply one starting frame and an optional ending frame in `image_urls`.
+- All media URLs must be publicly accessible and directly downloadable.

@@ -1,5 +1,5 @@
 ---
-title: "Seedream-4.5 Image Generation"
+title: "Seedream-4.5 Image"
 description: "Advanced image generation model with support for text-to-image, image-to-image, and multi-image reference capabilities"
 icon: "image"
 openapi: "/api-manual/image-series/seedream-4-5.json POST /api/generate/submit"
@@ -10,20 +10,33 @@ openapi: "/api-manual/image-series/seedream-4-5.json POST /api/generate/submit"
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Seedream-4.5 Image Generation
-
 Seedream-4.5 is an advanced image generation model that supports text-to-image, image-to-image, and image editing with multi-reference capabilities. It delivers high-quality images with flexible aspect ratios and prompt optimization options.
 
-## Available Models
+## Models
 
 - **seedream-4.5** - High-quality text-to-image and image-to-image generation
 - **seedream-4.5-edit** - Advanced image editing with multi-image reference support (up to 10 images)
 
-{/* poyo-20260910:start */}
-## Workflow IDs
+### Dedicated workflows
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
-- [bytedance/seedream/v4.5/text-to-image](/api-manual/image-series/bytedance-seedream-v4-5-text-to-image)
-- [bytedance/seedream/v4.5/edit](/api-manual/image-series/bytedance-seedream-v4-5-edit)
-{/* poyo-20260910:end */}
+- **bytedance/seedream/v4.5/text-to-image** — [Workflow page](/api-manual/image-series/bytedance-seedream-v4-5-text-to-image)
+- **bytedance/seedream/v4.5/edit** — [Workflow page](/api-manual/image-series/bytedance-seedream-v4-5-edit)
+
+## Input modes
+
+- **Generation:** select `seedream-4.5`. Use the input options supported by the selected model.
+- **Image editing:** select `seedream-4.5-edit`. Supply reference images as required by the selected editing workflow.
+
+## Required parameters
+
+- `prompt` (string): Generation prompt describing the desired output Length: 0–2000 characters.
+
+- `image_urls` (array): Reference image URLs for image-to-image or editing (1-10 images). Required for seedream-4.5-edit model. Supported formats: JPEG, PNG Items: 1–10.
+
+## Optional parameters
+
+- `size` (string): Specify the output image dimensions. Two methods are available, but they cannot be used at the same time. Method 1: Specify the resolution of the generated image, and describe its aspect ratio, shape, or purpose in the prompt using natural language. You let the model determine the width and height. Optional values: 2K, 4K Method 2: Specify the aspect ratio of the generated image. Optional values: 1:1, 4:3, 3:4, 16:9, 9:16, 3:2, 2:3, 21:9 Accepted values: `2K`, `4K`, `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`. Default: `1:1`.
+
+- `n` (integer): Number of images to generate (1-15). Credits are pre-deducted based on this count Default: `1`. Range: 1–15.

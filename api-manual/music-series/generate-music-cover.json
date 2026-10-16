@@ -19,7 +19,7 @@
   "paths": {
     "/api/generate/submit": {
       "post": {
-        "summary": "Submit Music Cover Generation Task",
+        "summary": "Submit Music Cover Task",
         "description": "Generate a cover version of an existing music track",
         "operationId": "submitMusicCoverTask",
         "tags": ["Music Cover"],
@@ -32,7 +32,7 @@
               },
               "examples": {
                 "basic-cover": {
-                  "summary": "Basic Cover Generation",
+                  "summary": "Basic Cover",
                   "value": {
                     "model": "generate-music-cover",
                     "callback_url": "https://your-domain.com/callback",

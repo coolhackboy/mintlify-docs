@@ -22,7 +22,7 @@
         "tags": [
           "Seedream-4"
         ],
-        "summary": "Submit Seedream-4 Generation Task",
+        "summary": "Submit Seedream-4 Task",
         "description": "Generate or edit images with ByteDance Seedream-4 through a unified submit endpoint",
         "operationId": "submitSeedream4Task",
         "requestBody": {
@@ -34,7 +34,7 @@
               },
               "examples": {
                 "seedream-4": {
-                  "summary": "Seedream-4 Text-to-Image Generation",
+                  "summary": "Seedream-4 Text-to-Image",
                   "value": {
                     "model": "seedream-4",
                     "callback_url": "https://your-domain.com/callback",
@@ -73,40 +73,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SubmitResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "code": 400,
-                  "error": {
-                    "message": "Invalid request parameters",
-                    "type": "invalid_request_error"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Invalid API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "code": 401,
-                  "error": {
-                    "message": "Unauthorized - Invalid API key",
-                    "type": "authentication_error"
-                  }
                 }
               }
             }
@@ -281,7 +247,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
       }
     }
   }

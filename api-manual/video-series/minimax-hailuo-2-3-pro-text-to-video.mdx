@@ -6,48 +6,33 @@ openapi: "/api-manual/video-series/minimax-hailuo-2-3-pro-text-to-video.json POS
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Hailuo 2.3 Pro Text to Video
 
 Generate short video scenes with Hailuo 2.3 Pro, with 1080p output and optional prompt refinement for written scene concepts.
 
-## Available Models
+## Models
 
-- **minimax/hailuo-2.3/pro/text-to-video** - Generate video scenes from text prompts.
+- **minimax/hailuo-2.3/pro/text-to-video** — Generate video scenes from text prompts.
 
-## Duration Options
-
-- **6 seconds** - Set `duration` as an integer. Optional. Default: **6 seconds**.
-
-## Key Features
+## Features
 
 - Generate video scenes from text prompts.
 - This model ID fixes the output resolution to `1080p`.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place all workflow parameters, including output options, inside `input`.
+- `prompt` (string): Required nonblank string, trimmed before validation. Maximum 5,000 Unicode characters.
 
-Send only the input fields supported by this workflow. JSON types are validated without converting strings to numbers or booleans; `prompt` must be a string and fractional durations are rejected. Unsupported `input` fields are rejected before credits are deducted.
+## Optional parameters
 
-### Prompt
+- `duration` (integer): Output duration in seconds. Only 6 is supported. Values: `6`. Default: `6`.
+- `resolution` (string): Fixed to 1080p for this endpoint. Values: `1080p`. Default: `1080p`.
+- `prompt_optimizer` (boolean): Optional boolean with no specified default. Omit when unused.
 
-- `prompt`: Required. Describe the scene and desired motion. Length: **1-5,000 characters**.
+## Notes
+
+Send only the input fields supported by this workflow. JSON types are validated without converting strings to numbers or booleans; `prompt` must be a string and fractional durations are rejected. Unsupported `input` fields are rejected.
+
 - The value must not be blank when supplied.
-
-### Resolution
-
-- `resolution`: Optional. Accepted values: `1080p`. Default: `1080p`.
-
-### Prompt Optimizer
-
-- `prompt_optimizer`: Optional. Control automatic prompt optimization. Use `true` or `false`. No default is specified; omit this field when unused.
-
-## Billing Factors
-
-Billed per video using the Pro model tier. This endpoint fixes output resolution to `1080p` and duration to `6` seconds. Prompt optimization (`prompt_optimizer`) does not change the charge.
-
-Credits are deducted on submission and refunded if the task fails.

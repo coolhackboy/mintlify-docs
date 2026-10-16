@@ -19,7 +19,7 @@
   "paths": {
     "/api/generate/submit": {
       "post": {
-        "summary": "Submit Seedance 1.0 Pro Video Generation Task",
+        "summary": "Submit Seedance 1.0 Pro Video Task",
         "description": "Generate high-quality videos from text prompts or reference images using Seedance 1.0 Pro",
         "operationId": "submitSeedance10ProTask",
         "tags": [
@@ -85,14 +85,15 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API Key",
-        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nVisit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```"
+        "description": "All API endpoints require Bearer Token authentication Get your API Key: Visit the [API Key Management Page](https://vidgo.ai/apis/dashboard/api-key) to get your API Key Add it to the request header: ``` Authorization: Bearer YOUR_API_KEY ```"
       }
     },
     "schemas": {
       "SubmitRequest": {
         "type": "object",
         "required": [
-          "model"
+          "model",
+          "input"
         ],
         "properties": {
           "model": {

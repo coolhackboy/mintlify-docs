@@ -1,5 +1,5 @@
 ---
-title: "Grok Imagine Image Generation"
+title: "Grok Imagine Image"
 description: "High-quality image generation with Grok Imagine"
 icon: "image"
 openapi: "/api-manual/image-series/grok-imagine-image.json POST /api/generate/submit"
@@ -10,8 +10,6 @@ openapi: "/api-manual/image-series/grok-imagine-image.json POST /api/generate/su
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Grok Imagine Image Generation
-
 Generate high-quality images using the Grok Imagine model. Supports text-to-image and image-to-image generation with optional aspect ratios.
 
 `input.size` is optional. Supported values: `2:3`, `3:2`, `1:1`, `9:16`, `16:9`.
@@ -21,15 +19,23 @@ For image-to-image, `input.image_urls` is required.
 An array containing a single URL string pointing to the reference image.
 Please provide the URL of the uploaded file; Accepted types: image/jpeg, image/png, image/webp; Max size: 10.0MB.
 
-## Available Models
+## Models
 
 - **grok-imagine-image** - Text-to-image and image-to-image generation
 
-{/* poyo-20260910:start */}
-## Workflow IDs
+### Dedicated workflows
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
-- [xai/grok-imagine-image/text-to-image](/api-manual/image-series/xai-grok-imagine-image-text-to-image)
-- [xai/grok-imagine-image/edit](/api-manual/image-series/xai-grok-imagine-image-edit)
-{/* poyo-20260910:end */}
+- **xai/grok-imagine-image/text-to-image** — [Workflow page](/api-manual/image-series/xai-grok-imagine-image-text-to-image)
+- **xai/grok-imagine-image/edit** — [Workflow page](/api-manual/image-series/xai-grok-imagine-image-edit)
+
+## Required parameters
+
+- `prompt` (string): Generation prompt describing the desired output Length: 0–5000 characters.
+
+- `image_urls` (array): Required for image-to-image. array(URL) An array containing a single URL string pointing to the reference image. Please provide the URL of the uploaded file; Accepted types: image/jpeg, image/png, image/webp; Max size: 10.0MB Items: 0–1.
+
+## Optional parameters
+
+- `size` (string): Image aspect ratio (optional) Accepted values: `2:3`, `3:2`, `1:1`, `9:16`, `16:9`.

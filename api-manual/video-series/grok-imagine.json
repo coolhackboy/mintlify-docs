@@ -19,10 +19,12 @@
   "paths": {
     "/api/generate/submit": {
       "post": {
-        "summary": "Submit Grok Imagine Video Generation Task",
+        "summary": "Submit Grok Imagine Video Task",
         "description": "Generate high-quality videos using Grok Imagine model",
         "operationId": "submitGrokImagineTask",
-        "tags": ["Grok Imagine"],
+        "tags": [
+          "Grok Imagine"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -51,7 +53,9 @@
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "The camera slowly zooms in on the scene",
-                      "image_urls": ["https://cdn.vidgo.ai/temp/image.jpg"],
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/image.jpg"
+                      ],
                       "duration": 6,
                       "mode": "normal"
                     }
@@ -88,7 +92,10 @@
     "schemas": {
       "SubmitRequest": {
         "type": "object",
-        "required": ["model"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -102,7 +109,9 @@
           },
           "input": {
             "type": "object",
-            "required": ["prompt"],
+            "required": [
+              "prompt"
+            ],
             "description": "Input parameters for generation",
             "properties": {
               "prompt": {
@@ -124,19 +133,30 @@
               "aspect_ratio": {
                 "type": "string",
                 "description": "Video aspect ratio (text-to-video only)",
-                "enum": ["1:1", "2:3", "3:2"],
+                "enum": [
+                  "1:1",
+                  "2:3",
+                  "3:2"
+                ],
                 "example": "2:3"
               },
               "duration": {
                 "type": "integer",
                 "description": "The duration of the generated video in seconds",
-                "enum": [6, 10],
+                "enum": [
+                  6,
+                  10
+                ],
                 "example": 6
               },
               "mode": {
                 "type": "string",
                 "description": "Generation style mode",
-                "enum": ["fun", "normal", "spicy"],
+                "enum": [
+                  "fun",
+                  "normal",
+                  "spicy"
+                ],
                 "example": "normal"
               }
             }
@@ -145,7 +165,10 @@
       },
       "SubmitResponse": {
         "type": "object",
-        "required": ["code", "data"],
+        "required": [
+          "code",
+          "data"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -154,7 +177,11 @@
           },
           "data": {
             "type": "object",
-            "required": ["task_id", "status", "created_time"],
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
             "properties": {
               "task_id": {
                 "type": "string",
@@ -163,7 +190,9 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["not_started"],
+                "enum": [
+                  "not_started"
+                ],
                 "example": "not_started",
                 "description": "Initial task status"
               },
@@ -179,7 +208,10 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["code", "error"],
+        "required": [
+          "code",
+          "error"
+        ],
         "properties": {
           "code": {
             "type": "integer",
@@ -188,7 +220,10 @@
           },
           "error": {
             "type": "object",
-            "required": ["message", "type"],
+            "required": [
+              "message",
+              "type"
+            ],
             "properties": {
               "message": {
                 "type": "string",

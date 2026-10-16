@@ -6,29 +6,37 @@ openapi: "/api-manual/video-series/kwaivgi-kling-video-o3-4k-image-to-video.json
 ---
 
 <Tip>
-Submit with your Vidgo API key, then query [task status](/api-manual/task-management/status) using the returned task ID. An optional callback receives the final result. The submit response above is an initial-state illustration, not the completed video response.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-## Parameters
+Generate 3–15-second videos with Kling O3 4K from a starting image and an optional ending frame. Outputs 4K video. Supports single-shot and multi-shot generation. Explicitly set sound; multi-shot requires audio.
 
-Use model `kwaivgi/kling-video-o3-4k/image-to-video`. Put generation parameters inside `input`.
+## Models
 
-- **`image_urls`**: Required: an array of 1–2 images. The first is the starting frame; the optional second is the ending frame. Accepts public HTTP(S) URLs, image Data URIs or raw Base64 image data.
-- **`prompt`**: Required when multi_shots=false. Describe the scene, action and camera movement. Use nonblank text, up to 2,500 characters after trimming. Omit prompt when multi_shots=true.
-- **`multi_prompt`**: Required when multi_shots=true; omit in single-shot mode. Supply at least one shot, each with a nonblank prompt of up to 2,500 characters and an integer duration of 1–12 seconds. Shot durations must sum to the top-level duration (3–15 seconds). Extra fields inside a shot are ignored.
-- **`duration`**: Required integer from 3 to 15 seconds. In multi-shot mode, this must equal the sum of all shot durations. Credits are calculated using this value.
-- **`multi_shots`**: Required: explicitly send false for a single shot or true for multiple shots. Single-shot mode requires prompt. Multi-shot mode requires multi_prompt and sound=true, with no nonblank top-level prompt. Omitting this field is an error.
-- **`sound`**: Required: explicitly send true to generate audio or false for video without audio. Single-shot mode accepts either value; multi-shot mode requires true.
-- **`aspect_ratio`**: May be omitted. If provided, use 16:9, 9:16 or 1:1. Image-to-video ignores this value; framing is determined by the input image.
+- **kwaivgi/kling-video-o3-4k/image-to-video** — Kling O3 4K video generation
 
-Use standard JSON numbers and booleans. For compatibility, integer strings such as "5" are accepted. Boolean strings true/1/yes/y/on mean true; false/0/no/n/off mean false. These strings are case-insensitive and trimmed. Numeric 1 and 0 are also accepted for boolean fields. Numeric and boolean prompt values are converted to text; 0, false and null are treated as empty. Objects and arrays are not accepted as prompts. Unsupported input fields are rejected. HTTP(S) URLs must have a hostname and no embedded credentials.
+## Input modes
 
-## Billing Factors
+- **Single shot:** use `prompt` and omit `multi_prompt`. Set `multi_shots` to `false`.
+- **Multiple shots:** use `multi_prompt` instead of a top-level `prompt`. Set `multi_shots` to `true`. Multi-shot generation requires `sound: true`.
 
-Billed per generated second using the 4K model tier. Video duration (`duration`) determines usage; enabling or disabling audio (`sound`) does not change the rate.
+## Required parameters
 
-Failed generation tasks are refunded.
-## Default example: The Greenhouse Trap
+- `image_urls` (string[]): An array of 1–2 images. The first is the starting frame; the optional second is the ending frame. Accepts public HTTP(S) URLs, image Data URIs or raw Base64 image data.
+- `duration` (integer): From 3 to 15 seconds. In multi-shot mode, this must equal the sum of all shot durations.
+- `multi_shots` (boolean): Explicitly send false for a single shot or true for multiple shots. Single-shot mode requires prompt. Multi-shot mode requires multi_prompt and sound=true, with no nonblank top-level prompt. Omitting this field is an error.
+- `sound` (boolean): Explicitly send true to generate audio or false for video without audio. Single-shot mode accepts either value; multi-shot mode requires true.
+
+## Optional parameters
+
+- `prompt` (string): Required when multi_shots=false. Describe the scene, action and camera movement. Use nonblank text, up to 2,500 characters after trimming. Omit prompt when multi_shots=true.
+- `multi_prompt` (object[]): Required when multi_shots=true; omit in single-shot mode. Supply at least one shot, each with a nonblank prompt of up to 2,500 characters and an integer duration of 1–12 seconds. Shot durations must sum to the top-level duration (3–15 seconds). Extra fields inside a shot are ignored.
+- `aspect_ratio` (string): May be omitted. If provided, use 16:9, 9:16 or 1:1. Image-to-video ignores this value; framing is determined by the input image.
+
+## Examples
+
+### The Greenhouse Trap
 
 This is the same default example shown on the [model page](https://vidgo.ai/apis/models/kwaivgi/kling-video-o3-4k/image-to-video).
 
@@ -46,8 +54,6 @@ This is the same default example shown on the [model page](https://vidgo.ai/apis
   }
 }
 ```
-
-![Starting frame](https://cdn.vidgo.ai/apis/models/kwaivgi/kling-video-o3-4k/image-to-video/v1/01/input-start.png)
 
 <video controls playsInline preload="metadata" style={{ width: "100%", height: "auto" }} poster="https://cdn.vidgo.ai/apis/models/kwaivgi/kling-video-o3-4k/image-to-video/v1/01/poster.jpg" src="https://cdn.vidgo.ai/apis/models/kwaivgi/kling-video-o3-4k/image-to-video/v1/01/output.mp4" />
 
@@ -78,6 +84,8 @@ The response below records this verified example. For a new generation, query th
 }
 ```
 
-<Note>
+## Notes
+
+Use standard JSON numbers and booleans. For compatibility, integer strings such as "5" are accepted. Boolean strings true/1/yes/y/on mean true; false/0/no/n/off mean false. These strings are case-insensitive and trimmed. Numeric 1 and 0 are also accepted for boolean fields. Numeric and boolean prompt values are converted to text; 0, false and null are treated as empty. Objects and arrays are not accepted as prompts. Unsupported input fields are rejected. HTTP(S) URLs must have a hostname and no embedded credentials.
+
 The API validates prompts up to 2,500 characters. Some multi-shot generation requests have failed when a shot prompt exceeded 512 characters. We recommend keeping each shot prompt within 512 characters; this recommendation does not change the API validation limit.
-</Note>

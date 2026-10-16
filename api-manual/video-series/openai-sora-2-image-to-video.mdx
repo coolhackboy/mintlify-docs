@@ -6,49 +6,35 @@ openapi: "/api-manual/video-series/openai-sora-2-image-to-video.json POST /api/g
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Sora 2 Official Image to Video
 
 Bring a reference image into motion with Sora 2, using text to direct the scene in portrait or landscape video up to twenty seconds long.
 
-## Available Models
+## Models
 
-- **openai/sora-2/image-to-video** - Generate video from image input.
+- **openai/sora-2/image-to-video** — Generate video from image input.
 
-## Duration Options
-
-- **4, 8, 12, 16, 20 seconds** - Set `duration` to one of these values. Default: **4 seconds**.
-
-## Key Features
+## Features
 
 - Animate a single reference image.
 - Supports landscape (`16:9`) and portrait (`9:16`) framing.
 
-## Advanced Parameters
+## Required parameters
 
-Set `model` and optional `callback_url` at the request root. Place the parameters below inside `input`.
+- `prompt` (string): Describe the scene and desired motion. Length: at least 1 characters.
+- `image_urls` (array of strings): Provide publicly accessible reference images. Exactly 1 item.
 
-Send only the input fields supported by this workflow. Unsupported `input` fields are rejected before credits are deducted. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+## Optional parameters
 
-### Prompt
+- `duration` (integer): Duration. Values: `4`, `8`, `12`, `16`, `20`. Default: `4`.
+- `aspect_ratio` (string): Aspect ratio. Values: `16:9`, `9:16`. Default: `16:9`.
 
-- `prompt`: Required. Describe the scene and desired motion.
+## Notes
+
+Send only the input fields supported by this workflow. Unsupported `input` fields are rejected. Input URLs must use HTTP(S), include a hostname, and contain no embedded credentials.
+
 - The prompt must not be blank when supplied.
 
-### Image URLs
-
-- `image_urls`: Required. Provide exactly 1 image URL.
 - Images must be publicly accessible and directly downloadable.
-
-### Aspect Ratio
-
-- `aspect_ratio`: `16:9`, `9:16`. Default: `16:9`.
-
-## Pricing
-
-Pricing depends on the selected model and applicable output settings. Check the Vidgo dashboard for the current rate.
-
-Credits are deducted on submission and refunded if the task fails.

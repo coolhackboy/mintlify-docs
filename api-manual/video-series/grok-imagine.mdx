@@ -1,5 +1,5 @@
 ---
-title: "Grok Imagine Video Generation"
+title: "Grok Imagine Video"
 description: "High-quality video generation with Grok Imagine"
 icon: "video"
 openapi: "/api-manual/video-series/grok-imagine.json POST /api/generate/submit"
@@ -10,26 +10,40 @@ openapi: "/api-manual/video-series/grok-imagine.json POST /api/generate/submit"
 2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Grok Imagine Video Generation
-
 Generate high-quality videos using Grok Imagine. Create engaging content with text-to-video and image-to-video capabilities.
 
-## Available Model
+## Models
 
-- **grok-imagine** - Video generation (text-to-video and image-to-video)
+- **grok-imagine** — Video generation (text-to-video and image-to-video)
 
-## Key Features
+## Features
 
 - **Flexible Modes**: Text-to-video and image-to-video
 - **Generation Styles**: Choose from "fun", "normal", or "spicy" modes
 - **Aspect Ratios**: 1:1 (square), 2:3 (portrait), and 3:2 (landscape)
 - **Video Duration**: `6` or `10` seconds
 
-{/* poyo-20260910:start */}
-## Workflow IDs
+## Input modes
+
+- **Text to video:** omit `image_urls`.
+- **Image to video:** supply `image_urls` to animate an input image.
+
+## Required parameters
+
+- `prompt` (string): Generation prompt describing the desired video motion. Maximum length: 5,000 characters.
+
+## Optional parameters
+
+- `image_urls` (string[]): Reference image URLs for image-to-video generation (required for image-to-video, max 1 image). Maximum items: 1.
+- `aspect_ratio` (string): Video aspect ratio (text-to-video only). Accepted values: `1:1`, `2:3`, `3:2`.
+- `duration` (integer): The duration of the generated video in seconds. Accepted values: `6`, `10`.
+- `mode` (string): Generation style mode. Accepted values: `fun`, `normal`, `spicy`.
+
+## Notes
+
+### Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
 - [xai/grok-imagine-video/text-to-video](/api-manual/video-series/xai-grok-imagine-video-text-to-video)
 - [xai/grok-imagine-video/image-to-video](/api-manual/video-series/xai-grok-imagine-video-image-to-video)
-{/* poyo-20260910:end */}

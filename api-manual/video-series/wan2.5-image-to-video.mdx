@@ -6,29 +6,31 @@ openapi: "/api-manual/video-series/wan2.5-image-to-video.json POST /api/generate
 ---
 
 <Tip>
-  1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-  2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Wan 2.5 Image-to-Video
 
 `wan2.5-image-to-video` is a higher-quality single-image animation model with broader resolution support than the Wan 2.2 fast line.
 
-## Available Model
+## Models
 
-* **wan2.5-image-to-video** - Animate a single image into a video clip
+- **wan2.5-image-to-video** — Animate a single image into a video clip
 
-## Key Parameters
+## Required parameters
 
-* **Image URLs**: exactly 1 required
-* **Resolution**: `480p`, `720p`, or `1080p`
-* **Duration**: `5` or `10` seconds
-* **Optional Controls**: `audio`, `negative_prompt`, `seed`
+- `prompt` (string): Text prompt for the motion and scene.
+- `image_urls` (array of strings): Reference image URLs for image-to-video. Only 1 image is supported.
 
-{/* poyo-20260910:start */}
-## Workflow IDs
+## Optional parameters
+
+- `resolution` (string): Output video resolution. Values: `480p`, `720p`, `1080p`. Default: `720p`.
+- `duration` (integer): Video duration in seconds. Values: `5`, `10`. Default: `5`.
+- `audio` (string): Optional audio setting string.
+- `negative_prompt` (string): Optional negative prompt.
+- `seed` (integer): Optional random seed for reproducibility.
+
+## Notes
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
 
 - [alibaba/wan-2.5/image-to-video](/api-manual/video-series/alibaba-wan-2-5-image-to-video)
-{/* poyo-20260910:end */}
