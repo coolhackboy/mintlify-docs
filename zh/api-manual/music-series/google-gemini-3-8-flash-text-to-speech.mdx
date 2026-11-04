@@ -1,0 +1,108 @@
+---
+title: "Gemini 3.8 Flash TTS"
+description: "Gemini 3.8 Flash TTS API 将脚本或双人对话转为 WAV 音频，提供 30 种预设音色，并可用风格指示控制演绎方式。"
+icon: "music"
+openapi: "/zh/api-manual/music-series/google-gemini-3-8-flash-text-to-speech.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+Gemini 3.8 Flash TTS 是 Google Gemini 3.8 系列中保真度最高的文本转语音（TTS）模型。它可以用一个音色朗读脚本，也可以演绎双人对话，并返回 WAV 音频。可从 30 种预设音色中选择，用风格指示控制语气、语速和情绪，语言由模型自动识别（Google 列出 130 种）。适合有声书、播客式对话、专业旁白和角色对白。
+
+需要以相同字段大批量生成日常语音时，请用 [Gemini 3.8 Flash-Lite TTS](/zh/api-manual/music-series/google-gemini-3-8-flash-lite-text-to-speech)。只需修改 `model` 即可切换。
+
+## 模型
+
+- **google/gemini-3.8-flash/text-to-speech** — Gemini 3.8 Flash 文本转语音，用于单人旁白和双人对话。
+
+## 功能
+
+- 文本转语音（TTS），支持单人朗读或双人对话脚本。
+- 30 种预设音色，可按请求或按说话人设置。
+- 用自然语言的 `style_instructions` 控制语气、语速、口音和情绪，可全局设置，也可逐句设置。
+- 自动识别语言（Google 列出 130 种语言）。
+- 输出 WAV 音频。
+
+## 输入模式
+
+- **单人**：发送 `text`，可选 `voice`（默认 `Kore`）。
+- **双人对话**：发送恰好两位 `speakers` 和一组 `turns`。此模式下不要发送顶层的 `text` 或 `voice`。
+
+## 必填参数
+
+单人：
+
+- `text`（string）：要朗读的文本，不能为空白。
+
+双人对话：
+
+- `speakers`（object[]）：恰好两个对象，每个对象只包含：
+  - `speaker_id`（string）：非空别名，在请求内不能重复，例如 `host`。
+  - `voice`（string）：[预设音色](#预设音色)之一。
+- `turns`（object[]）：至少一句，按说话顺序排列：
+  - `speaker_id`（string）：必须与两位 `speakers` 之一一致。
+  - `text`（string）：该说话人说的内容，不能为空白。
+  - `style_instructions`（string，可选）：仅作用于这一句的演绎指示。
+
+## 可选参数
+
+- `voice`（string）：仅单人模式。[预设音色](#预设音色)之一。默认 `Kore`。
+- `style_instructions`（string）：作用于整个请求的全局演绎指示，例如 `Calm, warm documentary narration`。两种模式都适用。
+- `enable_safety_checker`（boolean）：启用上游安全检查。默认 `true`。
+
+## 输出
+
+任务完成后，[查询任务状态](/zh/api-manual/task-management/status)和回调内容的 `files` 数组中会返回一个 WAV 音频文件。输出格式固定，没有 `output_format` 字段。
+
+## 预设音色
+
+`voice` 和 `speakers[].voice` 可用以下 30 个值（区分大小写）：
+
+<Accordion title="支持的音色取值">
+- `Achernar`
+- `Achird`
+- `Algenib`
+- `Algieba`
+- `Alnilam`
+- `Aoede`
+- `Autonoe`
+- `Callirrhoe`
+- `Charon`
+- `Despina`
+- `Enceladus`
+- `Erinome`
+- `Fenrir`
+- `Gacrux`
+- `Iapetus`
+- `Kore`
+- `Laomedeia`
+- `Leda`
+- `Orus`
+- `Pulcherrima`
+- `Puck`
+- `Rasalgethi`
+- `Sadachbia`
+- `Sadaltager`
+- `Schedar`
+- `Sulafat`
+- `Umbriel`
+- `Vindemiatrix`
+- `Zephyr`
+- `Zubenelgenubi`
+</Accordion>
+
+## 示例
+
+- **带风格指示的单人旁白**：`voice: Charon`，配合全局 `style_instructions` 生成缓慢的纪录片式旁白。
+- **双人播客对话**：`host`（`Kore`）与 `guest`（`Puck`），其中两句带逐句 `style_instructions`，并提供 `callback_url`。
+
+## 注意事项
+
+- 积分在提交时预扣，按计费字符数计算：`text`、全局 `style_instructions`，以及每一句的 `text` 和 `style_instructions`。说话人 ID 不计入。任务失败会全额退还。当前费率见[定价页](https://vidgo.ai/apis/api-pricing)。
+- [Gemini 3.8 Flash-Lite TTS](/zh/api-manual/music-series/google-gemini-3-8-flash-lite-text-to-speech) 字段相同，计费更低。
+- 对话模式只支持恰好两位说话人。出现第三位说话人、`turns` 中的 `speaker_id` 不在 `speakers` 里，或对话请求中带有顶层 `text`/`voice`，都会返回 400。
+- 演绎指示请写在 `style_instructions` 中，不要写进 `text`；写在 `text` 里的指示可能会被读出来。
+- 本接口不支持 `output_format`、`language_code`、`temperature`、`seed` 和时间戳，也不支持声音克隆或自定义音色。

@@ -1,0 +1,69 @@
+---
+title: "FLUX 3 Max Keyframes to Video"
+description: "The FLUX 3 Max Keyframes to Video API places 1–10 images on a 24 fps timeline with frame_index and generates the 5–20 second motion between them."
+icon: "video"
+openapi: "/api-manual/video-series/blackforestlabs-flux-3-max-keyframes-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+FLUX 3 Max Keyframes to Video lets you pin up to 10 images to exact positions on a 24 fps timeline and generates the motion between them. It is built for storyboard animatics, product transformations and time-lapse style sequences where specific shots must appear at specific moments.
+
+FLUX 3 Max is a video model post-trained by fal in collaboration with Black Forest Labs on the FLUX 3 video base. Vidgo exposes it as three model IDs: [Text to Video](/api-manual/video-series/blackforestlabs-flux-3-max-text-to-video), [Image to Video](/api-manual/video-series/blackforestlabs-flux-3-max-image-to-video) and [Keyframes to Video](/api-manual/video-series/blackforestlabs-flux-3-max-keyframes-to-video).
+
+## Models
+
+- **blackforestlabs/flux-3-max/keyframes-to-video** — Keyframes-to-video with FLUX 3 Max, 1–10 images placed by `frame_index`.
+
+## Features
+
+- Keyframe control with 1–10 images, each placed on a frame of a 24 fps timeline.
+- Integer durations from 5 to 20 seconds at 720p or 1080p.
+- Eight aspect ratios; `auto` follows the first keyframe image.
+- Native audio on by default.
+
+## Required parameters
+
+- `keyframes` (object[]): 1–10 objects, each with exactly two fields:
+  - `image_url` (string): Public HTTP(S) URL of the keyframe image (PNG, JPEG or WebP).
+  - `frame_index` (integer): Position of that image on the 24 fps timeline, from `0` to `duration × 24`. Indexes must be unique.
+- `prompt` (string): The motion and transitions between keyframes, the camera movement and, with `sound` on, the audio. Must not be blank.
+
+## Optional parameters
+
+- `duration` (integer): Output length in seconds, `5`–`20`. Default `5`.
+- `resolution` (string): `720p` or `1080p`. Default `720p`.
+- `aspect_ratio` (string): `auto`, `21:9`, `2:1`, `16:9`, `4:3`, `1:1`, `3:4` or `9:16`. Default `auto`.
+- `sound` (boolean): Generate native audio with the video. Default `true`; set `false` for silent footage.
+
+## Duration
+
+`frame_index` counts frames at 24 fps, so the last valid index depends on `duration`:
+
+| `duration` | Valid `frame_index` range |
+| --- | --- |
+| 5 | 0–120 |
+| 10 | 0–240 |
+| 15 | 0–360 |
+| 20 | 0–480 |
+
+To place an image at second *t*, use `frame_index = t × 24` (for example 2.5 s → 60).
+
+## Output
+
+The finished task returns one MP4 video in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload.
+
+## Examples
+
+- **Three keyframes over 5 seconds**: seed, sapling and blossom at frames `0`, `60` and `120` (start, middle and end of a 5-second clip).
+- **10-second 1080p storyboard with callback**: four shots at frames `0`, `96`, `168` and `240`, `21:9`, silent, with a `callback_url`.
+
+## Notes
+
+- A `frame_index` above `duration × 24`, a repeated index, or extra fields inside a keyframe object return 400. If you shorten `duration`, check that every index still fits.
+- Fields not listed above, such as `image_urls`, return 400. For a simple start/end frame clip, use [FLUX 3 Max Image to Video](/api-manual/video-series/blackforestlabs-flux-3-max-image-to-video).
+- Credits are reserved at submission and depend on `resolution` and `duration`. The rate is the same for text-to-video, image-to-video and keyframes-to-video, and `sound` does not change it. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.
+- There is no 4K tier, no `seed` and no output longer than 20 seconds on this model.

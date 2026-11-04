@@ -1,0 +1,66 @@
+---
+title: "Kling 4.0 Image to Video"
+description: "The Kling 4.0 Image to Video API animates a start frame, optionally ending on a second image, into a 3–30 second 720p or 1080p video."
+icon: "video"
+openapi: "/api-manual/video-series/kwaivgi-kling-v4-0-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+Kling 4.0 Image to Video animates a start frame into a 3–30 second video at 720p or 1080p. Add a second image and Kling 4.0 uses it as the end frame, generating the motion between the two. It suits product shots, character animation and before/after transitions.
+
+Kling 4.0 is Kuaishou's Kling AI video model. Vidgo exposes it as four model IDs: [Text to Video](/api-manual/video-series/kwaivgi-kling-v4-0-text-to-video), [Image to Video](/api-manual/video-series/kwaivgi-kling-v4-0-image-to-video), [Reference to Video](/api-manual/video-series/kwaivgi-kling-v4-0-reference-to-video) and [Video Edit](/api-manual/video-series/kwaivgi-kling-v4-0-video-edit).
+
+## Models
+
+- **kwaivgi/kling-v4.0/image-to-video** — Image-to-video with Kling 4.0 from a start frame and an optional end frame.
+
+## Features
+
+- Image-to-video up to 30 seconds from one start frame.
+- First and last frame control with a second image.
+- Single or multi-shot prompts.
+- 720p or 1080p output; the frame shape follows the input image.
+- Output includes an audio track.
+
+## Input modes
+
+- **Start frame**: `image_urls` with one image.
+- **Start and end frame**: `image_urls` with two images, start frame first.
+
+Either mode takes a single `prompt` or a `multi_prompt` shot list:
+
+- **Single prompt**: send `prompt` and, optionally, `duration`.
+- **Multi-shot**: send `multi_prompt` with one entry per shot. The clip length is the sum of the shot durations; leave `duration` out or set it to that sum.
+
+## Required parameters
+
+- `image_urls` (string[]): One or two public HTTP(S) image URLs. The first is the start frame; the optional second is the end frame.
+- `prompt` (string) **or** `multi_prompt` (object[]): send exactly one.
+  - `prompt`: 1–26,000 characters after trimming.
+  - `multi_prompt`: a non-empty list of shots `{prompt, duration?}`. Each shot `prompt` is 1–512 characters; each shot `duration` is an integer `1`–`30` (default `5`). The shot durations must total 3–30 seconds.
+
+## Optional parameters
+
+- `duration` (integer): Output length, `3`–`30` seconds. Default `5`; with `multi_prompt` the default is the shot total, and an explicit value must equal it.
+- `resolution` (string): `720p` or `1080p`. Default `720p`.
+
+## Output
+
+The finished task returns one MP4 video, with an audio track, in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload.
+
+## Examples
+
+- **Start frame only**: one image of a dancer with a motion and music prompt, 5 seconds at 720p.
+- **Start and end frame, 1080p, with callback**: a bud and an open flower as start and end frames, an 8-second time-lapse and a `callback_url`.
+
+## Notes
+
+- `aspect_ratio` is not supported on this ID because the input image sets the frame; sending it returns 400.
+- To guide the video with extra reference images, reference videos or subjects, use [Kling 4.0 Reference to Video](/api-manual/video-series/kwaivgi-kling-v4-0-reference-to-video).
+- Fields not listed above return 400. `model` and `callback_url` belong at the request root, not inside `input`.
+- Credits are reserved at submission and depend on `resolution` and the output `duration`. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.
+- Output is 720p or 1080p only; there is no 4K or HDR tier, no audio on/off switch and no `seed` on this model.

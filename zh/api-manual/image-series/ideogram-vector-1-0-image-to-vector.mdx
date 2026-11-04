@@ -1,0 +1,48 @@
+---
+title: "Ideogram Vector 1.0 图片转 SVG"
+description: "Ideogram Vector 1.0 图片转 SVG API 将一张 PNG、JPG 或 WebP 图片转换为可编辑的 SVG 文件，可选 default（细节丰富）或 simple 模式。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/ideogram-vector-1-0-image-to-vector.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+Ideogram Vector 1.0 图片转 SVG 可以把位图（如 PNG Logo、扫描的草图或 JPG 插画）转换为可在矢量软件中缩放和编辑的 SVG 文件。需要细节时选择 `default` 模式，想要更简洁扁平的效果时选择 `simple` 模式。无需提示词。
+
+Ideogram Vector 1.0 是 Ideogram 第一个输出矢量图而不是像素图的模型。Vidgo 提供两个 model ID：[文本生成 SVG](/zh/api-manual/image-series/ideogram-vector-1-0-text-to-vector)和[图片转 SVG](/zh/api-manual/image-series/ideogram-vector-1-0-image-to-vector)。
+
+## 模型
+
+- **ideogram/vector-1.0/image-to-vector** — Ideogram Vector 1.0 图片转 SVG：输入一张图片，输出一个 SVG。
+
+## 功能
+
+- 每次请求将一张图片矢量化为 SVG。
+- 两种风格：`default`（细节更多）和 `simple`（形状更少）。
+- 接受公开 URL 或图片 data URI。
+
+## 必填参数
+
+- `image_urls`（string[]）：恰好一张图片（建议 PNG、JPG 或 WebP）。公开 HTTP(S) URL 或 `data:image/...;base64,...` 格式的 data URI。
+
+## 可选参数
+
+- `mode`（string）：`default` 或 `simple`。默认 `default`。
+
+## 输出
+
+任务完成后，[查询任务状态](/zh/api-manual/task-management/status)和回调内容的 `files` 数组中会返回 SVG 文件（`image/svg+xml`），可直接在矢量编辑软件中打开，或嵌入网页使用。
+
+## 示例
+
+- **以 default 模式矢量化 Logo**：一张 PNG Logo，`mode: default`。
+- **simple 模式，带回调**：一张 JPG 草图，`mode: simple`，并提供 `callback_url`。
+
+## 注意事项
+
+- 本 ID 不接受 `prompt`，传入会返回 400。要根据文本生成新的 SVG 作品，请用 [Ideogram Vector 1.0 文本生成 SVG](/zh/api-manual/image-series/ideogram-vector-1-0-text-to-vector)。
+- `image_urls` 必须恰好包含一张图片。上文未列出的字段会返回 400。`model` 和 `callback_url` 放在请求根级，不要放进 `input`。
+- 每次请求按固定单价计费，`mode` 不影响价格。任务失败会全额退还。当前费率见[定价页](https://vidgo.ai/apis/api-pricing)。

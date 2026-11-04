@@ -1,0 +1,614 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Gemini 3.8 Flash TTS",
+    "description": "Gemini 3.8 Flash TTS API 将脚本或双人对话转为 WAV 音频，提供 30 种预设音色，并可用风格指示控制演绎方式。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Audio Series"
+        ],
+        "summary": "Gemini 3.8 Flash TTS",
+        "operationId": "submit_google_gemini_3_8_flash_text_to_speech",
+        "description": "单人模式发送 `text`（可选 `voice`），双人对话发送 `speakers` + `turns`；对话请求不能包含顶层的 `text` 或 `voice`。未列出的字段（如 `output_format`、`language_code`、`temperature`）都会返回 400。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "模型 ID，填 `google/gemini-3.8-flash/text-to-speech`。",
+                    "example": "google/gemini-3.8-flash/text-to-speech"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 地址，任务变为 `finished` 或 `failed` 时会收到 POST 请求。建议使用 HTTPS。省略、传 `null` 或空字符串即不发送回调。",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "Welcome to the city museum. The east wing opens at ten.",
+                        "description": "单人模式：要朗读的文本。单人模式必填，不能为空白。对话模式下不能传。"
+                      },
+                      "voice": {
+                        "type": "string",
+                        "enum": [
+                          "Achernar",
+                          "Achird",
+                          "Algenib",
+                          "Algieba",
+                          "Alnilam",
+                          "Aoede",
+                          "Autonoe",
+                          "Callirrhoe",
+                          "Charon",
+                          "Despina",
+                          "Enceladus",
+                          "Erinome",
+                          "Fenrir",
+                          "Gacrux",
+                          "Iapetus",
+                          "Kore",
+                          "Laomedeia",
+                          "Leda",
+                          "Orus",
+                          "Pulcherrima",
+                          "Puck",
+                          "Rasalgethi",
+                          "Sadachbia",
+                          "Sadaltager",
+                          "Schedar",
+                          "Sulafat",
+                          "Umbriel",
+                          "Vindemiatrix",
+                          "Zephyr",
+                          "Zubenelgenubi"
+                        ],
+                        "default": "Kore",
+                        "description": "单人模式：预设音色。对话模式下不能传。"
+                      },
+                      "speakers": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "speaker_id",
+                            "voice"
+                          ],
+                          "properties": {
+                            "speaker_id": {
+                              "type": "string",
+                              "minLength": 1,
+                              "example": "host",
+                              "description": "供 `turns` 引用的说话人别名，不能为空且不能重复。"
+                            },
+                            "voice": {
+                              "type": "string",
+                              "enum": [
+                                "Achernar",
+                                "Achird",
+                                "Algenib",
+                                "Algieba",
+                                "Alnilam",
+                                "Aoede",
+                                "Autonoe",
+                                "Callirrhoe",
+                                "Charon",
+                                "Despina",
+                                "Enceladus",
+                                "Erinome",
+                                "Fenrir",
+                                "Gacrux",
+                                "Iapetus",
+                                "Kore",
+                                "Laomedeia",
+                                "Leda",
+                                "Orus",
+                                "Pulcherrima",
+                                "Puck",
+                                "Rasalgethi",
+                                "Sadachbia",
+                                "Sadaltager",
+                                "Schedar",
+                                "Sulafat",
+                                "Umbriel",
+                                "Vindemiatrix",
+                                "Zephyr",
+                                "Zubenelgenubi"
+                              ],
+                              "description": "该说话人的预设音色。"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "description": "一位说话人。"
+                        },
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "description": "对话模式：恰好两位说话人。每个对象只包含 `speaker_id` 和 `voice`。"
+                      },
+                      "turns": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "speaker_id",
+                            "text"
+                          ],
+                          "properties": {
+                            "speaker_id": {
+                              "type": "string",
+                              "example": "host",
+                              "description": "必须与 `speakers` 中的某个 `speaker_id` 一致。"
+                            },
+                            "text": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "该说话人说的内容，不能为空白。"
+                            },
+                            "style_instructions": {
+                              "type": "string",
+                              "description": "可选，仅作用于这一句的演绎指示，例如 `laughing`、`whispering`。"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "description": "一句台词。"
+                        },
+                        "minItems": 1,
+                        "description": "对话模式：按说话顺序排列的台词，至少一条。"
+                      },
+                      "style_instructions": {
+                        "type": "string",
+                        "description": "可选的全局演绎指示，控制语气、语速、口音或情绪，例如 `Calm, warm documentary narration`。两种模式都适用。"
+                      },
+                      "enable_safety_checker": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "启用上游安全检查。"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "生成参数。发送 `text`（单人）或 `speakers` + `turns`（双人对话），二者只能选其一。"
+                  }
+                }
+              },
+              "examples": {
+                "single_speaker": {
+                  "summary": "带风格指示的单人旁白",
+                  "value": {
+                    "model": "google/gemini-3.8-flash/text-to-speech",
+                    "input": {
+                      "text": "In the spring of 1912, the ship left Southampton carrying more than two thousand people.",
+                      "voice": "Charon",
+                      "style_instructions": "Slow, measured documentary narration with a hint of gravity"
+                    }
+                  }
+                },
+                "dialogue": {
+                  "summary": "双人播客对话",
+                  "value": {
+                    "model": "google/gemini-3.8-flash/text-to-speech",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "speakers": [
+                        {
+                          "speaker_id": "host",
+                          "voice": "Kore"
+                        },
+                        {
+                          "speaker_id": "guest",
+                          "voice": "Puck"
+                        }
+                      ],
+                      "turns": [
+                        {
+                          "speaker_id": "host",
+                          "text": "So you really spent a winter alone at the research station?"
+                        },
+                        {
+                          "speaker_id": "guest",
+                          "text": "Four months. The quiet was the hardest part.",
+                          "style_instructions": "thoughtful, a little wistful"
+                        },
+                        {
+                          "speaker_id": "host",
+                          "text": "I can't imagine. What did you miss most?",
+                          "style_instructions": "curious"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP 状态码。"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "任务 ID，用于[查询任务状态](/zh/api-manual/task-management/status)。"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "任务的初始状态。"
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "任务创建时间（ISO 8601）。"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、字段不受支持、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建上游生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "所请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

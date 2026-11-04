@@ -1,0 +1,527 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - ElevenLabs V4 Turbo TTS",
+    "description": "ElevenLabs V4 Turbo TTS API 将最多 5,000 个字符转为语音，支持音频标签、90 多种语言、MP3/PCM/Opus 输出和可选时间戳。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Audio Series"
+        ],
+        "summary": "ElevenLabs V4 Turbo TTS",
+        "operationId": "submit_elevenlabs_tts_eleven_v4_turbo",
+        "description": "只传本模型列出的 `input` 字段。其他字段（如 `seed`、`speakers`、`speed`）都会返回 400。`model` 和 `callback_url` 放在请求根级。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "模型 ID，填 `elevenlabs/tts/eleven-v4-turbo`。",
+                    "example": "elevenlabs/tts/eleven-v4-turbo"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 地址，任务变为 `finished` 或 `failed` 时会收到 POST 请求。建议使用 HTTPS。省略、传 `null` 或空字符串即不发送回调。",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "text"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 5000,
+                        "example": "[warmly] Welcome back to the show. [pause] Today we're talking about the oldest lighthouse on the coast.",
+                        "description": "要朗读的文本，1–5,000 个字符，不能为空白。`[whispers]`、`[laughs]` 等行内音频标签会原样传给模型，并计入字符数。"
+                      },
+                      "voice": {
+                        "type": "string",
+                        "minLength": 1,
+                        "default": "Rachel",
+                        "description": "ElevenLabs 音色名称或音色 ID，例如 `Rachel`、`Aria`、`Brian`。"
+                      },
+                      "stability": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "default": 0.5,
+                        "description": "音色稳定度。数值越低越富于变化和表现力，越高越平稳。"
+                      },
+                      "similarity_boost": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "default": 0.75,
+                        "description": "输出贴近所选音色的程度。"
+                      },
+                      "output_format": {
+                        "type": "string",
+                        "enum": [
+                          "mp3_22050_32",
+                          "mp3_44100_32",
+                          "mp3_44100_64",
+                          "mp3_44100_96",
+                          "mp3_44100_128",
+                          "mp3_44100_192",
+                          "pcm_8000",
+                          "pcm_16000",
+                          "pcm_22050",
+                          "pcm_24000",
+                          "pcm_44100",
+                          "pcm_48000",
+                          "ulaw_8000",
+                          "alaw_8000",
+                          "opus_48000_32",
+                          "opus_48000_64",
+                          "opus_48000_96",
+                          "opus_48000_128",
+                          "opus_48000_192"
+                        ],
+                        "default": "mp3_44100_128",
+                        "description": "音频编码、采样率和码率，格式为 `codec_samplerate[_bitrate]`。"
+                      },
+                      "apply_text_normalization": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "on",
+                          "off"
+                        ],
+                        "default": "auto",
+                        "description": "合成前是否把数字、日期和缩写展开为文字。`auto` 由模型决定。"
+                      },
+                      "timestamps": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "同时返回生成语音的时间戳数据。"
+                      },
+                      "language_code": {
+                        "type": "string",
+                        "example": "en",
+                        "description": "可选的语言提示，使用 ISO 639-1 代码，例如 `en`、`zh`、`ja`。省略时由模型自动识别语言。"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "生成参数。"
+                  }
+                }
+              },
+              "examples": {
+                "notification": {
+                  "summary": "通知播报",
+                  "value": {
+                    "model": "elevenlabs/tts/eleven-v4-turbo",
+                    "input": {
+                      "text": "Your order has shipped and should arrive on Thursday. Reply STOP to unsubscribe from delivery updates.",
+                      "voice": "Brian"
+                    }
+                  }
+                },
+                "french_opus": {
+                  "summary": "法语旁白输出 Opus",
+                  "value": {
+                    "model": "elevenlabs/tts/eleven-v4-turbo",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "text": "Bienvenue ! Votre séance de méditation commence dans trente secondes. Installez-vous confortablement.",
+                      "voice": "Charlotte",
+                      "language_code": "fr",
+                      "output_format": "opus_48000_64",
+                      "stability": 0.6
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP 状态码。"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "任务 ID，用于[查询任务状态](/zh/api-manual/task-management/status)。"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "任务的初始状态。"
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "任务创建时间（ISO 8601）。"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、字段不受支持、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建上游生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "所请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

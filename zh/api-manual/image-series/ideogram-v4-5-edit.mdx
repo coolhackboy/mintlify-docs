@@ -1,0 +1,69 @@
+---
+title: "Ideogram 4.5 图像编辑"
+description: "Ideogram 4.5 图像编辑 API 根据文字指令编辑一张图片，支持可选蒙版、最多 4 张参考图，以及 regular 或 high 两档编辑精度。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/ideogram-v4-5-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+Ideogram 4.5 图像编辑根据文字指令修改一张已有图片。可以用蒙版把编辑限定在某个区域，用最多四张参考图引导结果；需要其余部分保持像素级不变时，选择 `high` 编辑精度。常见用途包括替换商品或招牌文字、修饰背景、批量制作设计变体。Ideogram 称该模型可以避免多次连续编辑后累积的偏色和瑕疵。
+
+Ideogram 4.5 是 Ideogram 面向文字密集型画面和精确编辑的图像模型。Vidgo 提供两个 model ID：[文生图](/zh/api-manual/image-series/ideogram-v4-5-text-to-image)和[图像编辑](/zh/api-manual/image-series/ideogram-v4-5-edit)。
+
+## 模型
+
+- **ideogram/v4.5/edit** — Ideogram 4.5 图像编辑：一张原图，可选蒙版和参考图。
+
+## 功能
+
+- 用自然语言指令进行图像编辑，包括替换画面中的文字。
+- 可选蒙版，把编辑限定在某个区域。
+- 最多 4 张风格或内容参考图（使用蒙版时最多 3 张）。
+- `edit_precision: high` 适合其余部分必须保持不变的编辑。
+- 四档质量（含用于低成本草稿的 `very_low`），每次请求 1–8 张结果。
+
+## 输入模式
+
+- **指令编辑**：`image_urls` + `prompt`，由模型决定修改哪个区域。
+- **蒙版编辑**：再加 `mask_url`（黑色为编辑区域，白色为保留区域），并保持 `size: auto`。
+- 两种模式都可以加 `reference_image_urls`。
+
+## 必填参数
+
+- `prompt`（string）：要改什么、怎么改，1–10,000 个字符。不能为空白。
+- `image_urls`（string[]）：恰好一张要编辑的图片。公开 HTTP(S) URL 或 `data:image/...;base64,...` 格式的 data URI。
+
+## 可选参数
+
+- `mask_url`（string）：与原图尺寸一致的蒙版，须同时包含黑色（编辑）和白色（保留）。要求 `size: auto`。
+- `reference_image_urls`（string[]）：最多 4 张参考图；使用 `mask_url` 时最多 3 张。参考图只引导结果，本身不会被编辑。
+- `edit_precision`（string）：`regular` 或 `high`。默认 `regular`。`high` 要求 `size: auto`。
+- `quality`（string）：`very_low`、`low`、`medium` 或 `high`。默认 `medium`。
+- `n`（integer）：结果张数，`1`–`8`。默认 `1`。
+- `size`（string）：输出尺寸。默认 `auto`。见[尺寸](#尺寸)。
+
+## 尺寸
+
+- `auto`（默认）保持原图尺寸。发送 `mask_url` 或 `edit_precision: high` 时必须使用 `auto`。
+- 预设：`1:1`、`1:1 HD`、`4:3`、`3:4`、`16:9`、`9:16`。
+- 自定义 `WIDTHxHEIGHT`，例如 `1536x1024`：每边至少 256 且为 32 的倍数，总像素不超过 4,194,304（2048x2048），宽高比不超过 6:1。
+
+## 输出
+
+任务完成后，[查询任务状态](/zh/api-manual/task-management/status)和回调内容的 `files` 数组中会按请求的张数（`n`）返回对应数量的图片文件。
+
+## 示例
+
+- **仅文字指令编辑**：修改店铺招牌上的文字，`size: auto`，`medium` 质量。
+- **蒙版编辑，带参考图和高精度**：沙发区域蒙版加一张扶手椅参考图，`edit_precision: high`，`quality: high`，并提供 `callback_url`。
+
+## 注意事项
+
+- `image_urls` 必须恰好包含一张图片。要从零生成图片，请用 [Ideogram 4.5 文生图](/zh/api-manual/image-series/ideogram-v4-5-text-to-image)。
+- 使用 `mask_url` 或 `edit_precision: high` 时 `size` 不是 `auto` 会返回 400；蒙版同时搭配 4 张参考图也会返回 400。
+- 上文未列出的字段会返回 400。`model` 和 `callback_url` 放在请求根级，不要放进 `input`。
+- 积分在提交时预扣，只取决于 `quality` 和 `n`；`size`、蒙版和参考图不影响价格。任务失败会全额退还。当前费率见[定价页](https://vidgo.ai/apis/api-pricing)。

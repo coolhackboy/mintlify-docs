@@ -1,0 +1,66 @@
+---
+title: "Vidu Q4 Image to Video"
+description: "The Vidu Q4 Image to Video API animates one start image into a 3–16 second video at 540p, 720p, 1080p, 2K or 4K, keeping the image's aspect ratio."
+icon: "video"
+openapi: "/api-manual/video-series/vidu-q4-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+Vidu Q4 Image to Video animates one still image into a 3–16 second video, from fast 540p drafts up to 4K. The image becomes the first frame and fixes the framing, so the output keeps the image's aspect ratio. Use it to bring illustrations, product stills or key visuals to life.
+
+Vidu Q4 is ShengShu Technology's video model, released upstream as Vidu Q4 Preview in October 2026. It has no text-to-video mode: every request starts from images. Vidgo exposes two model IDs: [Image to Video](/api-manual/video-series/vidu-q4-image-to-video) and [Reference to Video](/api-manual/video-series/vidu-q4-reference-to-video).
+
+## Models
+
+- **vidu/q4/image-to-video** — Image-to-video with Vidu Q4 from one start frame, 3–16 seconds, 540p to 4K.
+
+## Features
+
+- Image-to-video from a single start frame.
+- Optional prompt to direct motion and camera movement.
+- Integer durations from 3 to 16 seconds.
+- Five resolutions: `540p`, `720p`, `1080p`, `2k` and `4k`.
+- Aspect ratio follows the input image.
+
+## Required parameters
+
+- `image_urls` (string[]): Exactly one public HTTP(S) image URL. It is used as the first frame.
+
+## Optional parameters
+
+- `prompt` (string): What moves, how the camera moves and the mood. Up to 5,000 characters. Default empty.
+- `duration` (integer): Output length in seconds, `3`–`16`. Default `5`.
+- `resolution` (string): `540p`, `720p`, `1080p`, `2k` or `4k` (case-insensitive). Default `720p`.
+- `enable_safety_checker` (boolean): Turn the upstream safety checker on or off.
+
+## Resolution
+
+| `resolution` | Use it for |
+| --- | --- |
+| `540p` | Fast, low-cost drafts |
+| `720p` | Default; social and web clips |
+| `1080p` | Full HD delivery |
+| `2k` | High-resolution masters |
+| `4k` | Hero shots and large screens |
+
+The resolution sets the per-second billing rate.
+
+## Output
+
+The finished task returns one MP4 video in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload.
+
+## Examples
+
+- **5-second 720p animation**: one illustration plus a short motion prompt at the default settings.
+- **10-second 4K hero shot with callback**: a key visual animated at `4k` for large screens, with a `callback_url`.
+
+## Notes
+
+- Image-to-video does not generate audio on this ID and does not take `aspect_ratio`, `generate_audio`, `reference_image_urls` or `reference_audio_urls`; sending them returns 400. For multi-image references, voice references or native audio, use [Vidu Q4 Reference to Video](/api-manual/video-series/vidu-q4-reference-to-video).
+- Vidu Q4 has no text-to-video mode. Every request needs an image.
+- `model` and `callback_url` belong at the request root, not inside `input`.
+- Credits are reserved at submission and depend on `resolution` and `duration` (per output second). Reference images, reference audio and `generate_audio` do not change the rate. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.

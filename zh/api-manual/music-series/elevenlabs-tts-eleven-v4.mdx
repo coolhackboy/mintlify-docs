@@ -1,0 +1,73 @@
+---
+title: "ElevenLabs V4 TTS"
+description: "ElevenLabs V4 TTS API 将最多 5,000 个字符转为富有表现力的语音，支持音频标签、音色与稳定度控制、19 种输出格式和时间戳。"
+icon: "music"
+openapi: "/zh/api-manual/music-series/elevenlabs-tts-eleven-v4.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+ElevenLabs V4 TTS 使用 ElevenLabs 表现力最强的 Eleven v4 模型，把文本转为富有情感的语音。`[whispers]`、`[laughs]` 等行内音频标签可以指导演绎方式，配合音色、稳定度、语言和输出格式控制，适用于 90 多种语言的有声书、视频配音、播客、游戏角色和在线课程旁白。
+
+Eleven v4 和 Eleven v4 Turbo 是 ElevenLabs 于 2026 年 9 月同时发布的文本转语音（TTS）模型，在 Vidgo 上的请求字段完全相同：[ElevenLabs V4 TTS](/zh/api-manual/music-series/elevenlabs-tts-eleven-v4) 表现力最强，[ElevenLabs V4 Turbo TTS](/zh/api-manual/music-series/elevenlabs-tts-eleven-v4-turbo) 速度更快、成本更低。
+
+## 模型
+
+- **elevenlabs/tts/eleven-v4** — Eleven v4 文本转语音，ElevenLabs 表现力最强的语音模型。
+
+## 功能
+
+- 文本转语音（TTS），每次请求最多 5,000 个字符。
+- 在 `text` 中使用行内音频标签表达情绪、停顿和非语言声音。
+- 可按名称或音色 ID 使用任意 ElevenLabs 音色，并可调整 `stability` 和 `similarity_boost`。
+- 支持 90 多种语言，可用 `language_code` 提示语言。
+- 19 种输出格式，涵盖 MP3、PCM、μ-law、A-law 和 Opus。
+- 可选时间戳，用于字幕和口型同步。
+
+## 必填参数
+
+- `text`（string）：要朗读的文本，1–5,000 个字符，不能为空白。可以使用方括号音频标签，例如 `[whispers]`。
+
+## 可选参数
+
+- `voice`（string）：ElevenLabs 音色名称或音色 ID。默认 `Rachel`。见[预设音色](#预设音色)。
+- `stability`（number）：`0`–`1`。默认 `0.5`。数值越低越有表现力，越高越稳定。
+- `similarity_boost`（number）：`0`–`1`。默认 `0.75`。输出贴近所选音色的程度。
+- `output_format`（string）：19 种 MP3、PCM、μ-law、A-law 和 Opus 格式之一。默认 `mp3_44100_128`。见[输出格式](#输出格式)。
+- `apply_text_normalization`（string）：`auto`、`on` 或 `off`。默认 `auto`。控制是否把数字、日期和缩写展开为文字。
+- `timestamps`（boolean）：同时返回语音的时间戳数据。默认 `false`。
+- `language_code`（string）：ISO 639-1 语言提示，例如 `en`、`zh`、`ja`。省略时由模型自动识别语言。
+
+## 输出
+
+任务完成后，[查询任务状态](/zh/api-manual/task-management/status)和回调内容的 `files` 数组中会返回语音音频文件。设置 `timestamps: true` 时，时间戳数据会作为同一数组中的另一项返回。
+
+## 输出格式
+
+| 类别 | 取值 |
+| --- | --- |
+| MP3 | `mp3_22050_32`、`mp3_44100_32`、`mp3_44100_64`、`mp3_44100_96`、`mp3_44100_128`（默认）、`mp3_44100_192` |
+| PCM | `pcm_8000`、`pcm_16000`、`pcm_22050`、`pcm_24000`、`pcm_44100`、`pcm_48000` |
+| 电话语音 | `ulaw_8000`、`alaw_8000` |
+| Opus | `opus_48000_32`、`opus_48000_64`、`opus_48000_96`、`opus_48000_128`、`opus_48000_192` |
+
+取值依次表示编码、采样率（Hz），压缩格式还带有码率（kbps）。`pcm_*` 适合后续音频处理；`ulaw_8000` 和 `alaw_8000` 适合电话系统。
+
+## 预设音色
+
+`voice` 可以填该模型可用的任意 ElevenLabs 音色名称或音色 ID。常用名称包括 `Aria`、`Roger`、`Sarah`、`Laura`、`Charlie`、`George`、`Callum`、`River`、`Liam`、`Charlotte`、`Alice`、`Matilda`、`Will`、`Jessica`、`Eric`、`Chris`、`Brian`、`Daniel`、`Lily`、`Bill`、`Rachel`。默认 `Rachel`。
+
+## 示例
+
+- **带音频标签的故事旁白**：`text` 中使用 `[whispers]`、`[curious]`、`[excited]`、`[laughs]`，`voice: Charlotte`，并调低 `stability` 获得更有表现力的演绎。
+- **播客开场输出 PCM 并带时间戳**：`output_format: pcm_44100`，`timestamps: true` 用于字幕对齐，并提供 `callback_url`。
+
+## 注意事项
+
+- 积分在提交时预扣，按发送的 `text` 字符数计算，空格、换行和音频标签都计入。任务失败会全额退还。当前费率见[定价页](https://vidgo.ai/apis/api-pricing)。
+- 每次请求的 `text` 最多 5,000 个字符，更长的稿件请拆分为多个任务。
+- 本接口每次请求只生成一个音色。不支持多人对话、声音克隆、流式输出、`seed` 和 `speed`；不支持的字段会返回 400。
+- 需要更低成本、更快出结果且字段相同时，请用 [ElevenLabs V4 Turbo TTS](/zh/api-manual/music-series/elevenlabs-tts-eleven-v4-turbo)。

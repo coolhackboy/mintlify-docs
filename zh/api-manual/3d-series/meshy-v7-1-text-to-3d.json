@@ -1,0 +1,597 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Meshy 7.1 文生 3D",
+    "description": "Meshy 7.1 文生 3D API 根据提示词生成 3D 模型，支持预览或带纹理模式、最高 4K 几何细节、四边形拓扑、PBR 贴图和骨骼绑定。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "3D Series"
+        ],
+        "summary": "Meshy 7.1 文生 3D",
+        "operationId": "submit_meshy_v7_1_text_to_3d",
+        "description": "只传本模型列出的 `input` 字段。其他字段（包括 `image_urls`、`should_texture`）都会返回 400。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "模型 ID，填 `meshy/v7.1/text-to-3d`。",
+                    "example": "meshy/v7.1/text-to-3d"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 地址，任务变为 `finished` 或 `failed` 时会收到 POST 请求。建议使用 HTTPS。省略、传 `null` 或空字符串即不发送回调。",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "prompt"
+                    ],
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 600,
+                        "example": "A weathered bronze lantern with a hexagonal glass cage and a curled iron handle",
+                        "description": "描述物体：形状、材质、颜色和风格。1–600 个字符，不能为空白。"
+                      },
+                      "mode": {
+                        "type": "string",
+                        "enum": [
+                          "preview",
+                          "full"
+                        ],
+                        "default": "full",
+                        "description": "`preview` 只返回几何体；`full` 返回带纹理的模型，会增加费用。"
+                      },
+                      "seed": {
+                        "type": "integer",
+                        "description": "种子，用于获得可复现的结果。"
+                      },
+                      "model_type": {
+                        "type": "string",
+                        "enum": [
+                          "standard",
+                          "smart-topology"
+                        ],
+                        "default": "standard",
+                        "description": "网格模型。`smart-topology` 生成更规整的低面数网格，`target_polycount` 上限为 15000；`geometry_resolution` 需要 `standard`。"
+                      },
+                      "enable_prompt_expansion": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "让模型扩写简短的提示词。"
+                      },
+                      "topology": {
+                        "type": "string",
+                        "enum": [
+                          "triangle",
+                          "quad"
+                        ],
+                        "default": "triangle",
+                        "description": "网格拓扑。"
+                      },
+                      "target_polycount": {
+                        "type": "integer",
+                        "minimum": 100,
+                        "maximum": 300000,
+                        "default": 30000,
+                        "description": "目标多边形数量。`model_type: standard` 时为 `100`–`300000`（默认 `30000`）；`smart-topology` 时为 `100`–`15000`（默认 `4000`）。"
+                      },
+                      "should_remesh": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "对输出进行重新网格化。设为 `false` 保留原始三角网格。"
+                      },
+                      "symmetry_mode": {
+                        "type": "string",
+                        "enum": [
+                          "off",
+                          "auto",
+                          "on"
+                        ],
+                        "default": "auto",
+                        "description": "对称处理方式。"
+                      },
+                      "pose_mode": {
+                        "type": "string",
+                        "enum": [
+                          "",
+                          "a-pose",
+                          "t-pose"
+                        ],
+                        "default": "",
+                        "description": "角色姿势。空字符串表示不限定姿势；计划做骨骼绑定的角色适合 `a-pose` 或 `t-pose`。"
+                      },
+                      "geometry_resolution": {
+                        "type": "string",
+                        "enum": [
+                          "standard",
+                          "2k",
+                          "4k"
+                        ],
+                        "description": "几何细节档位：`standard`、`2k` 或 `4k`。需要 `model_type: standard`。该参数控制网格细节，而非纹理尺寸。"
+                      },
+                      "enable_pbr": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "在基础颜色之外生成 PBR 贴图（金属度、粗糙度、法线）。"
+                      },
+                      "enable_rigging": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "将模型自动绑定为人形角色骨骼。会增加费用。"
+                      },
+                      "enable_animation": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "应用 `animation_action_id` 指定的动画预设。需要 `enable_rigging: true`。会增加费用。"
+                      },
+                      "rigging_height_meters": {
+                        "type": "number",
+                        "default": 1.7,
+                        "description": "骨骼绑定使用的角色身高（米），必须大于 0。"
+                      },
+                      "animation_action_id": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 696,
+                        "default": 92,
+                        "description": "动画预设 ID，`0`–`696`。"
+                      },
+                      "texture_prompt": {
+                        "type": "string",
+                        "maxLength": 600,
+                        "description": "纹理的文字引导，最多 600 个字符。"
+                      },
+                      "texture_image_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "用于引导纹理的图片，公开 HTTP(S) URL 或 `data:image/...` URI。"
+                      },
+                      "enable_safety_checker": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "启用上游安全检查。"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "生成参数。"
+                  }
+                }
+              },
+              "examples": {
+                "textured": {
+                  "summary": "带纹理道具（默认 full 模式）",
+                  "value": {
+                    "model": "meshy/v7.1/text-to-3d",
+                    "input": {
+                      "prompt": "A weathered bronze lantern with a hexagonal glass cage and a curled iron handle",
+                      "mode": "full",
+                      "topology": "quad",
+                      "target_polycount": 30000,
+                      "enable_pbr": true
+                    }
+                  }
+                },
+                "preview": {
+                  "summary": "仅几何体预览",
+                  "value": {
+                    "model": "meshy/v7.1/text-to-3d",
+                    "input": {
+                      "prompt": "A low stone well with a wooden roof and a hanging bucket",
+                      "mode": "preview",
+                      "geometry_resolution": "2k",
+                      "seed": 42
+                    }
+                  }
+                },
+                "rigged_character": {
+                  "summary": "带骨骼绑定和动画的角色，带回调",
+                  "value": {
+                    "model": "meshy/v7.1/text-to-3d",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cartoon explorer in a khaki jacket, boots and a wide-brim hat, full body",
+                      "mode": "full",
+                      "pose_mode": "t-pose",
+                      "enable_rigging": true,
+                      "rigging_height_meters": 1.7,
+                      "enable_animation": true,
+                      "animation_action_id": 92
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP 状态码。"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "任务 ID，用于[查询任务状态](/zh/api-manual/task-management/status)。"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "任务的初始状态。"
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "任务创建时间（ISO 8601）。"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、字段不受支持、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建上游生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "所请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

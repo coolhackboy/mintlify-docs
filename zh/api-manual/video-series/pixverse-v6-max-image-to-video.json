@@ -1,0 +1,504 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - PixVerse V6 Max 图生视频",
+    "description": "PixVerse V6 Max 图生视频 API 将一张 JPEG、PNG 或 WebP 图片生成 1–15 秒、360p 到 1080p 的视频，并保持图片的构图。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Video Series"
+        ],
+        "summary": "PixVerse V6 Max 图生视频",
+        "operationId": "submit_pixverse_v6_max_image_to_video",
+        "description": "只传本模型列出的 `input` 字段。其他字段（包括 `aspect_ratio`）都会返回 400。图片 URL 必须是公开的 HTTP(S) 地址且不能内嵌凭证；如果带文件扩展名，必须是 .jpg、.jpeg、.png 或 .webp。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "模型 ID，填 `pixverse/v6-max/image-to-video`。",
+                    "example": "pixverse/v6-max/image-to-video"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 地址，任务变为 `finished` 或 `failed` 时会收到 POST 请求。建议使用 HTTPS。省略、传 `null` 或空字符串即不发送回调。",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "image_urls"
+                    ],
+                    "properties": {
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "minItems": 1,
+                        "maxItems": 1,
+                        "example": [
+                          "https://example.com/packshot.png"
+                        ],
+                        "description": "恰好一个公开 HTTP(S) 图片 URL（JPEG、PNG 或 WebP），作为起始帧并决定宽高比。"
+                      },
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2048,
+                        "example": "The perfume bottle rotates slowly as petals fall around it, soft studio light",
+                        "description": "可选的运动描述：哪些元素运动、镜头如何运动，开启 `audio` 时还可描述声音。传入时不能为空白，最多 2,048 个字符。"
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 15,
+                        "default": 5,
+                        "description": "输出时长，单位为整秒。`null` 视为默认值。"
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "enum": [
+                          "360p",
+                          "540p",
+                          "720p",
+                          "1080p"
+                        ],
+                        "default": "540p",
+                        "description": "输出分辨率，决定计费档位。`null` 视为默认值。"
+                      },
+                      "audio": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "添加原生音轨（对白、音效、音乐），会改变计费档位。`null` 视为默认值。"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "生成参数。"
+                  }
+                }
+              },
+              "examples": {
+                "product": {
+                  "summary": "5 秒 720p 产品动画",
+                  "value": {
+                    "model": "pixverse/v6-max/image-to-video",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/packshot.png"
+                      ],
+                      "prompt": "The perfume bottle rotates slowly as petals fall around it, soft studio light",
+                      "duration": 5,
+                      "resolution": "720p",
+                      "audio": false
+                    }
+                  }
+                },
+                "with_audio": {
+                  "summary": "8 秒 1080p 带音频短片，带回调",
+                  "value": {
+                    "model": "pixverse/v6-max/image-to-video",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/guitarist.jpg"
+                      ],
+                      "prompt": "The guitarist strums the final chord and the crowd cheers, camera pulls back",
+                      "duration": 8,
+                      "resolution": "1080p",
+                      "audio": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP 状态码。"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "任务 ID，用于[查询任务状态](/zh/api-manual/task-management/status)。"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "任务的初始状态。"
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "任务创建时间（ISO 8601）。"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、字段不受支持、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建上游生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "所请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

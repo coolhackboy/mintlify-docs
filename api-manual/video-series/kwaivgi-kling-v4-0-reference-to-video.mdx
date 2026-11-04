@@ -1,0 +1,77 @@
+---
+title: "Kling 4.0 Reference to Video"
+description: "The Kling 4.0 Reference to Video API guides 3–30 second videos with up to 10 reference images, 5 reference videos and 7 elements, cited as @Image1 or @Element1."
+icon: "video"
+openapi: "/api-manual/video-series/kwaivgi-kling-v4-0-reference-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+Kling 4.0 Reference to Video generates a 3–30 second video guided by reference images, reference videos and reusable subjects (elements), so characters, products and settings stay consistent. Cite each reference in the prompt by its position, such as `@Image1`, `@Video1` or `@Element1`.
+
+Kling 4.0 is Kuaishou's Kling AI video model. Vidgo exposes it as four model IDs: [Text to Video](/api-manual/video-series/kwaivgi-kling-v4-0-text-to-video), [Image to Video](/api-manual/video-series/kwaivgi-kling-v4-0-image-to-video), [Reference to Video](/api-manual/video-series/kwaivgi-kling-v4-0-reference-to-video) and [Video Edit](/api-manual/video-series/kwaivgi-kling-v4-0-video-edit).
+
+## Models
+
+- **kwaivgi/kling-v4.0/reference-to-video** — Reference-to-video with Kling 4.0 from images, videos and elements, 3–30 seconds, 720p or 1080p.
+
+## Features
+
+- Up to 10 reference images, 5 reference videos and 7 elements, 15 assets in total.
+- Elements built from 2–4 images or one video of the same subject.
+- Optional start frame via `image_urls`.
+- Single or multi-shot prompts; 3–30 seconds at 720p or 1080p.
+- Five aspect ratios: `auto`, `16:9`, `9:16`, `1:1`, `21:9`.
+
+## Input modes
+
+Send at least one reference input; you can combine them:
+
+- **Reference images** (`reference_image_urls`): cite as `@Image1`, `@Image2`, ….
+- **Reference videos** (`reference_video_urls`): cite as `@Video1`, `@Video2`, …. Billed as input video.
+- **Elements** (`kling_elements`): cite as `@Element1`, `@Element2`, …. Video-based elements are billed as input video.
+
+Add `image_urls` with one image to fix the opening frame. Then choose a single `prompt` or a `multi_prompt` shot list:
+
+- **Single prompt**: send `prompt` and, optionally, `duration`.
+- **Multi-shot**: send `multi_prompt` with one entry per shot. The clip length is the sum of the shot durations; leave `duration` out or set it to that sum.
+
+## Required parameters
+
+- At least one of `reference_image_urls`, `reference_video_urls` or `kling_elements`.
+- `prompt` (string) **or** `multi_prompt` (object[]): send exactly one.
+  - `prompt`: 1–26,000 characters after trimming.
+  - `multi_prompt`: a non-empty list of shots `{prompt, duration?}`. Each shot `prompt` is 1–512 characters; each shot `duration` is an integer `1`–`30` (default `5`). The shot durations must total 3–30 seconds.
+
+## Optional parameters
+
+- `reference_image_urls` (string[]): Up to 10 public HTTP(S) image URLs.
+- `reference_video_urls` (string[]): Up to 5 public HTTP(S) video URLs, each 3–30 seconds.
+- `kling_elements` (object[]): Up to 7 elements, at most 3 video-based. Each element has exactly one of:
+  - `element_input_urls` (string[]): 2–4 image URLs of the subject.
+  - `element_input_video_urls` (string[]): exactly 1 video URL of the subject (3–30 seconds).
+- `image_urls` (string[]): One start-frame image URL.
+- `duration` (integer): Output length, `3`–`30` seconds. Default `5`; with `multi_prompt` the default is the shot total, and an explicit value must equal it.
+- `resolution` (string): `720p` or `1080p`. Default `720p`.
+- `aspect_ratio` (string): `auto`, `16:9`, `9:16`, `1:1` or `21:9`. Default `auto`.
+
+## Output
+
+The finished task returns one MP4 video, with an audio track, in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload.
+
+## Examples
+
+- **Reference images**: a character and a cafe image, cited as `@Image1` and `@Image2`, 8 seconds at 720p.
+- **Elements plus a reference video, with callback**: one robot element from two images and a dance clip cited as `@Video1`, 10 seconds at 1080p, `9:16`.
+
+## Notes
+
+- Limits: start frame plus reference images ≤ 10; all assets (start frame, reference images, reference videos, elements) ≤ 15; video-based elements ≤ 3.
+- Input videos are downloaded and measured server-side (up to 100 MB each). Each must run 3–30 seconds, and all input videos together must not exceed 30 seconds.
+- `voice_id` and other extra fields inside an element return 400.
+- Fields not listed above return 400. `model` and `callback_url` belong at the request root, not inside `input`.
+- Credits are reserved at submission and depend on `resolution` and duration. When an input video is present, a separate input-video rate applies to billed seconds = output duration + the larger of the output duration and the total input video length (summed, then rounded up to whole seconds). A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates. Requests with reference images or image elements only use the standard rate on the output duration.
+- Output is 720p or 1080p only; there is no 4K or HDR tier, no audio on/off switch and no `seed` on this model.

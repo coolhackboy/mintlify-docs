@@ -1,0 +1,477 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Ideogram Vector 1.0 Image to SVG",
+    "description": "The Ideogram Vector 1.0 Image to SVG API converts one PNG, JPG or WebP image into an editable SVG file, in default (detailed) or simple mode.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Image Series"
+        ],
+        "summary": "Ideogram Vector 1.0 Image to SVG",
+        "operationId": "submit_ideogram_vector_1_0_image_to_vector",
+        "description": "Send only the `input` fields listed for this model. Any other field, including `prompt`, returns 400. `image_urls` accepts a public HTTP(S) URL or a `data:image/...;base64,...` data URI.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "Model ID. Use `ideogram/vector-1.0/image-to-vector`.",
+                    "example": "ideogram/vector-1.0/image-to-vector"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "Optional public HTTP(S) endpoint that receives a POST when the task becomes `finished` or `failed`. HTTPS is recommended. Omit it, or send `null` or an empty string, to disable callbacks.",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "image_urls"
+                    ],
+                    "properties": {
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "minItems": 1,
+                        "maxItems": 1,
+                        "example": [
+                          "https://example.com/logo.png"
+                        ],
+                        "description": "Exactly one raster image to vectorize: a public HTTP(S) URL or an image data URI."
+                      },
+                      "mode": {
+                        "type": "string",
+                        "enum": [
+                          "default",
+                          "simple"
+                        ],
+                        "default": "default",
+                        "description": "Vectorization style. `default` keeps finer detail; `simple` uses fewer, cleaner shapes."
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "Generation parameters."
+                  }
+                }
+              },
+              "examples": {
+                "default_mode": {
+                  "summary": "Vectorize a logo in default mode",
+                  "value": {
+                    "model": "ideogram/vector-1.0/image-to-vector",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/logo.png"
+                      ],
+                      "mode": "default"
+                    }
+                  }
+                },
+                "simple_mode": {
+                  "summary": "Simple mode with callback",
+                  "value": {
+                    "model": "ideogram/vector-1.0/image-to-vector",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/sketch.jpg"
+                      ],
+                      "mode": "simple"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP status code."
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "Task ID. Use it with [Query Task Status](/api-manual/task-management/status)."
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "Initial task status."
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Time the task was created (ISO 8601)."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, unsupported field, inaccessible media, or insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or disabled model",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate or API key credit limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unable to create the upstream generation task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The requested model is temporarily unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nGo to **Dashboard → API Key** ([API Key Management Page](https://vidgo.ai/apis/dashboard/api-key)) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

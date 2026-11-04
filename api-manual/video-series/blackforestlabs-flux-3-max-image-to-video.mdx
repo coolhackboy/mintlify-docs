@@ -1,0 +1,60 @@
+---
+title: "FLUX 3 Max Image to Video"
+description: "The FLUX 3 Max Image to Video API animates a start image, with an optional end image, into a 5–20 second 720p or 1080p video with native audio."
+icon: "video"
+openapi: "/api-manual/video-series/blackforestlabs-flux-3-max-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+FLUX 3 Max Image to Video animates a start image into a 5–20 second video at 720p or 1080p. Add a second image and the model treats it as the end frame, generating the motion that connects the two. Audio is generated in the same pass unless you turn it off.
+
+FLUX 3 Max is a video model post-trained by fal in collaboration with Black Forest Labs on the FLUX 3 video base. Vidgo exposes it as three model IDs: [Text to Video](/api-manual/video-series/blackforestlabs-flux-3-max-text-to-video), [Image to Video](/api-manual/video-series/blackforestlabs-flux-3-max-image-to-video) and [Keyframes to Video](/api-manual/video-series/blackforestlabs-flux-3-max-keyframes-to-video).
+
+## Models
+
+- **blackforestlabs/flux-3-max/image-to-video** — Image-to-video with FLUX 3 Max from a start frame and an optional end frame.
+
+## Features
+
+- Image-to-video from one start frame.
+- First and last frame control: a second image sets where the clip ends.
+- Integer durations from 5 to 20 seconds at 720p or 1080p.
+- Eight aspect ratios; `auto` follows the first image.
+- Native audio on by default.
+
+## Input modes
+
+- **Start frame**: `image_urls` with one image. The video opens on that image.
+- **Start and end frame**: `image_urls` with two images. The first opens the video and the second closes it.
+
+## Required parameters
+
+- `image_urls` (string[]): One or two public HTTP(S) image URLs (PNG, JPEG or WebP). Order matters: start frame first, end frame second.
+- `prompt` (string): How the scene moves, the camera movement and, with `sound` on, the audio. Must not be blank.
+
+## Optional parameters
+
+- `duration` (integer): Output length in seconds, `5`–`20`. Default `5`.
+- `resolution` (string): `720p` or `1080p`. Default `720p`.
+- `aspect_ratio` (string): `auto`, `21:9`, `2:1`, `16:9`, `4:3`, `1:1`, `3:4` or `9:16`. Default `auto`.
+- `sound` (boolean): Generate native audio with the video. Default `true`; set `false` for silent footage.
+
+## Output
+
+The finished task returns one MP4 video in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload.
+
+## Examples
+
+- **Start frame only**: one portrait image with a short motion prompt, `aspect_ratio: auto` so the video keeps the image's shape.
+- **Start and end frame**: a closed box and an open box as the two frames, an 8-second 1080p silent clip and a `callback_url`.
+
+## Notes
+
+- `image_urls` takes at most two images. To place more images at chosen points in time, use [FLUX 3 Max Keyframes to Video](/api-manual/video-series/blackforestlabs-flux-3-max-keyframes-to-video).
+- Images must be publicly reachable over HTTP(S) and must not contain embedded credentials. Fields not listed above, such as `keyframes`, return 400.
+- Credits are reserved at submission and depend on `resolution` and `duration`. The rate is the same for text-to-video, image-to-video and keyframes-to-video, and `sound` does not change it. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.
+- There is no 4K tier, no `seed` and no output longer than 20 seconds on this model.

@@ -1,0 +1,64 @@
+---
+title: "FLUX 3 Klein Text to Image"
+description: "The FLUX 3 Klein Text to Image API generates 1–4 images from a prompt at 1K, 2K or 4K, with 7 aspect ratios or custom sizes and PNG, JPEG or WebP output."
+icon: "image"
+openapi: "/api-manual/image-series/blackforestlabs-flux-3-klein-text-to-image.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+FLUX 3 Klein Text to Image creates images from a prompt at 1K, 2K or 4K, using seven aspect-ratio presets or an exact custom size. It suits product shots, marketing visuals, concept art and high-volume image pipelines where fast turnaround matters.
+
+FLUX 3 Klein is the compact member of Black Forest Labs' FLUX 3 image family, built for fast generation and instruction-based editing. Vidgo exposes it as two model IDs: [Text to Image](/api-manual/image-series/blackforestlabs-flux-3-klein-text-to-image) and [Edit](/api-manual/image-series/blackforestlabs-flux-3-klein-edit).
+
+## Models
+
+- **blackforestlabs/flux-3-klein/text-to-image** — Text-to-image with FLUX 3 Klein, 1–4 images at 1K, 2K or 4K.
+
+## Features
+
+- Text-to-image from a single prompt.
+- Three resolution tiers: `1K`, `2K`, `4K`.
+- Seven aspect-ratio presets, or a custom `WIDTHxHEIGHT` from 256 to 4096 px per side.
+- PNG, JPEG or WebP output, 1–4 images per request.
+
+## Required parameters
+
+- `prompt` (string): The image you want. Must not be blank.
+
+## Optional parameters
+
+- `n` (integer): Number of images, `1`–`4`. Default `1`.
+- `resolution` (string): `1K`, `2K` or `4K`. Default `1K`. See [Resolution](#resolution).
+- `size` (string): Preset or custom `WIDTHxHEIGHT`. Default `1:1`. See [Resolution](#resolution).
+- `output_format` (string): `png`, `jpeg` or `webp`. Default `png`.
+- `enable_safety_checker` (boolean): Upstream safety checker. Default `true`.
+
+## Resolution
+
+- With a preset `size` (`1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`), the image is scaled so its long edge matches the tier: `1K` → 1024 px, `2K` → 2048 px, `4K` → 4096 px.
+- With a custom `size` such as `1920x1080`, each side must be 256–4096 and a multiple of 16, and you must send `resolution` matching the long edge: up to 1024 → `1K`, up to 2048 → `2K`, above 2048 → `4K`. A mismatch returns 400.
+
+| `resolution` | Long edge (presets) | Custom long edge |
+| --- | --- | --- |
+| `1K` | 1024 px | ≤ 1024 px |
+| `2K` | 2048 px | 1025–2048 px |
+| `4K` | 4096 px | 2049–4096 px |
+
+## Output
+
+The finished task returns one file per requested image (`n`) in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload.
+
+## Examples
+
+- **1K square image**: a product photo at `1:1`, `1K`, PNG.
+- **Custom 4K size, two JPEGs, with callback**: `size: 3840x2160` with `resolution: 4K` (long edge above 2048), `n: 2`, JPEG, with a `callback_url`.
+
+## Notes
+
+- This ID takes text only; `image_urls` returns 400. To edit or combine images, use [FLUX 3 Klein Edit](/api-manual/image-series/blackforestlabs-flux-3-klein-edit).
+- Fields not listed above return 400. `model` and `callback_url` belong at the request root, not inside `input`.
+- Credits are reserved at submission and depend on `resolution` and `n`. Text-to-image and edit use the same rates. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.

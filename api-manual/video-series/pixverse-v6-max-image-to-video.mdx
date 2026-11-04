@@ -1,0 +1,57 @@
+---
+title: "PixVerse V6 Max Image to Video"
+description: "The PixVerse V6 Max Image to Video API animates one JPEG, PNG or WebP image into a 1–15 second video at 360p to 1080p, keeping the image's framing."
+icon: "video"
+openapi: "/api-manual/video-series/pixverse-v6-max-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+PixVerse V6 Max Image to Video animates one JPEG, PNG or WebP image into a 1–15 second video at 360p to 1080p. The image is the start frame and keeps its framing, so the output follows the image's aspect ratio. Add `audio: true` for a native soundtrack. It suits product animations from a packshot, social clips and music-video snippets.
+
+PixVerse V6 Max is the Max tier of PixVerse V6, added to PixVerse's API for text-to-video and image-to-video in October 2026. Vidgo exposes two model IDs: [Text to Video](/api-manual/video-series/pixverse-v6-max-text-to-video) and [Image to Video](/api-manual/video-series/pixverse-v6-max-image-to-video).
+
+## Models
+
+- **pixverse/v6-max/image-to-video** — Image-to-video with PixVerse V6 Max from one image, 1–15 seconds, 360p to 1080p, optional audio.
+
+## Features
+
+- Image-to-video from a single start image.
+- Optional prompt to direct motion and camera movement.
+- Durations from 1 to 15 seconds in one-second steps.
+- Four resolutions: `360p`, `540p`, `720p` and `1080p`.
+- Optional native audio track with `audio: true`.
+- Aspect ratio follows the input image.
+
+## Required parameters
+
+- `image_urls` (string[]): Exactly one public HTTP(S) image URL (JPEG, PNG or WebP). If the URL has a file extension, it must be `.jpg`, `.jpeg`, `.png` or `.webp`.
+
+## Optional parameters
+
+- `prompt` (string): What moves, how the camera moves and, with `audio` on, the sound. Must not be blank if sent; up to 2,048 characters.
+- `duration` (integer): Output length, `1`–`15` whole seconds. Default `5`.
+- `resolution` (string): `360p`, `540p`, `720p` or `1080p`. Default `540p`.
+- `audio` (boolean): Add a native audio track. Default `false`.
+
+## Output
+
+The finished task returns one MP4 video in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload.
+
+## Examples
+
+- **5-second 720p product animation**: a packshot with a short motion prompt, silent.
+- **8-second 1080p clip with audio and callback**: a concert photo with `audio: true` and a `callback_url`.
+
+## Notes
+
+- `aspect_ratio` is not accepted on this ID (the image sets it) and returns 400, as does any field not listed above. For prompt-only generation with a chosen aspect ratio, use [PixVerse V6 Max Text to Video](/api-manual/video-series/pixverse-v6-max-text-to-video).
+- The prompt limit here is 2,048 characters, lower than the 5,000 allowed in text-to-video.
+- PixVerse V6 Max on Vidgo takes text or exactly one image. First/last frame, video input, extend, reference-to-video and `seed` are not available.
+- A `null` value for `duration`, `resolution` or `audio` counts as the default.
+- `model` and `callback_url` belong at the request root, not inside `input`.
+- Credits are reserved at submission and depend on `resolution`, `audio` and `duration` (per output second); turning on `audio` raises the rate. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.

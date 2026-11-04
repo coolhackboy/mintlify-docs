@@ -1,0 +1,539 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Vidu Q4 参考生视频",
+    "description": "Vidu Q4 参考生视频 API 根据 1–12 张参考图和最多 3 段参考音频生成 3–16 秒的视频，可选原生音频，分辨率最高 4K。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Video Series"
+        ],
+        "summary": "Vidu Q4 参考生视频",
+        "operationId": "submit_vidu_q4_reference_to_video",
+        "description": "只传本模型列出的 `input` 字段。其他字段（包括 `image_urls`）都会返回 400。参考素材 URL 必须是公开的 HTTP(S) 地址，且不能内嵌凭证。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "模型 ID，填 `vidu/q4/reference-to-video`。",
+                    "example": "vidu/q4/reference-to-video"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 地址，任务变为 `finished` 或 `failed` 时会收到 POST 请求。建议使用 HTTPS。省略、传 `null` 或空字符串即不发送回调。",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "prompt",
+                      "reference_image_urls"
+                    ],
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 5000,
+                        "example": "[@reference_image_1] walks into the cafe from [@reference_image_2] and greets the barista, speaking in the voice of [@reference_audio_1]",
+                        "description": "描述场景以及如何使用参考素材。按数组顺序用 `[@reference_image_1]`、`[@reference_audio_1]` 等引用。不能为空白，最多 5,000 个字符。"
+                      },
+                      "reference_image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "minItems": 1,
+                        "maxItems": 12,
+                        "example": [
+                          "https://example.com/character.png",
+                          "https://example.com/cafe.png"
+                        ],
+                        "description": "1–12 个公开 HTTP(S) 参考图 URL：角色、产品、服装或场景。"
+                      },
+                      "reference_audio_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "maxItems": 3,
+                        "example": [
+                          "https://example.com/voice.mp3"
+                        ],
+                        "description": "最多 3 个公开 HTTP(S) 音频 URL，作为音色参考。简短、干净的 MP3 人声片段效果最好。"
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "minimum": 3,
+                        "maximum": 16,
+                        "default": 5,
+                        "description": "输出时长，单位秒（整数，也接受 `\"5\"` 这样的整数字符串）。"
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "enum": [
+                          "540p",
+                          "720p",
+                          "1080p",
+                          "2k",
+                          "4k"
+                        ],
+                        "default": "720p",
+                        "description": "输出分辨率（不区分大小写），决定计费档位。"
+                      },
+                      "aspect_ratio": {
+                        "type": "string",
+                        "enum": [
+                          "16:9",
+                          "9:16",
+                          "4:3",
+                          "3:4",
+                          "1:1"
+                        ],
+                        "description": "输出宽高比。省略时使用上游默认值（16:9）。"
+                      },
+                      "generate_audio": {
+                        "type": "boolean",
+                        "description": "随视频生成原生音频。省略时使用上游默认值（不生成音频）。不影响价格。"
+                      },
+                      "enable_safety_checker": {
+                        "type": "boolean",
+                        "description": "开启或关闭上游安全检查。省略时使用上游默认值。"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "生成参数。"
+                  }
+                }
+              },
+              "examples": {
+                "images_only": {
+                  "summary": "两张参考图，720p",
+                  "value": {
+                    "model": "vidu/q4/reference-to-video",
+                    "input": {
+                      "prompt": "[@reference_image_1] holds up the sneaker from [@reference_image_2] and spins it slowly under studio light",
+                      "reference_image_urls": [
+                        "https://example.com/model.png",
+                        "https://example.com/sneaker.png"
+                      ],
+                      "duration": 5,
+                      "resolution": "720p",
+                      "aspect_ratio": "9:16"
+                    }
+                  }
+                },
+                "voice_reference": {
+                  "summary": "角色加音色参考与音频，1080p",
+                  "value": {
+                    "model": "vidu/q4/reference-to-video",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "[@reference_image_1] walks into the cafe from [@reference_image_2] and greets the barista, speaking in the voice of [@reference_audio_1]: \"Morning! The usual, please.\"",
+                      "reference_image_urls": [
+                        "https://example.com/character.png",
+                        "https://example.com/cafe.png"
+                      ],
+                      "reference_audio_urls": [
+                        "https://example.com/voice.mp3"
+                      ],
+                      "duration": 8,
+                      "resolution": "1080p",
+                      "aspect_ratio": "16:9",
+                      "generate_audio": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP 状态码。"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "任务 ID，用于[查询任务状态](/zh/api-manual/task-management/status)。"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "任务的初始状态。"
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "任务创建时间（ISO 8601）。"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、字段不受支持、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建上游生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "所请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

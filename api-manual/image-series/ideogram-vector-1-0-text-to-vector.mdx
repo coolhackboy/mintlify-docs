@@ -1,0 +1,56 @@
+---
+title: "Ideogram Vector 1.0 Text to SVG"
+description: "The Ideogram Vector 1.0 Text to SVG API creates 1–8 SVG files from a prompt, with up to 5 reference images, 18 aspect ratio options and three quality tiers."
+icon: "image"
+openapi: "/api-manual/image-series/ideogram-vector-1-0-text-to-vector.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+Ideogram Vector 1.0 Text to SVG generates scalable SVG artwork from a prompt: logos, icons, stickers, badges and flat illustrations that stay sharp at any size. Lettering in the prompt is drawn as vector shapes. Add up to five reference images to steer style or composition.
+
+Ideogram Vector 1.0 is Ideogram's first model that outputs vector graphics instead of pixels. Vidgo exposes it as two model IDs: [Text to SVG](/api-manual/image-series/ideogram-vector-1-0-text-to-vector) and [Image to SVG](/api-manual/image-series/ideogram-vector-1-0-image-to-vector).
+
+## Models
+
+- **ideogram/vector-1.0/text-to-vector** — Text to SVG with Ideogram Vector 1.0, 1–8 files per request.
+
+## Features
+
+- Text-to-SVG: native vector output (`image/svg+xml`), not traced raster images.
+- Optional 1–5 reference images; the first one is the primary reference.
+- 18 aspect ratio options, from tall `1:4` to wide `4:1`, plus `auto`.
+- Three quality tiers and 1–8 SVG files per request.
+
+## Required parameters
+
+- `prompt` (string): The artwork you want, 1–9,500 characters. Quote any lettering, for example `"TRAILHEAD"`. Must not be blank.
+
+## Optional parameters
+
+- `image_urls` (string[]): 1–5 reference images (public HTTP(S) URLs or image data URIs). Omit the field when you have none.
+- `quality` (string): `low`, `medium` or `high`. Default `medium`.
+- `n` (integer): Number of SVG files, `1`–`8`. Default `1`.
+- `size` (string): Aspect ratio. Default `auto`. See [Size](#size).
+
+## Size
+
+`size` sets the aspect ratio, not a pixel size: `auto`, `1:1`, `1:4`, `1:3`, `1:2`, `9:16`, `10:16`, `2:3`, `3:4`, `4:5`, `5:4`, `4:3`, `3:2`, `16:10`, `16:9`, `2:1`, `3:1`, `4:1`.
+
+## Output
+
+The finished task returns SVG files (`image/svg+xml`) in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload. Open them in any vector editor or embed them directly in a web page.
+
+## Examples
+
+- **Prompt-only SVG icons**: two square icon sets at `medium` quality.
+- **Banner with a style reference and callback**: a `3:1` banner with quoted lettering, one brand reference image, `quality: high`, with a `callback_url`.
+
+## Notes
+
+- To convert an existing raster image (PNG, JPG) into SVG, use [Ideogram Vector 1.0 Image to SVG](/api-manual/image-series/ideogram-vector-1-0-image-to-vector).
+- An empty `image_urls` array or more than five references returns 400. Fields not listed above return 400. `model` and `callback_url` belong at the request root, not inside `input`.
+- Credits are reserved at submission and depend on `quality` and `n`. With `quality: high`, sending `image_urls` uses a higher per-file rate; `low` and `medium` cost the same with or without references. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.

@@ -1,0 +1,57 @@
+---
+title: "Ideogram 4.5 Text to Image"
+description: "The Ideogram 4.5 Text to Image API generates 1–8 posters, logos and text-rich images per request, with low, medium or high quality and 42 sizes."
+icon: "image"
+openapi: "/api-manual/image-series/ideogram-v4-5-text-to-image.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+Ideogram 4.5 Text to Image turns a prompt into posters, logos, packaging mockups, social graphics and other images where legible lettering matters. Request up to eight images at once and pick a quality tier that fits a draft or a final asset.
+
+Ideogram 4.5 is Ideogram's image model for text-heavy visuals and precise edits. Vidgo exposes it as two model IDs: [Text to Image](/api-manual/image-series/ideogram-v4-5-text-to-image) and [Edit](/api-manual/image-series/ideogram-v4-5-edit).
+
+## Models
+
+- **ideogram/v4.5/text-to-image** — Text-to-image with Ideogram 4.5, 1–8 images per request.
+
+## Features
+
+- Text-to-image focused on accurate in-image text (titles, slogans, labels).
+- 1–8 images per request with `n`.
+- Three quality tiers: `low`, `medium`, `high`.
+- Six aspect-ratio presets plus 36 exact pixel sizes, from 720x1280 up to 3328x1248 and 2048x2048.
+
+## Required parameters
+
+- `prompt` (string): The image you want, 1–10,000 characters. Quote any text that must appear, for example `"GRAND OPENING"`. Must not be blank.
+
+## Optional parameters
+
+- `n` (integer): Number of images, `1`–`8`. Default `1`.
+- `quality` (string): `low`, `medium` or `high`. Default `medium`.
+- `size` (string): Output size. Default `1:1 HD`. See [Size](#size).
+
+## Size
+
+- Presets: `1:1`, `1:1 HD`, `4:3`, `3:4`, `16:9`, `9:16`. `1:1 HD` is a higher-resolution square.
+- Exact pixel sizes: `720x1280`, `720x1440`, `800x1280`, `832x1248`, `864x1152`, `896x1120`, `1024x1024`, `1024x3072`, `1120x896`, `1152x864`, `1152x2944`, `1248x832`, `1248x3328`, `1280x720`, `1280x800`, `1280x3072`, `1296x3168`, `1440x720`, `1440x2560`, `1440x2880`, `1600x2560`, `1664x2496`, `1728x2304`, `1792x2240`, `2048x2048`, `2240x1792`, `2304x1728`, `2496x1664`, `2560x1440`, `2560x1600`, `2880x1440`, `2944x1152`, `3072x1024`, `3072x1280`, `3168x1296`, `3328x1248`.
+- Any other value returns 400.
+
+## Output
+
+The finished task returns one file per requested image (`n`) in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload.
+
+## Examples
+
+- **Poster with lettering**: a travel poster whose title is quoted in the prompt, `3:4`, `medium` quality.
+- **Four high-quality logo options with callback**: `n: 4`, `quality: high`, `1024x1024`, with a `callback_url`.
+
+## Notes
+
+- This ID takes text only. To change an existing image, use [Ideogram 4.5 Edit](/api-manual/image-series/ideogram-v4-5-edit).
+- Fields not listed above return 400. `model` and `callback_url` belong at the request root, not inside `input`.
+- Credits are reserved at submission and depend on `quality` and `n` only; `size` does not change the price. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.

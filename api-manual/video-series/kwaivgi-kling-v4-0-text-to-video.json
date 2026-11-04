@@ -1,0 +1,526 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 4.0 Text to Video",
+    "description": "The Kling 4.0 Text to Video API generates 3–30 second videos from a prompt or multi-shot prompts at 720p or 1080p, with stereo audio and five aspect ratios.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Video Series"
+        ],
+        "summary": "Kling 4.0 Text to Video",
+        "operationId": "submit_kwaivgi_kling_v4_0_text_to_video",
+        "description": "Send exactly one of `prompt` or `multi_prompt`. Only the `input` fields listed for this model are accepted; image and video fields return 400.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "Model ID. Use `kwaivgi/kling-v4.0/text-to-video`.",
+                    "example": "kwaivgi/kling-v4.0/text-to-video"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "Optional public HTTP(S) endpoint that receives a POST when the task becomes `finished` or `failed`. HTTPS is recommended. Omit it, or send `null` or an empty string, to disable callbacks.",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 26000,
+                        "description": "Text prompt, 1–26,000 characters after trimming. Send exactly one of `prompt` or `multi_prompt`."
+                      },
+                      "multi_prompt": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "prompt"
+                          ],
+                          "properties": {
+                            "prompt": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 512,
+                              "description": "Shot prompt, 1–512 characters."
+                            },
+                            "duration": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 30,
+                              "default": 5,
+                              "description": "Shot length in seconds (integer)."
+                            }
+                          },
+                          "additionalProperties": false,
+                          "description": "One shot."
+                        },
+                        "minItems": 1,
+                        "description": "Multi-shot prompt: a non-empty list of shots, each with its own `prompt` and optional `duration`. Shot durations must total 3–30 seconds. Send exactly one of `prompt` or `multi_prompt`."
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "minimum": 3,
+                        "maximum": 30,
+                        "default": 5,
+                        "description": "Output length in seconds (integer). With `multi_prompt` it defaults to the shot total and, if sent, must equal it."
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "enum": [
+                          "720p",
+                          "1080p"
+                        ],
+                        "default": "720p",
+                        "description": "Output resolution. It sets the billing rate."
+                      },
+                      "aspect_ratio": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "16:9",
+                          "9:16",
+                          "1:1",
+                          "21:9"
+                        ],
+                        "default": "auto",
+                        "description": "Output aspect ratio. `auto` lets the model choose."
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "Generation parameters."
+                  }
+                }
+              },
+              "examples": {
+                "single_prompt": {
+                  "summary": "Single prompt, 10 seconds",
+                  "value": {
+                    "model": "kwaivgi/kling-v4.0/text-to-video",
+                    "input": {
+                      "prompt": "A lighthouse keeper climbs the spiral stairs at night, lantern swinging, storm waves crashing outside, handheld camera, the wind howling",
+                      "duration": 10,
+                      "resolution": "720p",
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                },
+                "multi_shot": {
+                  "summary": "Three-shot 1080p sequence with callback",
+                  "value": {
+                    "model": "kwaivgi/kling-v4.0/text-to-video",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "multi_prompt": [
+                        {
+                          "prompt": "Wide shot: a food truck opens its shutter at sunrise on an empty street",
+                          "duration": 4
+                        },
+                        {
+                          "prompt": "Close-up: the chef flips noodles in a flaming wok, sizzling sound",
+                          "duration": 6
+                        },
+                        {
+                          "prompt": "Medium shot: a line of customers laughs as the first bowl is handed out",
+                          "duration": 5
+                        }
+                      ],
+                      "resolution": "1080p",
+                      "aspect_ratio": "9:16"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP status code."
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "Task ID. Use it with [Query Task Status](/api-manual/task-management/status)."
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "Initial task status."
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Time the task was created (ISO 8601)."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, unsupported field, inaccessible media, or insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or disabled model",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate or API key credit limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unable to create the upstream generation task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The requested model is temporarily unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nGo to **Dashboard → API Key** ([API Key Management Page](https://vidgo.ai/apis/dashboard/api-key)) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

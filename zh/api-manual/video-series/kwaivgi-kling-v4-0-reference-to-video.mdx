@@ -1,0 +1,77 @@
+---
+title: "Kling 4.0 参考生视频"
+description: "Kling 4.0 参考生视频 API 用最多 10 张参考图、5 个参考视频和 7 个主体引导生成 3–30 秒视频，在提示词中以 @Image1、@Element1 等引用。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/kwaivgi-kling-v4-0-reference-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+Kling 4.0 参考生视频根据参考图、参考视频和可复用的主体（element）生成 3–30 秒视频，让角色、产品和场景保持一致。在提示词中按位置引用每个参考，例如 `@Image1`、`@Video1` 或 `@Element1`。
+
+Kling 4.0 是快手 Kling AI 的视频模型。Vidgo 提供四个 model ID：[文生视频](/zh/api-manual/video-series/kwaivgi-kling-v4-0-text-to-video)、[图生视频](/zh/api-manual/video-series/kwaivgi-kling-v4-0-image-to-video)、[参考生视频](/zh/api-manual/video-series/kwaivgi-kling-v4-0-reference-to-video)和[视频编辑](/zh/api-manual/video-series/kwaivgi-kling-v4-0-video-edit)。
+
+## 模型
+
+- **kwaivgi/kling-v4.0/reference-to-video** — Kling 4.0 参考生视频，使用图片、视频和主体，3–30 秒，720p 或 1080p。
+
+## 功能
+
+- 最多 10 张参考图、5 个参考视频和 7 个主体，合计最多 15 个素材。
+- 主体可由同一对象的 2–4 张图片或一个视频构成。
+- 可通过 `image_urls` 指定起始帧。
+- 支持单段或多镜头提示词；3–30 秒，720p 或 1080p。
+- 五种宽高比：`auto`、`16:9`、`9:16`、`1:1`、`21:9`。
+
+## 输入模式
+
+至少传一种参考输入，也可以组合使用：
+
+- **参考图**（`reference_image_urls`）：用 `@Image1`、`@Image2`……引用。
+- **参考视频**（`reference_video_urls`）：用 `@Video1`、`@Video2`……引用，按输入视频计费。
+- **主体**（`kling_elements`）：用 `@Element1`、`@Element2`……引用。视频主体按输入视频计费。
+
+传一张图片的 `image_urls` 可固定开场画面。然后选择单段 `prompt` 或 `multi_prompt` 镜头列表：
+
+- **单段提示词**：传 `prompt`，可选传 `duration`。
+- **多镜头**：传 `multi_prompt`，每个镜头一项。视频时长为各镜头时长之和；`duration` 可省略，或设为该总和。
+
+## 必填参数
+
+- `reference_image_urls`、`reference_video_urls`、`kling_elements` 至少传一个。
+- `prompt`（string）**或** `multi_prompt`（object[]）：必须且只能传一个。
+  - `prompt`：去除首尾空白后 1–26,000 个字符。
+  - `multi_prompt`：非空的镜头列表 `{prompt, duration?}`。每个镜头的 `prompt` 为 1–512 个字符，`duration` 为 `1`–`30` 的整数（默认 `5`）。各镜头时长之和须为 3–30 秒。
+
+## 可选参数
+
+- `reference_image_urls`（string[]）：最多 10 个公开 HTTP(S) 图片 URL。
+- `reference_video_urls`（string[]）：最多 5 个公开 HTTP(S) 视频 URL，每个 3–30 秒。
+- `kling_elements`（object[]）：最多 7 个主体，其中视频主体最多 3 个。每个主体必须且只能包含以下之一：
+  - `element_input_urls`（string[]）：该主体的 2–4 个图片 URL。
+  - `element_input_video_urls`（string[]）：该主体的 1 个视频 URL（3–30 秒）。
+- `image_urls`（string[]）：一个起始帧图片 URL。
+- `duration`（integer）：输出时长，`3`–`30` 秒。默认 `5`；使用 `multi_prompt` 时默认为各镜头时长之和，显式传入的值必须与之相等。
+- `resolution`（string）：`720p` 或 `1080p`。默认 `720p`。
+- `aspect_ratio`（string）：`auto`、`16:9`、`9:16`、`1:1` 或 `21:9`。默认 `auto`。
+
+## 输出
+
+任务完成后，[查询任务状态](/zh/api-manual/task-management/status)和回调内容的 `files` 数组中会返回一个带音轨的 MP4 视频。
+
+## 示例
+
+- **参考图**：一张角色图和一张咖啡馆图，分别以 `@Image1`、`@Image2` 引用，720p，8 秒。
+- **主体加参考视频，带回调**：由两张图片构成的机器人主体，加一段以 `@Video1` 引用的舞蹈视频，1080p，10 秒，`9:16`。
+
+## 注意事项
+
+- 数量限制：起始帧加参考图 ≤ 10；所有素材（起始帧、参考图、参考视频、主体）≤ 15；视频主体 ≤ 3。
+- 输入视频会在服务端下载并检测时长（每个最大 100 MB）。每个视频须为 3–30 秒，所有输入视频合计不得超过 30 秒。
+- 主体中的 `voice_id` 及其他多余字段会返回 400。
+- 上文未列出的字段会返回 400。`model` 和 `callback_url` 放在请求根级，不要放进 `input`。
+- 积分在提交时预扣，取决于 `resolution` 和时长。有输入视频时使用单独的输入视频费率，计费秒数 = 输出时长 + max（输出时长，输入视频总时长）；输入视频时长先求和再向上取整到整秒。任务失败会全额退还。当前费率见[定价页](https://vidgo.ai/apis/api-pricing)。只含参考图或图片主体的请求按标准费率、以输出时长计费。
+- 仅支持 720p 或 1080p 输出；本模型没有 4K 或 HDR 档位，没有音频开关，也不支持 `seed`。

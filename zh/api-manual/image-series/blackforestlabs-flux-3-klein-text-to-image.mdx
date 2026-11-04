@@ -1,0 +1,64 @@
+---
+title: "FLUX 3 Klein 文生图"
+description: "FLUX 3 Klein 文生图 API 根据提示词生成 1–4 张 1K、2K 或 4K 图片，支持 7 种宽高比或自定义尺寸，输出 PNG、JPEG 或 WebP。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/blackforestlabs-flux-3-klein-text-to-image.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+FLUX 3 Klein 文生图根据提示词生成 1K、2K 或 4K 图片，可使用七种宽高比预设或精确的自定义尺寸。适合产品图、营销素材、概念设计，以及注重出图速度的大批量图片流程。
+
+FLUX 3 Klein 是 Black Forest Labs FLUX 3 图像系列中的轻量模型，主打快速生成和基于指令的编辑。Vidgo 提供两个 model ID：[文生图](/zh/api-manual/image-series/blackforestlabs-flux-3-klein-text-to-image)和[图像编辑](/zh/api-manual/image-series/blackforestlabs-flux-3-klein-edit)。
+
+## 模型
+
+- **blackforestlabs/flux-3-klein/text-to-image** — FLUX 3 Klein 文生图，1–4 张，1K、2K 或 4K。
+
+## 功能
+
+- 只需一段提示词即可文生图。
+- 三档分辨率：`1K`、`2K`、`4K`。
+- 七种宽高比预设，或每边 256 到 4096 像素的自定义 `WIDTHxHEIGHT`。
+- 输出 PNG、JPEG 或 WebP，每次请求 1–4 张。
+
+## 必填参数
+
+- `prompt`（string）：想要的画面。不能为空白。
+
+## 可选参数
+
+- `n`（integer）：图片张数，`1`–`4`。默认 `1`。
+- `resolution`（string）：`1K`、`2K` 或 `4K`。默认 `1K`。见[分辨率](#分辨率)。
+- `size`（string）：预设或自定义 `WIDTHxHEIGHT`。默认 `1:1`。见[分辨率](#分辨率)。
+- `output_format`（string）：`png`、`jpeg` 或 `webp`。默认 `png`。
+- `enable_safety_checker`（boolean）：上游安全检查。默认 `true`。
+
+## 分辨率
+
+- 使用预设 `size`（`1:1`、`4:3`、`3:4`、`16:9`、`9:16`、`3:2`、`2:3`）时，图片会按档位缩放长边：`1K` → 1024 像素，`2K` → 2048 像素，`4K` → 4096 像素。
+- 使用自定义 `size`（如 `1920x1080`）时，每边须为 256–4096 且为 16 的倍数，并且必须传入与长边匹配的 `resolution`：不超过 1024 用 `1K`，不超过 2048 用 `2K`，超过 2048 用 `4K`。不匹配会返回 400。
+
+| `resolution` | 长边（预设） | 自定义长边 |
+| --- | --- | --- |
+| `1K` | 1024 像素 | ≤ 1024 像素 |
+| `2K` | 2048 像素 | 1025–2048 像素 |
+| `4K` | 4096 像素 | 2049–4096 像素 |
+
+## 输出
+
+任务完成后，[查询任务状态](/zh/api-manual/task-management/status)和回调内容的 `files` 数组中会按请求的张数（`n`）返回对应数量的图片文件。
+
+## 示例
+
+- **1K 方形图片**：`1:1`、`1K`、PNG 格式的产品图。
+- **自定义 4K 尺寸，两张 JPEG，带回调**：`size: 3840x2160` 搭配 `resolution: 4K`（长边超过 2048），`n: 2`，JPEG，并提供 `callback_url`。
+
+## 注意事项
+
+- 本 ID 只接受文本，传 `image_urls` 会返回 400。要编辑或合成图片，请用 [FLUX 3 Klein 图像编辑](/zh/api-manual/image-series/blackforestlabs-flux-3-klein-edit)。
+- 上文未列出的字段会返回 400。`model` 和 `callback_url` 放在请求根级，不要放进 `input`。
+- 积分在提交时预扣，取决于 `resolution` 和 `n`。文生图与图像编辑费率相同。任务失败会全额退还。当前费率见[定价页](https://vidgo.ai/apis/api-pricing)。

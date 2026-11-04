@@ -1,0 +1,522 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - FLUX 3 Klein 图像编辑",
+    "description": "FLUX 3 Klein 图像编辑 API 根据自然语言指令编辑或合成 1–10 张输入图片，返回 1–4 张 1K、2K 或 4K 结果。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Image Series"
+        ],
+        "summary": "FLUX 3 Klein 图像编辑",
+        "operationId": "submit_blackforestlabs_flux_3_klein_edit",
+        "description": "只传本模型列出的 `input` 字段，其他字段会返回 400。`image_urls` 接受 1–10 个公开 HTTP(S) URL；base64 data URI 会先上传。自定义 `WIDTHxHEIGHT` 尺寸需要传入与其长边匹配的 `resolution`。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "模型 ID，填 `blackforestlabs/flux-3-klein/edit`。",
+                    "example": "blackforestlabs/flux-3-klein/edit"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 地址，任务变为 `finished` 或 `failed` 时会收到 POST 请求。建议使用 HTTPS。省略、传 `null` 或空字符串即不发送回调。",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "prompt",
+                      "image_urls"
+                    ],
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "Place the bottle from the first image on the beach in the second image, keep the label readable",
+                        "description": "编辑指令。按顺序引用输入图片，例如“第一张图片”。不能为空白。"
+                      },
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "minItems": 1,
+                        "maxItems": 10,
+                        "example": [
+                          "https://example.com/bottle.png"
+                        ],
+                        "description": "要编辑或合成的 1–10 张图片：公开 HTTP(S) URL 或 base64 data URI（会先上传）。提示词按位置引用图片时，顺序有意义。"
+                      },
+                      "n": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 4,
+                        "default": 1,
+                        "description": "生成的图片张数。"
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "enum": [
+                          "1K",
+                          "2K",
+                          "4K"
+                        ],
+                        "default": "1K",
+                        "description": "分辨率档位（不区分大小写）。预设尺寸会按长边 1024、2048 或 4096 像素缩放。决定计费档位。使用自定义 `size` 时，需传入与其长边匹配的档位。"
+                      },
+                      "size": {
+                        "type": "string",
+                        "default": "1:1",
+                        "example": "16:9",
+                        "description": "宽高比预设（`1:1`、`4:3`、`3:4`、`16:9`、`9:16`、`3:2`、`2:3`），或自定义 `WIDTHxHEIGHT`：每边 256–4096 且为 16 的倍数。自定义尺寸需显式传入与长边匹配的 `resolution`：不超过 1024 用 `1K`，不超过 2048 用 `2K`，否则用 `4K`。"
+                      },
+                      "output_format": {
+                        "type": "string",
+                        "enum": [
+                          "png",
+                          "jpeg",
+                          "webp"
+                        ],
+                        "default": "png",
+                        "description": "图片文件格式。"
+                      },
+                      "enable_safety_checker": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "启用上游安全检查。"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "生成参数。"
+                  }
+                }
+              },
+              "examples": {
+                "single_edit": {
+                  "summary": "编辑一张图片",
+                  "value": {
+                    "model": "blackforestlabs/flux-3-klein/edit",
+                    "input": {
+                      "prompt": "Turn the daytime street into a rainy night scene with glowing shop windows",
+                      "image_urls": [
+                        "https://example.com/street.jpg"
+                      ],
+                      "n": 1,
+                      "resolution": "1K",
+                      "size": "16:9",
+                      "output_format": "png"
+                    }
+                  }
+                },
+                "compose": {
+                  "summary": "以 2K 合成两张图片，带回调",
+                  "value": {
+                    "model": "blackforestlabs/flux-3-klein/edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Place the bottle from the first image on the beach in the second image, keep the label readable",
+                      "image_urls": [
+                        "https://example.com/bottle.png",
+                        "https://example.com/beach.jpg"
+                      ],
+                      "n": 2,
+                      "resolution": "2K",
+                      "size": "4:3",
+                      "output_format": "webp"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP 状态码。"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "任务 ID，用于[查询任务状态](/zh/api-manual/task-management/status)。"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "任务的初始状态。"
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "任务创建时间（ISO 8601）。"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、字段不受支持、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建上游生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "所请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

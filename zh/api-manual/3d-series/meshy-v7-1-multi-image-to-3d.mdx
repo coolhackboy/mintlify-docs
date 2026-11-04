@@ -1,0 +1,67 @@
+---
+title: "Meshy 7.1 多图生 3D"
+description: "Meshy 7.1 多图生 3D API 根据同一物体的 1–4 个视角重建 3D 模型，支持最高 2K 几何细节、拓扑控制、PBR 贴图和骨骼绑定。"
+icon: "cube"
+openapi: "/zh/api-manual/3d-series/meshy-v7-1-multi-image-to-3d.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+Meshy 7.1 多图生 3D 根据同一物体最多四个视角（如正面、侧面和背面照片）重建一个 3D 模型。多个角度能比单张图片提供更多被遮挡面的信息。适合产品扫描、道具和角色三视图。
+
+Meshy 7.1 是 Meshy 的 3D 生成模型，重点提升几何细节。Vidgo 提供三个 model ID：[文生 3D](/zh/api-manual/3d-series/meshy-v7-1-text-to-3d)、[图生 3D](/zh/api-manual/3d-series/meshy-v7-1-image-to-3d)和[多图生 3D](/zh/api-manual/3d-series/meshy-v7-1-multi-image-to-3d)。
+
+## 模型
+
+- **meshy/v7.1/multi-image-to-3d** — Meshy 7.1 多视图图生 3D，输入 1–4 张图片。
+
+## 功能
+
+- 用同一物体的 1–4 张图片进行多视图图生 3D。
+- 默认生成纹理；设 `should_texture: false` 只生成几何体。
+- 几何细节最高 `2k`。
+- 三角形或四边形拓扑，目标多边形数量最高 300,000。
+- PBR 贴图，可用文字或图片引导纹理。
+- 可选人形骨骼绑定和动画预设。
+
+## 必填参数
+
+- `image_urls`（string[]）：同一物体的 1–4 个视角，公开 HTTP(S) URL 或 `data:image/...` URI。请使用不同角度（正面、侧面、背面、四分之三侧）并保持光线一致。
+
+## 可选参数
+
+- `should_texture`（boolean）：为模型生成纹理。默认 `true`；`false` 只返回几何体。
+- `topology`（string）：`triangle` 或 `quad`。默认 `triangle`。
+- `target_polycount`（integer）：`100`–`300000`。默认 `30000`。
+- `should_remesh`（boolean）：对输出重新网格化。默认 `true`；`false` 保留原始三角网格。
+- `symmetry_mode`（string）：`off`、`auto` 或 `on`。默认 `auto`。
+- `pose_mode`（string）：`""`（不限定姿势）、`a-pose` 或 `t-pose`。默认 `""`。
+- `geometry_resolution`（string）：`standard` 或 `2k`。
+- `enable_pbr`（boolean）：在基础颜色纹理之外生成金属度、粗糙度和法线贴图。默认 `false`。需要 `should_texture: true`。
+- `texture_prompt`（string）：纹理的文字引导，最多 600 个字符。需要 `should_texture: true`。
+- `texture_image_url`（string）：引导纹理的图片（公开 HTTP(S) URL 或 `data:image/...` URI）。需要 `should_texture: true`。
+- `enable_rigging`（boolean）：将模型自动绑定为人形角色骨骼。默认 `false`。
+- `rigging_height_meters`（number）：骨骼绑定使用的角色身高（米），必须大于 0。默认 `1.7`。
+- `enable_animation`（boolean）：应用动画预设。需要 `enable_rigging: true`。默认 `false`。
+- `animation_action_id`（integer）：动画预设 ID，`0`–`696`。默认 `92`。
+- `enable_safety_checker`（boolean）：上游安全检查。默认 `true`。
+
+## 输出
+
+请读取[查询任务状态](/zh/api-manual/task-management/status)或回调返回的 `files` 数组中的每一项。模型文件为 `file_type: "3d"`（通常是 GLB，可用时还有 FBX、OBJ、USDZ 或 STL），预览图和缩略图为 `file_type: "image"`，纹理、绑定或动画资源等辅助文件可能为 `file_type: "other"`。并非每个任务都会返回全部格式，不要假定文件列表固定。
+
+## 示例
+
+- **用三个视角生成带纹理模型**：椅子的正面、侧面和背面照片，`geometry_resolution: 2k`，并生成 PBR 贴图。
+- **仅几何体**：花瓶的两个视角，`should_texture: false`，四边形拓扑，并提供 `callback_url`。
+
+## 注意事项
+
+- 多图生 3D 不支持 `4k` 几何细节和 `model_type`；需要 `4k` 或 Smart Topology 时，请用单图的 [Meshy 7.1 图生 3D](/zh/api-manual/3d-series/meshy-v7-1-image-to-3d)。
+- `should_texture: false` 时传 `enable_pbr: true`、`texture_prompt` 或 `texture_image_url` 会返回 400。
+- 只开 `enable_animation: true` 而不开 `enable_rigging: true` 会返回 400。骨骼绑定最适合四肢清晰、处于 `a-pose` 或 `t-pose` 的人形角色；用于生产前请检查骨骼和网格。
+- 上文未列出的字段（如 `prompt`、`mode`、`seed`、`model_type`）会返回 400。
+- 积分在提交时预扣：每个模型有基础费用，生成纹理（`should_texture: true`，即默认值）、`enable_rigging` 和 `enable_animation` 会分别增加费用。多边形数量、拓扑、`geometry_resolution` 和图片数量不影响价格。任务失败会全额退还。当前费率见[定价页](https://vidgo.ai/apis/api-pricing)。

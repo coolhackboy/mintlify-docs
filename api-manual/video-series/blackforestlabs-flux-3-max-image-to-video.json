@@ -1,0 +1,520 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - FLUX 3 Max Image to Video",
+    "description": "The FLUX 3 Max Image to Video API animates a start image, with an optional end image, into a 5–20 second 720p or 1080p video with native audio.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Video Series"
+        ],
+        "summary": "FLUX 3 Max Image to Video",
+        "operationId": "submit_blackforestlabs_flux_3_max_image_to_video",
+        "description": "Send only the `input` fields listed for this model. Any other field, including `keyframes`, returns 400. Image URLs must be public HTTP(S) URLs without embedded credentials.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "Model ID. Use `blackforestlabs/flux-3-max/image-to-video`.",
+                    "example": "blackforestlabs/flux-3-max/image-to-video"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "Optional public HTTP(S) endpoint that receives a POST when the task becomes `finished` or `failed`. HTTPS is recommended. Omit it, or send `null` or an empty string, to disable callbacks.",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "image_urls",
+                      "prompt"
+                    ],
+                    "properties": {
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "minItems": 1,
+                        "maxItems": 2,
+                        "example": [
+                          "https://example.com/start.png"
+                        ],
+                        "description": "One or two public HTTP(S) image URLs (PNG, JPEG or WebP). The first image is the start frame; an optional second image is the end frame."
+                      },
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "The camera slowly pushes in as the lid of the box opens and soft light spills out",
+                        "description": "Describe how the scene moves from the start frame (and toward the end frame, if given), plus camera movement and sound. Must not be blank."
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "minimum": 5,
+                        "maximum": 20,
+                        "default": 5,
+                        "description": "Output length in seconds (integer)."
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "enum": [
+                          "720p",
+                          "1080p"
+                        ],
+                        "default": "720p",
+                        "description": "Output resolution. It sets the billing rate."
+                      },
+                      "aspect_ratio": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "21:9",
+                          "2:1",
+                          "16:9",
+                          "4:3",
+                          "1:1",
+                          "3:4",
+                          "9:16"
+                        ],
+                        "default": "auto",
+                        "description": "Output aspect ratio. `auto` lets the model choose: 16:9 for text-only prompts, the shape of the first image when images are supplied."
+                      },
+                      "sound": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Generate native audio in the same pass. Set `false` for a silent video. Does not change the price."
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "Generation parameters."
+                  }
+                }
+              },
+              "examples": {
+                "start_frame": {
+                  "summary": "Start frame only",
+                  "value": {
+                    "model": "blackforestlabs/flux-3-max/image-to-video",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/portrait.png"
+                      ],
+                      "prompt": "She turns toward the window and smiles as the curtains move in the breeze, gentle push-in",
+                      "duration": 5,
+                      "resolution": "720p",
+                      "aspect_ratio": "auto",
+                      "sound": true
+                    }
+                  }
+                },
+                "start_end_frame": {
+                  "summary": "Start and end frame",
+                  "value": {
+                    "model": "blackforestlabs/flux-3-max/image-to-video",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/box-closed.png",
+                        "https://example.com/box-open.png"
+                      ],
+                      "prompt": "The lid lifts and the sneaker inside rises into a spotlight, smooth orbit shot",
+                      "duration": 8,
+                      "resolution": "1080p",
+                      "aspect_ratio": "16:9",
+                      "sound": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP status code."
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "Task ID. Use it with [Query Task Status](/api-manual/task-management/status)."
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "Initial task status."
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Time the task was created (ISO 8601)."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, unsupported field, inaccessible media, or insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or disabled model",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate or API key credit limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unable to create the upstream generation task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The requested model is temporarily unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nGo to **Dashboard → API Key** ([API Key Management Page](https://vidgo.ai/apis/dashboard/api-key)) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

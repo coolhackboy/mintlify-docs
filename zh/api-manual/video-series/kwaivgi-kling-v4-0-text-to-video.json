@@ -1,0 +1,526 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 4.0 文生视频",
+    "description": "Kling 4.0 文生视频 API 根据提示词或多镜头提示词生成 3–30 秒、720p 或 1080p 的视频，带立体声音轨，支持五种宽高比。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Video Series"
+        ],
+        "summary": "Kling 4.0 文生视频",
+        "operationId": "submit_kwaivgi_kling_v4_0_text_to_video",
+        "description": "`prompt` 与 `multi_prompt` 必须且只能传一个。只接受本模型列出的 `input` 字段，图片和视频字段会返回 400。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "模型 ID，填 `kwaivgi/kling-v4.0/text-to-video`。",
+                    "example": "kwaivgi/kling-v4.0/text-to-video"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 地址，任务变为 `finished` 或 `failed` 时会收到 POST 请求。建议使用 HTTPS。省略、传 `null` 或空字符串即不发送回调。",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 26000,
+                        "description": "文本提示词，去除首尾空白后 1–26,000 个字符。`prompt` 与 `multi_prompt` 必须且只能传一个。"
+                      },
+                      "multi_prompt": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "prompt"
+                          ],
+                          "properties": {
+                            "prompt": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 512,
+                              "description": "镜头提示词，1–512 个字符。"
+                            },
+                            "duration": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 30,
+                              "default": 5,
+                              "description": "镜头时长，单位秒（整数）。"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "description": "一个镜头。"
+                        },
+                        "minItems": 1,
+                        "description": "多镜头提示词：非空的镜头列表，每个镜头有自己的 `prompt` 和可选的 `duration`。各镜头时长之和须为 3–30 秒。`prompt` 与 `multi_prompt` 必须且只能传一个。"
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "minimum": 3,
+                        "maximum": 30,
+                        "default": 5,
+                        "description": "输出时长，单位秒（整数）。使用 `multi_prompt` 时默认为各镜头时长之和，若传入则必须与之相等。"
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "enum": [
+                          "720p",
+                          "1080p"
+                        ],
+                        "default": "720p",
+                        "description": "输出分辨率，决定计费档位。"
+                      },
+                      "aspect_ratio": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "16:9",
+                          "9:16",
+                          "1:1",
+                          "21:9"
+                        ],
+                        "default": "auto",
+                        "description": "输出宽高比。`auto` 由模型决定。"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "生成参数。"
+                  }
+                }
+              },
+              "examples": {
+                "single_prompt": {
+                  "summary": "单段提示词，10 秒",
+                  "value": {
+                    "model": "kwaivgi/kling-v4.0/text-to-video",
+                    "input": {
+                      "prompt": "A lighthouse keeper climbs the spiral stairs at night, lantern swinging, storm waves crashing outside, handheld camera, the wind howling",
+                      "duration": 10,
+                      "resolution": "720p",
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                },
+                "multi_shot": {
+                  "summary": "三镜头 1080p 序列，带回调",
+                  "value": {
+                    "model": "kwaivgi/kling-v4.0/text-to-video",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "multi_prompt": [
+                        {
+                          "prompt": "Wide shot: a food truck opens its shutter at sunrise on an empty street",
+                          "duration": 4
+                        },
+                        {
+                          "prompt": "Close-up: the chef flips noodles in a flaming wok, sizzling sound",
+                          "duration": 6
+                        },
+                        {
+                          "prompt": "Medium shot: a line of customers laughs as the first bowl is handed out",
+                          "duration": 5
+                        }
+                      ],
+                      "resolution": "1080p",
+                      "aspect_ratio": "9:16"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP 状态码。"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "任务 ID，用于[查询任务状态](/zh/api-manual/task-management/status)。"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "任务的初始状态。"
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "任务创建时间（ISO 8601）。"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、字段不受支持、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建上游生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "所请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

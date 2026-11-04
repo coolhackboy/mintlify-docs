@@ -1,0 +1,66 @@
+---
+title: "Kling 4.0 图生视频"
+description: "Kling 4.0 图生视频 API 将起始帧（可选以第二张图片作为结束帧）生成 3–30 秒、720p 或 1080p 的视频。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/kwaivgi-kling-v4-0-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+Kling 4.0 图生视频将一张起始帧生成 3–30 秒、720p 或 1080p 的视频。再加一张图片时，Kling 4.0 会把它当作结束帧，生成两帧之间的运动。适合产品镜头、角色动画和前后对比转场。
+
+Kling 4.0 是快手 Kling AI 的视频模型。Vidgo 提供四个 model ID：[文生视频](/zh/api-manual/video-series/kwaivgi-kling-v4-0-text-to-video)、[图生视频](/zh/api-manual/video-series/kwaivgi-kling-v4-0-image-to-video)、[参考生视频](/zh/api-manual/video-series/kwaivgi-kling-v4-0-reference-to-video)和[视频编辑](/zh/api-manual/video-series/kwaivgi-kling-v4-0-video-edit)。
+
+## 模型
+
+- **kwaivgi/kling-v4.0/image-to-video** — Kling 4.0 图生视频，使用起始帧和可选的结束帧。
+
+## 功能
+
+- 以一张起始帧生成最长 30 秒的图生视频。
+- 用第二张图片实现首尾帧控制。
+- 支持单段或多镜头提示词。
+- 输出 720p 或 1080p，画面比例跟随输入图片。
+- 输出带音轨。
+
+## 输入模式
+
+- **起始帧**：`image_urls` 传一张图片。
+- **起始帧加结束帧**：`image_urls` 传两张图片，起始帧在前。
+
+两种模式都可以使用单段 `prompt` 或 `multi_prompt` 镜头列表：
+
+- **单段提示词**：传 `prompt`，可选传 `duration`。
+- **多镜头**：传 `multi_prompt`，每个镜头一项。视频时长为各镜头时长之和；`duration` 可省略，或设为该总和。
+
+## 必填参数
+
+- `image_urls`（string[]）：一到两个公开 HTTP(S) 图片 URL。第一张为起始帧，可选的第二张为结束帧。
+- `prompt`（string）**或** `multi_prompt`（object[]）：必须且只能传一个。
+  - `prompt`：去除首尾空白后 1–26,000 个字符。
+  - `multi_prompt`：非空的镜头列表 `{prompt, duration?}`。每个镜头的 `prompt` 为 1–512 个字符，`duration` 为 `1`–`30` 的整数（默认 `5`）。各镜头时长之和须为 3–30 秒。
+
+## 可选参数
+
+- `duration`（integer）：输出时长，`3`–`30` 秒。默认 `5`；使用 `multi_prompt` 时默认为各镜头时长之和，显式传入的值必须与之相等。
+- `resolution`（string）：`720p` 或 `1080p`。默认 `720p`。
+
+## 输出
+
+任务完成后，[查询任务状态](/zh/api-manual/task-management/status)和回调内容的 `files` 数组中会返回一个带音轨的 MP4 视频。
+
+## 示例
+
+- **仅起始帧**：一张舞者图片，配上动作和音乐描述，720p，5 秒。
+- **起始帧加结束帧，1080p，带回调**：以花苞和盛开的花作为首尾帧，生成 8 秒延时视频，并提供 `callback_url`。
+
+## 注意事项
+
+- 本 ID 的画面比例由输入图片决定，不支持 `aspect_ratio`，传入会返回 400。
+- 要用更多参考图、参考视频或主体引导生成，请用 [Kling 4.0 参考生视频](/zh/api-manual/video-series/kwaivgi-kling-v4-0-reference-to-video)。
+- 上文未列出的字段会返回 400。`model` 和 `callback_url` 放在请求根级，不要放进 `input`。
+- 积分在提交时预扣，取决于 `resolution` 和输出 `duration`。任务失败会全额退还。当前费率见[定价页](https://vidgo.ai/apis/api-pricing)。
+- 仅支持 720p 或 1080p 输出；本模型没有 4K 或 HDR 档位，没有音频开关，也不支持 `seed`。

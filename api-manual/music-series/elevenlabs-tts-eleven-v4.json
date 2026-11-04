@@ -1,0 +1,529 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - ElevenLabs V4 TTS",
+    "description": "The ElevenLabs V4 TTS API converts up to 5,000 characters into expressive speech with audio tags, voice and stability controls, 19 formats and timestamps.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Audio Series"
+        ],
+        "summary": "ElevenLabs V4 TTS",
+        "operationId": "submit_elevenlabs_tts_eleven_v4",
+        "description": "Send only the `input` fields listed for this model. Any other field, such as `seed`, `speakers` or `speed`, returns 400. `model` and `callback_url` go at the request root.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "Model ID. Use `elevenlabs/tts/eleven-v4`.",
+                    "example": "elevenlabs/tts/eleven-v4"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "Optional public HTTP(S) endpoint that receives a POST when the task becomes `finished` or `failed`. HTTPS is recommended. Omit it, or send `null` or an empty string, to disable callbacks.",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "text"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 5000,
+                        "example": "[warmly] Welcome back to the show. [pause] Today we're talking about the oldest lighthouse on the coast.",
+                        "description": "Text to speak, 1–5,000 characters, not blank. Inline audio tags such as `[whispers]` or `[laughs]` are passed through to the model and count as characters."
+                      },
+                      "voice": {
+                        "type": "string",
+                        "minLength": 1,
+                        "default": "Rachel",
+                        "description": "ElevenLabs voice name or voice ID, such as `Rachel`, `Aria` or `Brian`."
+                      },
+                      "stability": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "default": 0.5,
+                        "description": "Voice stability. Lower values sound more varied and expressive; higher values sound steadier."
+                      },
+                      "similarity_boost": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "default": 0.75,
+                        "description": "How closely the output follows the selected voice."
+                      },
+                      "output_format": {
+                        "type": "string",
+                        "enum": [
+                          "mp3_22050_32",
+                          "mp3_44100_32",
+                          "mp3_44100_64",
+                          "mp3_44100_96",
+                          "mp3_44100_128",
+                          "mp3_44100_192",
+                          "pcm_8000",
+                          "pcm_16000",
+                          "pcm_22050",
+                          "pcm_24000",
+                          "pcm_44100",
+                          "pcm_48000",
+                          "ulaw_8000",
+                          "alaw_8000",
+                          "opus_48000_32",
+                          "opus_48000_64",
+                          "opus_48000_96",
+                          "opus_48000_128",
+                          "opus_48000_192"
+                        ],
+                        "default": "mp3_44100_128",
+                        "description": "Audio codec, sample rate and bitrate, written as `codec_samplerate[_bitrate]`."
+                      },
+                      "apply_text_normalization": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "on",
+                          "off"
+                        ],
+                        "default": "auto",
+                        "description": "Whether numbers, dates and abbreviations are spelled out before synthesis. `auto` lets the model decide."
+                      },
+                      "timestamps": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Also return timing data for the generated speech."
+                      },
+                      "language_code": {
+                        "type": "string",
+                        "example": "en",
+                        "description": "Optional language hint as an ISO 639-1 code, such as `en`, `zh` or `ja`. Omit it to let the model detect the language."
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "Generation parameters."
+                  }
+                }
+              },
+              "examples": {
+                "audio_tags": {
+                  "summary": "Story narration with audio tags",
+                  "value": {
+                    "model": "elevenlabs/tts/eleven-v4",
+                    "input": {
+                      "text": "[whispers] Wait... that ticking is coming from inside the wall. [curious] This little brass key fits the crack. [excited] The whole ceiling is full of stars! [laughs]",
+                      "voice": "Charlotte",
+                      "stability": 0.35,
+                      "language_code": "en"
+                    }
+                  }
+                },
+                "pcm_timestamps": {
+                  "summary": "Podcast intro as PCM with timestamps",
+                  "value": {
+                    "model": "elevenlabs/tts/eleven-v4",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "text": "Welcome back to Field Notes. This week we follow a beekeeper through her first winter in the mountains.",
+                      "voice": "Brian",
+                      "output_format": "pcm_44100",
+                      "timestamps": true,
+                      "apply_text_normalization": "auto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP status code."
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "Task ID. Use it with [Query Task Status](/api-manual/task-management/status)."
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "Initial task status."
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Time the task was created (ISO 8601)."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, unsupported field, inaccessible media, or insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or disabled model",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate or API key credit limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unable to create the upstream generation task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The requested model is temporarily unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nGo to **Dashboard → API Key** ([API Key Management Page](https://vidgo.ai/apis/dashboard/api-key)) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

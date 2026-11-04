@@ -1,0 +1,54 @@
+---
+title: "OmniHuman 2.0 Audio to Video"
+description: "The OmniHuman 2.0 Audio to Video API animates one character image with a 4–300 second WAV or MP3 file into a 720p lip-synced video, with optional prompts."
+icon: "video"
+openapi: "/api-manual/video-series/bytedance-omnihuman-2-0-audio-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+OmniHuman 2.0 Audio to Video takes one character image and one audio file and generates a 720p video of that character speaking, singing or performing, with lip movement, expression and gestures following the audio. It accepts 4–300 seconds of audio, so it works for short social clips as well as full explainer narrations. OmniHuman 2.0 is ByteDance's audio-driven video model, offered upstream through BytePlus.
+
+## Models
+
+- **bytedance/omnihuman-2.0/audio-to-video** — Audio-to-video with OmniHuman 2.0: one image plus one WAV or MP3 file, 720p output, length follows the audio.
+
+## Features
+
+- Audio-driven talking and singing videos from a single image.
+- Lip sync, expression and gestures driven by the audio.
+- Audio from 4 seconds up to 5 minutes; the video is as long as the audio.
+- Works with people, animals, cartoon, 3D and stylized characters, and multi-person images.
+- Optional prompt for camera movement, actions and added scene elements.
+
+## Required parameters
+
+- `image_urls` (string[]): Exactly one public HTTP(S) image URL of the character. The framing of the video follows this image.
+- `audio_url` (string): Public HTTP(S) URL of a WAV or MP3 file, at most 15 MB and 4–300 seconds long.
+
+## Optional parameters
+
+- `prompt` (string): Camera movement, actions or extra scene elements. Lip movement and expression still come from the audio.
+
+## Duration
+
+There is no `duration` field. The output length follows the audio, so a 30-second voice-over gives a video of about 30 seconds. Trim the audio to change the length.
+
+## Output
+
+The finished task returns one MP4 video in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload. The video is 720p.
+
+## Examples
+
+- **Talking presenter from a headshot**: one headshot and an MP3 voice-over, no prompt.
+- **Singing character with a camera prompt and callback**: a cartoon cat, a WAV song, a prompt for movement and camera, and a `callback_url`.
+
+## Notes
+
+- Use one clear image with a visible face and clean audio without long silences or heavy background noise for the most accurate lip sync.
+- Audio that is not WAV or MP3, larger than 15 MB, shorter than 4 seconds or longer than 300 seconds returns 400. `duration`, `resolution`, `aspect_ratio`, `seed` and any other field not listed above also return 400.
+- `model` and `callback_url` belong at the request root, not inside `input`.
+- Credits are billed per second of generated video. At submission, credits for the full audio length are reserved. When the task succeeds, the charge is settled on the actual output length and any difference is refunded; the final charge never exceeds the reserved amount. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.

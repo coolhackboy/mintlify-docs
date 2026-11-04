@@ -1,0 +1,589 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 4.0 参考生视频",
+    "description": "Kling 4.0 参考生视频 API 用最多 10 张参考图、5 个参考视频和 7 个主体引导生成 3–30 秒视频，在提示词中以 @Image1、@Element1 等引用。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Video Series"
+        ],
+        "summary": "Kling 4.0 参考生视频",
+        "operationId": "submit_kwaivgi_kling_v4_0_reference_to_video",
+        "description": "`reference_image_urls`、`reference_video_urls`、`kling_elements` 至少传一个，`prompt` 与 `multi_prompt` 必须且只能传一个。起始帧加参考图最多 10 张，所有素材合计最多 15 个。输入视频会在服务端下载并检测时长（每个最大 100 MB）。每个视频须为 3–30 秒，所有输入视频合计不得超过 30 秒。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "模型 ID，填 `kwaivgi/kling-v4.0/reference-to-video`。",
+                    "example": "kwaivgi/kling-v4.0/reference-to-video"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 地址，任务变为 `finished` 或 `failed` 时会收到 POST 请求。建议使用 HTTPS。省略、传 `null` 或空字符串即不发送回调。",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "properties": {
+                      "reference_image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "maxItems": 10,
+                        "description": "最多 10 个公开 HTTP(S) 参考图 URL（与起始帧合计不超过 10 张）。在提示词中按数组顺序用 `@Image1`、`@Image2`……引用。"
+                      },
+                      "reference_video_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "maxItems": 5,
+                        "description": "最多 5 个公开 HTTP(S) 参考视频 URL，每个 3–30 秒，合计不超过 30 秒。用 `@Video1`、`@Video2`……引用，按输入视频计费。"
+                      },
+                      "kling_elements": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "element_input_urls": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "minItems": 2,
+                              "maxItems": 4,
+                              "description": "2–4 个展示同一主体的公开 HTTP(S) 图片 URL。"
+                            },
+                            "element_input_video_urls": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "minItems": 1,
+                              "maxItems": 1,
+                              "description": "恰好一个该主体的公开 HTTP(S) 视频 URL（3–30 秒），按输入视频计费。"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "description": "一个 element：同一主体的多张图片或一个视频。"
+                        },
+                        "maxItems": 7,
+                        "description": "最多 7 个主体（element），其中视频主体最多 3 个。每个 element 必须且只能包含 `element_input_urls` 或 `element_input_video_urls` 之一。在提示词中按数组顺序用 `@Element1`、`@Element2`……引用。"
+                      },
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "minItems": 1,
+                        "maxItems": 1,
+                        "description": "可选的起始帧：最多一个公开 HTTP(S) 图片 URL。"
+                      },
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 26000,
+                        "description": "文本提示词，去除首尾空白后 1–26,000 个字符。`prompt` 与 `multi_prompt` 必须且只能传一个。"
+                      },
+                      "multi_prompt": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "prompt"
+                          ],
+                          "properties": {
+                            "prompt": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 512,
+                              "description": "镜头提示词，1–512 个字符。"
+                            },
+                            "duration": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 30,
+                              "default": 5,
+                              "description": "镜头时长，单位秒（整数）。"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "description": "一个镜头。"
+                        },
+                        "minItems": 1,
+                        "description": "多镜头提示词：非空的镜头列表，每个镜头有自己的 `prompt` 和可选的 `duration`。各镜头时长之和须为 3–30 秒。`prompt` 与 `multi_prompt` 必须且只能传一个。"
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "minimum": 3,
+                        "maximum": 30,
+                        "default": 5,
+                        "description": "输出时长，单位秒（整数）。使用 `multi_prompt` 时默认为各镜头时长之和，若传入则必须与之相等。"
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "enum": [
+                          "720p",
+                          "1080p"
+                        ],
+                        "default": "720p",
+                        "description": "输出分辨率，决定计费档位。"
+                      },
+                      "aspect_ratio": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "16:9",
+                          "9:16",
+                          "1:1",
+                          "21:9"
+                        ],
+                        "default": "auto",
+                        "description": "输出宽高比。`auto` 由模型决定。"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "生成参数。"
+                  }
+                }
+              },
+              "examples": {
+                "reference_images": {
+                  "summary": "参考图",
+                  "value": {
+                    "model": "kwaivgi/kling-v4.0/reference-to-video",
+                    "input": {
+                      "reference_image_urls": [
+                        "https://example.com/character.png",
+                        "https://example.com/cafe.png"
+                      ],
+                      "prompt": "@Image1 sits at a window table in the cafe from @Image2, sips coffee and waves at the camera, warm afternoon light",
+                      "duration": 8,
+                      "resolution": "720p",
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                },
+                "elements_and_video": {
+                  "summary": "主体加参考视频，带回调",
+                  "value": {
+                    "model": "kwaivgi/kling-v4.0/reference-to-video",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "kling_elements": [
+                        {
+                          "element_input_urls": [
+                            "https://example.com/robot-front.png",
+                            "https://example.com/robot-side.png"
+                          ]
+                        }
+                      ],
+                      "reference_video_urls": [
+                        "https://example.com/dance-move.mp4"
+                      ],
+                      "prompt": "@Element1 performs the dance from @Video1 on a rooftop at sunset, wide shot",
+                      "duration": 10,
+                      "resolution": "1080p",
+                      "aspect_ratio": "9:16"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP 状态码。"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "任务 ID，用于[查询任务状态](/zh/api-manual/task-management/status)。"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "任务的初始状态。"
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "任务创建时间（ISO 8601）。"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、字段不受支持、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建上游生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "所请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "错误信息。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

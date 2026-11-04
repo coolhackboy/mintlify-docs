@@ -1,0 +1,73 @@
+---
+title: "ElevenLabs V4 Turbo TTS"
+description: "The ElevenLabs V4 Turbo TTS API turns up to 5,000 characters into speech with audio tags, 90+ languages, MP3/PCM/Opus output and optional timestamps."
+icon: "music"
+openapi: "/api-manual/music-series/elevenlabs-tts-eleven-v4-turbo.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+ElevenLabs V4 Turbo TTS is the faster, lower-cost Eleven v4 text-to-speech model. It reads up to 5,000 characters per request in 90+ languages with the same voice, stability, audio-tag and output-format controls as Eleven v4, so it fits high-volume narration, app voice prompts, notifications and drafts you may later re-render with Eleven v4.
+
+Eleven v4 and Eleven v4 Turbo are ElevenLabs text-to-speech models released together in September 2026. They take the same request fields on Vidgo: [ElevenLabs V4 TTS](/api-manual/music-series/elevenlabs-tts-eleven-v4) is the most expressive option, and [ElevenLabs V4 Turbo TTS](/api-manual/music-series/elevenlabs-tts-eleven-v4-turbo) is the faster, lower-cost variant.
+
+## Models
+
+- **elevenlabs/tts/eleven-v4-turbo** — Eleven v4 Turbo text-to-speech, the faster and lower-cost variant.
+
+## Features
+
+- Text-to-speech for up to 5,000 characters per request.
+- Inline audio tags in `text` for emotion, pauses and non-verbal sounds.
+- Any ElevenLabs voice by name or voice ID, with `stability` and `similarity_boost` tuning.
+- 90+ languages, with an optional `language_code` hint.
+- 19 output formats across MP3, PCM, μ-law, A-law and Opus.
+- Optional timestamps for subtitles and lip-sync.
+
+## Required parameters
+
+- `text` (string): The text to speak, 1–5,000 characters, not blank. Audio tags in square brackets, such as `[whispers]`, are allowed.
+
+## Optional parameters
+
+- `voice` (string): ElevenLabs voice name or voice ID. Default `Rachel`. See [Voice Presets](#voice-presets).
+- `stability` (number): `0`–`1`. Default `0.5`. Lower values are more expressive, higher values more consistent.
+- `similarity_boost` (number): `0`–`1`. Default `0.75`. How closely the output follows the selected voice.
+- `output_format` (string): One of 19 MP3, PCM, μ-law, A-law and Opus formats. Default `mp3_44100_128`. See [Output Formats](#output-formats).
+- `apply_text_normalization` (string): `auto`, `on` or `off`. Default `auto`. Controls whether numbers, dates and abbreviations are spelled out.
+- `timestamps` (boolean): Also return timing data for the speech. Default `false`.
+- `language_code` (string): ISO 639-1 language hint, such as `en`, `zh` or `ja`. Omit it to let the model detect the language.
+
+## Output
+
+The finished task returns the speech as an audio file in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload. With `timestamps: true`, the timing data is returned as an additional item in the same array.
+
+## Output Formats
+
+| Family | Values |
+| --- | --- |
+| MP3 | `mp3_22050_32`, `mp3_44100_32`, `mp3_44100_64`, `mp3_44100_96`, `mp3_44100_128` (default), `mp3_44100_192` |
+| PCM | `pcm_8000`, `pcm_16000`, `pcm_22050`, `pcm_24000`, `pcm_44100`, `pcm_48000` |
+| Telephony | `ulaw_8000`, `alaw_8000` |
+| Opus | `opus_48000_32`, `opus_48000_64`, `opus_48000_96`, `opus_48000_128`, `opus_48000_192` |
+
+The value reads as codec, sample rate in Hz and, for compressed formats, bitrate in kbps. `pcm_*` suits further audio processing; `ulaw_8000` and `alaw_8000` suit phone systems.
+
+## Voice Presets
+
+`voice` accepts any ElevenLabs voice name or voice ID available to the model. Commonly used names include `Aria`, `Roger`, `Sarah`, `Laura`, `Charlie`, `George`, `Callum`, `River`, `Liam`, `Charlotte`, `Alice`, `Matilda`, `Will`, `Jessica`, `Eric`, `Chris`, `Brian`, `Daniel`, `Lily`, `Bill`, `Rachel`. The default is `Rachel`.
+
+## Examples
+
+- **Notification prompt**: a short transactional message with `voice: Brian` and the default MP3 output.
+- **French narration as Opus**: `language_code: fr`, `output_format: opus_48000_64` for compact app audio, with a `callback_url`.
+
+## Notes
+
+- Credits are reserved at submission and depend on the number of characters in `text` as sent, including spaces, line breaks and audio tags. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.
+- `text` is limited to 5,000 characters per request. Split longer scripts into several tasks.
+- This endpoint produces a single voice per request. Multi-speaker dialogue, voice cloning, streaming, `seed` and `speed` are not available through it; unsupported fields return 400.
+- Turbo is billed at a lower rate than [ElevenLabs V4 TTS](/api-manual/music-series/elevenlabs-tts-eleven-v4); the request body is identical, so you can switch by changing `model`.

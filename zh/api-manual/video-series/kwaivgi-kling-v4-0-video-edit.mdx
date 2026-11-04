@@ -1,0 +1,55 @@
+---
+title: "Kling 4.0 视频编辑"
+description: "Kling 4.0 视频编辑 API 根据文字指令编辑 3–30 秒的源视频，可选参考图和主体，输出 720p 或 1080p。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/kwaivgi-kling-v4-0-video-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+Kling 4.0 视频编辑根据文字指令修改已有的 3–30 秒视频：改变场景风格、替换物体或背景、调整动作，同时保留源视频的运动。参考图和图片主体可以明确指定要放入的内容。
+
+Kling 4.0 是快手 Kling AI 的视频模型。Vidgo 提供四个 model ID：[文生视频](/zh/api-manual/video-series/kwaivgi-kling-v4-0-text-to-video)、[图生视频](/zh/api-manual/video-series/kwaivgi-kling-v4-0-image-to-video)、[参考生视频](/zh/api-manual/video-series/kwaivgi-kling-v4-0-reference-to-video)和[视频编辑](/zh/api-manual/video-series/kwaivgi-kling-v4-0-video-edit)。
+
+## 模型
+
+- **kwaivgi/kling-v4.0/video-edit** — Kling 4.0 视频编辑：用文字指令编辑 3–30 秒的源视频，720p 或 1080p。
+
+## 功能
+
+- 用文字指令编辑 3–30 秒的源视频。
+- 可选参考图（`@Image1`……）和图片主体（`@Element1`……）。
+- 输出时长默认与源视频一致，也可设置 `duration`。
+- 输出 720p 或 1080p。
+
+## 必填参数
+
+- `video_url`（string）：源视频的公开 HTTP(S) URL，3–30 秒，最大 100 MB。
+- `prompt`（string）：编辑指令，去除首尾空白后 1–26,000 个字符。
+
+## 可选参数
+
+- `duration`（integer）：输出时长，`3`–`30` 秒。无默认值：省略时输出与源视频时长一致。
+- `resolution`（string）：`720p` 或 `1080p`。默认 `720p`。
+- `reference_image_urls`（string[]）：最多 10 个公开 HTTP(S) 图片 URL。
+- `kling_elements`（object[]）：最多 7 个图片主体，每个为包含 2–4 个图片 URL 的 `{element_input_urls}`。此处不支持视频主体。
+
+## 输出
+
+任务完成后，[查询任务状态](/zh/api-manual/task-management/status)和回调内容的 `files` 数组中会返回一个带音轨的 MP4 视频。
+
+## 示例
+
+- **改变风格，保持源视频时长**：把街景改成冬季雪景，不传 `duration`，输出时长跟随源视频。
+- **用参考图替换物体，带回调**：把手机换成 `@Image1` 中的产品，1080p，10 秒，并提供 `callback_url`。
+
+## 注意事项
+
+- 本 ID 不支持 `multi_prompt`、`image_urls`、`reference_video_urls`、`aspect_ratio` 和视频主体，传入会返回 400。
+- 源视频会在服务端下载并检测时长，须为 3–30 秒且不超过 100 MB。
+- 上文未列出的字段会返回 400。`model` 和 `callback_url` 放在请求根级，不要放进 `input`。
+- 积分在提交时预扣，取决于 `resolution` 和时长。有输入视频时使用单独的输入视频费率，计费秒数 = 输出时长 + max（输出时长，输入视频总时长）；输入视频时长先求和再向上取整到整秒。任务失败会全额退还。当前费率见[定价页](https://vidgo.ai/apis/api-pricing)。未传 `duration` 时，输出时长按源视频时长向上取整计费。
+- 仅支持 720p 或 1080p 输出；本模型没有 4K 或 HDR 档位，没有音频开关，也不支持 `seed`。

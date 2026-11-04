@@ -1,0 +1,48 @@
+---
+title: "Ideogram Vector 1.0 Image to SVG"
+description: "The Ideogram Vector 1.0 Image to SVG API converts one PNG, JPG or WebP image into an editable SVG file, in default (detailed) or simple mode."
+icon: "image"
+openapi: "/api-manual/image-series/ideogram-vector-1-0-image-to-vector.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+Ideogram Vector 1.0 Image to SVG converts a raster image, such as a PNG logo, a scanned sketch or a JPG illustration, into an SVG file you can scale and edit in a vector tool. Choose `default` mode for detail or `simple` mode for a cleaner, flatter result. No prompt is needed.
+
+Ideogram Vector 1.0 is Ideogram's first model that outputs vector graphics instead of pixels. Vidgo exposes it as two model IDs: [Text to SVG](/api-manual/image-series/ideogram-vector-1-0-text-to-vector) and [Image to SVG](/api-manual/image-series/ideogram-vector-1-0-image-to-vector).
+
+## Models
+
+- **ideogram/vector-1.0/image-to-vector** — Image to SVG with Ideogram Vector 1.0: one image in, one SVG out.
+
+## Features
+
+- Image-to-SVG vectorization of one image per request.
+- Two styles: `default` (finer detail) and `simple` (fewer shapes).
+- Accepts a public URL or an image data URI.
+
+## Required parameters
+
+- `image_urls` (string[]): Exactly one image (PNG, JPG or WebP recommended). Public HTTP(S) URL or `data:image/...;base64,...` data URI.
+
+## Optional parameters
+
+- `mode` (string): `default` or `simple`. Default `default`.
+
+## Output
+
+The finished task returns SVG files (`image/svg+xml`) in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload. Open them in any vector editor or embed them directly in a web page.
+
+## Examples
+
+- **Vectorize a logo in default mode**: one PNG logo, `mode: default`.
+- **Simple mode with callback**: a JPG sketch, `mode: simple`, with a `callback_url`.
+
+## Notes
+
+- This ID takes no `prompt`; sending one returns 400. To create new SVG artwork from text, use [Ideogram Vector 1.0 Text to SVG](/api-manual/image-series/ideogram-vector-1-0-text-to-vector).
+- `image_urls` must contain exactly one image. Fields not listed above return 400. `model` and `callback_url` belong at the request root, not inside `input`.
+- Each request is billed at one flat rate per SVG; `mode` does not change the price. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.

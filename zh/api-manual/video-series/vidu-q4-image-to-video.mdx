@@ -1,0 +1,66 @@
+---
+title: "Vidu Q4 图生视频"
+description: "Vidu Q4 图生视频 API 将一张起始图片生成 3–16 秒的视频，分辨率可选 540p、720p、1080p、2K 或 4K，并保持图片的宽高比。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/vidu-q4-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+Vidu Q4 图生视频将一张静态图片生成 3–16 秒的视频，分辨率从快速出稿的 540p 到 4K。图片作为首帧并决定构图，因此输出保持图片的宽高比。适合让插画、产品图或主视觉动起来。
+
+Vidu Q4 是生数科技（ShengShu Technology）的视频模型，上游于 2026 年 10 月以 Vidu Q4 Preview 发布。它没有文生视频模式，每个请求都从图片开始。Vidgo 提供两个 model ID：[图生视频](/zh/api-manual/video-series/vidu-q4-image-to-video)和[参考生视频](/zh/api-manual/video-series/vidu-q4-reference-to-video)。
+
+## 模型
+
+- **vidu/q4/image-to-video** — Vidu Q4 图生视频，使用一张起始帧，3–16 秒，540p 到 4K。
+
+## 功能
+
+- 以一张起始帧图生视频。
+- 可选提示词，用于指导运动和镜头运动。
+- 时长为 3 到 16 秒的整数。
+- 五种分辨率：`540p`、`720p`、`1080p`、`2k` 和 `4k`。
+- 宽高比跟随输入图片。
+
+## 必填参数
+
+- `image_urls`（string[]）：恰好一个公开 HTTP(S) 图片 URL，用作首帧。
+
+## 可选参数
+
+- `prompt`（string）：哪些元素运动、镜头如何运动以及氛围。最多 5,000 个字符。默认为空。
+- `duration`（integer）：输出时长，`3`–`16` 秒。默认 `5`。
+- `resolution`（string）：`540p`、`720p`、`1080p`、`2k` 或 `4k`（不区分大小写）。默认 `720p`。
+- `enable_safety_checker`（boolean）：开启或关闭上游安全检查。
+
+## 分辨率
+
+| `resolution` | 适用场景 |
+| --- | --- |
+| `540p` | 快速、低成本的草稿 |
+| `720p` | 默认；社交平台和网页短片 |
+| `1080p` | 全高清交付 |
+| `2k` | 高分辨率母版 |
+| `4k` | 主视觉镜头和大屏 |
+
+分辨率决定每秒的计费档位。
+
+## 输出
+
+任务完成后，[查询任务状态](/zh/api-manual/task-management/status)和回调内容的 `files` 数组中会返回一个 MP4 视频。
+
+## 示例
+
+- **5 秒 720p 动画**：一张插画加简短的运动提示词，其余使用默认设置。
+- **10 秒 4K 主视觉镜头，带回调**：将主视觉以 `4k` 生成，用于大屏展示，并提供 `callback_url`。
+
+## 注意事项
+
+- 本 ID 的图生视频不生成音频，也不接受 `aspect_ratio`、`generate_audio`、`reference_image_urls` 或 `reference_audio_urls`，传入会返回 400。需要多图参考、音色参考或原生音频时，请用 [Vidu Q4 参考生视频](/zh/api-manual/video-series/vidu-q4-reference-to-video)。
+- Vidu Q4 没有文生视频模式，每个请求都需要图片。
+- `model` 和 `callback_url` 放在请求根级，不要放进 `input`。
+- 积分在提交时预扣，按 `resolution` 和 `duration`（每输出秒）计算。参考图、参考音频和 `generate_audio` 不影响费率。任务失败会全额退还。当前费率见[定价页](https://vidgo.ai/apis/api-pricing)。

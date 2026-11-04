@@ -1,0 +1,589 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 4.0 Reference to Video",
+    "description": "The Kling 4.0 Reference to Video API guides 3–30 second videos with up to 10 reference images, 5 reference videos and 7 elements, cited as @Image1 or @Element1.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Video Series"
+        ],
+        "summary": "Kling 4.0 Reference to Video",
+        "operationId": "submit_kwaivgi_kling_v4_0_reference_to_video",
+        "description": "Send at least one of `reference_image_urls`, `reference_video_urls` or `kling_elements`, and exactly one of `prompt` or `multi_prompt`. Start frame plus reference images: at most 10. All assets together: at most 15. Input videos are downloaded and measured server-side (up to 100 MB each). Each must run 3–30 seconds, and all input videos together must not exceed 30 seconds.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "Model ID. Use `kwaivgi/kling-v4.0/reference-to-video`.",
+                    "example": "kwaivgi/kling-v4.0/reference-to-video"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "Optional public HTTP(S) endpoint that receives a POST when the task becomes `finished` or `failed`. HTTPS is recommended. Omit it, or send `null` or an empty string, to disable callbacks.",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "properties": {
+                      "reference_image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "maxItems": 10,
+                        "description": "Up to 10 public HTTP(S) reference image URLs (10 including the start frame). Refer to them in the prompt as `@Image1`, `@Image2`, … in array order."
+                      },
+                      "reference_video_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "maxItems": 5,
+                        "description": "Up to 5 public HTTP(S) reference video URLs, each 3–30 seconds, 30 seconds in total. Refer to them as `@Video1`, `@Video2`, …. Billed as input video."
+                      },
+                      "kling_elements": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "element_input_urls": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "minItems": 2,
+                              "maxItems": 4,
+                              "description": "2–4 public HTTP(S) image URLs showing the same subject."
+                            },
+                            "element_input_video_urls": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "minItems": 1,
+                              "maxItems": 1,
+                              "description": "Exactly one public HTTP(S) video URL of the subject (3–30 seconds). Billed as input video."
+                            }
+                          },
+                          "additionalProperties": false,
+                          "description": "One element: images or one video of the same subject."
+                        },
+                        "maxItems": 7,
+                        "description": "Up to 7 subjects (elements), at most 3 of them video-based. Each element has exactly one of `element_input_urls` or `element_input_video_urls`. Refer to them in the prompt as `@Element1`, `@Element2`, … in array order."
+                      },
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "minItems": 1,
+                        "maxItems": 1,
+                        "description": "Optional start frame: at most one public HTTP(S) image URL."
+                      },
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 26000,
+                        "description": "Text prompt, 1–26,000 characters after trimming. Send exactly one of `prompt` or `multi_prompt`."
+                      },
+                      "multi_prompt": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "prompt"
+                          ],
+                          "properties": {
+                            "prompt": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 512,
+                              "description": "Shot prompt, 1–512 characters."
+                            },
+                            "duration": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 30,
+                              "default": 5,
+                              "description": "Shot length in seconds (integer)."
+                            }
+                          },
+                          "additionalProperties": false,
+                          "description": "One shot."
+                        },
+                        "minItems": 1,
+                        "description": "Multi-shot prompt: a non-empty list of shots, each with its own `prompt` and optional `duration`. Shot durations must total 3–30 seconds. Send exactly one of `prompt` or `multi_prompt`."
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "minimum": 3,
+                        "maximum": 30,
+                        "default": 5,
+                        "description": "Output length in seconds (integer). With `multi_prompt` it defaults to the shot total and, if sent, must equal it."
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "enum": [
+                          "720p",
+                          "1080p"
+                        ],
+                        "default": "720p",
+                        "description": "Output resolution. It sets the billing rate."
+                      },
+                      "aspect_ratio": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "16:9",
+                          "9:16",
+                          "1:1",
+                          "21:9"
+                        ],
+                        "default": "auto",
+                        "description": "Output aspect ratio. `auto` lets the model choose."
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "Generation parameters."
+                  }
+                }
+              },
+              "examples": {
+                "reference_images": {
+                  "summary": "Reference images",
+                  "value": {
+                    "model": "kwaivgi/kling-v4.0/reference-to-video",
+                    "input": {
+                      "reference_image_urls": [
+                        "https://example.com/character.png",
+                        "https://example.com/cafe.png"
+                      ],
+                      "prompt": "@Image1 sits at a window table in the cafe from @Image2, sips coffee and waves at the camera, warm afternoon light",
+                      "duration": 8,
+                      "resolution": "720p",
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                },
+                "elements_and_video": {
+                  "summary": "Elements plus a reference video, with callback",
+                  "value": {
+                    "model": "kwaivgi/kling-v4.0/reference-to-video",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "kling_elements": [
+                        {
+                          "element_input_urls": [
+                            "https://example.com/robot-front.png",
+                            "https://example.com/robot-side.png"
+                          ]
+                        }
+                      ],
+                      "reference_video_urls": [
+                        "https://example.com/dance-move.mp4"
+                      ],
+                      "prompt": "@Element1 performs the dance from @Video1 on a rooftop at sunset, wide shot",
+                      "duration": 10,
+                      "resolution": "1080p",
+                      "aspect_ratio": "9:16"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP status code."
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "Task ID. Use it with [Query Task Status](/api-manual/task-management/status)."
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "Initial task status."
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Time the task was created (ISO 8601)."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, unsupported field, inaccessible media, or insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or disabled model",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate or API key credit limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unable to create the upstream generation task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The requested model is temporarily unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nGo to **Dashboard → API Key** ([API Key Management Page](https://vidgo.ai/apis/dashboard/api-key)) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

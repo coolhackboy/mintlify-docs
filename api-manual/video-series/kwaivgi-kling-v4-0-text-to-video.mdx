@@ -1,0 +1,61 @@
+---
+title: "Kling 4.0 Text to Video"
+description: "The Kling 4.0 Text to Video API generates 3–30 second videos from a prompt or multi-shot prompts at 720p or 1080p, with stereo audio and five aspect ratios."
+icon: "video"
+openapi: "/api-manual/video-series/kwaivgi-kling-v4-0-text-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+Kling 4.0 Text to Video generates a 3–30 second video from a single prompt or from a multi-shot script, at 720p or 1080p, with an audio track in the output. Use it for single-take ads, short-drama scenes and social clips when you have no source image.
+
+Kling 4.0 is Kuaishou's Kling AI video model. Vidgo exposes it as four model IDs: [Text to Video](/api-manual/video-series/kwaivgi-kling-v4-0-text-to-video), [Image to Video](/api-manual/video-series/kwaivgi-kling-v4-0-image-to-video), [Reference to Video](/api-manual/video-series/kwaivgi-kling-v4-0-reference-to-video) and [Video Edit](/api-manual/video-series/kwaivgi-kling-v4-0-video-edit).
+
+## Models
+
+- **kwaivgi/kling-v4.0/text-to-video** — Text-to-video with Kling 4.0, 3–30 seconds, single or multi-shot prompts, 720p or 1080p.
+
+## Features
+
+- Text-to-video up to 30 seconds in one pass.
+- Multi-shot prompts with per-shot durations via `multi_prompt`.
+- 720p or 1080p output.
+- Five aspect ratios: `auto`, `16:9`, `9:16`, `1:1`, `21:9`.
+- Output includes an audio track; describe dialogue, sound effects or ambience in the prompt.
+
+## Input modes
+
+- **Single prompt**: send `prompt` and, optionally, `duration`.
+- **Multi-shot**: send `multi_prompt` with one entry per shot. The clip length is the sum of the shot durations; leave `duration` out or set it to that sum.
+
+## Required parameters
+
+- `prompt` (string) **or** `multi_prompt` (object[]): send exactly one.
+  - `prompt`: 1–26,000 characters after trimming.
+  - `multi_prompt`: a non-empty list of shots `{prompt, duration?}`. Each shot `prompt` is 1–512 characters; each shot `duration` is an integer `1`–`30` (default `5`). The shot durations must total 3–30 seconds.
+
+## Optional parameters
+
+- `duration` (integer): Output length, `3`–`30` seconds. Default `5`; with `multi_prompt` the default is the shot total, and an explicit value must equal it.
+- `resolution` (string): `720p` or `1080p`. Default `720p`.
+- `aspect_ratio` (string): `auto`, `16:9`, `9:16`, `1:1` or `21:9`. Default `auto`.
+
+## Output
+
+The finished task returns one MP4 video, with an audio track, in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload.
+
+## Examples
+
+- **Single prompt, 10 seconds**: one `prompt` with scene, camera and sound cues, `16:9`, 720p.
+- **Three-shot 1080p sequence with callback**: `multi_prompt` with shots of 4, 6 and 5 seconds (15 seconds in total), `9:16`, and a `callback_url`.
+
+## Notes
+
+- Sending both `prompt` and `multi_prompt`, or neither, returns 400. With `multi_prompt`, a `duration` that differs from the shot total returns 400.
+- This ID accepts text only. To start from an image, use [Kling 4.0 Image to Video](/api-manual/video-series/kwaivgi-kling-v4-0-image-to-video); to guide the video with images, videos or subjects, use [Kling 4.0 Reference to Video](/api-manual/video-series/kwaivgi-kling-v4-0-reference-to-video).
+- Fields not listed above return 400. `model` and `callback_url` belong at the request root, not inside `input`.
+- Credits are reserved at submission and depend on `resolution` and the output `duration`. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.
+- Output is 720p or 1080p only; there is no 4K or HDR tier, no audio on/off switch and no `seed` on this model.

@@ -1,0 +1,55 @@
+---
+title: "Kling 4.0 Video Edit"
+description: "The Kling 4.0 Video Edit API edits a 3–30 second source video from a text instruction, with optional reference images and subjects, at 720p or 1080p."
+icon: "video"
+openapi: "/api-manual/video-series/kwaivgi-kling-v4-0-video-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+Kling 4.0 Video Edit changes an existing 3–30 second video from a text instruction: restyle the scene, swap objects or backgrounds, or adjust the action, while keeping the source motion. Reference images and image-based subjects can show exactly what to insert.
+
+Kling 4.0 is Kuaishou's Kling AI video model. Vidgo exposes it as four model IDs: [Text to Video](/api-manual/video-series/kwaivgi-kling-v4-0-text-to-video), [Image to Video](/api-manual/video-series/kwaivgi-kling-v4-0-image-to-video), [Reference to Video](/api-manual/video-series/kwaivgi-kling-v4-0-reference-to-video) and [Video Edit](/api-manual/video-series/kwaivgi-kling-v4-0-video-edit).
+
+## Models
+
+- **kwaivgi/kling-v4.0/video-edit** — Video edit with Kling 4.0: text-guided editing of a 3–30 second source video, 720p or 1080p.
+
+## Features
+
+- Text-guided video edit of a 3–30 second source clip.
+- Optional reference images (`@Image1`, …) and image-based elements (`@Element1`, …).
+- Output length matches the source by default, or set `duration`.
+- 720p or 1080p output.
+
+## Required parameters
+
+- `video_url` (string): Public HTTP(S) URL of the source video, 3–30 seconds, up to 100 MB.
+- `prompt` (string): The edit instruction, 1–26,000 characters after trimming.
+
+## Optional parameters
+
+- `duration` (integer): Output length, `3`–`30` seconds. No default: if omitted, the output matches the source.
+- `resolution` (string): `720p` or `1080p`. Default `720p`.
+- `reference_image_urls` (string[]): Up to 10 public HTTP(S) image URLs.
+- `kling_elements` (object[]): Up to 7 image-based elements, each `{element_input_urls}` with 2–4 image URLs. Video elements are not supported here.
+
+## Output
+
+The finished task returns one MP4 video, with an audio track, in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload.
+
+## Examples
+
+- **Restyle, keep source length**: a winter makeover of a street clip without `duration`, so the output follows the source.
+- **Replace an object with a reference image, with callback**: swap a phone for the product in `@Image1`, 10 seconds at 1080p, with a `callback_url`.
+
+## Notes
+
+- `multi_prompt`, `image_urls`, `reference_video_urls`, `aspect_ratio` and video-based elements are not supported on this ID and return 400.
+- The source video is downloaded and measured server-side; it must run 3–30 seconds and be at most 100 MB.
+- Fields not listed above return 400. `model` and `callback_url` belong at the request root, not inside `input`.
+- Credits are reserved at submission and depend on `resolution` and duration. When an input video is present, a separate input-video rate applies to billed seconds = output duration + the larger of the output duration and the total input video length (summed, then rounded up to whole seconds). A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates. Without `duration`, the output duration is billed as the source length rounded up.
+- Output is 720p or 1080p only; there is no 4K or HDR tier, no audio on/off switch and no `seed` on this model.

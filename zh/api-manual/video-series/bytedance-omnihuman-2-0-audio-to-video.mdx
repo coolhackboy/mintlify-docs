@@ -1,0 +1,54 @@
+---
+title: "OmniHuman 2.0 音频生视频"
+description: "OmniHuman 2.0 音频生视频 API 用一段 4–300 秒的 WAV 或 MP3 音频驱动一张角色图片，生成口型同步的 720p 视频，可选提示词。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/bytedance-omnihuman-2-0-audio-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+OmniHuman 2.0 音频生视频接收一张角色图片和一个音频文件，生成该角色说话、演唱或表演的 720p 视频，口型、表情和手势都跟随音频。音频支持 4–300 秒，既能做社交短片，也能做完整的讲解旁白。OmniHuman 2.0 是字节跳动（ByteDance）的音频驱动视频模型，上游通过 BytePlus 提供。
+
+## 模型
+
+- **bytedance/omnihuman-2.0/audio-to-video** — OmniHuman 2.0 音频生视频：一张图片加一个 WAV 或 MP3 文件，输出 720p，时长跟随音频。
+
+## 功能
+
+- 由一张图片生成音频驱动的说话和演唱视频。
+- 口型同步、表情和手势由音频驱动。
+- 音频从 4 秒到 5 分钟，视频时长与音频相同。
+- 支持真人、动物、卡通、3D 和风格化角色，以及多人画面。
+- 可选提示词，用于描述镜头运动、动作和额外的画面元素。
+
+## 必填参数
+
+- `image_urls`（string[]）：恰好一个公开 HTTP(S) 角色图片 URL。视频构图跟随这张图片。
+- `audio_url`（string）：WAV 或 MP3 文件的公开 HTTP(S) URL，不超过 15 MB，时长 4–300 秒。
+
+## 可选参数
+
+- `prompt`（string）：镜头运动、动作或额外的画面元素。口型和表情仍由音频决定。
+
+## 时长
+
+没有 `duration` 字段。输出时长跟随音频，30 秒的旁白会生成约 30 秒的视频。要改变时长，请剪辑音频。
+
+## 输出
+
+任务完成后，[查询任务状态](/zh/api-manual/task-management/status)和回调内容的 `files` 数组中会返回一个 MP4 视频。视频为 720p。
+
+## 示例
+
+- **用头像生成讲解主持人**：一张头像和一段 MP3 旁白，不带提示词。
+- **带镜头提示词的演唱角色，带回调**：一只卡通猫、一首 WAV 歌曲、描述动作和镜头的提示词，并提供 `callback_url`。
+
+## 注意事项
+
+- 使用一张面部清晰可见的图片，以及没有长时间静音或明显背景噪声的干净音频，口型同步效果最好。
+- 音频不是 WAV 或 MP3、超过 15 MB、短于 4 秒或长于 300 秒都会返回 400。`duration`、`resolution`、`aspect_ratio`、`seed` 以及上文未列出的其他字段同样返回 400。
+- `model` 和 `callback_url` 放在请求根级，不要放进 `input`。
+- 按生成视频的秒数计费。提交时按完整音频时长预扣积分；任务成功后按实际输出时长结算并退还差额，最终扣费不会超过预扣金额。任务失败会全额退还。当前费率见[定价页](https://vidgo.ai/apis/api-pricing)。

@@ -1,0 +1,560 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - FLUX 3 Max Keyframes to Video",
+    "description": "The FLUX 3 Max Keyframes to Video API places 1–10 images on a 24 fps timeline with frame_index and generates the 5–20 second motion between them.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Video Series"
+        ],
+        "summary": "FLUX 3 Max Keyframes to Video",
+        "operationId": "submit_blackforestlabs_flux_3_max_keyframes_to_video",
+        "description": "Send only the `input` fields listed for this model. Any other field, including `image_urls`, returns 400. Each keyframe needs a public HTTP(S) `image_url` and a unique `frame_index` between 0 and `duration × 24`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "Model ID. Use `blackforestlabs/flux-3-max/keyframes-to-video`.",
+                    "example": "blackforestlabs/flux-3-max/keyframes-to-video"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "Optional public HTTP(S) endpoint that receives a POST when the task becomes `finished` or `failed`. HTTPS is recommended. Omit it, or send `null` or an empty string, to disable callbacks.",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "keyframes",
+                      "prompt"
+                    ],
+                    "properties": {
+                      "keyframes": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "image_url",
+                            "frame_index"
+                          ],
+                          "properties": {
+                            "image_url": {
+                              "type": "string",
+                              "format": "uri",
+                              "description": "Public HTTP(S) URL of the keyframe image (PNG, JPEG or WebP)."
+                            },
+                            "frame_index": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 480,
+                              "description": "Frame position on the 24 fps timeline, from `0` to `duration × 24` (for example 0–120 for a 5-second video)."
+                            }
+                          },
+                          "additionalProperties": false,
+                          "description": "One keyframe."
+                        },
+                        "minItems": 1,
+                        "maxItems": 10,
+                        "description": "1–10 keyframes. Each object has exactly `image_url` and `frame_index`. Frame indexes must be unique."
+                      },
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "A seed sprouts, grows into a sapling and blossoms into a cherry tree, time-lapse, fixed camera",
+                        "description": "Describe the motion and transitions between keyframes, the camera movement and, with `sound` on, the audio. Must not be blank."
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "minimum": 5,
+                        "maximum": 20,
+                        "default": 5,
+                        "description": "Output length in seconds (integer)."
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "enum": [
+                          "720p",
+                          "1080p"
+                        ],
+                        "default": "720p",
+                        "description": "Output resolution. It sets the billing rate."
+                      },
+                      "aspect_ratio": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "21:9",
+                          "2:1",
+                          "16:9",
+                          "4:3",
+                          "1:1",
+                          "3:4",
+                          "9:16"
+                        ],
+                        "default": "auto",
+                        "description": "Output aspect ratio. `auto` lets the model choose: 16:9 for text-only prompts, the shape of the first image when images are supplied."
+                      },
+                      "sound": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Generate native audio in the same pass. Set `false` for a silent video. Does not change the price."
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "Generation parameters."
+                  }
+                }
+              },
+              "examples": {
+                "three_keyframes": {
+                  "summary": "Three keyframes over 5 seconds",
+                  "value": {
+                    "model": "blackforestlabs/flux-3-max/keyframes-to-video",
+                    "input": {
+                      "keyframes": [
+                        {
+                          "image_url": "https://example.com/seed.png",
+                          "frame_index": 0
+                        },
+                        {
+                          "image_url": "https://example.com/sapling.png",
+                          "frame_index": 60
+                        },
+                        {
+                          "image_url": "https://example.com/blossom.png",
+                          "frame_index": 120
+                        }
+                      ],
+                      "prompt": "A seed sprouts, grows into a sapling and blossoms into a cherry tree, time-lapse, fixed camera",
+                      "duration": 5,
+                      "resolution": "720p",
+                      "aspect_ratio": "auto",
+                      "sound": true
+                    }
+                  }
+                },
+                "storyboard": {
+                  "summary": "10-second 1080p storyboard with callback",
+                  "value": {
+                    "model": "blackforestlabs/flux-3-max/keyframes-to-video",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "keyframes": [
+                        {
+                          "image_url": "https://example.com/shot-1.png",
+                          "frame_index": 0
+                        },
+                        {
+                          "image_url": "https://example.com/shot-2.png",
+                          "frame_index": 96
+                        },
+                        {
+                          "image_url": "https://example.com/shot-3.png",
+                          "frame_index": 168
+                        },
+                        {
+                          "image_url": "https://example.com/shot-4.png",
+                          "frame_index": 240
+                        }
+                      ],
+                      "prompt": "A courier cycles through a misty city at dawn, crosses a bridge and arrives at a lit doorway, smooth tracking shots",
+                      "duration": 10,
+                      "resolution": "1080p",
+                      "aspect_ratio": "21:9",
+                      "sound": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP status code."
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "Task ID. Use it with [Query Task Status](/api-manual/task-management/status)."
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "Initial task status."
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Time the task was created (ISO 8601)."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, unsupported field, inaccessible media, or insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or disabled model",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate or API key credit limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unable to create the upstream generation task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The requested model is temporarily unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nGo to **Dashboard → API Key** ([API Key Management Page](https://vidgo.ai/apis/dashboard/api-key)) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

@@ -1,0 +1,65 @@
+---
+title: "FLUX 3 Klein 图像编辑"
+description: "FLUX 3 Klein 图像编辑 API 根据自然语言指令编辑或合成 1–10 张输入图片，返回 1–4 张 1K、2K 或 4K 结果。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/blackforestlabs-flux-3-klein-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+FLUX 3 Klein 图像编辑根据直白的语言指令修改或合成已有图片。传一张图片可以改风格、修图或替换元素；传最多十张可以把产品放进新场景，或把多张参考合成为一张画面，输出 1K、2K 或 4K。
+
+FLUX 3 Klein 是 Black Forest Labs FLUX 3 图像系列中的轻量模型，主打快速生成和基于指令的编辑。Vidgo 提供两个 model ID：[文生图](/zh/api-manual/image-series/blackforestlabs-flux-3-klein-text-to-image)和[图像编辑](/zh/api-manual/image-series/blackforestlabs-flux-3-klein-edit)。
+
+## 模型
+
+- **blackforestlabs/flux-3-klein/edit** — FLUX 3 Klein 图像编辑，1–10 张输入图片，1–4 张结果。
+
+## 功能
+
+- 用自然语言指令进行图像编辑。
+- 多图合成，最多 10 张输入，在提示词中按顺序引用。
+- 三档分辨率：`1K`、`2K`、`4K`；可用预设或自定义尺寸。
+- 输出 PNG、JPEG 或 WebP，每次请求 1–4 张。
+
+## 必填参数
+
+- `prompt`（string）：编辑指令。按位置引用输入图片，例如“第一张图片”“第二张图片”。不能为空白。
+- `image_urls`（string[]）：1–10 张图片。公开 HTTP(S) URL，或由 Vidgo 先行上传的 base64 data URI。
+
+## 可选参数
+
+- `n`（integer）：图片张数，`1`–`4`。默认 `1`。
+- `resolution`（string）：`1K`、`2K` 或 `4K`。默认 `1K`。见[分辨率](#分辨率)。
+- `size`（string）：预设或自定义 `WIDTHxHEIGHT`。默认 `1:1`。见[分辨率](#分辨率)。
+- `output_format`（string）：`png`、`jpeg` 或 `webp`。默认 `png`。
+- `enable_safety_checker`（boolean）：上游安全检查。默认 `true`。
+
+## 分辨率
+
+- 使用预设 `size`（`1:1`、`4:3`、`3:4`、`16:9`、`9:16`、`3:2`、`2:3`）时，图片会按档位缩放长边：`1K` → 1024 像素，`2K` → 2048 像素，`4K` → 4096 像素。
+- 使用自定义 `size`（如 `1920x1080`）时，每边须为 256–4096 且为 16 的倍数，并且必须传入与长边匹配的 `resolution`：不超过 1024 用 `1K`，不超过 2048 用 `2K`，超过 2048 用 `4K`。不匹配会返回 400。
+
+| `resolution` | 长边（预设） | 自定义长边 |
+| --- | --- | --- |
+| `1K` | 1024 像素 | ≤ 1024 像素 |
+| `2K` | 2048 像素 | 1025–2048 像素 |
+| `4K` | 4096 像素 | 2049–4096 像素 |
+
+## 输出
+
+任务完成后，[查询任务状态](/zh/api-manual/task-management/status)和回调内容的 `files` 数组中会按请求的张数（`n`）返回对应数量的图片文件。
+
+## 示例
+
+- **编辑一张图片**：把白天的街道改成雨夜，`16:9`，`1K`。
+- **以 2K 合成两张图片，带回调**：把第一张图中的产品放进第二张图的场景，`n: 2`，WebP，并提供 `callback_url`。
+
+## 注意事项
+
+- 参考图较多时，人物姿态和视角的一致性可能不稳定；请清楚描述主体，并在满足需求的前提下尽量减少输入图片数量。
+- `image_urls` 为空数组或超过十张会返回 400。上文未列出的字段会返回 400。`model` 和 `callback_url` 放在请求根级，不要放进 `input`。
+- 积分在提交时预扣，取决于 `resolution` 和 `n`。文生图与图像编辑费率相同。任务失败会全额退还。当前费率见[定价页](https://vidgo.ai/apis/api-pricing)。输入图片数量不影响价格。

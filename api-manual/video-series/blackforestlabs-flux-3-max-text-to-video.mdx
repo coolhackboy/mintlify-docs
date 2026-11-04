@@ -1,0 +1,54 @@
+---
+title: "FLUX 3 Max Text to Video"
+description: "The FLUX 3 Max Text to Video API generates 5–20 second videos from a text prompt at 720p or 1080p, with eight aspect ratios and optional native audio."
+icon: "video"
+openapi: "/api-manual/video-series/blackforestlabs-flux-3-max-text-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+FLUX 3 Max Text to Video turns a written prompt into a 5–20 second video at 720p or 1080p, with native audio generated in the same pass. Use it for social shorts, product teasers, concept shots and storyboard drafts when you have no source image.
+
+FLUX 3 Max is a video model post-trained by fal in collaboration with Black Forest Labs on the FLUX 3 video base. Vidgo exposes it as three model IDs: [Text to Video](/api-manual/video-series/blackforestlabs-flux-3-max-text-to-video), [Image to Video](/api-manual/video-series/blackforestlabs-flux-3-max-image-to-video) and [Keyframes to Video](/api-manual/video-series/blackforestlabs-flux-3-max-keyframes-to-video).
+
+## Models
+
+- **blackforestlabs/flux-3-max/text-to-video** — Text-to-video with FLUX 3 Max, 5–20 seconds, 720p or 1080p, optional audio.
+
+## Features
+
+- Text-to-video from a single prompt, no image needed.
+- Integer durations from 5 to 20 seconds.
+- 720p or 1080p output.
+- Eight aspect ratios, including cinematic `21:9` and `2:1`, vertical `9:16` and square `1:1`.
+- Native audio on by default; describe ambience, effects or dialogue in the prompt.
+
+## Required parameters
+
+- `prompt` (string): The scene, the motion and the camera movement. When `sound` is on, you can also describe the sounds you want. Must not be blank.
+
+## Optional parameters
+
+- `duration` (integer): Output length in seconds, `5`–`20`. Default `5`.
+- `resolution` (string): `720p` or `1080p`. Default `720p`.
+- `aspect_ratio` (string): `auto`, `21:9`, `2:1`, `16:9`, `4:3`, `1:1`, `3:4` or `9:16`. Default `auto`.
+- `sound` (boolean): Generate native audio with the video. Default `true`; set `false` for silent footage.
+
+## Output
+
+The finished task returns one MP4 video in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload.
+
+## Examples
+
+- **5-second 720p clip with audio**: a short prompt that also names the sounds (rain, traffic), `16:9`, `sound: true`.
+- **15-second vertical 1080p clip, silent**: `9:16` for social feeds with `sound: false`, plus a `callback_url` to be notified on completion.
+
+## Notes
+
+- This ID accepts text only. To animate a start image, use [FLUX 3 Max Image to Video](/api-manual/video-series/blackforestlabs-flux-3-max-image-to-video). To pin images to specific frames, use [FLUX 3 Max Keyframes to Video](/api-manual/video-series/blackforestlabs-flux-3-max-keyframes-to-video).
+- Fields not listed above, such as `image_urls` or `keyframes`, return 400. `model` and `callback_url` belong at the request root, not inside `input`.
+- Credits are reserved at submission and depend on `resolution` and `duration`. The rate is the same for text-to-video, image-to-video and keyframes-to-video, and `sound` does not change it. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.
+- There is no 4K tier, no `seed` and no output longer than 20 seconds on this model.

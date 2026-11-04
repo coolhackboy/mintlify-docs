@@ -1,0 +1,608 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Gemini 3.8 Flash Lite TTS",
+    "description": "The Gemini 3.8 Flash-Lite TTS API generates WAV speech at scale from a single voice or two-speaker dialogue, with 30 preset voices and style instructions.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Audio Series"
+        ],
+        "summary": "Gemini 3.8 Flash Lite TTS",
+        "operationId": "submit_google_gemini_3_8_flash_lite_text_to_speech",
+        "description": "Send `text` (plus optional `voice`) for one speaker, or `speakers` + `turns` for a two-speaker dialogue; dialogue requests must not include top-level `text` or `voice`. Any field not listed, such as `output_format`, `language_code` or `temperature`, returns 400.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "Model ID. Use `google/gemini-3.8-flash-lite/text-to-speech`.",
+                    "example": "google/gemini-3.8-flash-lite/text-to-speech"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "Optional public HTTP(S) endpoint that receives a POST when the task becomes `finished` or `failed`. HTTPS is recommended. Omit it, or send `null` or an empty string, to disable callbacks.",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "Welcome to the city museum. The east wing opens at ten.",
+                        "description": "Single speaker: the text to speak. Required in single-speaker mode, not blank. Must be omitted in dialogue mode."
+                      },
+                      "voice": {
+                        "type": "string",
+                        "enum": [
+                          "Achernar",
+                          "Achird",
+                          "Algenib",
+                          "Algieba",
+                          "Alnilam",
+                          "Aoede",
+                          "Autonoe",
+                          "Callirrhoe",
+                          "Charon",
+                          "Despina",
+                          "Enceladus",
+                          "Erinome",
+                          "Fenrir",
+                          "Gacrux",
+                          "Iapetus",
+                          "Kore",
+                          "Laomedeia",
+                          "Leda",
+                          "Orus",
+                          "Pulcherrima",
+                          "Puck",
+                          "Rasalgethi",
+                          "Sadachbia",
+                          "Sadaltager",
+                          "Schedar",
+                          "Sulafat",
+                          "Umbriel",
+                          "Vindemiatrix",
+                          "Zephyr",
+                          "Zubenelgenubi"
+                        ],
+                        "default": "Kore",
+                        "description": "Single speaker: preset voice. Must be omitted in dialogue mode."
+                      },
+                      "speakers": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "speaker_id",
+                            "voice"
+                          ],
+                          "properties": {
+                            "speaker_id": {
+                              "type": "string",
+                              "minLength": 1,
+                              "example": "host",
+                              "description": "Speaker alias referenced by `turns`. Non-empty and unique."
+                            },
+                            "voice": {
+                              "type": "string",
+                              "enum": [
+                                "Achernar",
+                                "Achird",
+                                "Algenib",
+                                "Algieba",
+                                "Alnilam",
+                                "Aoede",
+                                "Autonoe",
+                                "Callirrhoe",
+                                "Charon",
+                                "Despina",
+                                "Enceladus",
+                                "Erinome",
+                                "Fenrir",
+                                "Gacrux",
+                                "Iapetus",
+                                "Kore",
+                                "Laomedeia",
+                                "Leda",
+                                "Orus",
+                                "Pulcherrima",
+                                "Puck",
+                                "Rasalgethi",
+                                "Sadachbia",
+                                "Sadaltager",
+                                "Schedar",
+                                "Sulafat",
+                                "Umbriel",
+                                "Vindemiatrix",
+                                "Zephyr",
+                                "Zubenelgenubi"
+                              ],
+                              "description": "Preset voice for this speaker."
+                            }
+                          },
+                          "additionalProperties": false,
+                          "description": "One speaker."
+                        },
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "description": "Dialogue: exactly two speakers. Each object has only `speaker_id` and `voice`."
+                      },
+                      "turns": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "speaker_id",
+                            "text"
+                          ],
+                          "properties": {
+                            "speaker_id": {
+                              "type": "string",
+                              "example": "host",
+                              "description": "Must match a `speaker_id` in `speakers`."
+                            },
+                            "text": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "What the speaker says. Not blank."
+                            },
+                            "style_instructions": {
+                              "type": "string",
+                              "description": "Optional delivery direction for this line only, such as `laughing` or `whispering`."
+                            }
+                          },
+                          "additionalProperties": false,
+                          "description": "One line of dialogue."
+                        },
+                        "minItems": 1,
+                        "description": "Dialogue: the lines in speaking order. At least one turn."
+                      },
+                      "style_instructions": {
+                        "type": "string",
+                        "description": "Optional global direction for tone, pace, accent or emotion, such as `Calm, warm documentary narration`. Applies in both modes."
+                      },
+                      "enable_safety_checker": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Run the upstream safety checker."
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "Generation parameters. Send `text` (single speaker) or `speakers` + `turns` (two-speaker dialogue), not both."
+                  }
+                }
+              },
+              "examples": {
+                "single_speaker": {
+                  "summary": "Single-speaker read-aloud",
+                  "value": {
+                    "model": "google/gemini-3.8-flash-lite/text-to-speech",
+                    "input": {
+                      "text": "You have three new messages. The first is from Dana: running ten minutes late, save me a seat.",
+                      "voice": "Puck"
+                    }
+                  }
+                },
+                "dialogue": {
+                  "summary": "Two-speaker support dialogue",
+                  "value": {
+                    "model": "google/gemini-3.8-flash-lite/text-to-speech",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "speakers": [
+                        {
+                          "speaker_id": "agent",
+                          "voice": "Kore"
+                        },
+                        {
+                          "speaker_id": "caller",
+                          "voice": "Charon"
+                        }
+                      ],
+                      "turns": [
+                        {
+                          "speaker_id": "caller",
+                          "text": "Hi, my router keeps dropping the connection."
+                        },
+                        {
+                          "speaker_id": "agent",
+                          "text": "Sorry about that. Let's restart it together, it only takes a minute."
+                        }
+                      ],
+                      "style_instructions": "Friendly, clear customer-support tone"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP status code."
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "Task ID. Use it with [Query Task Status](/api-manual/task-management/status)."
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "Initial task status."
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Time the task was created (ISO 8601)."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, unsupported field, inaccessible media, or insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or disabled model",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate or API key credit limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unable to create the upstream generation task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The requested model is temporarily unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nGo to **Dashboard → API Key** ([API Key Management Page](https://vidgo.ai/apis/dashboard/api-key)) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

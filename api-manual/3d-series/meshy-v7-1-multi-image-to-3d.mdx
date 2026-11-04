@@ -1,0 +1,67 @@
+---
+title: "Meshy 7.1 Multi-Image to 3D"
+description: "The Meshy 7.1 Multi-Image to 3D API reconstructs a 3D model from 1–4 views of the same object, with up to 2K geometry, topology control, PBR maps and rigging."
+icon: "cube"
+openapi: "/api-manual/3d-series/meshy-v7-1-multi-image-to-3d.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+Meshy 7.1 Multi-Image to 3D reconstructs one 3D model from up to four views of the same object, such as front, side and back photos. Extra angles give the model more information about hidden sides than a single image can. Use it for product scans, props and character turnarounds.
+
+Meshy 7.1 is Meshy's 3D generation model, released with a focus on richer geometric detail. Vidgo exposes it as three model IDs: [Text to 3D](/api-manual/3d-series/meshy-v7-1-text-to-3d), [Image to 3D](/api-manual/3d-series/meshy-v7-1-image-to-3d) and [Multi-Image to 3D](/api-manual/3d-series/meshy-v7-1-multi-image-to-3d).
+
+## Models
+
+- **meshy/v7.1/multi-image-to-3d** — Multi-view image-to-3D with Meshy 7.1 from 1–4 images.
+
+## Features
+
+- Multi-view image-to-3D from 1–4 images of the same object.
+- Textured by default; set `should_texture: false` for geometry only.
+- Geometry detail up to `2k`.
+- Triangle or quad topology and a target polygon count up to 300,000.
+- PBR maps, texture guidance by text or image.
+- Optional humanoid rigging and animation presets.
+
+## Required parameters
+
+- `image_urls` (string[]): 1–4 views of the same object, as public HTTP(S) URLs or `data:image/...` URIs. Use different angles (front, side, back, three-quarter) with consistent lighting.
+
+## Optional parameters
+
+- `should_texture` (boolean): Texture the model. Default `true`; `false` returns geometry only.
+- `topology` (string): `triangle` or `quad`. Default `triangle`.
+- `target_polycount` (integer): `100`–`300000`. Default `30000`.
+- `should_remesh` (boolean): Remesh the output. Default `true`; `false` keeps the raw triangle mesh.
+- `symmetry_mode` (string): `off`, `auto` or `on`. Default `auto`.
+- `pose_mode` (string): `""` (no pose), `a-pose` or `t-pose`. Default `""`.
+- `geometry_resolution` (string): `standard` or `2k`.
+- `enable_pbr` (boolean): Add metallic, roughness and normal maps to the base color texture. Default `false`. Requires `should_texture: true`.
+- `texture_prompt` (string): Text guidance for the texture, up to 600 characters. Requires `should_texture: true`.
+- `texture_image_url` (string): Image that guides the texture (public HTTP(S) URL or `data:image/...` URI). Requires `should_texture: true`.
+- `enable_rigging` (boolean): Auto-rig the model as a humanoid character. Default `false`.
+- `rigging_height_meters` (number): Character height used for rigging, greater than 0. Default `1.7`.
+- `enable_animation` (boolean): Apply an animation preset. Requires `enable_rigging: true`. Default `false`.
+- `animation_action_id` (integer): Animation preset ID, `0`–`696`. Default `92`.
+- `enable_safety_checker` (boolean): Upstream safety checker. Default `true`.
+
+## Output
+
+Read every item in the `files` array returned by [Query Task Status](/api-manual/task-management/status) or the callback. Model assets use `file_type: "3d"` (typically GLB, plus FBX, OBJ, USDZ or STL when available), previews and thumbnails use `file_type: "image"`, and textures, rigged or animated assets and other supporting files may use `file_type: "other"`. Not every format is returned for every task, so do not assume a fixed file list.
+
+## Examples
+
+- **Textured model from three views**: front, side and back photos of a chair with `geometry_resolution: 2k` and PBR maps.
+- **Geometry only**: two views of a vase with `should_texture: false`, quad topology and a `callback_url`.
+
+## Notes
+
+- Multi-image does not support `4k` geometry or `model_type`; use [Meshy 7.1 Image to 3D](/api-manual/3d-series/meshy-v7-1-image-to-3d) for `4k` or Smart Topology from a single image.
+- With `should_texture: false`, sending `enable_pbr: true`, `texture_prompt` or `texture_image_url` returns 400.
+- `enable_animation: true` without `enable_rigging: true` returns 400. Rigging works best on clearly limbed humanoid characters in `a-pose` or `t-pose`; check rigs and meshes before using them in production.
+- Fields not listed above, such as `prompt`, `mode`, `seed` or `model_type`, return 400.
+- Credits are reserved at submission: a base charge per model, plus extra for texturing (`should_texture: true`, the default), `enable_rigging` and `enable_animation`. Polycount, topology, `geometry_resolution` and image count do not change the price. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.

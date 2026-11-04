@@ -1,0 +1,592 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Meshy 7.1 Image to 3D",
+    "description": "The Meshy 7.1 Image to 3D API turns one photo or concept image into a textured 3D model with up to 4K geometry, Smart Topology, PBR maps and rigging.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "3D Series"
+        ],
+        "summary": "Meshy 7.1 Image to 3D",
+        "operationId": "submit_meshy_v7_1_image_to_3d",
+        "description": "Send only the `input` fields listed for this model. Any other field, including `prompt`, `mode` or `seed`, returns 400. `image_urls` must be a list with exactly one public HTTP(S) URL or `data:image/...` URI.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "Model ID. Use `meshy/v7.1/image-to-3d`.",
+                    "example": "meshy/v7.1/image-to-3d"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true,
+                    "description": "Optional public HTTP(S) endpoint that receives a POST when the task becomes `finished` or `failed`. HTTPS is recommended. Omit it, or send `null` or an empty string, to disable callbacks.",
+                    "example": "https://your-domain.com/callback"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "image_urls"
+                    ],
+                    "properties": {
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "minItems": 1,
+                        "maxItems": 1,
+                        "example": [
+                          "https://example.com/sneaker.png"
+                        ],
+                        "description": "Exactly one image of the object, as a public HTTP(S) URL or a `data:image/...` URI (JPG or PNG work best)."
+                      },
+                      "model_type": {
+                        "type": "string",
+                        "enum": [
+                          "standard",
+                          "smart-topology"
+                        ],
+                        "default": "standard",
+                        "description": "Mesh model. `smart-topology` produces cleaner, lower-poly meshes and caps `target_polycount` at 15000; `geometry_resolution` requires `standard`."
+                      },
+                      "should_texture": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Texture the model. Set `false` for geometry only. Texturing adds to the price."
+                      },
+                      "topology": {
+                        "type": "string",
+                        "enum": [
+                          "triangle",
+                          "quad"
+                        ],
+                        "default": "triangle",
+                        "description": "Mesh topology."
+                      },
+                      "target_polycount": {
+                        "type": "integer",
+                        "minimum": 100,
+                        "maximum": 300000,
+                        "default": 30000,
+                        "description": "Target polygon count. `100`–`300000` (default `30000`) with `model_type: standard`; `100`–`15000` (default `4000`) with `smart-topology`."
+                      },
+                      "should_remesh": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Remesh the output. Set `false` to keep the raw triangle mesh."
+                      },
+                      "symmetry_mode": {
+                        "type": "string",
+                        "enum": [
+                          "off",
+                          "auto",
+                          "on"
+                        ],
+                        "default": "auto",
+                        "description": "Symmetry handling."
+                      },
+                      "pose_mode": {
+                        "type": "string",
+                        "enum": [
+                          "",
+                          "a-pose",
+                          "t-pose"
+                        ],
+                        "default": "",
+                        "description": "Character pose. Empty string means no pose constraint; `a-pose` or `t-pose` suit characters you plan to rig."
+                      },
+                      "geometry_resolution": {
+                        "type": "string",
+                        "enum": [
+                          "standard",
+                          "2k",
+                          "4k"
+                        ],
+                        "description": "Geometry detail level: `standard`, `2k` or `4k`. Requires `model_type: standard`. It controls mesh detail, not texture size."
+                      },
+                      "enable_pbr": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Generate PBR maps (metallic, roughness, normal) in addition to base color."
+                      },
+                      "enable_rigging": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Auto-rig the model as a humanoid character. Adds to the price."
+                      },
+                      "enable_animation": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Apply the animation preset in `animation_action_id`. Requires `enable_rigging: true`. Adds to the price."
+                      },
+                      "rigging_height_meters": {
+                        "type": "number",
+                        "default": 1.7,
+                        "description": "Character height in meters used for rigging. Must be greater than 0."
+                      },
+                      "animation_action_id": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 696,
+                        "default": 92,
+                        "description": "Animation preset ID, `0`–`696`."
+                      },
+                      "texture_prompt": {
+                        "type": "string",
+                        "maxLength": 600,
+                        "description": "Text guidance for the texture, up to 600 characters."
+                      },
+                      "texture_image_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "Public HTTP(S) URL (or `data:image/...` URI) of an image that guides the texture."
+                      },
+                      "enable_safety_checker": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Run the upstream safety checker."
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "Generation parameters."
+                  }
+                }
+              },
+              "examples": {
+                "textured": {
+                  "summary": "Textured model from a product photo",
+                  "value": {
+                    "model": "meshy/v7.1/image-to-3d",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/sneaker.png"
+                      ],
+                      "should_texture": true,
+                      "geometry_resolution": "4k",
+                      "enable_pbr": true
+                    }
+                  }
+                },
+                "smart_topology": {
+                  "summary": "Low-poly game asset with Smart Topology",
+                  "value": {
+                    "model": "meshy/v7.1/image-to-3d",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/treasure-chest.png"
+                      ],
+                      "model_type": "smart-topology",
+                      "topology": "quad",
+                      "target_polycount": 4000
+                    }
+                  }
+                },
+                "rigged_character": {
+                  "summary": "Rigged character with callback",
+                  "value": {
+                    "model": "meshy/v7.1/image-to-3d",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/character-concept.png"
+                      ],
+                      "pose_mode": "a-pose",
+                      "enable_rigging": true,
+                      "rigging_height_meters": 1.8
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ],
+                      "description": "HTTP status code."
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "Task ID. Use it with [Query Task Status](/api-manual/task-management/status)."
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started"
+                          ],
+                          "description": "Initial task status."
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Time the task was created (ISO 8601)."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1762160000-abc123",
+                    "status": "not_started",
+                    "created_time": "2026-11-03T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, unsupported field, inaccessible media, or insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or disabled model",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON or non-object request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate or API key credit limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unable to create the upstream generation task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The requested model is temporarily unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ],
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Request timed out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "All API endpoints require Bearer Token authentication\n\nGet your API Key:\n\nGo to **Dashboard → API Key** ([API Key Management Page](https://vidgo.ai/apis/dashboard/api-key)) to get your API Key\n\nAdd it to the request header:\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

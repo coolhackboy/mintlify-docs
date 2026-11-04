@@ -1,0 +1,69 @@
+---
+title: "Ideogram 4.5 Edit"
+description: "The Ideogram 4.5 Edit API edits one image from a text instruction, with an optional mask, up to 4 reference images and regular or high edit precision."
+icon: "image"
+openapi: "/api-manual/image-series/ideogram-v4-5-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+Ideogram 4.5 Edit changes one existing image from a written instruction. Restrict the edit to a masked area, guide it with up to four reference images, and choose `high` edit precision when the untouched parts must stay pixel-exact. Typical uses are swapping products or signage text, retouching backgrounds and producing variants of a design. Ideogram says the model avoids the colour drift and artifacts that build up over repeated edits.
+
+Ideogram 4.5 is Ideogram's image model for text-heavy visuals and precise edits. Vidgo exposes it as two model IDs: [Text to Image](/api-manual/image-series/ideogram-v4-5-text-to-image) and [Edit](/api-manual/image-series/ideogram-v4-5-edit).
+
+## Models
+
+- **ideogram/v4.5/edit** — Image edit with Ideogram 4.5: one source image, optional mask and references.
+
+## Features
+
+- Image edit from a natural-language instruction, including replacing text in the image.
+- Optional mask to limit the edit to one area.
+- Up to 4 reference images for style or content (3 when a mask is used).
+- `edit_precision: high` for edits that keep everything else unchanged.
+- Four quality tiers, including `very_low` for cheap drafts, and 1–8 results per request.
+
+## Input modes
+
+- **Instruction edit**: `image_urls` + `prompt`. The model decides which area to change.
+- **Masked edit**: add `mask_url` (black = edit, white = keep) and keep `size: auto`.
+- Either mode can add `reference_image_urls`.
+
+## Required parameters
+
+- `prompt` (string): What to change and how, 1–10,000 characters. Must not be blank.
+- `image_urls` (string[]): Exactly one image to edit. Public HTTP(S) URL or `data:image/...;base64,...` data URI.
+
+## Optional parameters
+
+- `mask_url` (string): Mask the same size as the source image, containing both black (edit) and white (keep). Requires `size: auto`.
+- `reference_image_urls` (string[]): Up to 4 reference images, or up to 3 with `mask_url`. They guide the result and are not edited.
+- `edit_precision` (string): `regular` or `high`. Default `regular`. `high` requires `size: auto`.
+- `quality` (string): `very_low`, `low`, `medium` or `high`. Default `medium`.
+- `n` (integer): Number of results, `1`–`8`. Default `1`.
+- `size` (string): Output size. Default `auto`. See [Size](#size).
+
+## Size
+
+- `auto` (default) keeps the source image's dimensions. It is required when you send `mask_url` or `edit_precision: high`.
+- Presets: `1:1`, `1:1 HD`, `4:3`, `3:4`, `16:9`, `9:16`.
+- Custom `WIDTHxHEIGHT`, for example `1536x1024`: each side at least 256 and a multiple of 32, at most 4,194,304 pixels in total (2048x2048), and an aspect ratio no wider than 6:1.
+
+## Output
+
+The finished task returns one file per requested image (`n`) in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload.
+
+## Examples
+
+- **Instruction-only edit**: change the text on a shop sign, `size: auto`, `medium` quality.
+- **Masked edit with a reference and high precision**: a sofa mask plus an armchair reference image, `edit_precision: high`, `quality: high`, with a `callback_url`.
+
+## Notes
+
+- `image_urls` must contain exactly one image. To create an image from scratch, use [Ideogram 4.5 Text to Image](/api-manual/image-series/ideogram-v4-5-text-to-image).
+- A `mask_url` or `edit_precision: high` with any `size` other than `auto` returns 400, and so do four references together with a mask.
+- Fields not listed above return 400. `model` and `callback_url` belong at the request root, not inside `input`.
+- Credits are reserved at submission and depend on `quality` and `n` only; `size`, the mask and references do not change the price. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.

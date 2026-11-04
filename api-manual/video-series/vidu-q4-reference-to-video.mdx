@@ -1,0 +1,71 @@
+---
+title: "Vidu Q4 Reference to Video"
+description: "The Vidu Q4 Reference to Video API builds a 3–16 second video from 1–12 reference images and up to 3 voice clips, with optional audio and up to 4K."
+icon: "video"
+openapi: "/api-manual/video-series/vidu-q4-reference-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
+Vidu Q4 Reference to Video builds a 3–16 second video from up to 12 reference images (characters, products, outfits, locations) and up to 3 voice clips, with optional native audio and output up to 4K. Use it for recurring characters in short series, ads that combine a product, a model and a location, and dubbed character clips.
+
+Vidu Q4 is ShengShu Technology's video model, released upstream as Vidu Q4 Preview in October 2026. It has no text-to-video mode: every request starts from images. Vidgo exposes two model IDs: [Image to Video](/api-manual/video-series/vidu-q4-image-to-video) and [Reference to Video](/api-manual/video-series/vidu-q4-reference-to-video).
+
+## Models
+
+- **vidu/q4/reference-to-video** — Reference-to-video with Vidu Q4 from 1–12 images and up to 3 voice references, 3–16 seconds, 540p to 4K.
+
+## Features
+
+- Reference-to-video with 1–12 reference images in one request.
+- Up to 3 voice references through `reference_audio_urls`.
+- Prompt tags `[@reference_image_N]` and `[@reference_audio_N]` to say which reference goes where.
+- Optional native audio with `generate_audio`.
+- Five aspect ratios and five resolutions from `540p` to `4k`.
+- Integer durations from 3 to 16 seconds.
+
+## Required parameters
+
+- `prompt` (string): The scene and how each reference is used. Must not be blank; up to 5,000 characters.
+- `reference_image_urls` (string[]): 1–12 public HTTP(S) image URLs.
+
+## Optional parameters
+
+- `reference_audio_urls` (string[]): Up to 3 public HTTP(S) audio URLs used as voice references. Short, clean MP3 voice clips work best.
+- `aspect_ratio` (string): `16:9`, `9:16`, `4:3`, `3:4` or `1:1`. When omitted, the upstream default (16:9) applies.
+- `generate_audio` (boolean): Generate native audio with the video. When omitted, no audio is generated.
+- `duration` (integer): Output length in seconds, `3`–`16`. Default `5`.
+- `resolution` (string): `540p`, `720p`, `1080p`, `2k` or `4k` (case-insensitive). Default `720p`.
+- `enable_safety_checker` (boolean): Turn the upstream safety checker on or off.
+
+## Resolution
+
+| `resolution` | Use it for |
+| --- | --- |
+| `540p` | Fast, low-cost drafts |
+| `720p` | Default; social and web clips |
+| `1080p` | Full HD delivery |
+| `2k` | High-resolution masters |
+| `4k` | Hero shots and large screens |
+
+The resolution sets the per-second billing rate.
+
+## Output
+
+The finished task returns one MP4 video in the `files` array of [Query Task Status](/api-manual/task-management/status) and the callback payload.
+
+## Examples
+
+- **Two reference images, 720p**: a model and a sneaker referenced as `[@reference_image_1]` and `[@reference_image_2]`, vertical `9:16`.
+- **Character with voice reference and audio, 1080p**: a character and a location, one voice clip referenced as `[@reference_audio_1]`, quoted dialogue, `generate_audio: true` and a `callback_url`.
+
+## Notes
+
+- References are numbered by array order: the first URL in `reference_image_urls` is `[@reference_image_1]`, the first URL in `reference_audio_urls` is `[@reference_audio_1]`.
+- `image_urls` is not accepted on this ID and returns 400. To animate a single start frame, use [Vidu Q4 Image to Video](/api-manual/video-series/vidu-q4-image-to-video). Vidu Q4 has no text-to-video mode.
+- More than 12 reference images or more than 3 audio references return 400.
+- `model` and `callback_url` belong at the request root, not inside `input`.
+- Credits are reserved at submission and depend on `resolution` and `duration` (per output second). Reference images, reference audio and `generate_audio` do not change the rate. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.
