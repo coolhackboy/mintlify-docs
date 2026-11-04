@@ -160,7 +160,7 @@
               },
               "resolution": {
                 "type": "string",
-                "description": "Output resolution (hailuo-02 image-to-video only)",
+                "description": "Output resolution. Supported by hailuo-02 image-to-video and hailuo-02-pro (default 768P); hailuo-02 text-to-video is fixed at 768P",
                 "enum": ["512P", "768P"],
                 "example": "768P"
               },

@@ -19,7 +19,7 @@ openapi: "/api-manual/video-series/happy-horse.json POST /api/generate/submit"
 ## Required parameters
 
 - **model**: `happy-horse`
-- **input.prompt**: Required for text-to-video and reference-to-video (maximum 5,000 characters) and for video-edit (maximum 2,500 characters). Optional for image-to-video.
+- **input.prompt**: Required for text-to-video, reference-to-video and video-edit (maximum 2,500 characters). Optional for image-to-video.
 - **input.video_url**: Required for video-edit.
 - **input.reference_image_urls**: Required for reference-to-video.
 
@@ -42,7 +42,7 @@ Send a `prompt` without image or video input fields. Use `aspect_ratio`, `resolu
 
 ### Image to Video
 
-Send a single-item `image_urls` array. The image is used as the first frame. `prompt` is optional; when supplied it must be nonblank and at most 5,000 characters.
+Send a single-item `image_urls` array. The image is used as the first frame. `prompt` is optional; when supplied it must be nonblank and at most 2,500 characters.
 
 ### Reference to Video
 

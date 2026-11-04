@@ -19,7 +19,7 @@ openapi: "/zh/api-manual/video-series/happy-horse.json POST /api/generate/submit
 ## 必填参数
 
 - **model**：`happy-horse`
-- **input.prompt**：文生视频和参考生视频必填（最多 5,000 个字符），视频编辑必填（最多 2,500 个字符）；图生视频可选。
+- **input.prompt**：文生视频、参考生视频和视频编辑必填（最多 2,500 个字符）；图生视频可选。
 - **input.video_url**：视频编辑必填。
 - **input.reference_image_urls**：参考生视频必填。
 
@@ -42,7 +42,7 @@ openapi: "/zh/api-manual/video-series/happy-horse.json POST /api/generate/submit
 
 ### 图生视频
 
-发送只含一项的 `image_urls` 数组，该图片用作首帧。`prompt` 可选；如果提供，不能为空，最多 5,000 个字符。
+发送只含一项的 `image_urls` 数组，该图片用作首帧。`prompt` 可选；如果提供，不能为空，最多 2,500 个字符。
 
 ### 参考生视频
 

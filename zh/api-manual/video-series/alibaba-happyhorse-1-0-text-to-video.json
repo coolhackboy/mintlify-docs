@@ -23,7 +23,7 @@
         ],
         "summary": "Happy Horse 文生视频",
         "operationId": "submit_alibaba_happyhorse_1_0_text_to_video",
-        "description": "只发送本工作流列出的字段。包含其他工作流参数的请求会在扣除积分前被拒绝。\n\n必须提供非空提示词，最多 5,000 个字符。\n\n提交时扣除积分，任务失败后退还。参考提示词无需使用 character1 或 character2 标记。",
+        "description": "只发送本工作流列出的字段。包含其他工作流参数的请求会在扣除积分前被拒绝。\n\n必须提供非空提示词，最多 2,500 个字符。\n\n提交时扣除积分，任务失败后退还。参考提示词无需使用 character1 或 character2 标记。",
         "requestBody": {
           "required": true,
           "content": {
@@ -45,9 +45,9 @@
                     "properties": {
                       "prompt": {
                         "type": "string",
-                        "maxLength": 5000,
+                        "maxLength": 2500,
                         "minLength": 1,
-                        "description": "文本提示词。必填，最多 5,000 个字符。"
+                        "description": "文本提示词。必填，最多 2,500 个字符。"
                       },
                       "aspect_ratio": {
                         "type": "string",

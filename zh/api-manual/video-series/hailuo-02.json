@@ -160,7 +160,7 @@
               },
               "resolution": {
                 "type": "string",
-                "description": "输出分辨率（仅 hailuo-02 图生视频）",
+                "description": "输出分辨率。hailuo-02 图生视频和 hailuo-02-pro 支持（默认 768P）；hailuo-02 文生视频固定为 768P",
                 "enum": ["512P", "768P"],
                 "example": "768P"
               },

@@ -147,7 +147,7 @@
               "prompt": {
                 "type": "string",
                 "minLength": 1,
-                "description": "生成或编辑提示词。文生视频和参考生视频必填（最多 5,000 个字符），视频编辑必填（最多 2,500 个字符）；图生视频可选。",
+                "description": "生成或编辑提示词。文生视频、参考生视频和视频编辑必填（最多 2,500 个字符）；图生视频可选。",
                 "example": "A cinematic street scene with realistic character motion."
               },
               "image_urls": {

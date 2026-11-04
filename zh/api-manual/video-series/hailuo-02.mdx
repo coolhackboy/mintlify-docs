@@ -15,7 +15,7 @@ openapi: "/zh/api-manual/video-series/hailuo-02.json POST /api/generate/submit"
 ## 模型
 
 - **hailuo-02** - 标准视频生成（768P/512P，最长 10 秒）
-- **hailuo-02-pro** - Pro 档视频生成。不要传 `resolution` 和 `duration`；如需在 Pro 档选择 `512P` 或 `768P`，请使用下方专用的 `minimax/hailuo-02/pro/*` 工作流 ID
+- **hailuo-02-pro** - Pro 档视频生成。`resolution` 可选 `512P` 或 `768P`（默认 `768P`）；不支持 `duration`。下方专用的 `minimax/hailuo-02/pro/*` 工作流 ID 规则相同
 
 ## 功能
 

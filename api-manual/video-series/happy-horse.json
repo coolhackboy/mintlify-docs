@@ -147,7 +147,7 @@
               "prompt": {
                 "type": "string",
                 "minLength": 1,
-                "description": "Generation or edit prompt. Required for text-to-video and reference-to-video (maximum 5,000 characters) and for video-edit (maximum 2,500 characters). Optional for image-to-video.",
+                "description": "Generation or edit prompt. Required for text-to-video, reference-to-video and video-edit (maximum 2,500 characters). Optional for image-to-video.",
                 "example": "A cinematic street scene with realistic character motion."
               },
               "image_urls": {
