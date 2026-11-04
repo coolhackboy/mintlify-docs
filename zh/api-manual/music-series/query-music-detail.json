@@ -1,0 +1,395 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - 查询音乐详情 API",
+    "description": "查询音乐生成任务的详细结果",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/detail/music": {
+      "get": {
+        "summary": "查询音乐生成详情",
+        "description": "获取音乐生成任务的详细结果和状态",
+        "operationId": "queryMusicDetail",
+        "tags": ["Music Generation"],
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "音乐生成提交接口返回的唯一任务标识。",
+            "example": "8FDN1I7M7Q68DDG8"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "任务详情获取成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailResponse"
+                },
+                "examples": {
+                  "generate-music": {
+                    "summary": "音乐生成（generate-music、extend-music 等）",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "audio_id": "62e4542a-73be-44e1-b397-7716ee7505c6",
+                            "audio_url": "https://file.goseaapp.com/audio/8FDN1I7M7Q68DDG8/20251125113627_QIivN2_tmphb8rgpeb_audio_62e4542a-73be-44e1-b397-7716ee7505c6.mp3",
+                            "image_url": "https://file.goseaapp.com/audio/8FDN1I7M7Q68DDG8/20251125113628_4DfWp6_tmpz72j05o5_cover_62e4542a-73be-44e1-b397-7716ee7505c6.jpeg",
+                            "title": "Peaceful Piano Meditation",
+                            "tags": "Classical",
+                            "duration": 240.0,
+                            "prompt": ""
+                          },
+                          {
+                            "audio_id": "8e755734-a840-4c13-beac-b9f1044979ca",
+                            "audio_url": "https://file.goseaapp.com/audio/8FDN1I7M7Q68DDG8/20251125113630_x7VTpV_tmpvsijwxa6_audio_8e755734-a840-4c13-beac-b9f1044979ca.mp3",
+                            "image_url": "https://file.goseaapp.com/audio/8FDN1I7M7Q68DDG8/20251125113631_3MTe5V_tmp98wzcx2m_cover_8e755734-a840-4c13-beac-b9f1044979ca.jpeg",
+                            "title": "Peaceful Piano Meditation",
+                            "tags": "Classical",
+                            "duration": 130.0,
+                            "prompt": ""
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "get-timestamped-lyrics": {
+                    "summary": "带时间戳的歌词",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "timestampe_lyrics": "[00:00.00] First line of lyrics\n[00:05.23] Second line of lyrics"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "generate-lyrics": {
+                    "summary": "生成歌词",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "title": "Peaceful Piano Meditation",
+                            "text": "Peaceful Piano Meditation lyrics content..."
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "boost-music-style": {
+                    "summary": "音乐风格增强",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "style": "Enhanced music style result"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "generate-music-cover": {
+                    "summary": "音乐封面图",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "generate_cover": "[{\"file_url\": \"https://file.goseaapp.com/audio/0JQHD119NP7B5KLE/20250825120409_4L9H4h_tmp1_taa0e1_cover_1.png\", \"file_type\": \"image\"}, {\"file_url\": \"https://file.goseaapp.com/audio/0JQHD119NP7B5KLE/20250825120412_8v52pC_tmpwirqh4m6_cover_2.png\", \"file_type\": \"image\"}]"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "generate-persona": {
+                    "summary": "生成 Persona",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "persona_id": "persona_abc123"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "convert-to-wav": {
+                    "summary": "WAV 转换",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "wav_url": "https://file.goseaapp.com/audio/8FDN1I7M7Q68DDG8/output.wav"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "separate-vocals": {
+                    "summary": "人声分离",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "separate_vocals": "{\"vocal_url\": \"xx\", \"instrumental_url\": \"yy\"}"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "upload-and-separate-vocals": {
+                    "summary": "上传并分离人声",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "vocal_removal": "{\"bass\": \"https://file.goseaapp.com/audio/bass.mp3\", \"drums\": \"https://file.goseaapp.com/audio/drums.mp3\", \"piano\": \"https://file.goseaapp.com/audio/piano.mp3\", \"guitar\": \"https://file.goseaapp.com/audio/guitar.mp3\", \"vocals\": \"https://file.goseaapp.com/audio/vocals.mp3\", \"other\": \"https://file.goseaapp.com/audio/other.mp3\"}"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "stem-split": {
+                    "summary": "音轨分离（完整分离）",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "stem_split": "{\"backing_vocals_url\": \"\", \"bass_url\": \"\", \"brass_url\": \"\", \"drums_url\": \"\", \"fx_url\": \"\", \"guitar_url\": \"\", \"keyboard_url\": \"\", \"percussion_url\": \"\", \"strings_url\": \"\", \"synth_url\": \"\", \"vocal_url\": \"\", \"woodwinds_url\": \"\"}"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "create-music-video": {
+                    "summary": "音乐视频生成",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "8FDN1I7M7Q68DDG8",
+                        "status": "finished",
+                        "files": [
+                          {
+                            "video_url": "https://file.goseaapp.com/video/8FDN1I7M7Q68DDG8/music_video.mp4"
+                          }
+                        ],
+                        "created_time": "2025-11-25T08:50:13",
+                        "error_message": null
+                      }
+                    }
+                  },
+                  "failed": {
+                    "summary": "失败任务",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "task-unified-1757165031-uyujaw3d",
+                        "status": "failed",
+                        "files": [],
+                        "created_time": "2025-11-12T10:30:00",
+                        "error_message": "The prompt violates our content policy"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "DetailResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "files", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "8FDN1I7M7Q68DDG8",
+                "description": "唯一任务标识"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started", "running", "finished", "failed"],
+                "example": "finished",
+                "description": "任务当前状态。\n\n- `not_started`：任务已排队，尚未开始处理\n- `running`：任务正在处理中\n- `finished`：任务已成功完成\n- `failed`：任务因错误而失败"
+              },
+              "files": {
+                "type": "array",
+                "description": "生成的文件数组。\n\n响应字段取决于创建任务的模型。详见[files 数据响应字段](#files-数据响应字段)。\n\n任务未完成或已失败时为空数组。",
+                "items": {
+                  "$ref": "#/components/schemas/AudioFile"
+                }
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-25T08:50:13",
+                "description": "任务创建时间，ISO 8601 时间戳"
+              },
+              "error_message": {
+                "type": "string",
+                "nullable": true,
+                "example": null,
+                "description": "任务失败时的错误信息。\n\n任务成功或仍在处理中时为 `null`。"
+              }
+            }
+          }
+        }
+      },
+      "AudioFile": {
+        "type": "object",
+        "required": ["audio_id", "audio_url", "image_url", "title", "tags", "duration"],
+        "properties": {
+          "audio_id": {
+            "type": "string",
+            "example": "62e4542a-73be-44e1-b397-7716ee7505c6",
+            "description": "该音频文件的唯一标识"
+          },
+          "audio_url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://file.goseaapp.com/audio/8FDN1I7M7Q68DDG8/20251125113627_QIivN2_tmphb8rgpeb_audio_62e4542a-73be-44e1-b397-7716ee7505c6.mp3",
+            "description": "生成音频文件的直接下载 URL"
+          },
+          "image_url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://file.goseaapp.com/audio/8FDN1I7M7Q68DDG8/20251125113628_4DfWp6_tmpz72j05o5_cover_62e4542a-73be-44e1-b397-7716ee7505c6.jpeg",
+            "description": "该音频文件封面图的直接 URL"
+          },
+          "title": {
+            "type": "string",
+            "example": "Peaceful Piano Meditation",
+            "description": "生成曲目的标题"
+          },
+          "tags": {
+            "type": "string",
+            "example": "Classical",
+            "description": "生成曲目的风格标签"
+          },
+          "duration": {
+            "type": "number",
+            "example": 240.0,
+            "description": "音频文件时长（秒）"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "描述错误原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

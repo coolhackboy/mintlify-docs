@@ -6,11 +6,11 @@ openapi: "/api-manual/image-series/alibaba-z-image-turbo.json POST /api/generate
 ---
 
 <Tip>
-1. After submission, use the returned `task_id` to retrieve the result through [Query Task Status](/api-manual/task-management/status).
-2. Provide `callback_url` to receive a POST notification when the task reaches `finished` or `failed`.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-## Model
+## Models
 
 `alibaba/z-image/turbo` generates images from text and edits a single reference image.
 

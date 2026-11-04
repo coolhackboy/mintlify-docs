@@ -1,0 +1,51 @@
+---
+title: "音乐模型"
+description: "Vidgo API 上可用的全部音乐生成模型与 Suno 音乐接口及其 model ID。"
+icon: "music"
+---
+
+音乐模型都通过 `POST /api/generate/submit` 调用。在 `model` 中传入 model ID，在 `input` 中传入参数，并可选传入 `callback_url`。请求会立即返回 `task_id`，任务异步执行。
+
+## 工作流程
+
+Suno 与其他厂商使用不同的结果接口：
+
+- **Suno**：轮询[查询音乐详情](/zh/api-manual/music-series/query-music-detail)，或在 `callback_url` 接收结果（参见[音乐 Webhook](/zh/api-manual/music-series/music-webhook)）。
+- **MiniMax、ElevenLabs**：轮询统一的[获取任务状态](/zh/api-manual/task-management/status)接口，或在 `callback_url` 接收结果（参见 [Webhook 回调](/zh/api-manual/task-management/webhooks)）。
+
+## Suno
+
+Suno 按操作划分接口，每个操作有自己的 model ID。从[生成音乐](/api-manual/music-series/generate-music)开始；部分操作会基于之前的任务或上传的音频进行续写、翻唱或编辑。
+
+| 接口 | Model ID |
+| --- | --- |
+| [Generate Music](/api-manual/music-series/generate-music) | `generate-music` |
+| [Extend Music](/api-manual/music-series/extend-music) | `extend-music` |
+| [Upload and Cover Audio](/api-manual/music-series/upload-and-cover-audio) | `upload-and-cover-audio` |
+| [Upload and Extend Audio](/api-manual/music-series/upload-and-extend-audio) | `upload-and-extend-audio` |
+| [Add Instrumental](/api-manual/music-series/add-instrumental) | `add-instrumental` |
+| [Add Vocals](/api-manual/music-series/add-vocals) | `add-vocals` |
+| [Get Timestamped Lyrics](/api-manual/music-series/get-timestamped-lyrics) | `get-timestamped-lyrics` |
+| [Boost Music Style](/api-manual/music-series/boost-music-style) | `boost-music-style` |
+| [Generate Music Cover](/api-manual/music-series/generate-music-cover) | `generate-music-cover` |
+| [Replace Section](/api-manual/music-series/replace-section) | `replace-section` |
+| [Generate Persona](/api-manual/music-series/generate-persona) | `generate-persona` |
+| [Generate Lyrics](/api-manual/music-series/generate-lyrics) | `generate-lyrics` |
+| [Convert to WAV](/api-manual/music-series/convert-to-wav) | `convert-to-wav` |
+| [Separate Vocals](/api-manual/music-series/vocal-remover/separate-vocals) | `separate-vocals` |
+| [Stem Split](/api-manual/music-series/vocal-remover/stem-split) | `stem-split` |
+| [Upload and Separate Vocals](/api-manual/music-series/vocal-remover/upload-and-separate-vocals) | `upload-and-separate-vocals` |
+| [Create Music Video](/api-manual/music-series/create-music-video) | `create-music-video` |
+
+## 其他模型
+
+| 模型 | 厂商 | Model ID |
+| --- | --- | --- |
+| [MiniMax Music 2.6](/api-manual/music-series/minimax-music-2-6) | MiniMax | `minimax/music-2.6` |
+| [ElevenLabs Music](/api-manual/music-series/elevenlabs-music) | ElevenLabs | `elevenlabs/music` |
+
+## 注意事项
+
+- 每个模型页面列出了其 model ID 的参数、限制和模式。各模型之间的参数不通用。
+- 生成的文件在创建后 24 小时内有效，请及时下载并保存。
+- URL 输入必须是可公开访问的 HTTP(S) URL。如需使用本地文件，请先通过[文件管理](/zh/api-manual/file-series/upload-url)上传。

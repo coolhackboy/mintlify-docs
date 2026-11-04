@@ -5,15 +5,14 @@ icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-video-v1-6-pro-image-to-video.json POST /api/generate/submit"
 ---
 
-# Kling 1.6 Pro Image to Video
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
 
 Public model ID: `kwaivgi/kling-video/v1.6/pro/image-to-video`.
 
-<Tip>
-Submit with `VIDGO_API_KEY`, then use [Query Task Status](/api-manual/task-management/status) with the returned `task_id`. Optional root-level `callback_url` enables [webhook notifications](/api-manual/task-management/webhooks).
-</Tip>
-
-## Input workflow
+## Input modes
 
 Provide **either** `start_image_url` for first-frame animation **or** `image_urls` for Elements. The endpoint does not accept text-only requests.
 

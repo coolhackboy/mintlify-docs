@@ -1,0 +1,28 @@
+---
+title: "音频模型"
+description: "Vidgo API 上可用的全部文本转语音（TTS）模型及其 model ID。"
+icon: "volume-high"
+---
+
+所有文本转语音模型都通过 `POST /api/generate/submit` 调用。在 `model` 中传入 model ID，在 `input` 中传入该模型的参数，并可选传入 `callback_url`。请求会立即返回 `task_id`，任务异步执行。
+
+## 工作流程
+
+1. 使用下表中的 model ID 向 `POST /api/generate/submit` 提交任务。
+2. 使用返回的 `task_id` 轮询[获取任务状态](/zh/api-manual/task-management/status)，或在 `callback_url` 接收结果（参见 [Webhook 回调](/zh/api-manual/task-management/webhooks)）。
+3. 状态为 `finished` 时，下载 `files` 中的文件。
+
+## 模型
+
+| 模型 | 厂商 | Model ID |
+| --- | --- | --- |
+| [ElevenLabs V3 TTS](/api-manual/music-series/elevenlabs-tts-eleven-v3) | ElevenLabs | `elevenlabs/tts/eleven-v3` |
+| [ElevenLabs TTS Turbo v2.5](/api-manual/music-series/elevenlabs-tts-turbo-v2-5) | ElevenLabs | `elevenlabs/tts/turbo-v2.5` |
+| [Gemini 3.1 Flash TTS](/api-manual/music-series/google-gemini-3-1-flash-text-to-speech) | Google | `google/gemini-3.1-flash/text-to-speech` |
+| [xAI TTS 1](/api-manual/music-series/xai-tts-v1) | xAI | `xai/tts/v1` |
+
+## 注意事项
+
+- 每个模型页面列出了其 model ID 的参数、限制和模式。各模型之间的参数不通用。
+- 生成的文件在创建后 24 小时内有效，请及时下载并保存。
+- URL 输入必须是可公开访问的 HTTP(S) URL。如需使用本地文件，请先通过[文件管理](/zh/api-manual/file-series/upload-url)上传。

@@ -1,5 +1,5 @@
 ---
-title: "Hailuo 02 Video Generation"
+title: "Hailuo 02"
 description: "Advanced video generation with Hailuo 02"
 icon: "video"
 openapi: "/api-manual/video-series/hailuo-02.json POST /api/generate/submit"
@@ -7,19 +7,17 @@ openapi: "/api-manual/video-series/hailuo-02.json POST /api/generate/submit"
 
 <Tip>
 1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Hailuo 02 Video Generation
 
 Generate high-quality videos using Hailuo 02 models. Create professional content with text-to-video and image-to-video capabilities.
 
-## Available Models
+## Models
 
 - **hailuo-02** - Standard video generation (768P/512P, up to 10 seconds)
 - **hailuo-02-pro** - Professional video generation (1080P, 6 seconds)
 
-## Key Features
+## Features
 
 - **Flexible Modes**: Text-to-video and image-to-video
 - **Multiple Resolutions**: 512P, 768P (Standard) and 1080P (Pro)
@@ -28,6 +26,7 @@ Generate high-quality videos using Hailuo 02 models. Create professional content
 - **End Frame Control**: Specify ending frame for image-to-video (optional)
 
 {/* poyo-20260910:start */}
+
 ## Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:

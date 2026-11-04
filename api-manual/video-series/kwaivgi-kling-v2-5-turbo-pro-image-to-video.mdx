@@ -6,26 +6,24 @@ openapi: "/api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-image-to-video.j
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Kling 2.5 Turbo Pro Image to Video
 
 Generate video with Kling 2.5 Turbo Pro using a start frame, an end frame, or both, plus a text prompt.
 
-## Available Models
+## Models
 
 - **kwaivgi/kling-v2.5-turbo-pro/image-to-video** - Generate video from image input.
+
+## Features
+
+- Generate video from image input.
+- Guide generation with `start_image_url`, `end_image_url`, or both.
 
 ## Duration Options
 
 - **5, 10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**. Strings, booleans, fractional durations, and `null` are rejected.
-
-## Key Features
-
-- Generate video from image input.
-- Guide generation with `start_image_url`, `end_image_url`, or both.
 
 ## Advanced Parameters
 

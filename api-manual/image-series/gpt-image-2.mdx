@@ -1,35 +1,23 @@
 ---
-title: "GPT Image 2 Generation"
+title: "GPT Image 2"
 description: "Generate and edit images with GPT Image 2"
 icon: "image"
 openapi: "/api-manual/image-series/gpt-image-2.json POST /api/generate/submit"
 ---
 
 <Tip>
-1. After submission, a `task_id` is returned. If you provide a `callback_url`, Vidgo API sends a POST request when the task becomes `finished` or `failed`.
-2. You can always retrieve the result with the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# GPT Image 2 Generation
-
-## Overview
-
-Use Vidgo API to generate a single image from a prompt or edit one or more reference images with natural-language instructions. GPT Image 2 supports explicit quality tiers, ratio presets, custom dimensions, and `1K`, `2K`, or `4K` resolution control.
-
-## Available Models
+## Models
 
 - **gpt-image-2** - Text-to-image generation from a prompt.
 - **gpt-image-2-edit** - Image editing based on one or more `image_urls` and a text instruction.
 
-## Notes
+## Overview
 
-- `input.prompt` is required and supports up to `4000` characters.
-- `input.quality` is optional: `low`, `medium`, or `high`. Default: `low`.
-- `input.size` is optional. Supported values are `auto`, `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `16:9`, `9:16`, `21:9`, or a custom `WIDTHxHEIGHT` value.
-- `input.resolution` is optional: `1K`, `2K`, or `4K`.
-- `gpt-image-2-edit` requires `input.image_urls`.
-- `gpt-image-2` does not accept `input.image_urls`.
-- Each request returns one image.
+Use Vidgo API to generate a single image from a prompt or edit one or more reference images with natural-language instructions. GPT Image 2 supports explicit quality tiers, ratio presets, custom dimensions, and `1K`, `2K`, or `4K` resolution control.
 
 ## Resolution
 
@@ -119,3 +107,13 @@ curl --request GET \
 ```
 
 When the task is `finished`, the status response includes generated image file URLs in `data.files`. If the task fails, the status payload returns the failure details for troubleshooting.
+
+## Notes
+
+- `input.prompt` is required and supports up to `4000` characters.
+- `input.quality` is optional: `low`, `medium`, or `high`. Default: `low`.
+- `input.size` is optional. Supported values are `auto`, `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `16:9`, `9:16`, `21:9`, or a custom `WIDTHxHEIGHT` value.
+- `input.resolution` is optional: `1K`, `2K`, or `4K`.
+- `gpt-image-2-edit` requires `input.image_urls`.
+- `gpt-image-2` does not accept `input.image_urls`.
+- Each request returns one image.

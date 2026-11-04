@@ -6,27 +6,25 @@ openapi: "/api-manual/video-series/google-veo3-1-fast-image-to-video.json POST /
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Veo 3.1 Fast Image to Video
 
 Generate motion from an image or connect opening and closing frames with Veo 3.1 Fast, with optional sound and output up to 4K.
 
-## Available Models
+## Models
 
 - **google/veo3.1-fast/image-to-video** - Generate video from image input.
 
-## Duration Options
-
-- **4, 6, 8 seconds** - Set `duration` to one of these values. Default: **8 seconds**.
-
-## Key Features
+## Features
 
 - Generate motion from one starting image, or connect two images as the first and last frames.
 - Choose from `720p`, `1080p`, `4k` output resolutions.
 - Control audio generation with `sound`; it defaults to `true`.
+
+## Duration Options
+
+- **4, 6, 8 seconds** - Set `duration` to one of these values. Default: **8 seconds**.
 
 ## Advanced Parameters
 

@@ -6,29 +6,27 @@ openapi: "/api-manual/video-series/kwaivgi-kling-v3-0-pro-motion-control.json PO
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Kling 3.0 Pro Motion Control
 
 Transfer movement from a reference video to an image subject with Kling 3.0 Pro, with orientation control and 1080p output.
 
-## Available Models
+## Models
 
 - **kwaivgi/kling-v3.0-pro/motion-control** - Transfer movement from a reference video to a character in a reference image.
+
+## Features
+
+- Transfer movement from a reference video to a character in a reference image.
+- Output resolution is fixed to `1080p` for this model ID.
+- Add one facial element when using video orientation.
 
 ## Duration Options
 
 - **Image orientation** - The reference video must be **3-10 seconds** when `character_orientation` is `image`.
 - **Video orientation** - The reference video must be **3-30 seconds** when `character_orientation` is `video`.
 - The service inspects the reference video duration.
-
-## Key Features
-
-- Transfer movement from a reference video to a character in a reference image.
-- Output resolution is fixed to `1080p` for this model ID.
-- Add one facial element when using video orientation.
 
 ## Advanced Parameters
 

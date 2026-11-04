@@ -6,26 +6,24 @@ openapi: "/api-manual/video-series/openai-sora-2-pro-text-to-video.json POST /ap
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Sora 2 Official Pro Text to Video
 
 Create video scenes with Sora 2 Pro, with a choice of output resolutions and clips up to twenty seconds long.
 
-## Available Models
+## Models
 
 - **openai/sora-2-pro/text-to-video** - Generate video scenes from text prompts.
+
+## Features
+
+- Generate video scenes from text prompts.
+- Choose from `720p`, `1024p`, `1080p` output resolutions.
 
 ## Duration Options
 
 - **4, 8, 12, 16, 20 seconds** - Set `duration` to one of these values. Default: **4 seconds**.
-
-## Key Features
-
-- Generate video scenes from text prompts.
-- Choose from `720p`, `1024p`, `1080p` output resolutions.
 
 ## Advanced Parameters
 

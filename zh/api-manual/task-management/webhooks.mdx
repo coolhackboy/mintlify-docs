@@ -1,0 +1,279 @@
+---
+title: "Webhook 回调"
+description: "任务完成时自动接收通知"
+icon: "webhook"
+---
+
+除了轮询状态接口，你还可以在提交任务时提供回调 URL，在生成完成时自动接收通知。
+
+## 工作原理
+
+1. **提交时附带回调 URL**：在提交任务时加入 `callback_url`
+2. **接收通知**：任务完成（成功或失败）时，Vidgo API 会向你的 URL 发送 POST 请求
+3. **处理结果**：你的服务器会收到完整的任务数据，包括生成的文件
+
+## 回调请求
+
+当任务状态变为 `finished` 或 `failed` 时，Vidgo API 会向你的回调 URL 发送一个扁平的任务对象。与[状态接口响应](/zh/api-manual/task-management/status)不同，回调请求体没有 `code` 和 `data` 外层包装：
+
+```json
+{
+  "task_id": "task-unified-1757165031-uyujaw3d",
+  "status": "finished",
+  "files": [
+    {
+      "file_url": "https://file.goseaapp.com/images/image-abc123.jpg",
+      "file_type": "image"
+    }
+  ],
+  "created_time": "2025-11-12T10:30:00",
+  "error_message": null
+}
+```
+
+### 失败任务回调
+
+```json
+{
+  "task_id": "task-unified-1757165031-uyujaw3d",
+  "status": "failed",
+  "files": [],
+  "created_time": "2025-11-12T10:30:00",
+  "error_message": "The prompt violates our content policy"
+}
+```
+
+## 要求
+
+你的回调接口必须满足以下要求：
+
+- **公网接口**：使用可公开访问的 HTTP(S) URL
+- **响应超时**：在 30 秒内响应
+- **成功响应**：应返回 HTTP 200-299 状态码
+
+## 重试策略
+
+如果投递超时、遇到网络错误或收到 `5xx` 响应：
+
+- **重试次数**：最多自动重试 5 次
+- **重试间隔**：每次重试之间分别间隔 60、120、240、480 和 600 秒
+- **最终失败**：所有重试用尽后，不再继续发送回调
+- **客户端错误**：`4xx` 响应会被记录，且不会重试
+
+<Warning>
+  如果所有重试均失败，你仍可以通过轮询[状态接口](/zh/api-manual/task-management/status)获取结果。
+</Warning>
+
+## 实现示例
+
+### Python (Flask)
+
+```python
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/webhook/generation-complete', methods=['POST'])
+def handle_generation_complete():
+    # Parse the callback payload
+    task_data = request.get_json(silent=True) or {}
+
+    task_id = task_data.get('task_id')
+    status = task_data.get('status')
+
+    if status == 'finished':
+        # Task completed successfully
+        files = task_data.get('files', [])
+        for file in files:
+            print(f"Generated file: {file['file_url']}")
+            # Download and process the file
+            # save_file(file['file_url'])
+
+    elif status == 'failed':
+        # Task failed
+        error = task_data.get('error_message')
+        print(f"Task {task_id} failed: {error}")
+        # Handle the failure
+
+    # Return 200 to acknowledge receipt
+    return jsonify({"received": True}), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=443, ssl_context='adhoc')
+```
+
+### Node.js (Express)
+
+```javascript
+const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+app.post('/webhook/generation-complete', (req, res) => {
+  const { task_id, status, files = [], error_message } = req.body;
+
+  if (status === 'finished') {
+    // Task completed successfully
+    console.log(`Task ${task_id} completed`);
+    files.forEach(file => {
+      console.log(`Generated file: ${file.file_url}`);
+      // Download and process the file
+    });
+  } else if (status === 'failed') {
+    // Task failed
+    console.log(`Task ${task_id} failed: ${error_message}`);
+    // Handle the failure
+  }
+
+  // Return 200 to acknowledge receipt
+  res.status(200).json({ received: true });
+});
+
+const https = require('https');
+const fs = require('fs');
+
+const options = {
+  key: fs.readFileSync('private-key.pem'),
+  cert: fs.readFileSync('certificate.pem')
+};
+
+https.createServer(options, app).listen(443, () => {
+  console.log('Webhook server listening on port 443');
+});
+```
+
+### Go
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "net/http"
+)
+
+type TaskData struct {
+    TaskID       string      `json:"task_id"`
+    Status       string      `json:"status"`
+    Files        []MediaFile `json:"files"`
+    CreatedTime  string      `json:"created_time"`
+    ErrorMessage *string     `json:"error_message"`
+}
+
+type MediaFile struct {
+    FileURL  string `json:"file_url"`
+    FileType string `json:"file_type"`
+}
+
+func handleWebhook(w http.ResponseWriter, r *http.Request) {
+    var taskData TaskData
+
+    if err := json.NewDecoder(r.Body).Decode(&taskData); err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    if taskData.Status == "finished" {
+        // Task completed successfully
+        fmt.Printf("Task %s completed\n", taskData.TaskID)
+        for _, file := range taskData.Files {
+            fmt.Printf("Generated file: %s\n", file.FileURL)
+            // Download and process the file
+        }
+    } else if taskData.Status == "failed" {
+        // Task failed
+        errorMessage := "unknown error"
+        if taskData.ErrorMessage != nil {
+            errorMessage = *taskData.ErrorMessage
+        }
+        fmt.Printf("Task %s failed: %s\n", taskData.TaskID, errorMessage)
+        // Handle the failure
+    }
+
+    // Return 200 to acknowledge receipt
+    w.WriteHeader(http.StatusOK)
+    json.NewEncoder(w).Encode(map[string]bool{"received": true})
+}
+
+func main() {
+    http.HandleFunc("/webhook/generation-complete", handleWebhook)
+
+    // Use HTTPS
+    err := http.ListenAndServeTLS(":443", "cert.pem", "key.pem", nil)
+    if err != nil {
+        panic(err)
+    }
+}
+```
+
+## 安全最佳实践
+
+<Tip>
+  **验证请求**：可以考虑增加签名验证机制，确保请求来自 Vidgo API
+</Tip>
+
+<Tip>
+  **幂等性**：将 Webhook 处理程序设计为幂等，以应对重复投递
+</Tip>
+
+<Tip>
+  **异步处理**：异步处理回调并尽快返回 200，避免超时
+</Tip>
+
+<Tip>
+  **日志记录**：记录所有 Webhook 请求，便于调试和监控
+</Tip>
+
+## 测试
+
+### 使用 ngrok 进行本地测试
+
+开发期间，你可以使用 [ngrok](https://ngrok.com) 暴露本地服务器：
+
+```bash
+# Start your local webhook server on port 3000
+node webhook-server.js
+
+# In another terminal, start ngrok
+ngrok http 3000
+
+# Use the HTTPS URL provided by ngrok as your callback_url
+# Example: https://abc123.ngrok.io/webhook/generation-complete
+```
+
+## Webhook 与轮询对比
+
+| 方式 | 适用场景 | 优点 | 缺点 |
+|--------|----------|------|------|
+| **Webhook** | 生产系统 | 实时通知，无轮询开销 | 需要公网接口，调试较难 |
+| **轮询** | 开发、简单集成 | 易于实现，无需服务器 | 延迟更高，消耗更多资源 |
+
+<Info>
+  对于处理大量请求的生产系统，建议使用 Webhook，以减少 API 调用并即时获得通知。
+</Info>
+
+## 后续步骤
+
+<CardGroup cols={2}>
+  <Card title="任务状态" icon="list-check" href="/zh/api-manual/task-management/status">
+    了解如何轮询任务状态
+  </Card>
+  <Card title="图像生成" icon="image" href="/api-manual/image-series/gpt-4o-image">
+    使用 GPT-4o 生成图像
+  </Card>
+  <Card title="视频生成" icon="video" href="/zh/api-manual/video-series/overview">
+    使用 Sora 2 创建视频
+  </Card>
+  <Card title="快速开始" icon="rocket" href="/zh/api-manual/quickstart">
+    返回快速开始指南
+  </Card>
+</CardGroup>
+
+{/* poyo-20260910:start */}
+## 其他生成文件
+
+音频和 3D 工作流使用同一个 files 数组。file_type 可能是 audio、3d、image 或 other。该数组会保留模型资产、预览图、纹理、动画文件和时间戳文件。每一项还可能包含 label、format、content_type、file_name、file_size 和 metadata。请处理返回的每一个文件；metadata 字段是可选的。
+
+{/* poyo-20260910:end */}

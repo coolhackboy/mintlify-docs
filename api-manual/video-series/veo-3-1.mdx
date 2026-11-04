@@ -1,5 +1,5 @@
 ---
-title: "VEO 3.1 Video Generation"
+title: "Veo 3.1"
 description: "Fast and high-quality 8-second video generation with Google's VEO 3.1"
 icon: "video"
 openapi: "/api-manual/video-series/veo-3-1.json POST /api/generate/submit"
@@ -7,28 +7,26 @@ openapi: "/api-manual/video-series/veo-3-1.json POST /api/generate/submit"
 
 <Tip>
 1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# VEO 3.1 Video Generation
 
 Generate fast or high-quality 8-second videos with Google's VEO 3.1 model. Supports text-to-video and image-to-video generation.
 
-## Available Models
+## Models
 
 - **veo3.1-fast** - Fast 8-second generation
 - **veo3.1-quality** - High-quality 8-second generation
 
-## Duration Options
-
-- **8 seconds** - Fixed duration for all generations
-
-## Key Features
+## Features
 
 - Asynchronous processing that returns a `task_id` for status tracking
 - Supports text-to-video and image-to-video generation
 - Supports up to 4k output resolution
 - Generated video URLs are valid for 24 hours
+
+## Duration Options
+
+- **8 seconds** - Fixed duration for all generations
 
 ## Advanced Parameters
 

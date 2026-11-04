@@ -1,5 +1,5 @@
 ---
-title: "Grok Imagine Image Generation"
+title: "Grok Imagine Image"
 description: "High-quality image generation with Grok Imagine"
 icon: "image"
 openapi: "/api-manual/image-series/grok-imagine-image.json POST /api/generate/submit"
@@ -7,10 +7,8 @@ openapi: "/api-manual/image-series/grok-imagine-image.json POST /api/generate/su
 
 <Tip>
 1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Grok Imagine Image Generation
 
 Generate high-quality images using the Grok Imagine model. Supports text-to-image and image-to-image generation with optional aspect ratios.
 
@@ -21,11 +19,12 @@ For image-to-image, `input.image_urls` is required.
 An array containing a single URL string pointing to the reference image.
 Please provide the URL of the uploaded file; Accepted types: image/jpeg, image/png, image/webp; Max size: 10.0MB.
 
-## Available Models
+## Models
 
 - **grok-imagine-image** - Text-to-image and image-to-image generation
 
 {/* poyo-20260910:start */}
+
 ## Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:

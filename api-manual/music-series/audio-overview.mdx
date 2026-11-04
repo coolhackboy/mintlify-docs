@@ -1,0 +1,28 @@
+---
+title: "Audio Models"
+description: "All text-to-speech (TTS) models available on Vidgo API, with their model IDs."
+icon: "volume-high"
+---
+
+Every text-to-speech model is called through `POST /api/generate/submit`. Send a model ID in `model`, the model's parameters in `input`, and an optional `callback_url`. The request returns a `task_id` right away and the task runs asynchronously.
+
+## Workflow
+
+1. Submit a task to `POST /api/generate/submit` with a model ID from the table below.
+2. Poll [Get Task Status](/api-manual/task-management/status) with the returned `task_id`, or receive the result at `callback_url` (see [Webhook Callbacks](/api-manual/task-management/webhooks)).
+3. Download the files in `files` when the status is `finished`.
+
+## Models
+
+| Model | Provider | Model IDs |
+| --- | --- | --- |
+| [ElevenLabs V3 TTS](/api-manual/music-series/elevenlabs-tts-eleven-v3) | ElevenLabs | `elevenlabs/tts/eleven-v3` |
+| [ElevenLabs TTS Turbo v2.5](/api-manual/music-series/elevenlabs-tts-turbo-v2-5) | ElevenLabs | `elevenlabs/tts/turbo-v2.5` |
+| [Gemini 3.1 Flash TTS](/api-manual/music-series/google-gemini-3-1-flash-text-to-speech) | Google | `google/gemini-3.1-flash/text-to-speech` |
+| [xAI TTS 1](/api-manual/music-series/xai-tts-v1) | xAI | `xai/tts/v1` |
+
+## Notes
+
+- Each model page lists the parameters, limits, and modes for its model IDs. Parameters are not shared across models.
+- Generated files are valid for 24 hours after creation. Download and store them promptly.
+- URL inputs must be publicly accessible HTTP(S) URLs. To use local files, upload them first with [File Management](/api-manual/file-series/upload-url).

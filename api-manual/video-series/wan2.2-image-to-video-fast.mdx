@@ -6,15 +6,13 @@ openapi: "/api-manual/video-series/wan2.2-image-to-video-fast.json POST /api/gen
 ---
 
 <Tip>
-  1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-  2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Wan 2.2 Image-to-Video Fast
 
 `wan2.2-image-to-video-fast` animates one reference image, and optionally uses a second image as the last frame for stronger transition control.
 
-## Available Model
+## Models
 
 * **wan2.2-image-to-video-fast** - Animate a reference image into a short video
 

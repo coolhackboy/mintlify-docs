@@ -1,5 +1,5 @@
 ---
-title: "VEO 3.1 Official Video Generation"
+title: "Veo 3.1 Official"
 description: "Official VEO 3.1 video generation with duration, audio control, and image-guided modes"
 icon: "video"
 openapi: "/api-manual/video-series/veo-3-1-official.json POST /api/generate/submit"
@@ -10,17 +10,15 @@ openapi: "/api-manual/video-series/veo-3-1-official.json POST /api/generate/subm
 2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# VEO 3.1 Official Video Generation
-
 Generate videos with the official VEO 3.1 model family through one async API. The generation models support text-to-video, image-to-video, first/last-frame video, and three-image reference generation depending on the selected model and input.
 
-## Available Models
+## Models
 
 - **veo3.1-fast-official** - Fast official generation with `4`, `6`, or `8` second duration options
 - **veo3.1-lite-official** - Lightweight official generation with lower per-second pricing
 - **veo3.1-quality-official** - Higher-quality official generation with 4K support
 
-## Input Modes
+## Input modes
 
 - No `image_urls`: text-to-video
 - One image: image-to-video
@@ -45,6 +43,7 @@ Generate videos with the official VEO 3.1 model family through one async API. Th
 Pricing is charged per generated second and varies by model, resolution, and whether audio is generated. See the model page for the current credit table.
 
 {/* poyo-20260910:start */}
+
 ## Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:

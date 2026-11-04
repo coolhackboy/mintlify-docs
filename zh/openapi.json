@@ -1,0 +1,729 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API",
+    "description": "图像、视频、音频和 3D 生成 API。",
+    "version": "1.0.0",
+    "contact": {
+      "email": "support@vidgo.ai"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交生成任务",
+        "description": "通过 model 和 input 提交图像、视频、音频或 3D 生成任务。参数和限制取决于所选工作流。",
+        "operationId": "submitGenerationTask",
+        "tags": [
+          "Generation"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "gpt-4o-image": {
+                  "summary": "GPT-4o 图像生成",
+                  "value": {
+                    "model": "gpt-4o-image",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A serene mountain landscape at sunset with vibrant colors",
+                      "size": "1:1",
+                      "n": 1
+                    }
+                  }
+                },
+                "gpt-4o-image-edit": {
+                  "summary": "GPT-4o 图像编辑",
+                  "value": {
+                    "model": "gpt-4o-image-edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Replace the sky with a starry night sky",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/original-image.jpg"
+                      ],
+                      "mask_url": "https://cdn.vidgo.ai/temp/mask.png",
+                      "size": "1:1"
+                    }
+                  }
+                },
+                "nano-banana": {
+                  "summary": "Nano Banana 图像生成",
+                  "value": {
+                    "model": "nano-banana",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cyberpunk street scene with neon signs and rain",
+                      "size": "16:9"
+                    }
+                  }
+                },
+                "nano-banana-edit": {
+                  "summary": "Nano Banana 图像编辑",
+                  "value": {
+                    "model": "nano-banana-edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Add colorful flowers in the foreground",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/landscape.jpg"
+                      ],
+                      "size": "16:9"
+                    }
+                  }
+                },
+                "sora-2": {
+                  "summary": "Sora 2 视频生成",
+                  "value": {
+                    "model": "sora-2",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A time-lapse of a bustling city street transitioning from day to night",
+                      "duration": 15,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                },
+                "sora-2-pro": {
+                  "summary": "Sora 2 Pro 视频生成",
+                  "value": {
+                    "model": "sora-2-pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic drone shot flying through a misty forest at dawn",
+                      "duration": 25,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                },
+                "veo3.1-fast": {
+                  "summary": "VEO 3.1 Fast 视频生成",
+                  "value": {
+                    "model": "veo3.1-fast",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A peaceful stream flowing through a lush green forest",
+                      "duration": 8,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、不支持的档位、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "访问被拒绝",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已禁用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建上游生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/generate/status/{task_id}": {
+      "get": {
+        "summary": "获取任务状态",
+        "description": "查询生成任务的状态和结果",
+        "operationId": "getTaskStatus",
+        "tags": [
+          "Task Management"
+        ],
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "任务唯一标识"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取任务状态",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "gpt-4o-image"
+          },
+          "callback_url": {
+            "type": "string",
+            "description": "可选，可公开访问的 HTTP(S) 回调接口，建议使用 HTTPS。省略、传 null 或传空字符串即可禁用回调。",
+            "example": "https://your-domain.com/callback",
+            "nullable": true
+          },
+          "input": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "工作流专属的输入。必填字段、限制和默认值以所选模型页面为准；并非每个模型都要求 prompt。"
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "用于跟踪状态的任务唯一标识"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started",
+                  "running",
+                  "finished",
+                  "failed"
+                ],
+                "example": "not_started",
+                "description": "生成提交响应时的任务状态。初始状态取决于模型。"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时的 ISO 8601 时间戳"
+              }
+            }
+          }
+        },
+        "example": {
+          "code": 200,
+          "data": {
+            "task_id": "task-unified-1757165031-uyujaw3d",
+            "status": "not_started",
+            "created_time": "2025-11-12T10:30:00"
+          }
+        }
+      },
+      "StatusResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "files",
+              "created_time",
+              "progress",
+              "error_message"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started",
+                  "running",
+                  "finished",
+                  "failed"
+                ],
+                "example": "finished",
+                "description": "当前任务状态"
+              },
+              "files": {
+                "type": "array",
+                "description": "生成的媒体文件（状态为 finished 时填充）",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "file_url",
+                    "file_type"
+                  ],
+                  "properties": {
+                    "file_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://file.goseaapp.com/generated/image-abc123.jpg",
+                      "description": "产物的直接 URL。有效期取决于存储服务商；需要保留的输出请及时保存。"
+                    },
+                    "file_type": {
+                      "type": "string",
+                      "enum": [
+                        "image",
+                        "video",
+                        "audio",
+                        "lyrics",
+                        "3d",
+                        "other"
+                      ],
+                      "example": "image",
+                      "description": "产物类型：image、video、audio、lyrics、3d 或 other。"
+                    },
+                    "label": {
+                      "type": "string",
+                      "description": "可选，标签。"
+                    },
+                    "format": {
+                      "type": "string",
+                      "description": "可选，格式。"
+                    },
+                    "content_type": {
+                      "type": "string",
+                      "description": "可选，内容类型。"
+                    },
+                    "file_name": {
+                      "type": "string",
+                      "description": "可选，文件名。"
+                    },
+                    "file_size": {
+                      "type": "integer",
+                      "description": "可选，文件大小（字节）。"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "description": "可选，产物元数据。"
+                    },
+                    "watermark_url": {
+                      "type": "string",
+                      "description": "可选，带水印的版本。"
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "file_url": "https://file.goseaapp.com/generated/image-abc123.jpg",
+                    "file_type": "image"
+                  }
+                ]
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间（ISO 8601 时间戳）"
+              },
+              "progress": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "example": 100,
+                "description": "完成百分比",
+                "nullable": true
+              },
+              "error_message": {
+                "type": "string",
+                "nullable": true,
+                "example": null,
+                "description": "错误描述（状态为 failed 时）"
+              }
+            }
+          }
+        },
+        "example": {
+          "code": 200,
+          "data": {
+            "task_id": "task-unified-1757165031-uyujaw3d",
+            "status": "finished",
+            "files": [
+              {
+                "file_url": "https://file.goseaapp.com/generated/image-abc123.jpg",
+                "file_type": "image"
+              }
+            ],
+            "created_time": "2025-11-12T10:30:00",
+            "progress": 100,
+            "error_message": null
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "properties": {
+          "detail": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

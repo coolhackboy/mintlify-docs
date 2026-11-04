@@ -6,10 +6,11 @@ openapi: "/api-manual/video-series/seedance-2-5-image-to-video.json POST /api/ge
 ---
 
 <Tip>
-Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. Retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint or provide `callback_url` for a completion notification.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-## Available Models
+## Models
 
 - **seedance-2.5/image-to-video** - Seedance 2.5 image to video generation
 
@@ -18,7 +19,7 @@ Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is return
 - This model uses one starting frame and an optional ending frame through `image_urls`.
 - `image_urls` is required.
 
-## Important notes
+## Notes
 
 - `prompt`, `duration`, and `resolution` are required.
 - `duration` accepts integer values from 4 to 30 seconds.

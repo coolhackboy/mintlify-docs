@@ -6,27 +6,25 @@ openapi: "/api-manual/video-series/blackforestlabs-flux-3-keyframes-to-video.jso
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# FLUX 3 Keyframes to Video
 
 Build video sequences around chosen image keyframes with FLUX 3, controlling where visual references appear along the timeline.
 
-## Available Models
+## Models
 
 - **blackforestlabs/flux-3/keyframes-to-video** - Guide a video sequence with images placed at specific frame indices.
 
-## Duration Options
-
-- **5-20 seconds** - Set `duration` as an integer. Default: **5 seconds**.
-
-## Key Features
+## Features
 
 - Guide a video sequence with images placed at specific frame indices.
 - Choose from `720p`, `1080p` output resolutions.
 - Control audio generation with `sound`; it defaults to `true`.
+
+## Duration Options
+
+- **5-20 seconds** - Set `duration` as an integer. Default: **5 seconds**.
 
 ## Advanced Parameters
 

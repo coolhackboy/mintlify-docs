@@ -1,0 +1,64 @@
+---
+title: "更多模型与生成文件"
+description: "更多对话模型的协议支持，以及音频和 3D 工作流的文件处理"
+icon: "book-open"
+---
+
+## 对话模型协议支持
+
+使用 `https://api.vidgo.ai`，并以 `Authorization: Bearer VIDGO_API_KEY` 发送 API Key。Claude 客户端也可以使用 `x-api-key`；Gemini 客户端可以使用 `x-goog-api-key`。
+
+根据模型支持的协议进行选择：
+
+| 模型 | Chat Completions | Responses | Claude Messages | Gemini 原生 |
+|---|:---:|:---:|:---:|:---:|
+| `openai/gpt-6-astra` | 支持 | 支持 | — | — |
+| `anthropic/claude-fable-5.1` | 支持 | — | 支持 | — |
+| `xai/grok-4.6` | 支持 | 支持 | — | — |
+| `google/gemini-3.7-flash` | 支持 | — | — | 支持 |
+| `google/gemini-3.5-flash` | 支持 | — | — | 支持 |
+| `anthropic/claude-opus-4.8` | 支持 | — | 支持 | — |
+| `openai/gpt-5.5` | 支持 | 支持 | — | — |
+| `openai/gpt-5.4` | 支持 | 支持 | — | — |
+| `openai/gpt-5.2` | 支持 | 支持 | — | — |
+| `anthropic/claude-sonnet-4.6` | 支持 | — | 支持 | — |
+| `anthropic/claude-opus-4.6` | 支持 | — | 支持 | — |
+
+同时支持普通 JSON 响应和 SSE 流式响应。请使用表中的完整模型 ID，并按对应接口的请求格式调用：
+
+- [Chat Completions](/api-manual/chat-series/chat-completions)：`POST /v1/chat/completions`
+- [Responses](/api-manual/chat-series/responses)：`POST /v1/responses`
+- [Claude Messages](/api-manual/chat-series/claude-messages)：`POST /v1/messages`
+- [Gemini 原生格式](/api-manual/chat-series/gemini-native-format)：`POST /v1beta/models/{model}:generateContent`
+
+### 请求示例
+
+```bash
+curl https://api.vidgo.ai/v1/chat/completions \
+  -H "Authorization: Bearer $VIDGO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"openai/gpt-6-astra","messages":[{"role":"user","content":"Hello"}]}'
+```
+
+### Gemini 模型 URL
+
+在 URL 中使用完整的公开 ID，包括厂商前缀和斜杠。例如：`/v1beta/models/google/gemini-3.7-flash:generateContent`。流式请求使用 `:streamGenerateContent?alt=sse`。
+
+## 音频与 3D 生成文件
+
+音频和 3D 工作流通过统一提交 API 返回 `task_id`。可通过[查询任务状态](/zh/api-manual/task-management/status)或 [Webhook 回调](/zh/api-manual/task-management/webhooks)获取完成后的结果。
+
+请处理返回的 `files` 数组中的每一项。根据工作流不同，结果可能包含音频、模型资源、预览图、纹理、动画文件、歌词和时间戳文件。
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `file_url` | string | 返回文件的 URL。 |
+| `file_type` | string | 文件类别：`image`、`video`、`audio`、`lyrics`、`3d` 或 `other`。 |
+| `label` | string | 可选，用于标识文件的标签。 |
+| `format` | string | 可选，文件格式。 |
+| `content_type` | string | 可选，内容类型。 |
+| `file_name` | string | 可选，文件名。 |
+| `file_size` | integer | 可选，文件大小（字节）。 |
+| `metadata` | object | 可选，文件元数据。 |
+
+元数据字段均为可选。如有返回请保留，不要假设所有文件类型相同，也不要假设第一个文件是唯一的结果。

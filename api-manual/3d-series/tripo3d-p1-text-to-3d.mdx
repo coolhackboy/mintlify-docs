@@ -6,28 +6,26 @@ openapi: "/api-manual/3d-series/tripo3d-p1-text-to-3d.json POST /api/generate/su
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Tripo3D P1 Text to 3D
 
 Create 3D objects from text with Tripo3D P1, with optional textures and a compact mesh budget for props and scene assets.
 
-## Available Models
+## Models
 
 - **tripo3d/p1/text-to-3d** - Generate a 3D model from a text prompt.
+
+## Features
+
+- Generate a 3D model from a text prompt.
+- Retrieve model assets and available previews or supporting files from the task result.
 
 ## Output Options
 
 ### Face Limit
 
 - `face_limit`: Optional. Set the face-count limit. Integer from `48` to `20000`.
-
-## Key Features
-
-- Generate a 3D model from a text prompt.
-- Retrieve model assets and available previews or supporting files from the task result.
 
 ## Advanced Parameters
 

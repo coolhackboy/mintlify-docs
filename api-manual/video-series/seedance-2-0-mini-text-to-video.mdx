@@ -6,20 +6,20 @@ openapi: "/api-manual/video-series/seedance-2-0-mini-text-to-video.json POST /ap
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. If `callback_url` is provided, Vidgo sends the result after the task finishes or fails.
-2. You can always retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-## Available Models
+## Models
 
 - **seedance-2.0-mini/text-to-video** - Fast Seedance 2.0 Mini text to video generation
 
-## Key Features
+## Features
 
 - **Text To Video**: Generate video directly from prompt text.
 - **Optional Audio**: Request generated audio together with the video.
 
-## Important Notes
+## Notes
 
 - `prompt` and `duration` are required.
 - `duration` supports integer values from `4` to `15`.

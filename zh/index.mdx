@@ -1,0 +1,131 @@
+---
+title: "快速入门"
+description: "发起你的第一个 Vidgo API 请求，了解图像、视频、音频、音乐、3D 与 LLM 模型的请求流程。"
+icon: "rocket"
+---
+
+# 使用 Vidgo API 构建
+
+通过**一个 API Key** 调用图像、视频、音频、音乐、3D 和 LLM 模型。生成类模型共用同一套异步的提交与查询流程；LLM 模型使用兼容 OpenAI、Claude 和 Gemini 的接口。
+
+<CardGroup cols={2}>
+  <Card title="获取 API Key" icon="key" href="https://vidgo.ai/apis/dashboard/api-key">
+    在 Vidgo 仪表盘中创建和管理 API Key。
+  </Card>
+  <Card title="发起第一个请求" icon="play" href="/zh/api-manual/quickstart">
+    使用 cURL、Python 或 JavaScript 提交任务并轮询结果。
+  </Card>
+  <Card title="查看价格" icon="tag" href="https://vidgo.ai/apis/api-pricing">
+    查看当前模型价格。
+  </Card>
+  <Card title="处理错误" icon="triangle-exclamation" href="/zh/api-manual/error-codes">
+    响应格式与 HTTP 状态码。
+  </Card>
+</CardGroup>
+
+## 1. 可用模型
+
+每个模型分类都有一个概览页，列出全部模型及其 model ID：
+
+<CardGroup cols={3}>
+  <Card title="图像" icon="image" href="/zh/api-manual/image-series/overview">
+    文生图与图像编辑。
+  </Card>
+  <Card title="视频" icon="video" href="/zh/api-manual/video-series/overview">
+    文本、图像与参考素材生成视频。
+  </Card>
+  <Card title="音频" icon="volume-high" href="/zh/api-manual/music-series/audio-overview">
+    文本转语音（TTS）。
+  </Card>
+  <Card title="LLM" icon="comments" href="/zh/api-manual/chat-series/overview">
+    GPT、Claude、Gemini、Grok 和 Kimi。
+  </Card>
+  <Card title="3D" icon="cube" href="/zh/api-manual/3d-series/overview">
+    文本与图像生成 3D 模型。
+  </Card>
+  <Card title="音乐" icon="music" href="/zh/api-manual/music-series/overview">
+    Suno 音乐接口与音乐模型。
+  </Card>
+</CardGroup>
+
+## 2. 认证
+
+在 [API Key 页面](https://vidgo.ai/apis/dashboard/api-key)创建 API Key。每个请求都必须包含：
+
+```http
+Authorization: Bearer VIDGO_API_KEY
+Content-Type: application/json
+```
+
+[Claude Messages](/api-manual/chat-series/claude-messages) 也接受 `x-api-key`，[Gemini Native Format](/api-manual/chat-series/gemini-native-format) 也接受 `x-goog-api-key`。
+
+<Warning>
+  **切勿在前端代码中暴露 API Key**（浏览器、移动应用、公开仓库）。请只在服务端保存。
+</Warning>
+
+## 3. 提交生成任务
+
+生成任务是异步的。向 `POST /api/generate/submit` 提交任务，并保存返回的 `task_id`。
+
+```bash
+curl https://api.vidgo.ai/api/generate/submit \
+  -H "Authorization: Bearer $VIDGO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o-image",
+    "input": {
+      "prompt": "A paper-cut illustration of a city at sunrise",
+      "size": "1:1"
+    }
+  }'
+```
+
+<Info>
+  提交成功只表示任务已被接受，并不表示生成已经完成。
+</Info>
+
+## 4. 获取结果
+
+```bash
+curl "https://api.vidgo.ai/api/generate/status/TASK_ID" \
+  -H "Authorization: Bearer $VIDGO_API_KEY"
+```
+
+<Steps>
+  <Step title="提交">
+    发送生成请求，并保存返回的 `task_id`。
+  </Step>
+  <Step title="等待结果">
+    轮询[获取任务状态](/zh/api-manual/task-management/status)，或传入 `callback_url`，在任务变为 `finished` 或 `failed` 时接收 [Webhook](/zh/api-manual/task-management/webhooks)。
+  </Step>
+  <Step title="保存输出">
+    下载 `files` 中的文件，并保存到你自己的存储中。
+  </Step>
+</Steps>
+
+Suno 音乐接口使用[查询音乐详情](/zh/api-manual/music-series/query-music-detail)和[音乐 Webhook](/zh/api-manual/music-series/music-webhook)，而不是统一的任务状态接口。
+
+## 5. 数据保留
+
+<Warning>
+  生成的文件有效期为 **24 小时**。请及时下载并保存结果。
+</Warning>
+
+## 6. 上线前检查
+
+<Check>API Key 只保存在服务端，不要暴露在浏览器或移动端代码中。</Check>
+<Check>提交前按所选模型页面校验输入参数。</Check>
+<Check>明确处理 `400`、`401`、`429` 和临时性的 `5xx` 响应，参见[错误码](/zh/api-manual/error-codes)。</Check>
+<Check>每次重试提交都可能产生新的计费任务；重新提交前先确认原请求是否已创建任务。</Check>
+<Check>通过[查询用户余额](/zh/api-manual/account-management/user-balance)查看剩余积分。</Check>
+
+## 7. 支持
+
+<CardGroup cols={2}>
+  <Card title="邮件" icon="envelope" href="mailto:support@vidgo.ai">
+    `support@vidgo.ai`
+  </Card>
+  <Card title="常见问题" icon="circle-question" href="/zh/faqs">
+    计费、模型与常见问题。
+  </Card>
+</CardGroup>

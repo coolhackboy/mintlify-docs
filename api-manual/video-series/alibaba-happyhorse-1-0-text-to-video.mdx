@@ -6,26 +6,24 @@ openapi: "/api-manual/video-series/alibaba-happyhorse-1-0-text-to-video.json POS
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Happy Horse Text to Video
 
 Create short scenes from text with Happy Horse, with output up to 1080p for landscape, portrait, and square video.
 
-## Available Models
+## Models
 
 - **alibaba/happyhorse-1.0/text-to-video** - Generate video scenes from text prompts.
+
+## Features
+
+- Generate video scenes from text prompts.
+- Choose from `720p`, `1080p` output resolutions.
 
 ## Duration Options
 
 - **3-15 seconds** - Set `duration` as an integer. Default: **5 seconds**.
-
-## Key Features
-
-- Generate video scenes from text prompts.
-- Choose from `720p`, `1080p` output resolutions.
 
 ## Advanced Parameters
 

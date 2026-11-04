@@ -6,28 +6,26 @@ openapi: "/api-manual/video-series/kwaivgi-kling-v3-turbo-pro-text-to-video.json
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Kling 3.0 Turbo Pro Text to Video
 
 Build video scenes with Kling 3.0 Turbo Pro, using text and individual shot prompts to direct action and composition.
 
-## Available Models
+## Models
 
 - **kwaivgi/kling-v3-turbo-pro/text-to-video** - Generate video scenes from text prompts.
+
+## Features
+
+- Generate video scenes from text prompts.
+- Direct one scene with `prompt`, or use `multi_prompt` for up to six shots.
 
 ## Duration Options
 
 - **3-15 seconds** - Accepted range for an explicit `duration`. Without `multi_prompt`, the default is **5 seconds**.
 - **Multi-shot output** - Each shot accepts `1`-`15` seconds and defaults to `5`. The total must not exceed **15 seconds**.
 - With `multi_prompt`, omit `duration` to use the shot total, including totals of **1 or 2 seconds**. If supplied, `duration` must equal the shot total and remain within `3`-`15` seconds.
-
-## Key Features
-
-- Generate video scenes from text prompts.
-- Direct one scene with `prompt`, or use `multi_prompt` for up to six shots.
 
 ## Advanced Parameters
 

@@ -1,0 +1,51 @@
+---
+title: "Music Models"
+description: "All music generation models and Suno music actions available on Vidgo API, with their model IDs."
+icon: "music"
+---
+
+Music models are called through `POST /api/generate/submit`. Send a model ID in `model`, the parameters in `input`, and an optional `callback_url`. The request returns a `task_id` right away and the task runs asynchronously.
+
+## Workflow
+
+Suno and the other providers use different result endpoints:
+
+- **Suno**: poll [Query Music Detail](/api-manual/music-series/query-music-detail), or receive the result at `callback_url` (see [Music Webhook](/api-manual/music-series/music-webhook)).
+- **MiniMax, ElevenLabs**: poll the unified [Get Task Status](/api-manual/task-management/status), or receive the result at `callback_url` (see [Webhook Callbacks](/api-manual/task-management/webhooks)).
+
+## Suno
+
+Suno is organized by action. Each action has its own model ID. Start with [Generate Music](/api-manual/music-series/generate-music); several actions extend, cover, or edit a song from an earlier task or an uploaded audio file.
+
+| Action | Model ID |
+| --- | --- |
+| [Generate Music](/api-manual/music-series/generate-music) | `generate-music` |
+| [Extend Music](/api-manual/music-series/extend-music) | `extend-music` |
+| [Upload and Cover Audio](/api-manual/music-series/upload-and-cover-audio) | `upload-and-cover-audio` |
+| [Upload and Extend Audio](/api-manual/music-series/upload-and-extend-audio) | `upload-and-extend-audio` |
+| [Add Instrumental](/api-manual/music-series/add-instrumental) | `add-instrumental` |
+| [Add Vocals](/api-manual/music-series/add-vocals) | `add-vocals` |
+| [Get Timestamped Lyrics](/api-manual/music-series/get-timestamped-lyrics) | `get-timestamped-lyrics` |
+| [Boost Music Style](/api-manual/music-series/boost-music-style) | `boost-music-style` |
+| [Generate Music Cover](/api-manual/music-series/generate-music-cover) | `generate-music-cover` |
+| [Replace Section](/api-manual/music-series/replace-section) | `replace-section` |
+| [Generate Persona](/api-manual/music-series/generate-persona) | `generate-persona` |
+| [Generate Lyrics](/api-manual/music-series/generate-lyrics) | `generate-lyrics` |
+| [Convert to WAV](/api-manual/music-series/convert-to-wav) | `convert-to-wav` |
+| [Separate Vocals](/api-manual/music-series/vocal-remover/separate-vocals) | `separate-vocals` |
+| [Stem Split](/api-manual/music-series/vocal-remover/stem-split) | `stem-split` |
+| [Upload and Separate Vocals](/api-manual/music-series/vocal-remover/upload-and-separate-vocals) | `upload-and-separate-vocals` |
+| [Create Music Video](/api-manual/music-series/create-music-video) | `create-music-video` |
+
+## Other models
+
+| Model | Provider | Model IDs |
+| --- | --- | --- |
+| [MiniMax Music 2.6](/api-manual/music-series/minimax-music-2-6) | MiniMax | `minimax/music-2.6` |
+| [ElevenLabs Music](/api-manual/music-series/elevenlabs-music) | ElevenLabs | `elevenlabs/music` |
+
+## Notes
+
+- Each model page lists the parameters, limits, and modes for its model IDs. Parameters are not shared across models.
+- Generated files are valid for 24 hours after creation. Download and store them promptly.
+- URL inputs must be publicly accessible HTTP(S) URLs. To use local files, upload them first with [File Management](/api-manual/file-series/upload-url).

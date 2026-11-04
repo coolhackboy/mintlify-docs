@@ -6,9 +6,14 @@ openapi: "/api-manual/video-series/minimax-h3-max-reference-to-video.json POST /
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your webhook when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
+
+## Optional parameters
+
+- `enable_safety_checker`: boolean, defaults to `true`. Set `false` to disable it.
+- `callback_url`: optional webhook URL at the request root. Query task status if you do not use a callback.
 
 ## Usage Guide
 
@@ -26,8 +31,3 @@ Set `model` and optional `callback_url` at the request root. Place generation pa
 - `reference_video_urls`: optional array of up to 3 MP4/MOV clips, at most 50 MB each. Each clip must be 2-15 seconds, with at most 15 seconds combined. Clips must use constant 24 fps, square pixels, zero rotation metadata, and a `16:9` or `9:16` shape. After limiting frames to the requested output duration, the counted frames must be 48, 120, 240 or 360. Other timing patterns are rejected.
 - `reference_audio_urls`: optional array of up to 3 MP3/WAV clips, at most 15 MB each. Each clip must be 2-15 seconds and no longer than the output duration, with at most 15 seconds combined. Audio must be mono or stereo at 32 kHz, with a decoded sample count divisible by 800.
 - All reference URLs must be public HTTP(S) download links. Total assets across the three lists must not exceed 12.
-
-## Optional parameters
-
-- `enable_safety_checker`: boolean, defaults to `true`. Set `false` to disable it.
-- `callback_url`: optional webhook URL at the request root. Query task status if you do not use a callback.

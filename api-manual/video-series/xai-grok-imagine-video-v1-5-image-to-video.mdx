@@ -6,7 +6,8 @@ openapi: "/api-manual/video-series/xai-grok-imagine-video-v1-5-image-to-video.js
 ---
 
 <Tip>
-Submit the request with `VIDGO_API_KEY` and save the returned `task_id`. Use [Query Task Status](/api-manual/task-management/status) to retrieve the video. Provide `callback_url` to receive a [webhook](/api-manual/task-management/webhooks) when the task reaches `finished` or `failed`.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
 ## Grok Imagine Video 1.5 Image to Video

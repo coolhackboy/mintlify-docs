@@ -1,0 +1,581 @@
+---
+title: "获取任务状态"
+description: "查询任务执行状态并获取生成结果"
+icon: "list-check"
+openapi: "/zh/openapi.json GET /api/generate/status/{task_id}"
+---
+
+查询图像、视频、音频和 3D 生成任务，并在任务完成后获取返回的全部文件。
+
+## 接口
+
+```http
+GET https://api.vidgo.ai/api/generate/status/{task_id}
+```
+
+## 认证
+
+该接口目前通过 `task_id` 查询任务，不要求 Authorization 请求头，也不校验任务归属。示例中带上了 Bearer 请求头，以便与需要认证的提交请求共用同一套客户端配置。
+
+```bash
+Authorization: Bearer VIDGO_API_KEY
+```
+
+<Card title="获取 API Key" icon="key" href="https://vidgo.ai/apis/dashboard/api-key">
+  在控制台生成你的 API Key
+</Card>
+
+## 参数
+
+### 路径参数
+
+| 参数 | 类型 | 必填 | 说明 |
+|-----------|------|----------|-------------|
+| `task_id` | string | 是 | 提交接口返回的任务唯一标识 |
+
+## 响应
+
+### 成功响应（200）
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://file.goseaapp.com/images/image-abc123.jpg",
+        "file_type": "image"
+      }
+    ],
+    "created_time": "2025-11-12T10:30:00",
+    "progress": 100,
+    "error_message": null
+  }
+}
+```
+
+### 响应字段
+
+| 字段 | 类型 | 说明 |
+|-------|------|-------------|
+| `code` | integer | HTTP 状态码（成功为 200） |
+| `data.task_id` | string | 任务唯一标识 |
+| `data.status` | string | 任务状态：`not_started`、`running`、`finished`、`failed` |
+| `data.files` | array | 生成的媒体文件（状态为 `finished` 时返回） |
+| `data.files[].file_url` | string | 生成文件的直接 URL |
+| `data.files[].file_type` | string | 产物类型：`image`、`video`、`audio`、`lyrics`、`3d` 或 `other` |
+| `data.files[].watermark_url` | string | 可选，带水印的版本 |
+| `data.files[].label` | string | 可选，产物角色，例如模型、预览或时间戳 |
+| `data.files[].format` | string | 可选，文件格式 |
+| `data.files[].content_type` | string | 可选，MIME 类型 |
+| `data.files[].file_name` | string | 可选，文件名 |
+| `data.files[].file_size` | integer | 可选，文件大小（字节） |
+| `data.files[].metadata` | object | 可选，额外的产物元数据 |
+| `data.created_time` | string | 任务创建时间（ISO 8601 时间戳） |
+| `data.progress` | integer or null | 服务提供时的完成百分比；部分任务在完成前可能一直为 0 |
+| `data.error_message` | string or null | 有错误信息时返回错误描述；没有错误时为 null |
+
+### 状态值
+
+| 状态 | 说明 |
+|--------|-------------|
+| `not_started` | 任务已排队，等待处理 |
+| `running` | 任务正在生成中 |
+| `finished` | 任务已成功完成，结果在 `files` 中 |
+| `failed` | 任务失败，错误详情在 `error_message` 中 |
+
+## 各状态响应示例
+
+### 未开始
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "not_started",
+    "files": [],
+    "created_time": "2025-11-12T10:30:00",
+    "progress": 0,
+    "error_message": null
+  }
+}
+```
+
+### 运行中（图像）
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "running",
+    "files": [],
+    "created_time": "2025-11-12T10:30:00",
+    "progress": 45,
+    "error_message": null
+  }
+}
+```
+
+### 已完成（图像）
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://file.goseaapp.com/images/image-abc123.jpg",
+        "file_type": "image"
+      }
+    ],
+    "created_time": "2025-11-12T10:30:00",
+    "progress": 100,
+    "error_message": null
+  }
+}
+```
+
+### 已完成（视频）
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165211-xyz789",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://file.goseaapp.com/videos/video-xyz789.mp4",
+        "file_type": "video"
+      }
+    ],
+    "created_time": "2025-11-12T10:30:00",
+    "progress": 100,
+    "error_message": null
+  }
+}
+```
+
+### 失败
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "failed",
+    "files": [],
+    "created_time": "2025-11-12T10:30:00",
+    "progress": 0,
+    "error_message": "The prompt violates our content policy"
+  }
+}
+```
+
+## 代码示例
+
+### cURL
+
+```bash
+curl -X GET https://api.vidgo.ai/api/generate/status/task-unified-1757165031-uyujaw3d \
+  -H "Authorization: Bearer VIDGO_API_KEY"
+```
+
+### Python
+
+```python
+import requests
+
+API_KEY = "your-api-key-here"
+task_id = "task-unified-1757165031-uyujaw3d"
+
+response = requests.get(
+    f"https://api.vidgo.ai/api/generate/status/{task_id}",
+    headers={"Authorization": f"Bearer {API_KEY}"}
+)
+
+result = response.json()
+data = result["data"]
+
+print(f"Status: {data['status']}")
+print(f"Progress: {data['progress']}%")
+
+if data["status"] == "finished":
+    for file in data["files"]:
+        print(f"Generated file: {file['file_url']}")
+elif data["status"] == "failed":
+    print(f"Error: {data['error_message']}")
+```
+
+### JavaScript / Node.js
+
+```javascript
+const API_KEY = 'your-api-key-here';
+const taskId = 'task-unified-1757165031-uyujaw3d';
+
+const response = await fetch(
+  `https://api.vidgo.ai/api/generate/status/${taskId}`,
+  {
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`
+    }
+  }
+);
+
+const result = await response.json();
+const data = result.data;
+
+console.log(`Status: ${data.status}`);
+console.log(`Progress: ${data.progress}%`);
+
+if (data.status === 'finished') {
+  data.files.forEach(file => {
+    console.log(`Generated file: ${file.file_url}`);
+  });
+} else if (data.status === 'failed') {
+  console.log(`Error: ${data.error_message}`);
+}
+```
+
+### Go
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "io"
+    "net/http"
+)
+
+const (
+    APIKey = "your-api-key-here"
+    BaseURL = "https://api.vidgo.ai"
+)
+
+type APIResponse struct {
+    Code int      `json:"code"`
+    Data TaskData `json:"data"`
+}
+
+type TaskData struct {
+    TaskID       string      `json:"task_id"`
+    Status       string      `json:"status"`
+    Files        []MediaFile `json:"files"`
+    CreatedTime  string      `json:"created_time"`
+    Progress     int         `json:"progress"`
+    ErrorMessage *string     `json:"error_message"`
+}
+
+type MediaFile struct {
+    FileURL  string `json:"file_url"`
+    FileType string `json:"file_type"`
+}
+
+func main() {
+    taskID := "task-unified-1757165031-uyujaw3d"
+
+    req, _ := http.NewRequest(
+        "GET",
+        fmt.Sprintf("%s/api/generate/status/%s", BaseURL, taskID),
+        nil,
+    )
+    req.Header.Set("Authorization", "Bearer "+APIKey)
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        panic(err)
+    }
+    defer resp.Body.Close()
+
+    body, _ := io.ReadAll(resp.Body)
+
+    var apiResp APIResponse
+    json.Unmarshal(body, &apiResp)
+
+    data := apiResp.Data
+    fmt.Printf("Status: %s\n", data.Status)
+    fmt.Printf("Progress: %d%%\n", data.Progress)
+
+    if data.Status == "finished" {
+        for _, file := range data.Files {
+            fmt.Printf("Generated file: %s\n", file.FileURL)
+        }
+    } else if data.Status == "failed" {
+        fmt.Printf("Error: %s\n", *data.ErrorMessage)
+    }
+}
+```
+
+### Java
+
+```java
+import java.net.http.*;
+import java.net.URI;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+
+public class VidgoAPI {
+    private static final String API_KEY = "your-api-key-here";
+    private static final String BASE_URL = "https://api.vidgo.ai";
+
+    public static void main(String[] args) throws Exception {
+        String taskId = "task-unified-1757165031-uyujaw3d";
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(BASE_URL + "/api/generate/status/" + taskId))
+            .header("Authorization", "Bearer " + API_KEY)
+            .GET()
+            .build();
+
+        HttpResponse<String> response = client.send(
+            request,
+            HttpResponse.BodyHandlers.ofString()
+        );
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(response.body());
+        JsonNode data = root.get("data");
+
+        String status = data.get("status").asText();
+        int progress = data.get("progress").asInt();
+
+        System.out.println("Status: " + status);
+        System.out.println("Progress: " + progress + "%");
+
+        if ("finished".equals(status)) {
+            JsonNode files = data.get("files");
+            files.forEach(file -> {
+                System.out.println("Generated file: " + file.get("file_url").asText());
+            });
+        } else if ("failed".equals(status)) {
+            System.out.println("Error: " + data.get("error_message").asText());
+        }
+    }
+}
+```
+
+### PHP
+
+```php
+<?php
+
+$apiKey = 'your-api-key-here';
+$taskId = 'task-unified-1757165031-uyujaw3d';
+$baseUrl = 'https://api.vidgo.ai';
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "$baseUrl/api/generate/status/$taskId");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Authorization: Bearer $apiKey"
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$result = json_decode($response, true);
+$data = $result['data'];
+
+echo "Status: {$data['status']}\n";
+echo "Progress: {$data['progress']}%\n";
+
+if ($data['status'] === 'finished') {
+    foreach ($data['files'] as $file) {
+        echo "Generated file: {$file['file_url']}\n";
+    }
+} elseif ($data['status'] === 'failed') {
+    echo "Error: {$data['error_message']}\n";
+}
+```
+
+### Ruby
+
+```ruby
+require 'net/http'
+require 'json'
+require 'uri'
+
+api_key = 'your-api-key-here'
+task_id = 'task-unified-1757165031-uyujaw3d'
+base_url = 'https://api.vidgo.ai'
+
+uri = URI("#{base_url}/api/generate/status/#{task_id}")
+request = Net::HTTP::Get.new(uri)
+request['Authorization'] = "Bearer #{api_key}"
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+
+result = JSON.parse(response.body)
+data = result['data']
+
+puts "Status: #{data['status']}"
+puts "Progress: #{data['progress']}%"
+
+if data['status'] == 'finished'
+  data['files'].each do |file|
+    puts "Generated file: #{file['file_url']}"
+  end
+elsif data['status'] == 'failed'
+  puts "Error: #{data['error_message']}"
+end
+```
+
+## 轮询最佳实践
+
+轮询任务完成状态时，请遵循以下建议：
+
+<Tip>
+  **轮询间隔**：每 2-5 秒查询一次状态。避免更频繁地轮询，以免触发速率限制。
+</Tip>
+
+<Tip>
+  **超时**：设置超时以避免无限循环。典型生成耗时：
+  - 图像：15-60 秒
+  - 视频：90-300 秒
+</Tip>
+
+<Tip>
+  **指数退避**：遇到速率限制（429）或服务器错误（5xx）时，使用指数退避（等待 1 秒、2 秒、4 秒、8 秒……）。
+</Tip>
+
+### 完整轮询示例
+
+```python
+import requests
+import time
+
+API_KEY = "your-api-key-here"
+BASE_URL = "https://api.vidgo.ai"
+
+def wait_for_completion(task_id, timeout=600, poll_interval=2):
+    """
+    Wait for task completion with timeout
+
+    Args:
+        task_id: Task identifier
+        timeout: Maximum wait time in seconds
+        poll_interval: Seconds between checks
+
+    Returns:
+        Task data when complete
+
+    Raises:
+        TimeoutError: If timeout exceeded
+        RuntimeError: If task failed
+    """
+    start_time = time.time()
+    headers = {"Authorization": f"Bearer {API_KEY}"}
+
+    while True:
+        # Check timeout
+        if time.time() - start_time > timeout:
+            raise TimeoutError(f"Task did not complete within {timeout}s")
+
+        # Get status
+        response = requests.get(
+            f"{BASE_URL}/api/generate/status/{task_id}",
+            headers=headers
+        )
+
+        if response.status_code == 429:
+            # Rate limited - wait longer
+            time.sleep(poll_interval * 2)
+            continue
+
+        response.raise_for_status()
+        result = response.json()
+        data = result["data"]
+
+        # Log progress
+        elapsed = int(time.time() - start_time)
+        print(f"[{elapsed}s] Status: {data['status']}, Progress: {data['progress']}%")
+
+        # Check completion
+        if data["status"] == "finished":
+            print("Task completed successfully")
+            return data
+        elif data["status"] == "failed":
+            raise RuntimeError(f"Task failed: {data['error_message']}")
+
+        time.sleep(poll_interval)
+
+# Usage
+try:
+    task_id = "task-unified-1757165031-uyujaw3d"
+    result = wait_for_completion(task_id)
+
+    for file in result["files"]:
+        print(f"Download: {file['file_url']}")
+
+except TimeoutError as e:
+    print(f"Timeout: {e}")
+except RuntimeError as e:
+    print(f"Error: {e}")
+```
+
+## 错误响应
+
+### HTTP 错误码
+
+| 状态码 | 说明 | 处理方式 |
+|------|-------------|--------|
+| 404 | Not Found | 任务 ID 不存在 |
+| 500 | Server Error | 使用指数退避重试 |
+
+### 错误响应格式
+
+```json
+{
+  "detail": "Task not found"
+}
+```
+
+## 重要说明
+
+<Warning>
+  **内容有效期**：文件的有效期取决于存储服务商。需要长期保留的输出请及时下载并保存。
+</Warning>
+
+<Info>
+  **积分**：积分在提交任务时扣除。如果任务失败，这部分积分会自动退还。
+</Info>
+
+<Tip>
+  **Webhook**：除了轮询，你也可以在提交任务时提供 `callback_url` 以自动接收通知。参见[Webhook 回调](/zh/api-manual/task-management/webhooks)。
+</Tip>
+
+## 后续步骤
+
+<CardGroup cols={2}>
+  <Card title="提交任务" icon="upload" href="/zh/api-manual/quickstart">
+    了解如何提交生成任务
+  </Card>
+  <Card title="图像生成" icon="image" href="/api-manual/image-series/gpt-4o-image">
+    使用 GPT-4o 生成图像
+  </Card>
+  <Card title="视频生成" icon="video" href="/zh/api-manual/video-series/overview">
+    使用 Sora 2 创建视频
+  </Card>
+  <Card title="快速开始" icon="rocket" href="/zh/api-manual/quickstart">
+    完整集成指南
+  </Card>
+</CardGroup>
+
+{/* task-workflows-20260910:start */}
+## 其他生成文件
+
+音频和 3D 工作流使用同一个 files 数组。file_type 可能是 audio、3d、image 或 other。该数组会保留模型资产、预览图、纹理、动画文件和时间戳文件。每一项还可能包含 label、format、content_type、file_name、file_size 和 metadata。请处理返回的每一个文件；metadata 字段是可选的。
+
+{/* task-workflows-20260910:end */}

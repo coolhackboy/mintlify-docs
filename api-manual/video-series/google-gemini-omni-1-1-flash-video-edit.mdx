@@ -6,28 +6,26 @@ openapi: "/api-manual/video-series/google-gemini-omni-1-1-flash-video-edit.json 
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Gemini Omni 1.1 Flash Video Edit
 
 Rework existing video with Gemini Omni 1.1 Flash, using written instructions to guide changes to the scene with output up to 4K.
 
-## Available Models
+## Models
 
 - **google/gemini-omni-1.1-flash/video-edit** - Edit an existing video using written instructions.
 
-## Duration Options
-
-- **Source video: 3-10 seconds** - Output duration follows the reference video.
-
-## Key Features
+## Features
 
 - Edit an existing video using written instructions.
 - Optionally add up to five reference images to guide the edit.
 - Choose from `360p`, `720p`, `1080p`, `4k` output resolutions.
 - Supports landscape (`16:9`) and portrait (`9:16`) framing.
+
+## Duration Options
+
+- **Source video: 3-10 seconds** - Output duration follows the reference video.
 
 ## Advanced Parameters
 

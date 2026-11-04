@@ -1,0 +1,132 @@
+---
+title: "通过文件流上传文件"
+description: "使用 multipart/form-data 格式将文件直接上传到 Vidgo API"
+icon: "upload"
+openapi: "/zh/api-manual/file-series/upload-stream.json POST /api/common/upload/stream"
+---
+
+## 使用指南
+
+- 该接口使用标准的 `multipart/form-data` 格式直接上传文件
+- 支持从本地存储直接上传文件，并自动识别文件类型
+- 最适合桌面应用、移动应用或网页表单上传本地文件
+- 文件上传后可立即通过返回的 URL 访问，并保留 72 小时
+
+## 参数详情
+
+- **文件上传要求**：
+
+  - `file` 字段必须包含二进制文件数据
+
+  - 支持的文件格式：仅 **JPEG、PNG、GIF、WebP**
+
+  - 上传数量上限：**每次请求 1 张图片**
+
+  - 系统会根据二进制数据自动识别文件类型
+
+- **参数命名规范**：
+
+  - 该接口同时支持 **snake_case** 和 **camelCase** 两种命名规范
+
+  - `upload_path` 或 `uploadPath`，两者都可以
+
+  - `file_name` 或 `fileName`，两者都可以
+
+  - 选择与你的应用代码风格一致的写法即可
+
+- **存储配置**：
+
+  - 所有文件在存储路径中都会自动加上 `temp/` 前缀
+
+  - 如果指定 `upload_path: "photos"`，实际路径为 `temp/photos`
+
+  - 文件在上传 **72 小时**后过期并自动删除
+
+- **文件命名**：
+
+  - 如果未提供 `file_name`，系统会按以下格式生成唯一文件名：`{timestamp}_{random}_{extension}`
+
+  - 自动生成的文件名示例：`20251229130857_a8B9cD2e.png`
+
+## 使用说明
+
+- 适合使用文件流上传的场景：
+
+  - 从用户本地存储直接上传文件
+
+  - 网页应用中基于表单的文件上传
+
+  - 移动应用上传文件
+
+  - 服务器之间的文件传输
+
+- 对于已经存储在磁盘上的文件，这是效率最高的上传方式
+
+- multipart/form-data 格式在所有编程语言和 HTTP 客户端中都是通用标准
+
+- 如需持久保存，请在 72 小时过期前将文件下载到本地
+
+## 速率限制与配额
+
+- **速率限制**：每个 API Key 每分钟 5 次请求
+
+- 超出速率限制时，会收到 `429 Too Many Requests` 错误
+
+- 使用指数退避重试逻辑处理速率限制错误
+
+## 常见错误场景
+
+- **缺少文件**：请求体中没有提供文件（422 错误）
+
+- **不支持的文件类型**：上传的文件不是支持的图片格式（JPEG、PNG、GIF、WebP）
+
+- **空文件**：上传的文件为 0 字节或已损坏
+
+- **认证错误**：Authorization 请求头中的 API Key 缺失或无效
+
+## 使用示例
+
+### cURL 示例
+
+```bash
+curl -X POST "https://api.vidgo.ai/api/common/upload/stream" \
+  -H "Authorization: Bearer VIDGO_API_KEY" \
+  -F "file=@/path/to/image.png" \
+  -F "file_name=my-image.png"
+```
+
+### Python 示例
+
+```python
+import requests
+
+url = "https://api.vidgo.ai/api/common/upload/stream"
+headers = {"Authorization": "Bearer VIDGO_API_KEY"}
+
+files = {"file": open("/path/to/image.png", "rb")}
+data = {"file_name": "my-image.png"}
+
+response = requests.post(url, headers=headers, files=files, data=data)
+print(response.json())
+```
+
+### JavaScript 示例（Node.js）
+
+```javascript
+const FormData = require('form-data');
+const fs = require('fs');
+const axios = require('axios');
+
+const form = new FormData();
+form.append('file', fs.createReadStream('/path/to/image.png'));
+form.append('file_name', 'my-image.png');
+
+axios.post('https://api.vidgo.ai/api/common/upload/stream', form, {
+  headers: {
+    'Authorization': 'Bearer VIDGO_API_KEY',
+    ...form.getHeaders()
+  }
+})
+.then(response => console.log(response.data))
+.catch(error => console.error(error));
+```

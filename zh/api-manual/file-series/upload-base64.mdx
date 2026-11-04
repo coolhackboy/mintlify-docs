@@ -1,0 +1,83 @@
+---
+title: "通过 Base64 上传文件"
+description: "使用 Base64 编码数据或 Data URL 格式将文件上传到 Vidgo API"
+icon: "upload"
+openapi: "/zh/api-manual/file-series/upload-base64.json POST /api/common/upload/base64"
+---
+
+## 使用指南
+
+- 该接口接收 Base64 编码的文件数据，并上传到 Vidgo API 存储
+- 同时支持 Data URL 格式（带 MIME 类型前缀）和纯 Base64 字符串
+- 适合上传应用中已经是 Base64 编码的文件，例如 canvas 绘图或客户端处理过的图片
+- 文件上传后可立即通过返回的 URL 访问，并保留 72 小时
+
+## 参数详情
+
+- **Base64 数据格式**：
+
+  - **Data URL 格式**：`data:image/png;base64,iVBORw0KGgo...`（推荐）
+
+  - **纯 Base64 字符串**：`iVBORw0KGgo...`（不带 MIME 类型前缀）
+
+  - Base64 字符串中不能包含任何空白字符、换行符或格式化内容
+
+  - 支持的文件格式：仅 **JPEG、PNG、GIF、WebP**
+
+  - 上传数量上限：**每次请求 1 张图片**
+
+- **存储配置**：
+
+  - 所有文件在存储路径中都会自动加上 `temp/` 前缀
+
+  - 如果指定 `upload_path: "profile-images"`，实际路径为 `temp/profile-images`
+
+  - 文件在上传 **72 小时**后过期并自动删除
+
+- **文件命名**：
+
+  - 如果未提供 `file_name`，系统会按以下格式生成唯一文件名：`{timestamp}_{random}_{extension}`
+
+  - 自动生成的文件名示例：`20251229130857_a8B9cD2e.png`
+
+## 使用说明
+
+- 适合使用 Base64 上传的场景：
+
+  - 客户端生成的图片（canvas、截图）
+
+  - 应用中已经是 Base64 编码的图片
+
+  - 可以接受编码开销的中小尺寸图片
+
+- 不适合使用 Base64 上传的场景：
+
+  - 大尺寸图片文件（Base64 编码会使体积增加约 33%）
+
+  - 存储在磁盘上的文件（改用文件流上传）
+
+  - 可以通过 URL 获取的文件（改用 URL 上传）
+
+- 确保 Base64 数据格式正确，不包含任何换行或空格
+
+- 如需持久保存，请在 72 小时过期前将文件下载到本地
+
+## 速率限制与配额
+
+- **速率限制**：每个 API Key 每分钟 5 次请求
+
+- 超出速率限制时，会收到 `429 Too Many Requests` 错误
+
+- 使用指数退避重试逻辑处理速率限制错误
+
+## 常见错误场景
+
+- **Base64 编码无效**：提供的 Base64 字符串无法解码
+
+- **Data URL 格式无效**：Data URL 格式错误（例如缺少 `data:` 前缀或 `;base64,` 分隔符）
+
+- **不支持的文件类型**：解码后的文件不是支持的图片格式（JPEG、PNG、GIF、WebP）
+
+- **文件数据无效**：解码后的数据为空或已损坏
+
+- **认证错误**：Authorization 请求头中的 API Key 缺失或无效

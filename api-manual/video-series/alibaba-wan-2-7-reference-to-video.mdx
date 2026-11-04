@@ -6,28 +6,26 @@ openapi: "/api-manual/video-series/alibaba-wan-2-7-reference-to-video.json POST 
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Wan 2.7 Video Reference to Video
 
 Combine image and video references to guide Wan 2.7 scenes, with support for multiple shots and output up to 1080p.
 
-## Available Models
+## Models
 
 - **alibaba/wan-2.7/reference-to-video** - Generate video guided by reference material and a prompt.
 
-## Duration Options
-
-- **2-10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**.
-
-## Key Features
+## Features
 
 - Generate video guided by reference material and a prompt.
 - Use reference images to guide the generated scene.
 - Use video references to guide the generated scene.
 - Choose from `720p`, `1080p` output resolutions.
+
+## Duration Options
+
+- **2-10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds**.
 
 ## Advanced Parameters
 

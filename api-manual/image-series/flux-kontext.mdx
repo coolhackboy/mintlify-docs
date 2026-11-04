@@ -1,5 +1,5 @@
 ---
-title: "Flux Kontext Image Generation"
+title: "Flux Kontext"
 description: "Image generation and image editing models powered by Black Forest Labs Flux Kontext"
 icon: "image"
 openapi: "/api-manual/image-series/flux-kontext.json POST /api/generate/submit"
@@ -7,19 +7,27 @@ openapi: "/api-manual/image-series/flux-kontext.json POST /api/generate/submit"
 
 <Tip>
 1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Flux Kontext Image Generation
 
 Flux Kontext is powered by Black Forest Labs. It supports both text-to-image generation and image editing through the same unified submit endpoint.
 
-## Available Models
+## Models
 
 - **flux-kontext-pro** - Flux Kontext Pro text-to-image generation
 - **flux-kontext-pro-edit** - Flux Kontext Pro image editing, `image_urls` is required
 - **flux-kontext-max** - Flux Kontext Max text-to-image generation
 - **flux-kontext-max-edit** - Flux Kontext Max image editing, `image_urls` is required
+
+## Workflow IDs
+
+Existing IDs remain available. New integrations can select a dedicated workflow:
+
+- [blackforestlabs/flux-kontext-pro/text-to-image](/api-manual/image-series/blackforestlabs-flux-kontext-pro-text-to-image)
+- [blackforestlabs/flux-kontext-pro](/api-manual/image-series/blackforestlabs-flux-kontext-pro)
+- [blackforestlabs/flux-kontext-max/text-to-image](/api-manual/image-series/blackforestlabs-flux-kontext-max-text-to-image)
+- [blackforestlabs/flux-kontext-max](/api-manual/image-series/blackforestlabs-flux-kontext-max)
+{/* poyo-20260910:end */}
 
 ## Notes
 
@@ -31,12 +39,3 @@ Flux Kontext is powered by Black Forest Labs. It supports both text-to-image gen
 - Credits are charged directly according to the configured model price
 
 {/* poyo-20260910:start */}
-## Workflow IDs
-
-Existing IDs remain available. New integrations can select a dedicated workflow:
-
-- [blackforestlabs/flux-kontext-pro/text-to-image](/api-manual/image-series/blackforestlabs-flux-kontext-pro-text-to-image)
-- [blackforestlabs/flux-kontext-pro](/api-manual/image-series/blackforestlabs-flux-kontext-pro)
-- [blackforestlabs/flux-kontext-max/text-to-image](/api-manual/image-series/blackforestlabs-flux-kontext-max-text-to-image)
-- [blackforestlabs/flux-kontext-max](/api-manual/image-series/blackforestlabs-flux-kontext-max)
-{/* poyo-20260910:end */}

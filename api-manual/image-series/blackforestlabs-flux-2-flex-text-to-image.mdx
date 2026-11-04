@@ -6,17 +6,20 @@ openapi: "/api-manual/image-series/blackforestlabs-flux-2-flex-text-to-image.jso
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# FLUX.2 Flex Text to Image
 
 Explore image concepts with FLUX.2 Flex, using descriptive prompts to shape composition and style in 1K or 2K output.
 
-## Available Models
+## Models
 
 - **blackforestlabs/flux-2-flex/text-to-image** - Generate images from text prompts.
+
+## Features
+
+- Generate images from text prompts.
+- Choose from `1K`, `2K` output resolutions.
 
 ## Output Options
 
@@ -27,11 +30,6 @@ Explore image concepts with FLUX.2 Flex, using descriptive prompts to shape comp
 ### Resolution
 
 - `resolution`: Required. Accepted values: `1K`, `2K`.
-
-## Key Features
-
-- Generate images from text prompts.
-- Choose from `1K`, `2K` output resolutions.
 
 ## Advanced Parameters
 

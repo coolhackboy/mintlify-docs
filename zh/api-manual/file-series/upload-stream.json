@@ -1,0 +1,332 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - 通过文件流上传文件",
+    "description": "使用 multipart/form-data 格式将文件直接上传到 Vidgo API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/common/upload/stream": {
+      "post": {
+        "summary": "通过文件流上传文件",
+        "description": "使用 multipart/form-data 格式上传文件。支持从本地存储直接上传文件，并自动识别文件类型。",
+        "operationId": "uploadFileStream",
+        "tags": ["File Upload"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadStreamRequest"
+              },
+              "examples": {
+                "basic-upload": {
+                  "summary": "基础文件上传",
+                  "value": {
+                    "file": "(binary file data)"
+                  }
+                },
+                "custom-naming-snake-case": {
+                  "summary": "使用自定义路径和文件名上传（snake_case）",
+                  "value": {
+                    "file": "(binary file data)",
+                    "upload_path": "photos",
+                    "file_name": "vacation-photo.jpg"
+                  }
+                },
+                "custom-naming-camel-case": {
+                  "summary": "使用自定义路径和文件名上传（camelCase）",
+                  "value": {
+                    "file": "(binary file data)",
+                    "uploadPath": "documents",
+                    "fileName": "profile-image.png"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "文件上传成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求错误 - 文件类型不支持或文件为空",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "unsupported-type": {
+                    "summary": "文件类型不支持",
+                    "value": {
+                      "detail": "Unsupported file type: video/mp4"
+                    }
+                  },
+                  "empty-file": {
+                    "summary": "空文件",
+                    "value": {
+                      "detail": "File is empty"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权 - 缺少认证信息或认证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "not-authenticated": {
+                    "summary": "未认证",
+                    "value": {
+                      "detail": "Not authenticated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "无法处理的实体 - 缺少必填的 file 字段",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                },
+                "examples": {
+                  "missing-file": {
+                    "summary": "缺少 file 字段",
+                    "value": {
+                      "detail": [
+                        {
+                          "loc": ["body", "file"],
+                          "msg": "field required",
+                          "type": "value_error.missing"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "rate-limit": {
+                    "summary": "超出速率限制",
+                    "value": {
+                      "detail": "Rate limit exceeded"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器错误 - 存储连接或上传失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "server-error": {
+                    "summary": "服务器错误",
+                    "value": {
+                      "detail": "Upload failed: Failed to write file to storage"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "UploadStreamRequest": {
+        "type": "object",
+        "required": ["file"],
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "description": "要上传的文件二进制数据。\n\n**支持的格式**：JPEG、PNG、GIF、WebP\n\n**上限**：每次请求 1 张图片\n\n**注意**：系统会自动识别文件类型并分类。"
+          },
+          "upload_path": {
+            "type": "string",
+            "description": "自定义存储目录路径。\n\n同时支持两种命名规范：\n- **snake_case**：`upload_path`\n- **camelCase**：`uploadPath`\n\n未指定时，系统会自动对文件分类。\n\n**注意**：无论指定什么路径，所有文件都会以 `temp/` 前缀存储。",
+            "example": "photos"
+          },
+          "file_name": {
+            "type": "string",
+            "description": "上传文件的自定义文件名。\n\n同时支持两种命名规范：\n- **snake_case**：`file_name`\n- **camelCase**：`fileName`\n\n未指定时，系统会按以下格式生成唯一文件名：`{timestamp}_{random}_{extension}`\n\n**自动生成的文件名示例**：`20251229130857_a8B9cD2e.png`",
+            "example": "photo.png"
+          }
+        }
+      },
+      "UploadResponse": {
+        "type": "object",
+        "required": ["success", "code", "msg", "data"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true,
+            "description": "上传是否成功"
+          },
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "msg": {
+            "type": "string",
+            "example": "File uploaded successfully",
+            "description": "响应消息"
+          },
+          "data": {
+            "type": "object",
+            "required": ["file_id", "file_name", "file_size", "mime_type", "file_url", "download_url", "expires_at"],
+            "properties": {
+              "file_id": {
+                "type": "string",
+                "example": "872defd8180ee9c6d32265ef4e8d255b",
+                "description": "文件唯一标识（MD5 哈希）"
+              },
+              "file_name": {
+                "type": "string",
+                "example": "test-stream.png",
+                "description": "存储后的文件名"
+              },
+              "original_name": {
+                "type": "string",
+                "example": "uploaded-file.png",
+                "description": "上传文件的原始文件名"
+              },
+              "file_size": {
+                "type": "integer",
+                "example": 3242,
+                "description": "文件大小（字节）"
+              },
+              "mime_type": {
+                "type": "string",
+                "example": "image/png",
+                "description": "上传文件的 MIME 类型"
+              },
+              "upload_path": {
+                "type": "string",
+                "example": "temp/test-stream",
+                "description": "存储路径（包含 temp/ 前缀）"
+              },
+              "file_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://cdn.vidgo.ai/temp/test-stream/test-stream.png",
+                "description": "上传文件的直接访问 URL"
+              },
+              "download_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://cdn.vidgo.ai/temp/test-stream/test-stream.png",
+                "description": "下载 URL（与 file_url 相同）"
+              },
+              "upload_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-12-29T13:09:04.731057",
+                "description": "上传时间戳，ISO 8601 格式"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-01-01T13:09:04.731057",
+                "description": "过期时间戳，ISO 8601 格式（上传后 72 小时）"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["detail"],
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "描述错误原因的错误信息",
+            "example": "Not authenticated"
+          }
+        }
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "required": ["detail"],
+        "properties": {
+          "detail": {
+            "type": "array",
+            "description": "校验错误列表",
+            "items": {
+              "type": "object",
+              "properties": {
+                "loc": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "校验错误的位置"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "错误信息"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "错误类型"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

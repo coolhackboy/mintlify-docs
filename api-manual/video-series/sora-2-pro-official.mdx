@@ -10,24 +10,30 @@ openapi: "/api-manual/video-series/sora-2-pro-official.json POST /api/generate/s
 2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-# Sora 2 Pro Official
-
 `sora-2-pro-official` supports text-to-video generation and optional single-image guided generation with fixed 4s, 8s, 12s, 16s, and 20s durations.
 
-## Available Model
+## Models
 
 - **sora-2-pro-official** - Pro text-to-video and image-guided video generation
 
-## Required Parameters
+## Required parameters
 
 - **prompt**: Text prompt for video generation
 
-## Optional Parameters
+## Optional parameters
 
 - **duration**: `4`, `8`, `12`, `16`, or `20`. Default is `4`
 - **resolution**: `720p`, `1024p`, or `1080p`. Default is `1024p`
 - **aspect_ratio**: `16:9` or `9:16` for text-to-video; `auto`, `16:9`, or `9:16` for image-to-video. Default is `16:9` for text-to-video and `auto` for image-to-video
 - **image_urls**: Optional reference image array. Maximum `1` image
+
+## Workflow IDs
+
+Existing IDs remain available. New integrations can select a dedicated workflow:
+
+- [openai/sora-2-pro/text-to-video](/api-manual/video-series/openai-sora-2-pro-text-to-video)
+- [openai/sora-2-pro/image-to-video](/api-manual/video-series/openai-sora-2-pro-image-to-video)
+{/* poyo-20260910:end */}
 
 ## Notes
 
@@ -36,10 +42,3 @@ openapi: "/api-manual/video-series/sora-2-pro-official.json POST /api/generate/s
 - Query status through the standard task status API.
 
 {/* poyo-20260910:start */}
-## Workflow IDs
-
-Existing IDs remain available. New integrations can select a dedicated workflow:
-
-- [openai/sora-2-pro/text-to-video](/api-manual/video-series/openai-sora-2-pro-text-to-video)
-- [openai/sora-2-pro/image-to-video](/api-manual/video-series/openai-sora-2-pro-image-to-video)
-{/* poyo-20260910:end */}

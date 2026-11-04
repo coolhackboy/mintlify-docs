@@ -6,17 +6,21 @@ openapi: "/api-manual/image-series/alibaba-wan-2-7-image-edit-pro.json POST /api
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Wan 2.7 Pro Image Edit
 
 Guide Wan 2.7 Pro edits with text and multiple reference images to develop new looks for existing visual concepts.
 
-## Available Models
+## Models
 
 - **alibaba/wan-2.7/image-edit-pro** - Edit images using a prompt and image references.
+
+## Features
+
+- Edit images using a prompt and image references.
+- Accepts 1-4 images in `image_urls`.
+- Control the number of output images with `n`.
 
 ## Output Options
 
@@ -29,12 +33,6 @@ Guide Wan 2.7 Pro edits with text and multiple reference images to develop new l
 ### Image Count
 
 - `n`: Optional. Number of images to generate. Integer from `1` to `4`. Default: `1`.
-
-## Key Features
-
-- Edit images using a prompt and image references.
-- Accepts 1-4 images in `image_urls`.
-- Control the number of output images with `n`.
 
 ## Advanced Parameters
 

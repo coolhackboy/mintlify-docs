@@ -1,0 +1,86 @@
+---
+title: "查询音乐详情"
+description: "查询音乐生成任务的详细结果"
+icon: "music"
+openapi: "/zh/api-manual/music-series/query-music-detail.json GET /api/generate/detail/music"
+---
+
+## 使用指南
+
+- 音乐系列中的所有 POST 提交请求都可以通过此接口查询结果。不同模型返回的[响应字段](#files-数据响应字段)不同。
+
+## 参数详情
+
+- `task_id`（必填）：音乐生成提交接口返回的唯一任务标识
+
+## 使用说明
+
+- 轮询此接口以检查任务完成状态
+- 任务状态变为 `finished` 之前，`files` 数组为空
+- 任务失败时，查看 `error_message` 字段获取详情
+- 单个任务生成多个变体时，可能返回多个音频文件
+
+## files 数据响应字段
+
+`files` 数组的内容取决于创建任务的模型。
+
+| 模型 | 字段 | 类型 | 说明 |
+|-------|-------|------|-------------|
+| `generate-music`, `extend-music`, `upload-and-cover-audio`, `upload-and-extend-audio`, `add-instrumental`, `add-vocals`, `replace-section` | `audio_id` | string | 音频文件的唯一标识 |
+| ↑ | `audio_url` | string | 音频文件的直接下载 URL |
+| ↑ | `image_url` | string | 封面图 URL |
+| ↑ | `title` | string | 曲目标题 |
+| ↑ | `tags` | string | 风格标签 |
+| ↑ | `duration` | number | 音频时长（秒） |
+| ↑ | `prompt` | string | 生成时使用的提示词 |
+| `get-timestamped-lyrics` | `timestampe_lyrics` | string | 带时间戳的歌词 |
+| `generate-lyrics` | `title` | string | 歌词标题 |
+| ↑ | `text` | string | 完整歌词内容 |
+| `boost-music-style` | `style` | string | 增强后的音乐风格 |
+| `convert-to-wav` | `wav_url` | string | 转换后 WAV 文件的 URL |
+| `separate-vocals` | `separate_vocals` | string (JSON) | 包含分离后音频 URL 的 JSON 字符串。[查看详情](#separate-vocals) |
+| `upload-and-separate-vocals` | `vocal_removal` | string (JSON) | 包含分离后音轨 URL 的 JSON 字符串。[查看详情](#upload-and-separate-vocals) |
+| `stem-split` | `stem_split` | string (JSON) | 包含完整音轨分离 URL 的 JSON 字符串。[查看详情](#stem-split) |
+| `generate-music-cover` | `generate_cover` | string (JSON) | 包含生成封面图的 JSON 字符串。[查看详情](#generate-music-cover) |
+| `generate-persona` | `persona_id` | string | 生成的 persona 标识 |
+| `create-music-video` | `video_url` | string | 生成的视频 URL |
+
+### JSON 字段详情
+
+#### separate-vocals
+
+`separate_vocals` 字段：
+- `vocal_url` - 提取出的人声音轨 URL
+- `instrumental_url` - 伴奏音轨 URL
+
+#### upload-and-separate-vocals
+
+`vocal_removal` 字段：
+- `bass` - 贝斯音轨 URL
+- `drums` - 鼓音轨 URL
+- `piano` - 钢琴音轨 URL
+- `guitar` - 吉他音轨 URL
+- `vocals` - 人声音轨 URL
+- `other` - 其他音频元素 URL
+
+#### stem-split
+
+`stem_split` 字段：
+- `backing_vocals_url` - 和声 URL
+- `bass_url` - 贝斯音轨 URL
+- `brass_url` - 铜管乐器 URL
+- `drums_url` - 鼓音轨 URL
+- `fx_url` - 音效 URL
+- `guitar_url` - 吉他音轨 URL
+- `keyboard_url` - 键盘音轨 URL
+- `percussion_url` - 打击乐音轨 URL
+- `strings_url` - 弦乐音轨 URL
+- `synth_url` - 合成器音轨 URL
+- `vocal_url` - 主唱人声 URL
+- `woodwinds_url` - 木管乐器音轨 URL
+
+#### generate-music-cover
+
+`generate_cover` 是包含封面图对象的 JSON 数组：
+- `file_url` - 生成的封面图 URL
+- `file_type` - 文件类型（例如 "image"）

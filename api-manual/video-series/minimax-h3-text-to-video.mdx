@@ -6,20 +6,20 @@ openapi: "/api-manual/video-series/minimax-h3-text-to-video.json POST /api/gener
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. If `callback_url` is provided, Vidgo sends the result after the task finishes or fails.
-2. You can always retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
-## Available Models
+## Models
 
 - **minimax/h3/text-to-video** - MiniMax H3 text to video generation with 2K output
 
-## Capabilities
+## Features
 
 - **Text To Video**: Generate a video directly from a prompt.
 - **2K Output**: Output resolution is fixed at `2K`.
 
-## Input Modes
+## Input modes
 
 - All media URLs must be publicly accessible and directly downloadable.
 

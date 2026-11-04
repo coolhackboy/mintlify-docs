@@ -6,28 +6,26 @@ openapi: "/api-manual/video-series/minimax-hailuo-02-standard-image-to-video.jso
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Hailuo 02 Image to Video
 
 Animate still images with Hailuo 02 Standard, with text guidance, prompt refinement, and an optional closing frame to shape the shot.
 
-## Available Models
+## Models
 
 - **minimax/hailuo-02/standard/image-to-video** - Generate video from image input.
 
-## Duration Options
-
-- **6, 10 seconds** - Set `duration` as an integer. Optional. Default: **6 seconds**.
-
-## Key Features
+## Features
 
 - Generate video from image input.
 - Accepts exactly 1 image in `image_urls`.
 - Optionally supply an ending frame with `end_image_url`.
 - Accepts `512P` or `768P` resolution; defaults to `768P`.
+
+## Duration Options
+
+- **6, 10 seconds** - Set `duration` as an integer. Optional. Default: **6 seconds**.
 
 ## Advanced Parameters
 

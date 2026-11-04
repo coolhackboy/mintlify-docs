@@ -1,0 +1,43 @@
+---
+title: "LLM 模型"
+description: "Vidgo API 上可用的全部大语言模型，以及每个模型支持的 API 格式。"
+icon: "message"
+---
+
+所有 Chat 系列接口都使用 `https://api.vidgo.ai` 和 Vidgo API Key。以 `Authorization: Bearer VIDGO_API_KEY` 的形式发送 API Key。Claude 客户端也可以使用 `x-api-key`；Gemini 客户端也可以使用 `x-goog-api-key`。
+
+## 模型协议支持
+
+| 模型 | Responses | Chat Completions | Claude Messages | Gemini native |
+|---|:---:|:---:|:---:|:---:|
+| `gpt-5-6-luna` | 支持 | — | — | — |
+| `gpt-5-6-terra` | 支持 | — | — | — |
+| `gpt-5-6-sol` | 支持 | — | — | — |
+| `kimi-k3` | — | 支持 | — | — |
+| `claude-sonnet-5` | — | 支持 | 支持 | — |
+| `claude-opus-5` | — | 支持 | 支持 | — |
+
+上表中的旧版 ID 保留其现有的协议支持。Gemini 工作流见下文。
+
+同时支持普通 JSON 响应和 SSE 流式响应。
+
+{/* poyo-20260910:start */}
+## 其他模型协议支持
+
+| 模型 | Chat Completions | Responses | Claude Messages | Gemini native |
+|---|:---:|:---:|:---:|:---:|
+| `openai/gpt-6-astra` | 支持 | 支持 | — | — |
+| `anthropic/claude-fable-5.1` | 支持 | — | 支持 | — |
+| `xai/grok-4.6` | 支持 | 支持 | — | — |
+| `google/gemini-3.7-flash` | 支持 | — | — | 支持 |
+| `google/gemini-3.5-flash` | 支持 | — | — | 支持 |
+| `anthropic/claude-opus-4.8` | 支持 | — | 支持 | — |
+| `openai/gpt-5.5` | 支持 | 支持 | — | — |
+| `openai/gpt-5.4` | 支持 | 支持 | — | — |
+| `openai/gpt-5.2` | 支持 | 支持 | — | — |
+| `anthropic/claude-sonnet-4.6` | 支持 | — | 支持 | — |
+| `anthropic/claude-opus-4.6` | 支持 | — | 支持 | — |
+
+响应体和 SSE 事件保留上游协议格式。返回的模型名可能是上游名称，而不是 Vidgo 的公开 ID。
+
+{/* poyo-20260910:end */}

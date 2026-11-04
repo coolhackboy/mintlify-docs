@@ -1,5 +1,5 @@
 ---
-title: "Seedream-5.0-Lite Image Generation"
+title: "Seedream-5.0-Lite"
 description: "Seedream 5.0 Lite image generation and editing with preset sizes, custom dimensions, and up to 10 reference images"
 icon: "image"
 openapi: "/api-manual/image-series/seedream-5-0-lite.json POST /api/generate/submit"
@@ -7,14 +7,12 @@ openapi: "/api-manual/image-series/seedream-5-0-lite.json POST /api/generate/sub
 
 <Tip>
 1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Seedream-5.0-Lite Image Generation
 
 Seedream-5.0-Lite is an image generation and editing model for async production workflows. It supports text-to-image, reference-based editing, flexible preset sizes, and custom dimensions through the same unified Vidgo API submit and status endpoints.
 
-## Available Models
+## Models
 
 - **seedream-5.0-lite** - Text-to-image and image-to-image generation with preset or custom output sizes
 - **seedream-5.0-lite-edit** - Image editing with 1 to 10 JPEG or PNG reference images
@@ -84,6 +82,7 @@ Validation and authentication failures follow the unified Vidgo API error shape:
 ```
 
 {/* poyo-20260910:start */}
+
 ## Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:

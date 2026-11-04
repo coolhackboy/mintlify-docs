@@ -1,0 +1,131 @@
+---
+title: "Getting Started"
+description: "Make your first Vidgo API request and learn the request lifecycle for image, video, audio, music, 3D, and LLM models."
+icon: "rocket"
+---
+
+# Build with Vidgo API
+
+Access image, video, audio, music, 3D, and LLM models through **one API key**. Generation models share one asynchronous submit-and-query workflow; LLM models use OpenAI-, Claude-, and Gemini-compatible endpoints.
+
+<CardGroup cols={2}>
+  <Card title="Get an API key" icon="key" href="https://vidgo.ai/apis/dashboard/api-key">
+    Create and manage your keys in the Vidgo dashboard.
+  </Card>
+  <Card title="Make your first request" icon="play" href="/api-manual/quickstart">
+    Submit a task and poll its result with cURL, Python, or JavaScript.
+  </Card>
+  <Card title="Check pricing" icon="tag" href="https://vidgo.ai/apis/api-pricing">
+    See current model rates.
+  </Card>
+  <Card title="Handle errors" icon="triangle-exclamation" href="/api-manual/error-codes">
+    Response formats and HTTP status codes.
+  </Card>
+</CardGroup>
+
+## 1. Available models
+
+Each model category has an overview listing every model and its model IDs:
+
+<CardGroup cols={3}>
+  <Card title="Image" icon="image" href="/api-manual/image-series/overview">
+    Text-to-image and image editing.
+  </Card>
+  <Card title="Video" icon="video" href="/api-manual/video-series/overview">
+    Text, image, and reference to video.
+  </Card>
+  <Card title="Audio" icon="volume-high" href="/api-manual/music-series/audio-overview">
+    Text-to-speech.
+  </Card>
+  <Card title="LLM" icon="comments" href="/api-manual/chat-series/overview">
+    GPT, Claude, Gemini, Grok, and Kimi.
+  </Card>
+  <Card title="3D" icon="cube" href="/api-manual/3d-series/overview">
+    Text and image to 3D models.
+  </Card>
+  <Card title="Music" icon="music" href="/api-manual/music-series/overview">
+    Suno music actions and music models.
+  </Card>
+</CardGroup>
+
+## 2. Authentication
+
+Create your API key on the [API key page](https://vidgo.ai/apis/dashboard/api-key). Every request must include:
+
+```http
+Authorization: Bearer VIDGO_API_KEY
+Content-Type: application/json
+```
+
+[Claude Messages](/api-manual/chat-series/claude-messages) also accepts `x-api-key`, and [Gemini Native Format](/api-manual/chat-series/gemini-native-format) also accepts `x-goog-api-key`.
+
+<Warning>
+  **Never expose your API key** in frontend code (browser, mobile apps, public repositories). Keep it on your server.
+</Warning>
+
+## 3. Submit a generation task
+
+Generation is asynchronous. Submit a task to `POST /api/generate/submit` and save the returned `task_id`.
+
+```bash
+curl https://api.vidgo.ai/api/generate/submit \
+  -H "Authorization: Bearer $VIDGO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o-image",
+    "input": {
+      "prompt": "A paper-cut illustration of a city at sunrise",
+      "size": "1:1"
+    }
+  }'
+```
+
+<Info>
+  A successful submit response means the task was accepted, not that generation has finished.
+</Info>
+
+## 4. Retrieve the result
+
+```bash
+curl "https://api.vidgo.ai/api/generate/status/TASK_ID" \
+  -H "Authorization: Bearer $VIDGO_API_KEY"
+```
+
+<Steps>
+  <Step title="Submit">
+    Send the generation request and save the returned `task_id`.
+  </Step>
+  <Step title="Wait for the result">
+    Poll [Get Task Status](/api-manual/task-management/status), or pass a `callback_url` and receive a [webhook](/api-manual/task-management/webhooks) when the task reaches `finished` or `failed`.
+  </Step>
+  <Step title="Store the output">
+    Download the files in `files` and store them on your side.
+  </Step>
+</Steps>
+
+Suno music actions use [Query Music Detail](/api-manual/music-series/query-music-detail) and the [Music Webhook](/api-manual/music-series/music-webhook) instead of the unified task status endpoint.
+
+## 5. Data retention
+
+<Warning>
+  Generated files are valid for **24 hours**. Download and store results promptly.
+</Warning>
+
+## 6. Before production
+
+<Check>Keep API keys on your server; never expose them in browser or mobile code.</Check>
+<Check>Validate inputs against the selected model page before submitting.</Check>
+<Check>Handle `400`, `401`, `429`, and transient `5xx` responses explicitly; see [Error Codes](/api-manual/error-codes).</Check>
+<Check>Treat every submission retry as potentially new paid work; confirm whether the original request created a task before resubmitting.</Check>
+<Check>Check your remaining credits with [Query User Balance](/api-manual/account-management/user-balance).</Check>
+
+## 7. Support
+
+<CardGroup cols={2}>
+  <Card title="Email" icon="envelope" href="mailto:support@vidgo.ai">
+    `support@vidgo.ai`
+  </Card>
+  <Card title="FAQs" icon="circle-question" href="/faqs">
+    Billing, models, and common questions.
+  </Card>
+</CardGroup>

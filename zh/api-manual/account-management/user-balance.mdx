@@ -1,0 +1,39 @@
+---
+title: "查询用户余额"
+description: "查询你的用户账户积分余额"
+icon: "wallet"
+openapi: "/zh/api-manual/account-management/user-balance.json GET /api/user/balance"
+---
+
+实时查询你的用户账户当前积分余额。
+
+## 使用场景
+
+<CardGroup cols={2}>
+  <Card title="仪表盘展示" icon="chart-line">
+    在你的应用仪表盘中展示实时账户余额
+  </Card>
+  <Card title="余额提醒" icon="bell">
+    积分低于阈值时发送通知
+  </Card>
+  <Card title="充值提醒" icon="wallet">
+    在积分用完前提示用户充值
+  </Card>
+  <Card title="用量追踪" icon="chart-bar">
+    监控积分消耗并追踪消费模式
+  </Card>
+</CardGroup>
+
+## 注意事项
+
+<Info>
+  **实时余额**：返回的余额反映请求时刻的当前积分数量。
+</Info>
+
+<Tip>
+  **频率控制**：避免过度轮询。缓存余额，仅在必要时刷新（例如完成一个生成任务之后）。
+</Tip>
+
+<Warning>
+  **积分扣除**：只有生成任务成功完成时才会扣除积分。失败的任务不消耗积分。
+</Warning>

@@ -1,0 +1,161 @@
+---
+title: "视频模型"
+description: "Vidgo API 上可用的全部视频生成模型及其 model ID。"
+icon: "video"
+---
+
+所有视频模型都通过 `POST /api/generate/submit` 调用。在 `model` 中传入 model ID，在 `input` 中传入该模型的参数，并可选传入 `callback_url`。请求会立即返回 `task_id`，任务异步执行。
+
+## 工作流程
+
+1. 使用下表中的 model ID 向 `POST /api/generate/submit` 提交任务。
+2. 使用返回的 `task_id` 轮询[获取任务状态](/zh/api-manual/task-management/status)，或在 `callback_url` 接收结果（参见 [Webhook 回调](/zh/api-manual/task-management/webhooks)）。
+3. 状态为 `finished` 时，下载 `files` 中的文件。
+
+部分模型为每种模式提供单独的 model ID，例如文生视频、图生视频或参考生视频；其他模型使用单个 ID，根据传入的输入选择模式。详见各模型页面。
+
+## 模型
+
+| 模型 | 厂商 | Model ID |
+| --- | --- | --- |
+| [Veo 3.1 Official](/api-manual/video-series/veo-3-1-official) | Google | `veo3.1-fast-official`<br />`veo3.1-lite-official`<br />`veo3.1-quality-official` |
+| [Veo 3.1](/api-manual/video-series/veo-3-1) | Google | `veo3.1-fast`<br />`veo3.1-quality` |
+| [Veo 3.1 Fast Text to Video](/api-manual/video-series/veo3-1-fast-text-to-video) | Google | `veo3.1-fast/text-to-video` |
+| [Veo 3.1 Fast Image to Video](/api-manual/video-series/veo3-1-fast-image-to-video) | Google | `veo3.1-fast/image-to-video` |
+| [Veo 3.1 Fast Reference to Video](/api-manual/video-series/veo3-1-fast-reference-to-video) | Google | `veo3.1-fast/reference-to-video` |
+| [Veo 3.1 Lite Text to Video](/api-manual/video-series/veo3-1-lite-text-to-video) | Google | `veo3.1-lite/text-to-video` |
+| [Veo 3.1 Quality Text to Video](/api-manual/video-series/veo3-1-text-to-video) | Google | `veo3.1/text-to-video` |
+| [Veo 3.1 Quality Image to Video](/api-manual/video-series/veo3-1-image-to-video) | Google | `veo3.1/image-to-video` |
+| [Gemini Omni 1.1 Flash Text to Video](/api-manual/video-series/google-gemini-omni-1-1-flash-text-to-video) | Google | `google/gemini-omni-1.1-flash/text-to-video` |
+| [Gemini Omni 1.1 Flash Image to Video](/api-manual/video-series/google-gemini-omni-1-1-flash-image-to-video) | Google | `google/gemini-omni-1.1-flash/image-to-video` |
+| [Gemini Omni 1.1 Flash Reference to Video](/api-manual/video-series/google-gemini-omni-1-1-flash-reference-to-video) | Google | `google/gemini-omni-1.1-flash/reference-to-video` |
+| [Gemini Omni 1.1 Flash Video Edit](/api-manual/video-series/google-gemini-omni-1-1-flash-video-edit) | Google | `google/gemini-omni-1.1-flash/video-edit` |
+| [Omni Flash Text to Video](/api-manual/video-series/google-gemini-omni-flash-text-to-video) | Google | `google/gemini-omni-flash/text-to-video` |
+| [Omni Flash Image to Video](/api-manual/video-series/google-gemini-omni-flash-image-to-video) | Google | `google/gemini-omni-flash/image-to-video` |
+| [Omni Flash Reference to Video](/api-manual/video-series/google-gemini-omni-flash-reference-to-video) | Google | `google/gemini-omni-flash/reference-to-video` |
+| [Omni Flash Video Edit](/api-manual/video-series/google-gemini-omni-flash-video-edit) | Google | `google/gemini-omni-flash/video-edit` |
+| [Veo 3.1 Official Text to Video](/api-manual/video-series/google-veo3-1-text-to-video) | Google | `google/veo3.1/text-to-video` |
+| [Veo 3.1 Official Image to Video](/api-manual/video-series/google-veo3-1-image-to-video) | Google | `google/veo3.1/image-to-video` |
+| [Veo 3.1 Fast Text to Video](/api-manual/video-series/google-veo3-1-fast-text-to-video) | Google | `google/veo3.1-fast/text-to-video` |
+| [Veo 3.1 Fast Image to Video](/api-manual/video-series/google-veo3-1-fast-image-to-video) | Google | `google/veo3.1-fast/image-to-video` |
+| [Veo 3.1 Lite Text to Video](/api-manual/video-series/google-veo3-1-lite-text-to-video) | Google | `google/veo3.1-lite/text-to-video` |
+| [Veo 3.1 Lite Image to Video](/api-manual/video-series/google-veo3-1-lite-image-to-video) | Google | `google/veo3.1-lite/image-to-video` |
+| [FLUX 3 Text to Video](/api-manual/video-series/blackforestlabs-flux-3-text-to-video) | Flux | `blackforestlabs/flux-3/text-to-video` |
+| [FLUX 3 Image to Video](/api-manual/video-series/blackforestlabs-flux-3-image-to-video) | Flux | `blackforestlabs/flux-3/image-to-video` |
+| [FLUX 3 First Last Frame to Video](/api-manual/video-series/blackforestlabs-flux-3-first-last-frame-to-video) | Flux | `blackforestlabs/flux-3/first-last-frame-to-video` |
+| [FLUX 3 Extend Video](/api-manual/video-series/blackforestlabs-flux-3-extend-video) | Flux | `blackforestlabs/flux-3/extend-video` |
+| [FLUX 3 Keyframes to Video](/api-manual/video-series/blackforestlabs-flux-3-keyframes-to-video) | Flux | `blackforestlabs/flux-3/keyframes-to-video` |
+| [Kling 3.0](/api-manual/video-series/kling-3-0) | Kling | `kling-3.0/pro`<br />`kling-3.0/standard` |
+| [Kling 3.0 Standard Text to Video](/api-manual/video-series/kwaivgi-kling-v3-0-std-text-to-video) | Kling | `kwaivgi/kling-v3.0-std/text-to-video` |
+| [Kling 3.0 Standard Image to Video](/api-manual/video-series/kwaivgi-kling-v3-0-std-image-to-video) | Kling | `kwaivgi/kling-v3.0-std/image-to-video` |
+| [Kling 3.0 Pro Text to Video](/api-manual/video-series/kwaivgi-kling-v3-0-pro-text-to-video) | Kling | `kwaivgi/kling-v3.0-pro/text-to-video` |
+| [Kling 3.0 Pro Image to Video](/api-manual/video-series/kwaivgi-kling-v3-0-pro-image-to-video) | Kling | `kwaivgi/kling-v3.0-pro/image-to-video` |
+| [Kling 3.0 4K Text to Video](/api-manual/video-series/kwaivgi-kling-v3-0-4k-text-to-video) | Kling | `kwaivgi/kling-v3.0-4k/text-to-video` |
+| [Kling 3.0 4K Image to Video](/api-manual/video-series/kwaivgi-kling-v3-0-4k-image-to-video) | Kling | `kwaivgi/kling-v3.0-4k/image-to-video` |
+| [Kling 3.0 Motion Control](/api-manual/video-series/kling-3-0-motion-control) | Kling | `kling-3.0-motion-control` |
+| [Kling 2.6 Pro Text to Video](/api-manual/video-series/kwaivgi-kling-v2-6-pro-text-to-video) | Kling | `kwaivgi/kling-v2.6-pro/text-to-video` |
+| [Kling 2.6 Pro Image to Video](/api-manual/video-series/kwaivgi-kling-v2-6-pro-image-to-video) | Kling | `kwaivgi/kling-v2.6-pro/image-to-video` |
+| [Kling 2.6 Motion Control](/api-manual/video-series/kling-2.6-motion-control) | Kling | `kling-2.6-motion-control` |
+| [Kling 2.5 Turbo Pro Text to Video](/api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-text-to-video) | Kling | `kwaivgi/kling-v2.5-turbo-pro/text-to-video` |
+| [Kling 2.5 Turbo Pro Image to Video](/api-manual/video-series/kwaivgi-kling-v2-5-turbo-pro-image-to-video) | Kling | `kwaivgi/kling-v2.5-turbo-pro/image-to-video` |
+| [Kling 2.1](/api-manual/video-series/kling-2-1) | Kling | `kling-2.1/pro`<br />`kling-2.1/standard` |
+| [Kling 2.1 Image to Video](/api-manual/video-series/kwaivgi-kling-video-v2-1-standard-image-to-video) | Kling | `kwaivgi/kling-video/v2.1/standard/image-to-video` |
+| [Kling 2.1 Pro Image to Video](/api-manual/video-series/kwaivgi-kling-video-v2-1-pro-image-to-video) | Kling | `kwaivgi/kling-video/v2.1/pro/image-to-video` |
+| [Kling 1.6](/api-manual/video-series/kling-1-6) | Kling | `kling-1.6/pro`<br />`kling-1.6/standard` |
+| [Kling 1.6 Standard Text to Video](/api-manual/video-series/kwaivgi-kling-video-v1-6-standard-text-to-video) | Kling | `kwaivgi/kling-video/v1.6/standard/text-to-video` |
+| [Kling 1.6 Standard Image to Video](/api-manual/video-series/kwaivgi-kling-video-v1-6-standard-image-to-video) | Kling | `kwaivgi/kling-video/v1.6/standard/image-to-video` |
+| [Kling 1.6 Pro Text to Video](/api-manual/video-series/kwaivgi-kling-video-v1-6-pro-text-to-video) | Kling | `kwaivgi/kling-video/v1.6/pro/text-to-video` |
+| [Kling 1.6 Pro Image to Video](/api-manual/video-series/kwaivgi-kling-video-v1-6-pro-image-to-video) | Kling | `kwaivgi/kling-video/v1.6/pro/image-to-video` |
+| [Kling 3.0 Turbo Standard Text to Video](/api-manual/video-series/kwaivgi-kling-v3-turbo-std-text-to-video) | Kling | `kwaivgi/kling-v3-turbo-std/text-to-video` |
+| [Kling 3.0 Turbo Standard Image to Video](/api-manual/video-series/kwaivgi-kling-v3-turbo-std-image-to-video) | Kling | `kwaivgi/kling-v3-turbo-std/image-to-video` |
+| [Kling 3.0 Turbo Pro Text to Video](/api-manual/video-series/kwaivgi-kling-v3-turbo-pro-text-to-video) | Kling | `kwaivgi/kling-v3-turbo-pro/text-to-video` |
+| [Kling 3.0 Turbo Pro Image to Video](/api-manual/video-series/kwaivgi-kling-v3-turbo-pro-image-to-video) | Kling | `kwaivgi/kling-v3-turbo-pro/image-to-video` |
+| [Kling 3.0 Standard Motion Control](/api-manual/video-series/kwaivgi-kling-v3-0-std-motion-control) | Kling | `kwaivgi/kling-v3.0-std/motion-control` |
+| [Kling 3.0 Pro Motion Control](/api-manual/video-series/kwaivgi-kling-v3-0-pro-motion-control) | Kling | `kwaivgi/kling-v3.0-pro/motion-control` |
+| [Kling 2.6 Standard Motion Control](/api-manual/video-series/kwaivgi-kling-v2-6-std-motion-control) | Kling | `kwaivgi/kling-v2.6-std/motion-control` |
+| [Kling 2.6 Pro Motion Control](/api-manual/video-series/kwaivgi-kling-v2-6-pro-motion-control) | Kling | `kwaivgi/kling-v2.6-pro/motion-control` |
+| [Kling Avatar 2.0 Standard](/api-manual/video-series/kwaivgi-kling-video-ai-avatar-v2-standard) | Kling | `kwaivgi/kling-video/ai-avatar/v2/standard` |
+| [Kling Avatar 2.0 Pro](/api-manual/video-series/kwaivgi-kling-video-ai-avatar-v2-pro) | Kling | `kwaivgi/kling-video/ai-avatar/v2/pro` |
+| [Kling O3 Standard Text To Video](/api-manual/video-series/kwaivgi-kling-video-o3-std-text-to-video) | Kling | `kwaivgi/kling-video-o3-std/text-to-video` |
+| [Kling O3 Standard Image To Video](/api-manual/video-series/kwaivgi-kling-video-o3-std-image-to-video) | Kling | `kwaivgi/kling-video-o3-std/image-to-video` |
+| [Kling O3 Pro Text To Video](/api-manual/video-series/kwaivgi-kling-video-o3-pro-text-to-video) | Kling | `kwaivgi/kling-video-o3-pro/text-to-video` |
+| [Kling O3 Pro Image To Video](/api-manual/video-series/kwaivgi-kling-video-o3-pro-image-to-video) | Kling | `kwaivgi/kling-video-o3-pro/image-to-video` |
+| [Kling O3 4K Text To Video](/api-manual/video-series/kwaivgi-kling-video-o3-4k-text-to-video) | Kling | `kwaivgi/kling-video-o3-4k/text-to-video` |
+| [Kling O3 4K Image To Video](/api-manual/video-series/kwaivgi-kling-video-o3-4k-image-to-video) | Kling | `kwaivgi/kling-video-o3-4k/image-to-video` |
+| [Grok Imagine Text to Video](/api-manual/video-series/xai-grok-imagine-video-text-to-video) | Grok (xAI) | `xai/grok-imagine-video/text-to-video` |
+| [Grok Imagine Image to Video](/api-manual/video-series/xai-grok-imagine-video-image-to-video) | Grok (xAI) | `xai/grok-imagine-video/image-to-video` |
+| [Grok Imagine Video 1.5 Image to Video](/api-manual/video-series/xai-grok-imagine-video-v1-5-image-to-video) | Grok (xAI) | `xai/grok-imagine-video-v1.5/image-to-video` |
+| [Happy Horse](/api-manual/video-series/happy-horse) | Alibaba | `happy-horse` |
+| [Happy Horse Text to Video](/api-manual/video-series/alibaba-happyhorse-1-0-text-to-video) | Alibaba | `alibaba/happyhorse-1.0/text-to-video` |
+| [Happy Horse Image to Video](/api-manual/video-series/alibaba-happyhorse-1-0-image-to-video) | Alibaba | `alibaba/happyhorse-1.0/image-to-video` |
+| [Happy Horse Reference to Video](/api-manual/video-series/alibaba-happyhorse-1-0-reference-to-video) | Alibaba | `alibaba/happyhorse-1.0/reference-to-video` |
+| [Happy Horse Video Edit](/api-manual/video-series/alibaba-happyhorse-1-0-video-edit) | Alibaba | `alibaba/happyhorse-1.0/video-edit` |
+| [Happy Horse 1.1 Text to Video](/api-manual/video-series/alibaba-happyhorse-1-1-text-to-video) | Alibaba | `alibaba/happyhorse-1.1/text-to-video` |
+| [Happy Horse 1.1 Image to Video](/api-manual/video-series/alibaba-happyhorse-1-1-image-to-video) | Alibaba | `alibaba/happyhorse-1.1/image-to-video` |
+| [Happy Horse 1.1 Reference to Video](/api-manual/video-series/alibaba-happyhorse-1-1-reference-to-video) | Alibaba | `alibaba/happyhorse-1.1/reference-to-video` |
+| [Wan 2.6](/api-manual/video-series/wan-2-6) | Alibaba | `wan2.6-image-to-video`<br />`wan2.6-text-to-video`<br />`wan2.6-video-to-video` |
+| [Wan 2.5 Text-to-Video](/api-manual/video-series/wan2.5-text-to-video) | Alibaba | `wan2.5-text-to-video` |
+| [Wan 2.5 Image-to-Video](/api-manual/video-series/wan2.5-image-to-video) | Alibaba | `wan2.5-image-to-video` |
+| [Wan 2.5 Text to Video](/api-manual/video-series/alibaba-wan-2-5-text-to-video) | Alibaba | `alibaba/wan-2.5/text-to-video` |
+| [Wan 2.5 Image to Video](/api-manual/video-series/alibaba-wan-2-5-image-to-video) | Alibaba | `alibaba/wan-2.5/image-to-video` |
+| [Wan 2.2 Text-to-Video Fast](/api-manual/video-series/wan2.2-text-to-video-fast) | Alibaba | `wan2.2-text-to-video-fast` |
+| [Wan 2.2 Image-to-Video Fast](/api-manual/video-series/wan2.2-image-to-video-fast) | Alibaba | `wan2.2-image-to-video-fast` |
+| [Wan Animate Move](/api-manual/video-series/alibaba-wan-v2-2-14b-animate-move) | Alibaba | `alibaba/wan/v2.2-14b/animate/move` |
+| [Wan Animate Replace](/api-manual/video-series/alibaba-wan-v2-2-14b-animate-replace) | Alibaba | `alibaba/wan/v2.2-14b/animate/replace` |
+| [Wan 3.0 Text to Video](/api-manual/video-series/alibaba-wan-3-0-text-to-video) | Alibaba | `alibaba/wan-3.0/text-to-video` |
+| [Wan 3.0 Image to Video](/api-manual/video-series/alibaba-wan-3-0-image-to-video) | Alibaba | `alibaba/wan-3.0/image-to-video` |
+| [Wan 3.0 Reference to Video](/api-manual/video-series/alibaba-wan-3-0-reference-to-video) | Alibaba | `alibaba/wan-3.0/reference-to-video` |
+| [Wan 3.0 Video Prime Text to Video](/api-manual/video-series/alibaba-wan-3-0-prime-text-to-video) | Alibaba | `alibaba/wan-3.0-prime/text-to-video` |
+| [Wan 3.0 Video Prime Image to Video](/api-manual/video-series/alibaba-wan-3-0-prime-image-to-video) | Alibaba | `alibaba/wan-3.0-prime/image-to-video` |
+| [Wan 3.0 Video Prime Reference to Video](/api-manual/video-series/alibaba-wan-3-0-prime-reference-to-video) | Alibaba | `alibaba/wan-3.0-prime/reference-to-video` |
+| [Wan 2.7 Video Text to Video](/api-manual/video-series/alibaba-wan-2-7-text-to-video) | Alibaba | `alibaba/wan-2.7/text-to-video` |
+| [Wan 2.7 Video Image to Video](/api-manual/video-series/alibaba-wan-2-7-image-to-video) | Alibaba | `alibaba/wan-2.7/image-to-video` |
+| [Wan 2.7 Video Reference to Video](/api-manual/video-series/alibaba-wan-2-7-reference-to-video) | Alibaba | `alibaba/wan-2.7/reference-to-video` |
+| [Wan 2.7 Video Edit](/api-manual/video-series/alibaba-wan-2-7-video-edit) | Alibaba | `alibaba/wan-2.7/video-edit` |
+| [Wan 2.6 Text to Video](/api-manual/video-series/alibaba-wan-2-6-text-to-video) | Alibaba | `alibaba/wan-2.6/text-to-video` |
+| [Wan 2.6 Image to Video](/api-manual/video-series/alibaba-wan-2-6-image-to-video) | Alibaba | `alibaba/wan-2.6/image-to-video` |
+| [Wan 2.6 Reference to Video](/api-manual/video-series/alibaba-wan-2-6-reference-to-video) | Alibaba | `alibaba/wan-2.6/reference-to-video` |
+| [Hailuo 2.3](/api-manual/video-series/hailuo-2-3) | MiniMax / Hailuo | `hailuo-2.3` |
+| [Hailuo 2.3 Text to Video](/api-manual/video-series/minimax-hailuo-2-3-standard-text-to-video) | MiniMax / Hailuo | `minimax/hailuo-2.3/standard/text-to-video` |
+| [Hailuo 2.3 Image to Video](/api-manual/video-series/minimax-hailuo-2-3-standard-image-to-video) | MiniMax / Hailuo | `minimax/hailuo-2.3/standard/image-to-video` |
+| [Hailuo 2.3 Pro Text to Video](/api-manual/video-series/minimax-hailuo-2-3-pro-text-to-video) | MiniMax / Hailuo | `minimax/hailuo-2.3/pro/text-to-video` |
+| [Hailuo 2.3 Pro Image to Video](/api-manual/video-series/minimax-hailuo-2-3-pro-image-to-video) | MiniMax / Hailuo | `minimax/hailuo-2.3/pro/image-to-video` |
+| [Hailuo 02](/api-manual/video-series/hailuo-02) | MiniMax / Hailuo | `hailuo-02`<br />`hailuo-02-pro` |
+| [MiniMax H3 Text to Video](/api-manual/video-series/minimax-h3-text-to-video) | MiniMax / Hailuo | `minimax/h3/text-to-video` |
+| [MiniMax H3 Image to Video](/api-manual/video-series/minimax-h3-image-to-video) | MiniMax / Hailuo | `minimax/h3/image-to-video` |
+| [MiniMax H3 Reference to Video](/api-manual/video-series/minimax-h3-reference-to-video) | MiniMax / Hailuo | `minimax/h3/reference-to-video` |
+| [MiniMax H3 Max Text to Video](/api-manual/video-series/minimax-h3-max-text-to-video) | MiniMax / Hailuo | `minimax/h3-max/text-to-video` |
+| [MiniMax H3 Max Image to Video](/api-manual/video-series/minimax-h3-max-image-to-video) | MiniMax / Hailuo | `minimax/h3-max/image-to-video` |
+| [MiniMax H3 Max Reference to Video](/api-manual/video-series/minimax-h3-max-reference-to-video) | MiniMax / Hailuo | `minimax/h3-max/reference-to-video` |
+| [MiniMax H3 Max Turbo Text to Video](/api-manual/video-series/minimax-h3-max-turbo-text-to-video) | MiniMax / Hailuo | `minimax/h3-max-turbo/text-to-video` |
+| [MiniMax H3 Max Turbo Image to Video](/api-manual/video-series/minimax-h3-max-turbo-image-to-video) | MiniMax / Hailuo | `minimax/h3-max-turbo/image-to-video` |
+| [Hailuo 02 Text to Video](/api-manual/video-series/minimax-hailuo-02-standard-text-to-video) | MiniMax / Hailuo | `minimax/hailuo-02/standard/text-to-video` |
+| [Hailuo 02 Image to Video](/api-manual/video-series/minimax-hailuo-02-standard-image-to-video) | MiniMax / Hailuo | `minimax/hailuo-02/standard/image-to-video` |
+| [Hailuo 02 Pro Text to Video](/api-manual/video-series/minimax-hailuo-02-pro-text-to-video) | MiniMax / Hailuo | `minimax/hailuo-02/pro/text-to-video` |
+| [Hailuo 02 Pro Image to Video](/api-manual/video-series/minimax-hailuo-02-pro-image-to-video) | MiniMax / Hailuo | `minimax/hailuo-02/pro/image-to-video` |
+| [Runway Gen-4.5](/api-manual/video-series/runway-gen-4-5) | Runway | `runway-gen-4.5` |
+| [Seedance 2](/api-manual/video-series/seedance-2) | Seedance | `seedance-2`<br />`seedance-2-fast` |
+| [Seedance 2.5 Text to Video](/api-manual/video-series/seedance-2-5-text-to-video) | Seedance | `seedance-2.5/text-to-video` |
+| [Seedance 2.5 Image to Video](/api-manual/video-series/seedance-2-5-image-to-video) | Seedance | `seedance-2.5/image-to-video` |
+| [Seedance 2.5 Reference to Video](/api-manual/video-series/seedance-2-5-reference-to-video) | Seedance | `seedance-2.5/reference-to-video` |
+| [Seedance 2.0 Text to Video](/api-manual/video-series/seedance-2-0-text-to-video) | Seedance | `seedance-2`<br />`seedance-2.0/text-to-video` |
+| [Seedance 2.0 Image to Video](/api-manual/video-series/seedance-2-0-image-to-video) | Seedance | `seedance-2`<br />`seedance-2.0/image-to-video` |
+| [Seedance 2.0 Reference to Video](/api-manual/video-series/seedance-2-0-reference-to-video) | Seedance | `seedance-2`<br />`seedance-2.0/reference-to-video` |
+| [Seedance 2.0 Fast Text to Video](/api-manual/video-series/seedance-2-0-fast-text-to-video) | Seedance | `seedance-2-fast`<br />`seedance-2.0-fast/text-to-video` |
+| [Seedance 2.0 Fast Image to Video](/api-manual/video-series/seedance-2-0-fast-image-to-video) | Seedance | `seedance-2-fast`<br />`seedance-2.0-fast/image-to-video` |
+| [Seedance 2.0 Fast Reference to Video](/api-manual/video-series/seedance-2-0-fast-reference-to-video) | Seedance | `seedance-2-fast`<br />`seedance-2.0-fast/reference-to-video` |
+| [Seedance 2.0 Mini Text to Video](/api-manual/video-series/seedance-2-0-mini-text-to-video) | Seedance | `seedance-2.0-mini/text-to-video` |
+| [Seedance 2.0 Mini Image to Video](/api-manual/video-series/seedance-2-0-mini-image-to-video) | Seedance | `seedance-2.0-mini/image-to-video` |
+| [Seedance 2.0 Mini Reference to Video](/api-manual/video-series/seedance-2-0-mini-reference-to-video) | Seedance | `seedance-2.0-mini/reference-to-video` |
+| [Seedance 1.5 Pro](/api-manual/video-series/seedance-1-5-pro) | Seedance | `seedance-1.5-pro` |
+| [Seedance 1.5 Pro Text to Video](/api-manual/video-series/bytedance-seedance-v1-5-pro-text-to-video) | Seedance | `bytedance/seedance-v1.5-pro/text-to-video` |
+| [Seedance 1.5 Pro Image to Video](/api-manual/video-series/bytedance-seedance-v1-5-pro-image-to-video) | Seedance | `bytedance/seedance-v1.5-pro/image-to-video` |
+| [Seedance 1.0 Pro](/api-manual/video-series/seedance-1.0-pro) | Seedance | `seedance-1.0-pro` |
+| [Seedance 1.0 Pro Text to Video](/api-manual/video-series/bytedance-seedance-v1-pro-text-to-video) | Seedance | `bytedance/seedance/v1/pro/text-to-video` |
+| [Seedance 1.0 Pro Image to Video](/api-manual/video-series/bytedance-seedance-v1-pro-image-to-video) | Seedance | `bytedance/seedance/v1/pro/image-to-video` |
+
+## 注意事项
+
+- 每个模型页面列出了其 model ID 的参数、限制和模式。各模型之间的参数不通用。
+- 生成的文件在创建后 24 小时内有效，请及时下载并保存。
+- URL 输入必须是可公开访问的 HTTP(S) URL。如需使用本地文件，请先通过[文件管理](/zh/api-manual/file-series/upload-url)上传。

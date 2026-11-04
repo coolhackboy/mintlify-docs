@@ -1,5 +1,5 @@
 ---
-title: "Sora 2 Video Generation"
+title: "Sora 2"
 description: "Standard quality video generation"
 icon: "video"
 openapi: "/api-manual/video-series/sora-2.json POST /api/generate/submit"
@@ -7,14 +7,12 @@ openapi: "/api-manual/video-series/sora-2.json POST /api/generate/submit"
 
 <Tip>
 1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Sora 2 Video Generation
 
 Generate standard quality videos using OpenAI's Sora 2 model. Supports text-to-video and image-to-video generation.
 
-## Available Models
+## Models
 
 - **sora-2** - Standard quality video generation
 - **sora-2-private** - Private deployment for standard quality

@@ -6,27 +6,25 @@ openapi: "/api-manual/video-series/minimax-hailuo-2-3-pro-image-to-video.json PO
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Hailuo 2.3 Pro Image to Video
 
 Turn a starting image into a 1080p video with Hailuo 2.3 Pro, using text and optional prompt refinement to guide the motion.
 
-## Available Models
+## Models
 
 - **minimax/hailuo-2.3/pro/image-to-video** - Generate video from image input.
 
-## Duration Options
-
-- **6 seconds** - Set `duration` as an integer. Optional. Default: **6 seconds**.
-
-## Key Features
+## Features
 
 - Generate video from image input.
 - Use `start_image_url` to supply the starting frame.
 - This model ID fixes the output resolution to `1080p`.
+
+## Duration Options
+
+- **6 seconds** - Set `duration` as an integer. Optional. Default: **6 seconds**.
 
 ## Advanced Parameters
 

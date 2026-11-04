@@ -6,19 +6,17 @@ openapi: "/api-manual/music-series/elevenlabs-tts-turbo-v2-5.json POST /api/gene
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# ElevenLabs TTS Turbo v2.5
 
 Create spoken narration with ElevenLabs Turbo v2.5, shaping pacing, vocal style, and voice similarity with optional text alignment.
 
-## Available Models
+## Models
 
 - **elevenlabs/tts/turbo-v2.5** - Convert text into speech.
 
-## Key Features
+## Features
 
 - Convert text into speech.
 - Optionally request timestamps alongside the generated audio.

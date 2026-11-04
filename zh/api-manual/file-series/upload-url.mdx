@@ -1,0 +1,67 @@
+---
+title: "通过 URL 上传文件"
+description: "提供远程 URL，将文件上传到 Vidgo API"
+icon: "upload"
+openapi: "/zh/api-manual/file-series/upload-url.json POST /api/common/upload/url"
+---
+
+## 使用指南
+
+- 该接口通过提供远程 URL 将文件上传到 Vidgo API
+- 系统会自动从指定 URL 下载文件，并存储到 Vidgo API 存储中
+- 适合从外部服务器迁移文件，或对接第三方文件来源
+- 返回文件的直接访问 URL，文件保留 72 小时
+
+## 参数详情
+
+- **文件 URL 要求**：
+
+  - `file_url` 必须是使用 HTTP 或 HTTPS 协议的公开可访问 URL
+
+  - 远程服务器必须允许无需认证即可下载该文件
+
+  - 支持的文件格式：仅 **JPEG、PNG、GIF、WebP**
+
+  - 上传数量上限：**每次请求 1 张图片**
+
+- **存储配置**：
+
+  - 所有文件在存储路径中都会自动加上 `temp/` 前缀
+
+  - 如果指定 `upload_path: "avatars"`，实际路径为 `temp/avatars`
+
+  - 文件在上传 **72 小时**后过期并自动删除
+
+- **文件命名**：
+
+  - 如果未提供 `file_name`，系统会按以下格式生成唯一文件名：`{timestamp}_{random}_{extension}`
+
+  - 自动生成的文件名示例：`20251229130857_a8B9cD2e.png`
+
+## 使用说明
+
+- 确保源 URL 公开可访问，且不需要认证或特殊请求头
+
+- 下载过程可能需要几秒钟，取决于文件大小和网络状况
+
+- 如需持久保存，请在 72 小时过期前将文件下载到本地
+
+- 响应中的 `file_url` 和 `download_url` 完全相同，都可以直接访问已上传的文件
+
+## 速率限制与配额
+
+- **速率限制**：每个 API Key 每分钟 5 次请求
+
+- 超出速率限制时，会收到 `429 Too Many Requests` 错误
+
+- 使用指数退避重试逻辑处理速率限制错误
+
+## 常见错误场景
+
+- **URL 无效**：提供的 URL 格式错误或无法访问
+
+- **下载失败**：从远程 URL 下载时出现网络超时或连接问题
+
+- **不支持的文件类型**：URL 指向的文件不是支持的图片格式（JPEG、PNG、GIF、WebP）
+
+- **认证错误**：Authorization 请求头中的 API Key 缺失或无效

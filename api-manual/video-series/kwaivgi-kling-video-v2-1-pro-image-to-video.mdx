@@ -6,27 +6,25 @@ openapi: "/api-manual/video-series/kwaivgi-kling-video-v2-1-pro-image-to-video.j
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Kling 2.1 Pro Image to Video
 
 Kling 2.1 Pro image-to-video with a required start frame and an optional end frame.
 
-## Available Models
+## Models
 
 - **kwaivgi/kling-video/v2.1/pro/image-to-video** - Generate video from image input.
 
-## Duration Options
-
-- **5, 10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds** when omitted. Strings, booleans, null and fractional values are rejected.
-
-## Key Features
+## Features
 
 - Generate video from image input.
 - Use `start_image_url` to supply the starting frame.
 - Optionally supply an ending frame with `end_image_url`.
+
+## Duration Options
+
+- **5, 10 seconds** - Set `duration` as an integer. Optional. Default: **5 seconds** when omitted. Strings, booleans, null and fractional values are rejected.
 
 ## Advanced Parameters
 

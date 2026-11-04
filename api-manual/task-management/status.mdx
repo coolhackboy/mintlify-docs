@@ -2,10 +2,8 @@
 title: "Get Task Status"
 description: "Query task execution status and retrieve generation results"
 icon: "list-check"
-openapi: "GET /api/generate/status/{task_id}"
+openapi: "/openapi.json GET /api/generate/status/{task_id}"
 ---
-
-# Get Task Status
 
 Query image, video, audio, and 3D generation tasks and retrieve all returned files when complete.
 
@@ -506,7 +504,7 @@ def wait_for_completion(task_id, timeout=600, poll_interval=2):
 
         # Check completion
         if data["status"] == "finished":
-            print(f"闁?Task completed successfully")
+            print("Task completed successfully")
             return data
         elif data["status"] == "failed":
             raise RuntimeError(f"Task failed: {data['error_message']}")
@@ -555,7 +553,7 @@ except RuntimeError as e:
 </Info>
 
 <Tip>
-  **Webhooks**: Instead of polling, you can provide a `callback_url` when submitting tasks to receive automatic notifications. See the [Quick Start guide](/guides/getting-started/quickstart#webhook-callbacks).
+  **Webhooks**: Instead of polling, you can provide a `callback_url` when submitting tasks to receive automatic notifications. See [Webhook Callbacks](/api-manual/task-management/webhooks).
 </Tip>
 
 ## Next Steps
@@ -567,10 +565,10 @@ except RuntimeError as e:
   <Card title="Image Generation" icon="image" href="/api-manual/image-series/gpt-4o-image">
     Generate images with GPT-4o
   </Card>
-  <Card title="Video Generation" icon="video" href="/api-manual/video-series/sora-2">
+  <Card title="Video Generation" icon="video" href="/api-manual/video-series/overview">
     Create videos with Sora 2
   </Card>
-  <Card title="Quick Start" icon="rocket" href="/guides/getting-started/quickstart">
+  <Card title="Quick Start" icon="rocket" href="/api-manual/quickstart">
     Complete integration guide
   </Card>
 </CardGroup>

@@ -1,0 +1,85 @@
+---
+title: "图像模型"
+description: "Vidgo API 上可用的全部图像生成与编辑模型及其 model ID。"
+icon: "image"
+---
+
+所有图像模型都通过 `POST /api/generate/submit` 调用。在 `model` 中传入 model ID，在 `input` 中传入该模型的参数，并可选传入 `callback_url`。请求会立即返回 `task_id`，任务异步执行。
+
+## 工作流程
+
+1. 使用下表中的 model ID 向 `POST /api/generate/submit` 提交任务。
+2. 使用返回的 `task_id` 轮询[获取任务状态](/zh/api-manual/task-management/status)，或在 `callback_url` 接收结果（参见 [Webhook 回调](/zh/api-manual/task-management/webhooks)）。
+3. 状态为 `finished` 时，下载 `files` 中的文件。
+
+多数模型为每种模式提供单独的 model ID，例如文生图（`text-to-image`）和图像编辑（`edit`）。编辑类 ID 需要传入输入图像，请查看各模型页面。
+
+## 模型
+
+| 模型 | 厂商 | Model ID |
+| --- | --- | --- |
+| [GPT-4o Image](/api-manual/image-series/gpt-4o-image) | OpenAI | `gpt-4o-image`<br />`gpt-4o-image-edit` |
+| [GPT Image 1.5 Text to Image](/api-manual/image-series/openai-gpt-image-1-5-text-to-image) | OpenAI | `openai/gpt-image-1.5/text-to-image` |
+| [GPT Image 1.5 Edit](/api-manual/image-series/openai-gpt-image-1-5-edit) | OpenAI | `openai/gpt-image-1.5/edit` |
+| [GPT Image 2](/api-manual/image-series/gpt-image-2) | OpenAI | `gpt-image-2`<br />`gpt-image-2-edit` |
+| [GPT Image 2.5 Flare Text to Image](/api-manual/image-series/gpt-image-2-5-flare-text-to-image) | OpenAI | `openai/gpt-image-2.5-flare/text-to-image` |
+| [GPT Image 2.5 Flare Image Edit](/api-manual/image-series/gpt-image-2-5-flare-edit) | OpenAI | `openai/gpt-image-2.5-flare/edit` |
+| [GPT Image 2.5 Sunburst Text to Image](/api-manual/image-series/gpt-image-2-5-sunburst-text-to-image) | OpenAI | `openai/gpt-image-2.5-sunburst/text-to-image` |
+| [GPT Image 2.5 Sunburst Image Edit](/api-manual/image-series/gpt-image-2-5-sunburst-edit) | OpenAI | `openai/gpt-image-2.5-sunburst/edit` |
+| [Nano Banana Text to Image](/api-manual/image-series/google-nano-banana-text-to-image) | Google | `google/nano-banana/text-to-image` |
+| [Nano Banana Edit](/api-manual/image-series/google-nano-banana-edit) | Google | `google/nano-banana/edit` |
+| [Nano Banana Pro](/api-manual/image-series/nano-banana-2) | Google | `nano-banana-2`<br />`nano-banana-2-edit` |
+| [Nano Banana 2](/api-manual/image-series/nano-banana-2-new) | Google | `nano-banana-2-new`<br />`nano-banana-2-new-edit` |
+| [Nano Banana 2 Lite Text to Image](/api-manual/image-series/google-nano-banana-2-lite-text-to-image) | Google | `google/nano-banana-2-lite/edit`<br />`google/nano-banana-2-lite/text-to-image` |
+| [Nano Banana 2 Lite Edit](/api-manual/image-series/google-nano-banana-2-lite-edit) | Google | `google/nano-banana-2-lite/edit` |
+| [Nano Banana 2.1 Text to Image](/api-manual/image-series/nano-banana-2-1-text-to-image) | Google | `google/nano-banana-2.1/text-to-image` |
+| [Nano Banana 2.1 Image Edit](/api-manual/image-series/nano-banana-2-1-edit) | Google | `google/nano-banana-2.1/edit` |
+| [Flux Schnell Text to Image](/api-manual/image-series/blackforestlabs-flux-schnell) | Flux | `blackforestlabs/flux/schnell` |
+| [Flux Dev Text to Image](/api-manual/image-series/blackforestlabs-flux-dev) | Flux | `blackforestlabs/flux/dev` |
+| [Flux Dev Image to Image](/api-manual/image-series/blackforestlabs-flux-dev-image-to-image) | Flux | `blackforestlabs/flux/dev/image-to-image` |
+| [Flux.2](/api-manual/image-series/flux-2) | Flux | `flux-2-flex`<br />`flux-2-flex-edit`<br />`flux-2-pro`<br />`flux-2-pro-edit` |
+| [FLUX.2 Pro Text to Image](/api-manual/image-series/blackforestlabs-flux-2-pro-text-to-image) | Flux | `blackforestlabs/flux-2-pro/text-to-image` |
+| [FLUX.2 Pro Edit](/api-manual/image-series/blackforestlabs-flux-2-pro-edit) | Flux | `blackforestlabs/flux-2-pro/edit` |
+| [FLUX.2 Flex Text to Image](/api-manual/image-series/blackforestlabs-flux-2-flex-text-to-image) | Flux | `blackforestlabs/flux-2-flex/text-to-image` |
+| [FLUX.2 Flex Edit](/api-manual/image-series/blackforestlabs-flux-2-flex-edit) | Flux | `blackforestlabs/flux-2-flex/edit` |
+| [Flux Kontext Pro Text to Image](/api-manual/image-series/blackforestlabs-flux-kontext-pro-text-to-image) | Flux | `blackforestlabs/flux-kontext-pro/text-to-image` |
+| [Flux Kontext Pro Edit](/api-manual/image-series/blackforestlabs-flux-kontext-pro) | Flux | `blackforestlabs/flux-kontext-pro` |
+| [Flux Kontext Max Text to Image](/api-manual/image-series/blackforestlabs-flux-kontext-max-text-to-image) | Flux | `blackforestlabs/flux-kontext-max/text-to-image` |
+| [Flux Kontext Max Edit](/api-manual/image-series/blackforestlabs-flux-kontext-max) | Flux | `blackforestlabs/flux-kontext-max` |
+| [Seedream-4](/api-manual/image-series/seedream-4) | Seedream | `seedream-4`<br />`seedream-4-edit` |
+| [Seedream 4 Text to Image](/api-manual/image-series/bytedance-seedream-v4-text-to-image) | Seedream | `bytedance/seedream/v4/text-to-image` |
+| [Seedream 4 Edit](/api-manual/image-series/bytedance-seedream-v4-edit) | Seedream | `bytedance/seedream/v4/edit` |
+| [Seedream 4.5 Text to Image](/api-manual/image-series/bytedance-seedream-v4-5-text-to-image) | Seedream | `bytedance/seedream/v4.5/text-to-image` |
+| [Seedream 4.5 Edit](/api-manual/image-series/bytedance-seedream-v4-5-edit) | Seedream | `bytedance/seedream/v4.5/edit` |
+| [Seedream 5.0 Lite Text to Image](/api-manual/image-series/bytedance-seedream-v5-lite-text-to-image) | Seedream | `bytedance/seedream/v5/lite/text-to-image` |
+| [Seedream 5.0 Lite Edit](/api-manual/image-series/bytedance-seedream-v5-lite-edit) | Seedream | `bytedance/seedream/v5/lite/edit` |
+| [Seedream 5.0 Pro Text to Image](/api-manual/image-series/seedream-v5-0-pro) | Seedream | `seedream-v5.0-pro` |
+| [Seedream 5.0 Pro Image Edit](/api-manual/image-series/seedream-v5-0-pro-edit) | Seedream | `seedream-v5.0-pro/edit` |
+| [Seedream 5.0 Flash Text to Image](/api-manual/image-series/seedream-v5-0-flash) | Seedream | `bytedance/seedream-v5.0-flash/text-to-image` |
+| [Seedream 5.0 Flash Image Edit](/api-manual/image-series/seedream-v5-0-flash-edit) | Seedream | `bytedance/seedream-v5.0-flash/edit` |
+| [Kling O1 Image Edit](/api-manual/image-series/kwaivgi-kling-image-o1) | Kling | `kwaivgi/kling-image-o1` |
+| [Kling O3 Image Text to Image](/api-manual/image-series/kwaivgi-kling-image-o3-text-to-image) | Kling | `kwaivgi/kling-image-o3/text-to-image` |
+| [Kling O3 Image Edit](/api-manual/image-series/kwaivgi-kling-image-o3-edit) | Kling | `kwaivgi/kling-image-o3/edit` |
+| [Qwen Image 2.1 Text to Image](/api-manual/image-series/qwen-image-2-1-text-to-image) | Alibaba | `alibaba/qwen-image-2.1/text-to-image` |
+| [Qwen Image 2.1 Image Edit](/api-manual/image-series/qwen-image-2-1-edit) | Alibaba | `alibaba/qwen-image-2.1/edit` |
+| [Qwen Image 3.0 Text to Image](/api-manual/image-series/qwen-image-3-0-text-to-image) | Alibaba | `qwen-image-3.0/text-to-image` |
+| [Qwen Image 3.0 Image Edit](/api-manual/image-series/qwen-image-3-0-edit) | Alibaba | `qwen-image-3.0/edit` |
+| [Qwen Image 3.0 Pro Text to Image](/api-manual/image-series/qwen-image-3-0-pro-text-to-image) | Alibaba | `qwen-image-3.0-pro/text-to-image` |
+| [Qwen Image 3.0 Pro Image Edit](/api-manual/image-series/qwen-image-3-0-pro-edit) | Alibaba | `qwen-image-3.0-pro/edit` |
+| [Wan 2.7 Image Text to Image](/api-manual/image-series/alibaba-wan-2-7-text-to-image) | Alibaba | `alibaba/wan-2.7/text-to-image` |
+| [Wan 2.7 Image Edit](/api-manual/image-series/alibaba-wan-2-7-image-edit) | Alibaba | `alibaba/wan-2.7/image-edit` |
+| [Wan 2.7 Pro Text to Image](/api-manual/image-series/alibaba-wan-2-7-text-to-image-pro) | Alibaba | `alibaba/wan-2.7/text-to-image-pro` |
+| [Wan 2.7 Pro Image Edit](/api-manual/image-series/alibaba-wan-2-7-image-edit-pro) | Alibaba | `alibaba/wan-2.7/image-edit-pro` |
+| [Z-Image Turbo](/api-manual/image-series/alibaba-z-image-turbo) | Alibaba | `alibaba/z-image/turbo` |
+| [Grok Imagine Text to Image](/api-manual/image-series/xai-grok-imagine-image-text-to-image) | Grok (xAI) | `xai/grok-imagine-image/text-to-image` |
+| [Grok Imagine Edit](/api-manual/image-series/xai-grok-imagine-image-edit) | Grok (xAI) | `xai/grok-imagine-image/edit` |
+| [Grok Imagine Image 2.0 Text to Image](/api-manual/image-series/xai-grok-imagine-image-v2-0-text-to-image) | Grok (xAI) | `xai/grok-imagine-image-v2.0/text-to-image` |
+| [Grok Imagine Image 2.0 Edit](/api-manual/image-series/xai-grok-imagine-image-v2-0-edit) | Grok (xAI) | `xai/grok-imagine-image-v2.0/edit` |
+| [Grok Imagine Image Quality Text to Image](/api-manual/image-series/xai-grok-imagine-image-quality-text-to-image) | Grok (xAI) | `xai/grok-imagine-image-quality/text-to-image` |
+| [Grok Imagine Image Quality Edit](/api-manual/image-series/xai-grok-imagine-image-quality-edit) | Grok (xAI) | `xai/grok-imagine-image-quality/edit` |
+
+## 注意事项
+
+- 每个模型页面列出了其 model ID 的参数、限制和模式。各模型之间的参数不通用。
+- 生成的文件在创建后 24 小时内有效，请及时下载并保存。
+- URL 输入必须是可公开访问的 HTTP(S) URL。如需使用本地文件，请先通过[文件管理](/zh/api-manual/file-series/upload-url)上传。

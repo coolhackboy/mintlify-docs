@@ -1,20 +1,18 @@
 ---
-title: "Seedance 2 Video Generation"
+title: "Seedance 2"
 description: "Text-to-video, first and last frame, and multimodal reference generation with Seedance 2 and Seedance 2 Fast"
 icon: "video"
 openapi: "/api-manual/video-series/seedance-2.json POST /api/generate/submit"
 ---
 
 <Tip>
-1. After submission, a `task_id` is returned immediately. If you provide a `callback_url`, Vidgo sends a POST request to that URL when the task reaches `finished` or `failed`.
-2. You can always fetch the latest task result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Seedance 2 Video Generation
 
 Seedance 2 is ByteDance's multimodal video family for API-based generation. On Vidgo API, you can choose between **seedance-2** for higher fidelity and **seedance-2-fast** for lower-latency generation, while keeping a single submit and status API.
 
-## Available Models
+## Models
 
 - **seedance-2**: Higher-quality video generation with multimodal references and native audio support
 - **seedance-2-fast**: Faster generation path with the same submit schema and lower per-second pricing

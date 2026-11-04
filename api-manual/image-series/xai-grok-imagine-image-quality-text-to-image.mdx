@@ -6,17 +6,21 @@ openapi: "/api-manual/image-series/xai-grok-imagine-image-quality-text-to-image.
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Grok Imagine Image Quality Text to Image
 
 Create image variations in 1K or 2K with Grok Imagine Image Quality, with framing options for portraits, landscapes, and square designs.
 
-## Available Models
+## Models
 
 - **xai/grok-imagine-image-quality/text-to-image** - Generate images from text prompts.
+
+## Features
+
+- Generate images from text prompts.
+- Choose from `1K`, `2K` output resolutions.
+- Control the number of output images with `n`.
 
 ## Output Options
 
@@ -31,12 +35,6 @@ Create image variations in 1K or 2K with Grok Imagine Image Quality, with framin
 ### Image Count
 
 - `n`: Optional. Number of images to generate. Integer, at least `1`. Default: `1`. No maximum is specified; fractional numbers, strings, and booleans are rejected.
-
-## Key Features
-
-- Generate images from text prompts.
-- Choose from `1K`, `2K` output resolutions.
-- Control the number of output images with `n`.
 
 ## Advanced Parameters
 

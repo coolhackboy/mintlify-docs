@@ -1,0 +1,288 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - 通过 Base64 上传文件",
+    "description": "使用 Base64 编码数据或 Data URL 格式将文件上传到 Vidgo API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/common/upload/base64": {
+      "post": {
+        "summary": "通过 Base64 上传文件",
+        "description": "使用 Base64 编码数据或 Data URL 格式上传文件。同时支持纯 Base64 字符串和带 MIME 类型前缀的 Data URL 格式。",
+        "operationId": "uploadFileFromBase64",
+        "tags": ["File Upload"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadBase64Request"
+              },
+              "examples": {
+                "data-url-format": {
+                  "summary": "Data URL 格式",
+                  "value": {
+                    "base64_data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+                  }
+                },
+                "pure-base64": {
+                  "summary": "纯 Base64 字符串",
+                  "value": {
+                    "base64_data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+                  }
+                },
+                "custom-naming": {
+                  "summary": "使用自定义路径和文件名上传",
+                  "value": {
+                    "base64_data": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAA8=",
+                    "upload_path": "profile-images",
+                    "file_name": "user-avatar.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "文件上传成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求错误 - Base64 无效、文件类型不支持或数据无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "invalid-base64": {
+                    "summary": "Base64 编码无效",
+                    "value": {
+                      "detail": "Invalid Base64 encoding"
+                    }
+                  },
+                  "invalid-data-url": {
+                    "summary": "Data URL 格式无效",
+                    "value": {
+                      "detail": "Invalid data URL format"
+                    }
+                  },
+                  "unsupported-type": {
+                    "summary": "文件类型不支持",
+                    "value": {
+                      "detail": "Unsupported file type: image/svg+xml"
+                    }
+                  },
+                  "invalid-file-data": {
+                    "summary": "文件数据无效",
+                    "value": {
+                      "detail": "Invalid file data"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权 - 缺少认证信息或认证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "not-authenticated": {
+                    "summary": "未认证",
+                    "value": {
+                      "detail": "Not authenticated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "rate-limit": {
+                    "summary": "超出速率限制",
+                    "value": {
+                      "detail": "Rate limit exceeded"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器错误 - 存储连接或上传失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "server-error": {
+                    "summary": "服务器错误",
+                    "value": {
+                      "detail": "Upload failed: S3 connection error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "UploadBase64Request": {
+        "type": "object",
+        "required": ["base64_data"],
+        "properties": {
+          "base64_data": {
+            "type": "string",
+            "description": "Base64 编码的文件数据。\n\n支持两种格式：\n\n1. **Data URL 格式**：`data:image/png;base64,iVBORw0KGgo...`\n\n2. **纯 Base64 字符串**：`iVBORw0KGgo...`（不带 MIME 类型前缀）\n\n**支持的格式**：JPEG、PNG、GIF、WebP\n\n**注意**：Base64 字符串中不应包含任何空白字符或换行符。",
+            "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+          },
+          "upload_path": {
+            "type": "string",
+            "description": "自定义存储目录路径。\n\n未指定时，系统会自动对文件分类。\n\n**注意**：无论指定什么路径，所有文件都会以 `temp/` 前缀存储。",
+            "example": "profile-images"
+          },
+          "file_name": {
+            "type": "string",
+            "description": "上传文件的自定义文件名。\n\n未指定时，系统会按以下格式生成唯一文件名：`{timestamp}_{random}_{extension}`\n\n**自动生成的文件名示例**：`20251229130857_a8B9cD2e.png`",
+            "example": "user-avatar.png"
+          }
+        }
+      },
+      "UploadResponse": {
+        "type": "object",
+        "required": ["success", "code", "msg", "data"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true,
+            "description": "上传是否成功"
+          },
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "msg": {
+            "type": "string",
+            "example": "File uploaded successfully",
+            "description": "响应消息"
+          },
+          "data": {
+            "type": "object",
+            "required": ["file_id", "file_name", "original_name", "file_size", "mime_type", "upload_path", "file_url", "download_url", "upload_time", "expires_at"],
+            "properties": {
+              "file_id": {
+                "type": "string",
+                "example": "da2611c99d3ce825bc9a5409378db8e4",
+                "description": "文件唯一标识（MD5 哈希）"
+              },
+              "file_name": {
+                "type": "string",
+                "example": "test-base64.png",
+                "description": "存储后的文件名"
+              },
+              "original_name": {
+                "type": "string",
+                "example": "test-base64.png",
+                "description": "原始文件名"
+              },
+              "file_size": {
+                "type": "integer",
+                "example": 3242,
+                "description": "文件大小（字节）"
+              },
+              "mime_type": {
+                "type": "string",
+                "example": "image/png",
+                "description": "上传文件的 MIME 类型"
+              },
+              "upload_path": {
+                "type": "string",
+                "example": "temp/test-base64",
+                "description": "存储路径（包含 temp/ 前缀）"
+              },
+              "file_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://cdn.vidgo.ai/temp/test-base64/test-base64.png",
+                "description": "上传文件的直接访问 URL"
+              },
+              "download_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://cdn.vidgo.ai/temp/test-base64/test-base64.png",
+                "description": "下载 URL（与 file_url 相同）"
+              },
+              "upload_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-12-29T13:09:01.233635",
+                "description": "上传时间戳，ISO 8601 格式"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-01-01T13:09:01.233635",
+                "description": "过期时间戳，ISO 8601 格式（上传后 72 小时）"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["detail"],
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "描述错误原因的错误信息",
+            "example": "Not authenticated"
+          }
+        }
+      }
+    }
+  }
+}

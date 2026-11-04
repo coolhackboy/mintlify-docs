@@ -1,13 +1,13 @@
 ---
-title: "Kling 1.6 Video Generation"
+title: "Kling 1.6"
 description: "Kling 1.6 Standard and Pro video generation through the Vidgo API"
 icon: "video"
 openapi: "/api-manual/video-series/kling-1-6.json POST /api/generate/submit"
 ---
 
 <Tip>
-1. After submission, a `task_id` will be returned. If you provided a `callback_url`, Vidgo sends a POST request when the task becomes `finished` or `failed`.
-2. You can always retrieve the result through the unified Query Task Status endpoint.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
 ## Input Routing
@@ -46,6 +46,7 @@ The submit endpoint returns a Vidgo `task_id`. Use it with the unified Query Tas
 Initial submit responses include `status`, which is usually `running` after the upstream video task has been created. If submission fails during upstream task creation, the status may be `failed` and the task can be inspected through the status endpoint.
 
 {/* poyo-20260910:start */}
+
 ## Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:

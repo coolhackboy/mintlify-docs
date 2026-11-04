@@ -5,7 +5,10 @@ icon: "video"
 openapi: "/api-manual/video-series/grok-imagine-video-1-5.json POST /api/generate/submit"
 ---
 
-# Grok Imagine Video 1.5
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
 
 Create 1–15 second videos from text, a single first-frame image, or up to seven reference images.
 
@@ -30,6 +33,7 @@ After submission, use the returned `task_id` with the video status endpoint, or 
 - `callback_url`: optional HTTPS completion webhook.
 
 {/* poyo-20260910:start */}
+
 ## Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:

@@ -6,28 +6,26 @@ openapi: "/api-manual/video-series/alibaba-happyhorse-1-0-video-edit.json POST /
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Happy Horse Video Edit
 
 Transform existing footage with Happy Horse using text instructions and reference images to guide a new visual direction.
 
-## Available Models
+## Models
 
 - **alibaba/happyhorse-1.0/video-edit** - Edit an existing video using written instructions.
 
-## Duration Options
-
-- **Source video: 3-60 seconds** - Duration is read from `video_url`.
-
-## Key Features
+## Features
 
 - Edit an existing video using written instructions.
 - Optionally add up to five reference images to guide the edit.
 - Choose from `720p`, `1080p` output resolutions.
 - Choose automatic audio handling or preserve the source audio.
+
+## Duration Options
+
+- **Source video: 3-60 seconds** - Duration is read from `video_url`.
 
 ## Advanced Parameters
 

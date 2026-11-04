@@ -6,17 +6,21 @@ openapi: "/api-manual/music-series/xai-tts-v1.json POST /api/generate/submit"
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# xAI TTS 1
 
 Convert text into speech with xAI TTS, choosing from five voices and multiple languages for narration, dialogue, and spoken content.
 
-## Available Models
+## Models
 
 - **xai/tts/v1** - Convert text into speech.
+
+## Features
+
+- Convert text into speech.
+- Select a voice with `voice` and specify the spoken language with `language_code`.
+- Direct pauses, laughter, sighs, whispers, and slower phrases through tags in `text`.
 
 ## Output Options
 
@@ -28,12 +32,6 @@ Convert text into speech with xAI TTS, choosing from five voices and multiple la
 - `output_format.sample_rate`: Optional. Sample rate in Hz. Accepted values: `8000`, `16000`, `22050`, `24000`, `44100`, `48000`. Default: `24000`.
 - `output_format.bit_rate`: Optional. MP3 bitrate in bits per second. Accepted values: `32000`, `64000`, `96000`, `128000`, `192000`, `null`. MP3 default: `128000`.
 - For `mp3`, use `output_format.bit_rate` to select the bitrate. For `wav`, `pcm`, `mulaw`, and `alaw`, omit `bit_rate` or set it to `null`.
-
-## Key Features
-
-- Convert text into speech.
-- Select a voice with `voice` and specify the spoken language with `language_code`.
-- Direct pauses, laughter, sighs, whispers, and slower phrases through tags in `text`.
 
 ## Advanced Parameters
 

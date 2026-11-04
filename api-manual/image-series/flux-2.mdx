@@ -1,5 +1,5 @@
 ---
-title: "Flux.2 Image Generation"
+title: "Flux.2"
 description: "32B parameter image generation model from Black Forest Labs with multi-reference support and superior text rendering"
 icon: "image"
 openapi: "/api-manual/image-series/flux-2.json POST /api/generate/submit"
@@ -7,14 +7,12 @@ openapi: "/api-manual/image-series/flux-2.json POST /api/generate/submit"
 
 <Tip>
 1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Flux 2 Image Generation
 
 FLUX.2 is a 32 billion parameter image generation and editing model from Black Forest Labs. It combines text-to-image and multi-image editing in a single architecture, delivering photoreal images with clean typography at resolutions up to 2K. Supports referencing up to 8 images simultaneously with excellent character, product, and style consistency.
 
-## Available Models
+## Models
 
 - **flux-2-pro** - High-fidelity text-to-image generation for production deployments
 - **flux-2-pro-edit** - Advanced multi-reference image editing with up to 8 input images
@@ -22,6 +20,7 @@ FLUX.2 is a 32 billion parameter image generation and editing model from Black F
 - **flux-2-flex-edit** - Flexible image editing with multi-reference support
 
 {/* poyo-20260910:start */}
+
 ## Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:

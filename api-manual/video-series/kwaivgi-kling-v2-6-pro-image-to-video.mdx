@@ -5,6 +5,11 @@ icon: "video"
 openapi: "/api-manual/video-series/kwaivgi-kling-v2-6-pro-image-to-video.json POST /api/generate/submit"
 ---
 
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
 Submit `kwaivgi/kling-v2.6-pro/image-to-video` through `POST /api/generate/submit`. Query the returned `task_id` with [Task Status](/api-manual/task-management/status), or provide a top-level `callback_url`.
 
 ## Parameters

@@ -1,0 +1,185 @@
+---
+title: "错误码"
+description: "API 错误码与响应格式"
+icon: "triangle-exclamation"
+---
+
+本页介绍生成接口和原生 Chat Series 接口的常见响应格式。请结合 HTTP 状态码和各接口特定的错误响应体进行判断。
+
+## 响应格式
+
+### 成功响应
+
+生成任务提交成功时返回 `code: 200` 的响应。原生 Chat Series 响应使用各自协议的格式：
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "task-unified-1757165031-uyujaw3d",
+    "status": "running",
+    "created_time": "2025-11-12T10:30:00"
+  }
+}
+```
+
+### 错误响应
+
+生成接口返回 HTTP 错误状态码和 detail 字段，不会把错误包装在 code 和 error 中：
+
+```json
+{
+  "detail": "task_id is required"
+}
+```
+
+### 原生 Chat Series 错误
+
+Chat Completions 和 Responses 使用 error 对象；Claude Messages 额外带有 type=error；Gemini 使用 error.code、error.message 和 error.status。认证失败时仍可能使用 detail。上游返回的错误状态码和响应体会原样转发。成功的 JSON 响应和 SSE 事件不会包装在 code 和 data 中。
+
+### 任务失败响应
+
+任务在处理过程中失败时，响应包含 `status: "failed"` 和错误信息：
+
+```json
+{
+  "code": 200,
+  "data": {
+    "task_id": "8FDN1I7M7Q68DDG8",
+    "status": "failed",
+    "files": [],
+    "created_time": "2025-11-25T08:50:13",
+    "error_message": "The prompt violates our content policy"
+  }
+}
+```
+
+## HTTP 状态码
+
+### 200 - Success
+
+请求成功完成。对于生成接口，请检查 `data.status` 以确定任务状态。原生 Chat Series 直接返回 JSON 响应或 SSE 流。
+
+### 400 - Bad Request
+
+请求包含无效的参数或数据。
+
+**示例：**
+
+```json
+{
+  "detail": "task_id is required"
+}
+```
+
+### 401 - Unauthorized
+
+凭证缺失或无效。认证错误使用 detail 字段。
+
+### 402 - Payment Required
+
+原生 Chat Series 接口在积分不足时返回 HTTP 402。生成任务提交在积分不足时返回 HTTP 400。
+
+**示例：**
+
+```json
+{
+  "error": {"message": "Insufficient credits", "type": "invalid_request_error", "code": null}
+}
+```
+
+### 403 - Forbidden
+
+因权限限制拒绝访问。
+
+**示例：**
+
+```json
+{
+  "detail": "You do not have permission to access this resource"
+}
+```
+
+### 404 - Not Found
+
+请求的资源不存在。
+
+**示例：**
+
+```json
+{
+  "detail": "Task not found"
+}
+```
+
+### 408 - Request Timeout
+
+请求在返回响应前超时。超时中间件返回纯文本：
+
+**示例：**
+
+```text
+Request timeout
+```
+
+### 422 - Unprocessable Entity
+
+JSON 格式错误或请求体不是对象时，可能在进入接口处理前就被拒绝。detail 字段是校验错误组成的数组。
+
+### 429 - Too Many Requests
+
+超出速率限制。
+
+**示例：**
+
+```json
+{
+  "detail": "Rate limit exceeded. Please try again later."
+}
+```
+
+### 500 - Internal Server Error
+
+服务器发生意外错误。
+
+**示例：**
+
+```json
+{
+  "detail": "An internal error occurred. Please try again later."
+}
+```
+
+### 502 - Bad Gateway
+
+上游服务错误。
+
+**示例：**
+
+```json
+{
+  "detail": "Upstream service unavailable"
+}
+```
+
+### 503 - Service Unavailable
+
+请求的模型暂时不可用。重试前请联系支持确认模型可用性。未知或已停用的公开模型通常返回 HTTP 404。
+
+## 错误处理最佳实践
+
+<Tip>
+**谨慎重试临时性失败**：对于临时的 500 或 502 错误，请使用指数退避重试。重新提交可能会创建另一个任务。对于 HTTP 503，重试前请联系支持确认模型可用性。
+</Tip>
+
+<Tip>
+**处理速率限制**：收到 429 错误时，请等待后再重试。可以考虑实现请求排队。
+</Tip>
+
+<Tip>
+**校验输入**：发送前检查请求参数，避免 400 错误。
+</Tip>
+
+<Tip>
+**关注积分**：生成任务提交在积分不足时返回 HTTP 400；原生 Chat Series 返回 HTTP 402。
+</Tip>

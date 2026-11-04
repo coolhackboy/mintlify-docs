@@ -5,6 +5,11 @@ icon: "image"
 openapi: "/api-manual/image-series/blackforestlabs-flux-schnell.json POST /api/generate/submit"
 ---
 
+<Tip>
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+</Tip>
+
 ## Submit a Task
 
 Send `model: "blackforestlabs/flux/schnell"` and an `input` object to `POST /api/generate/submit`. Authenticate with `Authorization: Bearer VIDGO_API_KEY`.

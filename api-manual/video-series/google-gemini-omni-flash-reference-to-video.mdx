@@ -6,27 +6,25 @@ openapi: "/api-manual/video-series/google-gemini-omni-flash-reference-to-video.j
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Omni Flash Reference to Video
 
 Use visual references to guide new scenes with Gemini Omni Flash, combining image input and text direction in video output up to 4K.
 
-## Available Models
+## Models
 
 - **google/gemini-omni-flash/reference-to-video** - Generate a new video guided by reference material and a prompt.
 
-## Duration Options
-
-- **4, 6, 8, 10 seconds** - Set `duration` to one of these values. Default: **6 seconds**.
-
-## Key Features
+## Features
 
 - Combine exactly three reference images with a prompt to guide the video.
 - Choose from `720p`, `1080p`, `4k` output resolutions.
 - Supports landscape (`16:9`) and portrait (`9:16`) framing.
+
+## Duration Options
+
+- **4, 6, 8, 10 seconds** - Set `duration` to one of these values. Default: **6 seconds**.
 
 ## Advanced Parameters
 

@@ -6,17 +6,21 @@ openapi: "/api-manual/music-series/elevenlabs-music.json POST /api/generate/subm
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# ElevenLabs Music
 
 Compose songs or instrumentals from a text brief or a section-by-section plan, with control over musical style, lyrics, and arrangement.
 
-## Available Models
+## Models
 
 - **elevenlabs/music** - Generate music from text or a structured composition plan.
+
+## Features
+
+- Generate music from text or a structured composition plan.
+- Plan musical sections with their own styles, lyrics, and durations.
+- Choose an output encoding with `output_format`.
 
 ## Duration Options
 
@@ -52,12 +56,6 @@ Compose songs or instrumentals from a text brief or a section-by-section plan, w
 - `opus_48000_192`
 
 </Accordion>
-
-## Key Features
-
-- Generate music from text or a structured composition plan.
-- Plan musical sections with their own styles, lyrics, and durations.
-- Choose an output encoding with `output_format`.
 
 ## Advanced Parameters
 

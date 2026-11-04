@@ -10,25 +10,23 @@ openapi: "/api-manual/video-series/alibaba-wan-v2-2-14b-animate-move.json POST /
 2. Use the returned `task_id` with [Query Task Status](/api-manual/task-management/status) until the task reaches `finished` or `failed`. If you provide a `callback_url`, Vidgo also sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
 </Tip>
 
-# Wan Animate Move
-
 Animate the character in an image using motion from a reference video with Wan Animate Move.
 
-## Available Models
+## Models
 
 - **alibaba/wan/v2.2-14b/animate/move** - Animate the character in an image using motion from a reference video with Wan Animate Move.
+
+## Features
+
+- Animate the character in an image using motion from a reference video with Wan Animate Move.
+- Accepts an `image_urls` array containing exactly one image URL.
+- Supports `480p`, `580p`, and `720p` output resolutions.
 
 ## Source Video Requirements
 
 - `video_url` must point to a publicly accessible HTTP(S) video file.
 - The entire video file must be no larger than **100 MiB** (104,857,600 bytes), and its duration must be greater than zero.
 - Vidgo reads the source video to determine its duration for billing.
-
-## Key Features
-
-- Animate the character in an image using motion from a reference video with Wan Animate Move.
-- Accepts an `image_urls` array containing exactly one image URL.
-- Supports `480p`, `580p`, and `720p` output resolutions.
 
 ## Request Parameters
 

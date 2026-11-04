@@ -1,5 +1,5 @@
 ---
-title: "Wan 2.6 Video Generation"
+title: "Wan 2.6"
 description: "Multi-shot 1080p video generation with Alibaba Wan 2.6"
 icon: "video"
 openapi: "/api-manual/video-series/wan-2-6.json POST /api/generate/submit"
@@ -7,20 +7,18 @@ openapi: "/api-manual/video-series/wan-2-6.json POST /api/generate/submit"
 
 <Tip>
 1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Wan 2.6 Video Generation
 
 Wan 2.6 is Alibaba's latest video generation model family. It supports text-to-video, image-to-video, and video-to-video workflows with stable character identity, multi-shot composition, and 1080p output.
 
-## Available Models
+## Models
 
 - **wan2.6-text-to-video** - Generate videos from text prompts
 - **wan2.6-image-to-video** - Animate a reference image with a prompt
 - **wan2.6-video-to-video** - Edit or restyle an input video using a prompt
 
-## Key Features
+## Features
 
 - **Duration**: 5, 10, or 15 seconds (video-to-video up to 10 seconds)
 - **Resolution**: 720p or 1080p
@@ -28,6 +26,7 @@ Wan 2.6 is Alibaba's latest video generation model family. It supports text-to-v
 - **Prompt Length**: Up to 5,000 characters
 
 {/* poyo-20260910:start */}
+
 ## Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:

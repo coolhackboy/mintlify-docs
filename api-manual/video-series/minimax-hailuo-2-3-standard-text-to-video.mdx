@@ -6,26 +6,24 @@ openapi: "/api-manual/video-series/minimax-hailuo-2-3-standard-text-to-video.jso
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Hailuo 2.3 Text to Video
 
 Generate short video scenes with Hailuo 2.3 Standard, with 768p output and optional prompt refinement for written scene concepts.
 
-## Available Models
+## Models
 
 - **minimax/hailuo-2.3/standard/text-to-video** - Generate video scenes from text prompts.
+
+## Features
+
+- Generate video scenes from text prompts.
+- This model ID fixes the output resolution to `768p`.
 
 ## Duration Options
 
 - **6, 10 seconds** - Set `duration` as an integer. Optional. Default: **6 seconds**.
-
-## Key Features
-
-- Generate video scenes from text prompts.
-- This model ID fixes the output resolution to `768p`.
 
 ## Advanced Parameters
 

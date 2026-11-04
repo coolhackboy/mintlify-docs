@@ -6,29 +6,27 @@ openapi: "/api-manual/video-series/kwaivgi-kling-v3-0-4k-image-to-video.json POS
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Kling 3.0 4K Image to Video
 
 Animate image references with Kling 3.0 4K, with support for multiple shots, individual shot prompts, and optional sound.
 
-## Available Models
+## Models
 
 - **kwaivgi/kling-v3.0-4k/image-to-video** - Generate video from image input.
 
-## Duration Options
-
-- **3-15 seconds** - Set `duration` as an integer. Required.
-- With `multi_prompt`, the shot durations must add up to the requested `duration`.
-
-## Key Features
+## Features
 
 - Generate video from image input.
 - Provide 1–2 images in `image_urls`.
 - Describe individual shots with `multi_prompt` and enable `multi_shots`.
 - Supply additional subject references through `kling_elements`.
+
+## Duration Options
+
+- **3-15 seconds** - Set `duration` as an integer. Required.
+- With `multi_prompt`, the shot durations must add up to the requested `duration`.
 
 ## Advanced Parameters
 

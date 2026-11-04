@@ -6,14 +6,13 @@ openapi: "/api-manual/image-series/qwen-image-3-0-pro-edit.json POST /api/genera
 ---
 
 <Tip>
-Submit the request with `VIDGO_API_KEY`. After submission, a `task_id` is returned. Retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint or provide `callback_url` for a completion notification.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Qwen Image 3.0 Pro Image Edit
 
 This model supports reference-image editing for posters, product visuals, typography, and natural-language creative tasks.
 
-## Available Models
+## Models
 
 - **qwen-image-3.0-pro/edit** - Higher-quality reference-image editing with 1K and 2K output
 

@@ -6,17 +6,21 @@ openapi: "/api-manual/image-series/bytedance-seedream-v5-lite-edit.json POST /ap
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Seedream 5.0 Lite Edit
 
 Remix existing visuals with Seedream 5.0 Lite using text instructions and multiple reference images, with support for batch output.
 
-## Available Models
+## Models
 
 - **bytedance/seedream/v5/lite/edit** - Edit images using a prompt and image references.
+
+## Features
+
+- Edit images using a prompt and image references.
+- Accepts 1-10 images in `image_urls`.
+- Control the number of output images with `n`.
 
 ## Output Options
 
@@ -30,12 +34,6 @@ Remix existing visuals with Seedream 5.0 Lite using text instructions and multip
 ### Image Count
 
 - `n`: Optional. Number of images to generate. Integer from `1` to `15`. Default: `1`.
-
-## Key Features
-
-- Edit images using a prompt and image references.
-- Accepts 1-10 images in `image_urls`.
-- Control the number of output images with `n`.
 
 ## Advanced Parameters
 

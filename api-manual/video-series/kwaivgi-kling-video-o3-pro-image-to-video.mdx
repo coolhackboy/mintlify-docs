@@ -6,7 +6,8 @@ openapi: "/api-manual/video-series/kwaivgi-kling-video-o3-pro-image-to-video.jso
 ---
 
 <Tip>
-Submit with your Vidgo API key, then query [task status](/api-manual/task-management/status) using the returned task ID. An optional callback receives the final result. The submit response above is an initial-state illustration, not the completed video response.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
 ## Parameters
@@ -28,6 +29,7 @@ Use standard JSON numbers and booleans. For compatibility, integer strings such 
 Billing depends on the model tier, video duration (`duration`), and whether audio is generated (`sound`). Usage is charged per generated second.
 
 Failed generation tasks are refunded.
+
 ## Default example: At the Volcano Observatory
 
 This is the same default example shown on the [model page](https://vidgo.ai/apis/models/kwaivgi/kling-video-o3-pro/image-to-video).

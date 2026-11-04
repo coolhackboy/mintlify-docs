@@ -1,5 +1,5 @@
 ---
-title: "Seedream-4 Image Generation"
+title: "Seedream-4"
 description: "Image generation model powered by ByteDance Seedream-4 with support for text-to-image and image editing"
 icon: "image"
 openapi: "/api-manual/image-series/seedream-4.json POST /api/generate/submit"
@@ -7,17 +7,23 @@ openapi: "/api-manual/image-series/seedream-4.json POST /api/generate/submit"
 
 <Tip>
 1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
-2. Regardless of whether `callback_url` is provided, you can retrieve the response result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Seedream-4 Image Generation
 
 Seedream-4 is powered by ByteDance Seedream-4. It supports both text-to-image generation and image editing through the same unified submit endpoint.
 
-## Available Models
+## Models
 
 - **seedream-4** - Text-to-image generation, optionally with reference images
 - **seedream-4-edit** - Image editing mode. `image_urls` is required
+
+## Workflow IDs
+
+Existing IDs remain available. New integrations can select a dedicated workflow:
+
+- [bytedance/seedream/v4/text-to-image](/api-manual/image-series/bytedance-seedream-v4-text-to-image)
+- [bytedance/seedream/v4/edit](/api-manual/image-series/bytedance-seedream-v4-edit)
+{/* poyo-20260910:end */}
 
 ## Notes
 
@@ -28,10 +34,3 @@ Seedream-4 is powered by ByteDance Seedream-4. It supports both text-to-image ge
 - Credits are pre-deducted as `base credits * n`. If fewer images are returned than requested, the unused portion is refunded automatically
 
 {/* poyo-20260910:start */}
-## Workflow IDs
-
-Existing IDs remain available. New integrations can select a dedicated workflow:
-
-- [bytedance/seedream/v4/text-to-image](/api-manual/image-series/bytedance-seedream-v4-text-to-image)
-- [bytedance/seedream/v4/edit](/api-manual/image-series/bytedance-seedream-v4-edit)
-{/* poyo-20260910:end */}

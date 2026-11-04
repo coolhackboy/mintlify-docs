@@ -6,17 +6,20 @@ openapi: "/api-manual/image-series/blackforestlabs-flux-kontext-pro.json POST /a
 ---
 
 <Tip>
-1. Submit the request with `VIDGO_API_KEY`. A `task_id` is returned immediately. Keep it until the task reaches `finished` or `failed`.
-2. Use [Query Task Status](/api-manual/task-management/status) to retrieve the result. If you provide a `callback_url`, Vidgo sends the result to your [webhook](/api-manual/task-management/webhooks) when the task finishes or fails.
+1. After submission, a `task_id` will be returned. If you provided a `callback_url`, when the task status becomes `finished` or `failed`, a POST request will be sent to the `callback_url`.
+2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
-
-# Flux Kontext Pro Edit
 
 Edit images with FLUX Kontext Pro using text instructions, with support for character consistency and changes to specific visual details.
 
-## Available Models
+## Models
 
 - **blackforestlabs/flux-kontext-pro** - Edit one source image with a text prompt.
+
+## Features
+
+- Edit one source image with a text prompt.
+- Provide the source image as a single item in `image_urls`.
 
 ## Output Options
 
@@ -27,11 +30,6 @@ Edit images with FLUX Kontext Pro using text instructions, with support for char
 ### Output Format
 
 - `output_format`: Optional. Output image file format. Accepted values: `png`, `jpg`.
-
-## Key Features
-
-- Edit one source image with a text prompt.
-- Provide the source image as a single item in `image_urls`.
 
 ## Advanced Parameters
 
