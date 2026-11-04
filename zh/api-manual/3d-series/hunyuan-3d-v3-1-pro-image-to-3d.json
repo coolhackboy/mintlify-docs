@@ -1,0 +1,514 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Hunyuan 3D v3.1 Pro 图生 3D",
+    "description": "使用 Hunyuan 3D v3.1 Pro 根据主图和附加视角重建 3D 物体，支持 PBR 材质。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "3D Series"
+        ],
+        "summary": "Hunyuan 3D v3.1 Pro 图生 3D",
+        "operationId": "submit_hunyuan_3d_v3_1_pro_image_to_3d",
+        "description": "使用下列输入参数生成 3D 资产。model 和 callback_url 放在请求根级。模型资源、预览图和附带文件从返回的 files 数组读取。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "hunyuan-3d/v3.1/pro/image-to-3d"
+                  },
+                  "input": {
+                    "type": "object",
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "description": "可选，用非空字符串描述所需的 3D 物体。",
+                        "minLength": 1
+                      },
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "minItems": 1,
+                        "maxItems": 1,
+                        "description": "只能提供一个可公开访问的 HTTP(S) 图片 URL。"
+                      },
+                      "generate_type": {
+                        "type": "string",
+                        "enum": [
+                          "Normal",
+                          "Geometry"
+                        ],
+                        "description": "选择 Normal 生成带纹理的模型，或选择 Geometry 生成仅含几何体的白模。"
+                      },
+                      "enable_pbr": {
+                        "type": "boolean",
+                        "description": "设为 true 时在纹理模式下生成 PBR 材质。仅几何体生成优先于此设置。"
+                      },
+                      "face_count": {
+                        "type": "integer",
+                        "minimum": 40000,
+                        "maximum": 1500000,
+                        "default": 500000,
+                        "description": "设置整数目标面数，范围 40000 到 1500000。默认：500000。"
+                      },
+                      "back_image_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "以可公开访问的 HTTP(S) 图片 URL 提供背面视图。"
+                      },
+                      "left_image_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "以可公开访问的 HTTP(S) 图片 URL 提供左视图。"
+                      },
+                      "right_image_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "以可公开访问的 HTTP(S) 图片 URL 提供右视图。"
+                      },
+                      "top_image_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "以可公开访问的 HTTP(S) 图片 URL 提供顶视图。"
+                      },
+                      "bottom_image_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "以可公开访问的 HTTP(S) 图片 URL 提供底视图。"
+                      },
+                      "left_front_image_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "以可公开访问的 HTTP(S) 图片 URL 提供左前视图。"
+                      },
+                      "right_front_image_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "以可公开访问的 HTTP(S) 图片 URL 提供右前视图。"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                      "image_urls"
+                    ]
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 地址，用于接收任务完成通知。建议使用 HTTPS。省略、设为 null 或空字符串即不发送回调。"
+                  }
+                },
+                "description": "model 和 callback_url 放在请求根级，生成参数放在 input 内。"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "基础工作流",
+                  "value": {
+                    "model": "hunyuan-3d/v3.1/pro/image-to-3d",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/image.png"
+                      ],
+                      "face_count": 500000,
+                      "enable_pbr": true,
+                      "generate_type": "Normal"
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "hunyuan-3d/v3.1/pro/image-to-3d",
+                    "input": {
+                      "image_urls": [
+                        "https://example.com/image.png"
+                      ],
+                      "face_count": 500000,
+                      "enable_pbr": true,
+                      "generate_type": "Normal"
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-example",
+                    "status": "running",
+                    "created_time": "2026-09-10T08:00:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求校验或账户余额检查失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型不存在或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出频率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "生成任务创建失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "所请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

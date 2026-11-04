@@ -1,0 +1,510 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Tripo3D H3.1 多视图生 3D",
+    "description": "使用 Tripo3D H3.1 根据多个视角重建 3D 资产，可调节几何体、纹理和 PBR 材质。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "3D Series"
+        ],
+        "summary": "Tripo3D H3.1 多视图生 3D",
+        "operationId": "submit_tripo3d_h3_1_multiview_to_3d",
+        "description": "model ID 和可选的 callback_url 放在请求根级，生成参数放在 input 内。使用公开的 HTTP(S) 图片 URL。读取返回的全部文件：3D 模型、预览图和附带资源，以及它们可用的元数据。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "tripo3d/h3.1/multiview-to-3d"
+                  },
+                  "input": {
+                    "type": "object",
+                    "properties": {
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "公开的 HTTP(S) 图片 URL。"
+                        },
+                        "minItems": 2,
+                        "maxItems": 4,
+                        "description": "2–4 个公开的 HTTP(S) 图片 URL，从不同角度展示同一物体。"
+                      },
+                      "face_limit": {
+                        "type": "integer",
+                        "minimum": 1000,
+                        "maximum": 2000000,
+                        "description": "目标面数，范围 1,000 到 2,000,000。"
+                      },
+                      "texture": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "生成纹理。默认：true。"
+                      },
+                      "pbr": {
+                        "type": "boolean",
+                        "description": "texture 为 true 时生成基于物理的渲染（PBR）材质。"
+                      },
+                      "model_seed": {
+                        "type": "integer",
+                        "description": "模型生成的整数种子。"
+                      },
+                      "texture_seed": {
+                        "type": "integer",
+                        "description": "纹理生成的整数种子。"
+                      },
+                      "texture_quality": {
+                        "type": "string",
+                        "enum": [
+                          "standard",
+                          "detailed"
+                        ],
+                        "default": "standard",
+                        "description": "texture 为 true 时的纹理细节：standard 或 detailed。默认：standard。"
+                      },
+                      "geometry_quality": {
+                        "type": "string",
+                        "enum": [
+                          "standard",
+                          "detailed"
+                        ],
+                        "default": "standard",
+                        "description": "几何细节：standard 或 detailed。默认：standard。"
+                      },
+                      "auto_size": {
+                        "type": "boolean",
+                        "description": "自动缩放生成的模型。"
+                      },
+                      "quad": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "生成四边形网格拓扑。默认：false。"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                      "image_urls"
+                    ]
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 地址，用于接收任务完成通知。建议使用 HTTPS。省略、设为 null 或空字符串即不发送回调。"
+                  }
+                },
+                "description": "model 和可选的 callback_url 放在根级，生成参数放在 input 内。"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "基础工作流",
+                  "value": {
+                    "model": "tripo3d/h3.1/multiview-to-3d",
+                    "input": {
+                      "image_urls": [
+                          "https://example.com/object-front.png",
+                          "https://example.com/object-side.png"
+                      ],
+                      "texture": true,
+                      "texture_quality": "standard",
+                      "geometry_quality": "standard",
+                      "quad": false
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "tripo3d/h3.1/multiview-to-3d",
+                    "input": {
+                      "image_urls": [
+                          "https://example.com/object-front.png",
+                          "https://example.com/object-side.png"
+                      ],
+                      "texture": true,
+                      "texture_quality": "standard",
+                      "geometry_quality": "standard",
+                      "quad": false
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-example",
+                    "status": "running",
+                    "created_time": "2026-09-10T08:00:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "检查请求参数和账户状态后再重新提交。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型不存在或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "请在请求限额重置后重试。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "任务创建失败，请重试。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "所请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

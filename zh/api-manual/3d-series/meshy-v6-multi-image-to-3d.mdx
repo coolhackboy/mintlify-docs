@@ -1,0 +1,100 @@
+---
+title: "Meshy 6 多图生 3D"
+description: "Meshy 6 API 根据最多四张参考图片生成 3D 资产，支持纹理、拓扑和可选的动画控制。"
+icon: "cube"
+openapi: "/zh/api-manual/3d-series/meshy-v6-multi-image-to-3d.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Meshy 6 多图生 3D，根据最多四张参考图片生成 3D 资产，支持纹理、拓扑和可选的动画控制。
+
+## 模型
+
+- **meshy/v6/multi-image-to-3d** - 根据多张参考图片生成 3D 模型。
+
+## 功能
+
+- 根据多张参考图片生成 3D 模型。
+- `image_urls` 接受 1-4 张图片。
+- 从任务结果中获取模型资源，以及可用的预览图或辅助文件。
+- 可选添加纹理、骨骼绑定和动画。
+
+## 输出选项
+
+### 目标面数
+
+- `target_polycount`：可选。设置目标面数。整数。默认：`30000`。
+
+### 拓扑
+
+- `topology`：可选。选择网格拓扑。可选值：`quad`、`triangle`。默认：`triangle`。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流参数（包括输出选项）都放在 `input` 内。
+
+将下列参数放在 `input` 内。图片和纹理参考使用可公开访问的 HTTP(S) URL。
+
+- `enable_animation: true` 要求 `enable_rigging: true`。
+
+### 图片 URL
+
+- `image_urls`：必填。提供可公开访问的图片 URL。提供 1-4 项，每项必须是 HTTP(S) URL。
+
+### 重网格化
+
+- `should_remesh`：可选。控制是否重网格化。使用 `true` 或 `false`。默认：`true`。
+
+### 对称模式
+
+- `symmetry_mode`：可选。选择对称处理方式。可选值：`off`、`auto`、`on`。默认：`auto`。
+
+### 纹理
+
+- `should_texture`：可选。控制是否生成纹理。使用 `true` 或 `false`。默认：`true`。
+
+### PBR
+
+- `enable_pbr`：可选。控制基于物理的渲染（PBR）材质。使用 `true` 或 `false`。
+
+### 姿势模式
+
+- `pose_mode`：可选。选择姿势，或传空字符串表示不指定姿势。可选值：`a-pose`、`t-pose`、`""`。默认：`""`。
+
+### 纹理提示词
+
+- `texture_prompt`：可选。描述期望的纹理。
+
+### 纹理图片 URL
+
+- `texture_image_url`：可选。提供纹理参考 URL，使用可公开访问的 HTTP(S) URL。
+
+### 骨骼绑定
+
+- `enable_rigging`：可选。为生成的模型请求骨骼绑定。使用 `true` 或 `false`。
+
+### 骨骼绑定身高
+
+- `rigging_height_meters`：可选。设置骨骼绑定的身高（米）。数值。默认：`1.7`。
+
+### 动画
+
+- `enable_animation`：可选。请求生成动画；必须同时启用骨骼绑定。使用 `true` 或 `false`。
+
+### 动画动作 ID
+
+- `animation_action_id`：可选。选择动画动作。整数。默认：`1001`。
+
+### 安全检查
+
+- `enable_safety_checker`：可选。控制安全检查。使用 `true` 或 `false`。默认：`true`。
+
+## 输出文件
+
+- 读取返回的 `files` 数组中的每一项。
+- 模型资源为 `file_type: "3d"`；预览图为 `file_type: "image"`。
+- 读取 `file_type: "other"` 的辅助文件，以及返回的纹理、动画资源和文件元数据。

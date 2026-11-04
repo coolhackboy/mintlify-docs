@@ -1,0 +1,86 @@
+---
+title: "Hunyuan 3D v3.1 Pro 图生 3D"
+description: "Hunyuan 3D v3.1 Pro API 根据主图和附加视角重建 3D 物体，支持 PBR 材质。"
+icon: "cube"
+openapi: "/zh/api-manual/3d-series/hunyuan-3d-v3-1-pro-image-to-3d.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Hunyuan 3D v3.1 Pro 图生 3D，根据主图和附加视角重建 3D 物体，支持 PBR 材质。
+
+## 模型
+
+- **hunyuan-3d/v3.1/pro/image-to-3d** - 根据图片生成 3D 模型。
+
+## 功能
+
+- 根据图片生成 3D 模型。
+- `image_urls` 只接受 1 张图片。
+- 从任务结果中获取模型资源，以及可用的预览图或辅助文件。
+
+## 输出选项
+
+### 生成类型
+
+- `generate_type`：可选。选择 `Normal` 生成带纹理的模型，或选择 `Geometry` 生成仅含几何体的白模。
+
+### 面数
+
+- `face_count`：可选。设置目标面数。`40000` 到 `1500000` 的整数。默认：`500000`。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流参数（包括输出选项）都放在 `input` 内。
+
+使用下列输入参数。图片输入请提供可公开访问的 HTTP(S) URL。
+
+### 提示词
+
+- `prompt`：可选。描述所需的 3D 物体。最小长度：**1 个字符**。
+- 提供此参数时请使用非空字符串。
+
+### 图片 URL
+
+- `image_urls`：必填。提供可公开访问的图片 URL。只能提供 1 项，每项必须是 HTTP(S) URL。
+
+### PBR
+
+- `enable_pbr`：可选。设为 `true` 时在纹理模式下生成 PBR 材质。仅几何体生成优先于此设置。
+
+### 背面图片 URL
+
+- `back_image_url`：可选。以图片 URL 提供背面图，使用可公开访问的 HTTP(S) URL。
+
+### 左视图片 URL
+
+- `left_image_url`：可选。以图片 URL 提供左视图，使用可公开访问的 HTTP(S) URL。
+
+### 右视图片 URL
+
+- `right_image_url`：可选。以图片 URL 提供右视图，使用可公开访问的 HTTP(S) URL。
+
+### 顶视图片 URL
+
+- `top_image_url`：可选。以图片 URL 提供顶视图，使用可公开访问的 HTTP(S) URL。
+
+### 底视图片 URL
+
+- `bottom_image_url`：可选。以图片 URL 提供底视图，使用可公开访问的 HTTP(S) URL。
+
+### 左前视图片 URL
+
+- `left_front_image_url`：可选。以图片 URL 提供左前视图，使用可公开访问的 HTTP(S) URL。
+
+### 右前视图片 URL
+
+- `right_front_image_url`：可选。以图片 URL 提供右前视图，使用可公开访问的 HTTP(S) URL。
+
+## 输出文件
+
+- 读取返回的 `files` 数组中的每一项。
+- 模型资源为 `file_type: "3d"`；预览图为 `file_type: "image"`。
+- 其他产物可能为 `file_type: "other"`。保留返回的纹理、材质文件和文件元数据。
