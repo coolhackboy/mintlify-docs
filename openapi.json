@@ -88,27 +88,16 @@
                     }
                   }
                 },
-                "sora-2": {
-                  "summary": "Sora 2 Video Generation",
+                "kling-v3.0-std-text-to-video": {
+                  "summary": "Kling 3.0 Std Text to Video",
                   "value": {
-                    "model": "sora-2",
+                    "model": "kwaivgi/kling-v3.0-std/text-to-video",
                     "callback_url": "https://your-domain.com/callback",
                     "input": {
                       "prompt": "A time-lapse of a bustling city street transitioning from day to night",
-                      "duration": 15,
-                      "aspect_ratio": "16:9"
-                    }
-                  }
-                },
-                "sora-2-pro": {
-                  "summary": "Sora 2 Pro Video Generation",
-                  "value": {
-                    "model": "sora-2-pro",
-                    "callback_url": "https://your-domain.com/callback",
-                    "input": {
-                      "prompt": "A cinematic drone shot flying through a misty forest at dawn",
-                      "duration": 25,
-                      "aspect_ratio": "16:9"
+                      "duration": 5,
+                      "aspect_ratio": "16:9",
+                      "sound": true
                     }
                   }
                 },

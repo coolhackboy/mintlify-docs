@@ -23,7 +23,7 @@
         ],
         "summary": "Happy Horse Video Edit",
         "operationId": "submit_alibaba_happyhorse_1_0_video_edit",
-        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nWhen supplied, prompt must not be blank. Input URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nInput video must be between three and sixty seconds. Credits equal the detected source duration capped at fifteen seconds multiplied by the resolution rate. A nonblank prompt of at most 2,500 characters is required.\n\nCredits are deducted on submission and refunded if the task fails. Reference prompts do not require character1 or character2 markers.\n\nMedia inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.",
+        "description": "Send only the fields shown for this workflow. Parameters from other workflows are rejected before credits are deducted.\n\nInput URL fields require HTTP(S) URLs with a hostname and no embedded credentials.\n\nInput video must be between three and sixty seconds. Credits equal the detected source duration capped at fifteen seconds multiplied by the resolution rate. A nonblank prompt of at most 2,500 characters is required.\n\nCredits are deducted on submission and refunded if the task fails. Reference prompts do not require character1 or character2 markers.\n\nMedia inspected for duration must be a publicly reachable HTTP(S) file of at most 100 MiB.",
         "requestBody": {
           "required": true,
           "content": {
@@ -47,7 +47,7 @@
                         "type": "string",
                         "maxLength": 2500,
                         "minLength": 1,
-                        "description": "Text prompt. Required for text-to-video, reference-to-video, and video-edit. Optional for image-to-video. Maximum length is 2,500 characters."
+                        "description": "Text prompt describing the requested edit. Required. Maximum length is 2,500 characters."
                       },
                       "reference_image_urls": {
                         "type": "array",
@@ -57,7 +57,7 @@
                           "format": "uri",
                           "description": "Reference image urls."
                         },
-                        "description": "Reference images: 1–9 for reference-to-video, or up to 5 optional images for video-edit. Describe referenced subjects in the prompt; specific character markers are not required."
+                        "description": "Optional reference images, up to 5. Describe referenced subjects in the prompt; specific character markers are not required."
                       },
                       "video_url": {
                         "type": "string",

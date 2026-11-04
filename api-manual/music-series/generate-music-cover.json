@@ -20,7 +20,7 @@
     "/api/generate/submit": {
       "post": {
         "summary": "Submit Music Cover Generation Task",
-        "description": "Generate a cover version of an existing music track",
+        "description": "Generate cover artwork images for an existing music track",
         "operationId": "submitMusicCoverTask",
         "tags": ["Music Cover"],
         "requestBody": {

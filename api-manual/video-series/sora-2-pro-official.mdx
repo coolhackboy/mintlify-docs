@@ -27,6 +27,8 @@ openapi: "/api-manual/video-series/sora-2-pro-official.json POST /api/generate/s
 - **aspect_ratio**: `16:9` or `9:16` for text-to-video; `auto`, `16:9`, or `9:16` for image-to-video. Default is `16:9` for text-to-video and `auto` for image-to-video
 - **image_urls**: Optional reference image array. Maximum `1` image
 
+{/* poyo-20260910:start */}
+
 ## Workflow IDs
 
 Existing IDs remain available. New integrations can select a dedicated workflow:
@@ -40,5 +42,3 @@ Existing IDs remain available. New integrations can select a dedicated workflow:
 - `image_urls` is optional. If provided, only one image is supported.
 - `aspect_ratio=auto` is only valid when `image_urls` is provided.
 - Query status through the standard task status API.
-
-{/* poyo-20260910:start */}

@@ -1,6 +1,6 @@
 ---
 title: "Generate Music Cover"
-description: "Create cover images for generated music."
+description: "The Generate Music Cover API creates cover artwork images for a finished Suno music task from its task_id; each task can generate covers only once."
 icon: "music"
 openapi: "/api-manual/music-series/generate-music-cover.json POST /api/generate/submit"
 ---
@@ -12,9 +12,9 @@ openapi: "/api-manual/music-series/generate-music-cover.json POST /api/generate/
 
 ## Usage Guide
 
-- This endpoint creates a cover version of an existing music track
+- This endpoint creates cover artwork images for an existing music track
 - Requires a valid task_id from a previously generated music task
-- The cover will be a new interpretation of the original track
+- The generated images are returned in the `generate_cover` field of the task result
 
 ## Parameter Details
 
@@ -24,5 +24,5 @@ openapi: "/api-manual/music-series/generate-music-cover.json POST /api/generate/
 
 ## Usage Notes
 
-- A cover can only be generated once per original task
+- Cover images can only be generated once per original task
 - Results are delivered via the callback URL when processing is complete

@@ -19,7 +19,7 @@ openapi: "/api-manual/video-series/happy-horse.json POST /api/generate/submit"
 ## Required parameters
 
 - **model**: `happy-horse`
-- **input.prompt**: Required for text-to-video, image-to-video, and reference-to-video (maximum 5,000 characters). Required for video-edit (maximum 2,500 characters).
+- **input.prompt**: Required for text-to-video and reference-to-video (maximum 5,000 characters) and for video-edit (maximum 2,500 characters). Optional for image-to-video.
 - **input.video_url**: Required for video-edit.
 - **input.reference_image_urls**: Required for reference-to-video.
 
@@ -42,17 +42,17 @@ Send a `prompt` without image or video input fields. Use `aspect_ratio`, `resolu
 
 ### Image to Video
 
-Send a single-item `image_urls` array. The image is used as the first frame. A nonblank `prompt` of at most 5,000 characters is required.
+Send a single-item `image_urls` array. The image is used as the first frame. `prompt` is optional; when supplied it must be nonblank and at most 5,000 characters.
 
 ### Reference to Video
 
-Send `reference_image_urls` with 1-9 images and a required `prompt`. Reference the images in prompt text as `character1`, `character2`, and so on, matching the order of `reference_image_urls`.
+Send `reference_image_urls` with 1-9 images and a required `prompt`. Describe the referenced subjects in the prompt; `character1` and `character2` markers are not required.
 
 Do not combine `reference_image_urls` with `image_urls`.
 
 ### Video Edit
 
-Send `video_url` with a required edit `prompt`. Optional `reference_image_urls` can guide the edit; refer to them as `@Image1`, `@Image2`, and so on. `audio_setting` controls whether Happy Horse decides audio handling automatically or preserves the original audio.
+Send `video_url` with a required edit `prompt`. Optional `reference_image_urls` (up to 5) can guide the edit; describe the referenced subjects in the prompt, no special markers are required. `audio_setting` controls whether Happy Horse decides audio handling automatically or preserves the original audio.
 
 The source video must be 3-60 seconds. Video-edit billing uses the probed source video duration according to the current workflow pricing configuration.
 
@@ -61,6 +61,8 @@ The source video must be 3-60 seconds. Video-edit billing uses the probed source
 Happy Horse billing depends on the selected workflow, output resolution, and billable video duration. Check the Vidgo pricing page or dashboard for the current rate before submitting production traffic.
 
 Text-to-video, image-to-video, and reference-to-video use the requested `duration`. Video-edit uses the probed source video duration, capped at the maximum billable duration for this workflow.
+
+{/* poyo-20260910:start */}
 
 ## Workflow IDs
 
@@ -78,5 +80,3 @@ Existing IDs remain available. New integrations can select a dedicated workflow:
 - `reference_image_urls` selects reference-to-video unless `video_url` is present, in which case it is treated as optional video-edit reference imagery.
 - For text-to-video and reference-to-video, omit `video_url` and use `aspect_ratio`.
 - For video-edit, omit `duration`; the source video duration is used for validation and duration-based billing.
-
-{/* poyo-20260910:start */}
