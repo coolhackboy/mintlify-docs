@@ -1,0 +1,515 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Flux Kontext Max 图像编辑",
+    "description": "使用 FLUX Kontext Max 进行上下文感知的图像编辑，在保持视觉连贯的同时细化主体和场景。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Image Series"
+        ],
+        "summary": "Flux Kontext Max 图像编辑",
+        "operationId": "submit_blackforestlabs_flux_kontext_max",
+        "description": "提交 Flux Kontext Max 图像编辑任务：model 和可选的 callback_url 放在请求根级，生成参数放在 input 内。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "blackforestlabs/flux-kontext-max",
+                    "enum": [
+                      "blackforestlabs/flux-kontext-max"
+                    ]
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "image_urls",
+                      "prompt"
+                    ],
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "maxLength": 2000,
+                        "minLength": 1,
+                        "description": "描述要对图像做的修改，1–2,000 个字符，且至少包含一个非空白字符。"
+                      },
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "公开可访问的 HTTP(S) 图像 URL。"
+                        },
+                        "minItems": 1,
+                        "maxItems": 1,
+                        "description": "要编辑的源图。只提供 1 个公开可访问的 HTTP(S) 图像 URL。"
+                      },
+                      "size": {
+                        "type": "string",
+                        "enum": [
+                          "1:1",
+                          "4:3",
+                          "3:4",
+                          "16:9",
+                          "9:16",
+                          "21:9",
+                          "9:21"
+                        ],
+                        "default": "1:1",
+                        "description": "输出宽高比。默认 1:1。"
+                      },
+                      "output_format": {
+                        "type": "string",
+                        "enum": [
+                          "png",
+                          "jpg"
+                        ],
+                        "description": "输出图像文件格式：png 或 jpg。"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "公开的 HTTP(S) URL，任务变为 finished 或 failed 时会向其发送 POST 通知。"
+                  }
+                },
+                "description": "model 和可选的 callback_url 放在请求根级，生成参数放在 input 内。"
+              },
+              "examples": {
+                "default": {
+                  "summary": "冰湖上的同一位大提琴手",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-max",
+                    "input": {
+                      "prompt": "Move this exact same musician, still seated on the same wooden chair and playing the same cello, from the practice room to the middle of a vast frozen lake at blue hour. Keep his face, curly black hair, round tortoiseshell glasses, closed eyes, moss-green cable-knit sweater with rolled sleeves, charcoal trousers, brown boots, bow position and the honey-brown cello with its worn varnish identical. The new setting: smooth dark ice with white cracks and a light dusting of snow around the chair, snow-covered pine forest and mountains on the far shore, a deep blue twilight sky with a thin pink glow on the horizon and the first stars. A small warm light from a lantern on the ice beside the chair lights his face and the cello, while the rest of the scene is cool blue. His breath is faintly visible in the cold air. Remove the practice room completely.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-max/v1/01/input-01.png"
+                      ],
+                      "size": "9:16",
+                      "output_format": "png"
+                    }
+                  }
+                },
+                "max-edit-02": {
+                  "summary": "彩色玻璃窗风格的冰岛草皮农舍",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-max",
+                    "input": {
+                      "prompt": "Transform this photograph into a traditional leaded stained-glass window. Keep the exact composition: the four turf-roofed houses with white fronts and red doors, the stone wall, the gravel path, the waterfall on the basalt cliff, the sheep and the cloudy sky, all in the same positions. Render every shape as pieces of colored cathedral glass separated by thick dark lead came lines, with deep emerald and moss greens for the grass roofs and meadow, cobalt and pale blue glass for the sky and waterfall, ruby red for the doors, and milky white glass for the house fronts and sheep. Show light shining through the glass with subtle bubbles, streaks and uneven thickness, and a thin dark iron frame around the whole window.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-max/v1/02/input-01.png"
+                      ],
+                      "size": "1:1",
+                      "output_format": "jpg"
+                    }
+                  }
+                },
+                "max-edit-03": {
+                  "summary": "修复一张梯田老照片",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-max",
+                    "input": {
+                      "prompt": "Restore and colorize this old photograph. Remove all dust specks, scratches and the diagonal crease, and repair the torn corner so the scene continues naturally. Recover sharp detail and natural contrast. Colorize realistically: vivid young green rice seedlings, muddy brown-green water reflecting a pale blue sky, warm natural skin tones, faded indigo and red traditional woven clothing, grey stone terrace walls with green moss, lush green mountainside and soft white mist on the peaks. Keep the three farmers' faces, poses, hands, positions and the composition exactly the same as the original.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-max/v1/03/input-01.png"
+                      ],
+                      "size": "4:3"
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-max",
+                    "input": {
+                      "prompt": "Move this exact same musician, still seated on the same wooden chair and playing the same cello, from the practice room to the middle of a vast frozen lake at blue hour. Keep his face, curly black hair, round tortoiseshell glasses, closed eyes, moss-green cable-knit sweater with rolled sleeves, charcoal trousers, brown boots, bow position and the honey-brown cello with its worn varnish identical. The new setting: smooth dark ice with white cracks and a light dusting of snow around the chair, snow-covered pine forest and mountains on the far shore, a deep blue twilight sky with a thin pink glow on the horizon and the first stars. A small warm light from a lantern on the ice beside the chair lights his face and the cello, while the rest of the scene is cool blue. His breath is faintly visible in the cold air. Remove the practice room completely.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-max/v1/01/input-01.png"
+                      ],
+                      "size": "9:16",
+                      "output_format": "png"
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "QBNW6JCNI530EKJV",
+                    "status": "running",
+                    "created_time": "2026-09-26T11:02:47"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求校验错误或账户余额不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "任务创建错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "模型服务暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

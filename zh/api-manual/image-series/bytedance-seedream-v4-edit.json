@@ -1,0 +1,535 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Seedream 4 图像编辑",
+    "description": "使用 Seedream 4 结合多张视觉参考改造图像，支持批量变体，输出最高 4K。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Image Series"
+        ],
+        "summary": "Seedream 4 图像编辑",
+        "operationId": "submit_bytedance_seedream_v4_edit",
+        "description": "提交异步图像编辑任务。prompt 为 1–5,000 个字符，且至少包含一个非空白字符；提供 1–10 个公开的 HTTP(S) 图像 URL。image_urls 数量与 n 之和不超过 15。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "bytedance/seedream/v4/edit",
+                    "enum": [
+                      "bytedance/seedream/v4/edit"
+                    ]
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "image_urls",
+                      "prompt"
+                    ],
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "maxLength": 5000,
+                        "minLength": 1,
+                        "description": "描述要做的修改，1–5,000 个字符，且至少包含一个非空白字符。"
+                      },
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "参考图的公开 HTTP(S) URL。"
+                        },
+                        "minItems": 1,
+                        "maxItems": 10,
+                        "description": "1–10 个按顺序排列的公开 HTTP(S) 参考图 URL。image_urls 数量与 n 之和不超过 15。"
+                      },
+                      "size": {
+                        "type": "string",
+                        "enum": [
+                          "1:1",
+                          "3:4",
+                          "4:3",
+                          "16:9",
+                          "9:16",
+                          "3:2",
+                          "2:3",
+                          "21:9"
+                        ],
+                        "default": "1:1",
+                        "description": "输出宽高比：1:1、3:4、4:3、16:9、9:16、3:2、2:3 或 21:9。默认：1:1。"
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "enum": [
+                          "1K",
+                          "2K",
+                          "4K"
+                        ],
+                        "default": "2K",
+                        "description": "输出分辨率预设：1K、2K 或 4K。默认：2K。"
+                      },
+                      "n": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 15,
+                        "default": 1,
+                        "description": "要生成的图像数量，1 到 15。默认：1。image_urls 数量与 n 之和不超过 15。"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) URL，用于接收任务完成通知。"
+                  }
+                },
+                "description": "model 和可选的 callback_url 放在请求根级，生成参数放在 input 内。"
+              },
+              "examples": {
+                "edit-01": {
+                  "summary": "科普特装订师",
+                  "value": {
+                    "model": "bytedance/seedream/v4/edit",
+                    "input": {
+                      "prompt": "Combine the three reference images into one natural documentary photograph. Use the elderly bookbinder from image 1 with exactly the same face, wrinkles, eyes, grey beard, navy galabeya, brown leather apron and silver cross. Use only the goatskin cover, gold-and-red interlaced cross, brass bosses and leather ties from image 2; do not copy the white table or the isolated still-life setup. Set the scene in the Cairo workshop from image 3 with its mashrabiya window, wooden press, shelves of quires and the ochre street beyond. The man stands in three-quarter view at the table, pressing the finished cover onto a text block in the wooden press. Relight him and the book with the same warm low afternoon sun from the left and matching lattice shadows, consistent scale and perspective, no text, no watermark.",
+                      "size": "4:3",
+                      "resolution": "2K",
+                      "n": 1,
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4/edit/v1/01/input-02.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4/edit/v1/01/input-03.png"
+                      ]
+                    }
+                  }
+                },
+                "edit-02": {
+                  "summary": "打开香料阁楼",
+                  "value": {
+                    "model": "bytedance/seedream/v4/edit",
+                    "input": {
+                      "prompt": "Extend image 1 into a wide 16:9 photograph. Keep the clove basket, the crate, the slatted shutter and the stripe of sun exactly as they are, with the same size, angle and relative position. Naturally expand the scene on both sides and upward: to the left reveal more of the loft with stacked jute sacks of cinnamon bark and a hanging brass scale; to the right open a doorway onto a bright stone stair and a glimpse of a turquoise harbor; above, show the timber rafters and a few swallows on a beam. Seamless continuation of the same late-afternoon light, dust motes and wood grain with no visible seams or borders, no text, no watermark.",
+                      "size": "16:9",
+                      "resolution": "2K",
+                      "n": 1,
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4/edit/v1/02/input-01.png"
+                      ]
+                    }
+                  }
+                },
+                "edit-03": {
+                  "summary": "非斯制革场的蓝晒图",
+                  "value": {
+                    "model": "bytedance/seedream/v4/edit",
+                    "input": {
+                      "prompt": "Redraw image 1 in the exact visual style of image 2. Image 1 defines all content: keep the same high terrace viewpoint and framing, the honeycomb vats, the tanners in the same positions, the drying skins and the surrounding stone walls. Image 2 defines only the style: a cyanotype on textured watercolor paper with a Prussian-blue ground, white or pale-blue highlights, slightly uneven chemical wash and visible paper fibers. Do not copy any ferns, plants or botanical shapes from image 2. No text, no signature, no watermark.",
+                      "size": "3:4",
+                      "resolution": "2K",
+                      "n": 1,
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4/edit/v1/03/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4/edit/v1/03/input-02.png"
+                      ]
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "bytedance/seedream/v4/edit",
+                    "input": {
+                      "prompt": "Combine the three reference images into one natural documentary photograph. Use the elderly bookbinder from image 1 with exactly the same face, wrinkles, eyes, grey beard, navy galabeya, brown leather apron and silver cross. Use only the goatskin cover, gold-and-red interlaced cross, brass bosses and leather ties from image 2; do not copy the white table or the isolated still-life setup. Set the scene in the Cairo workshop from image 3 with its mashrabiya window, wooden press, shelves of quires and the ochre street beyond. The man stands in three-quarter view at the table, pressing the finished cover onto a text block in the wooden press. Relight him and the book with the same warm low afternoon sun from the left and matching lattice shadows, consistent scale and perspective, no text, no watermark.",
+                      "size": "4:3",
+                      "resolution": "2K",
+                      "n": 1,
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4/edit/v1/01/input-02.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v4/edit/v1/01/input-03.png"
+                      ]
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "MJH8FQO824KBO4VG",
+                    "status": "running",
+                    "created_time": "2026-09-26T10:59:58"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求校验错误或账户余额不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "达到请求速率或账户限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "任务创建错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "服务暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

@@ -1,0 +1,585 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Seedream 5.0 Lite 图像编辑",
+    "description": "使用 Seedream 5.0 Lite，通过文字指令和多张参考图重新混编已有画面，支持批量输出。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Image Series"
+        ],
+        "summary": "Seedream 5.0 Lite 图像编辑",
+        "operationId": "submit_bytedance_seedream_v5_lite_edit",
+        "description": "提交异步图像编辑任务。prompt 为 3–3,000 个字符。自定义尺寸的宽和高均为正整数。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "bytedance/seedream/v5/lite/edit",
+                    "enum": [
+                      "bytedance/seedream/v5/lite/edit"
+                    ]
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "image_urls",
+                      "prompt"
+                    ],
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 3000,
+                        "description": "描述要做的修改，3–3,000 个字符，按去除首尾空白后的长度计算。"
+                      },
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "JPEG 或 PNG 图像的公开 HTTP(S) URL。"
+                        },
+                        "minItems": 1,
+                        "maxItems": 10,
+                        "description": "1–10 个按顺序排列的 HTTP(S) 参考图 URL。格式：JPEG、PNG。"
+                      },
+                      "size": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "description": "使用预设（`2K`、`3K`、`1:1`、`4:3`、`3:4`、`16:9`、`9:16`、`3:2`、`2:3`、`21:9`）或自定义 `WIDTHxHEIGHT` 尺寸。\n\n宽和高之间用 `x` 或 `X` 分隔。",
+                            "title": "尺寸字符串"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "width",
+                              "height"
+                            ],
+                            "properties": {
+                              "width": {
+                                "type": "integer",
+                                "description": "输出宽度（像素），正整数。",
+                                "minimum": 1
+                              },
+                              "height": {
+                                "type": "integer",
+                                "description": "输出高度（像素），正整数。",
+                                "minimum": 1
+                              }
+                            },
+                            "additionalProperties": false,
+                            "description": "以对象表示的自定义尺寸，宽和高均为正整数。",
+                            "title": "宽和高"
+                          }
+                        ],
+                        "default": "1:1",
+                        "description": "输出尺寸：2K、3K、比例预设、WIDTHxHEIGHT 字符串，或宽高为正整数的对象。默认：1:1。"
+                      },
+                      "n": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 15,
+                        "default": 1,
+                        "description": "要生成的图像数量，1 到 15。默认：1。"
+                      },
+                      "enable_safety_checker": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "设为 true 开启安全检查，设为 false 关闭。默认：true。"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) URL，用于接收任务完成通知。"
+                  }
+                },
+                "description": "model 和可选的 callback_url 放在请求根级，生成参数放在 input 内。"
+              },
+              "examples": {
+                "edit-01": {
+                  "summary": "织工的庭院",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/edit",
+                    "input": {
+                      "prompt": "Combine the three reference images into one natural documentary photograph. Use the elderly woman from image 1 with exactly the same face, wrinkles, eyes, braids tied with red yarn, black montera hat with the red band and magenta shawl with the silver pin. Use the backstrap loom and half-finished textile from image 2, keeping the same red, deep green and golden yellow diamond and zigzag pattern with the small white llama figures. Set the scene in the adobe courtyard from image 3 with its ochre walls, blue door, clay pot of geraniums and the terraces and snowy peaks beyond the low wall. The woman kneels on the straw mat in three-quarter view; the far end bar of the loom is tied to the wooden post, the near bar is attached to a strap around her waist, and her hands pass the weaving sword through the warp threads. Relight her and the loom with the same warm low afternoon sun from the left and matching long shadows, consistent scale and perspective, no text, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-02.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-03.png"
+                      ],
+                      "size": "4:3",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "edit-02": {
+                  "summary": "拓宽峡湾",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/edit",
+                    "input": {
+                      "prompt": "Extend image 1 into a wide 21:9 panoramic photograph. Keep the kayaker, the red kayak, the yellow paddle, the V-shaped wake and the turquoise-green water exactly as they are, with the same size, angle and relative position. Naturally expand the scene on both sides and upward: continue the steep dark rock cliff on the right to its full height and add a tall thin waterfall pouring down it into the fjord with mist at its base; on the left reveal a far shoreline with green meadows, three small red wooden boathouses at the waterline and layered mountain ridges fading into haze. Show the cliff tops and a soft overcast sky. Seamless continuation of light, reflections and water texture with no visible seams or borders, no text, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/02/input-01.png"
+                      ],
+                      "size": "21:9",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "edit-03": {
+                  "summary": "麻胶版画风格的公园象棋",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/edit",
+                    "input": {
+                      "prompt": "Redraw image 1 in the exact visual style of image 2. Image 1 defines all content: keep the same composition and framing, the two elderly players with their facial features, poses and clothing, the standing onlooker with folded arms, the chess table with the pieces in the same positions, the jacaranda trees and the three pigeons. Image 2 defines only the style: a two-color linocut relief print on off-white textured paper with bold carved black lines, visible gouge marks, parallel hatching for shading, flat rust-red ink for the shirts, the cardigan and the jacaranda blossoms, slightly uneven ink coverage and visible paper grain. Do not copy any boats, harbor, lighthouse or seagulls from image 2. No text, no signature, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/03/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/03/input-02.png"
+                      ],
+                      "size": "3:2",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/edit",
+                    "input": {
+                      "prompt": "Combine the three reference images into one natural documentary photograph. Use the elderly woman from image 1 with exactly the same face, wrinkles, eyes, braids tied with red yarn, black montera hat with the red band and magenta shawl with the silver pin. Use the backstrap loom and half-finished textile from image 2, keeping the same red, deep green and golden yellow diamond and zigzag pattern with the small white llama figures. Set the scene in the adobe courtyard from image 3 with its ochre walls, blue door, clay pot of geraniums and the terraces and snowy peaks beyond the low wall. The woman kneels on the straw mat in three-quarter view; the far end bar of the loom is tied to the wooden post, the near bar is attached to a strap around her waist, and her hands pass the weaving sword through the warp threads. Relight her and the loom with the same warm low afternoon sun from the left and matching long shadows, consistent scale and perspective, no text, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-02.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-03.png"
+                      ],
+                      "size": "4:3",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                },
+                "custom-string": {
+                  "summary": "自定义尺寸字符串",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/edit",
+                    "input": {
+                      "prompt": "Combine the three reference images into one natural documentary photograph. Use the elderly woman from image 1 with exactly the same face, wrinkles, eyes, braids tied with red yarn, black montera hat with the red band and magenta shawl with the silver pin. Use the backstrap loom and half-finished textile from image 2, keeping the same red, deep green and golden yellow diamond and zigzag pattern with the small white llama figures. Set the scene in the adobe courtyard from image 3 with its ochre walls, blue door, clay pot of geraniums and the terraces and snowy peaks beyond the low wall. The woman kneels on the straw mat in three-quarter view; the far end bar of the loom is tied to the wooden post, the near bar is attached to a strap around her waist, and her hands pass the weaving sword through the warp threads. Relight her and the loom with the same warm low afternoon sun from the left and matching long shadows, consistent scale and perspective, no text, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-02.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-03.png"
+                      ],
+                      "size": "2304x1728",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "custom-object": {
+                  "summary": "自定义尺寸对象",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/edit",
+                    "input": {
+                      "prompt": "Combine the three reference images into one natural documentary photograph. Use the elderly woman from image 1 with exactly the same face, wrinkles, eyes, braids tied with red yarn, black montera hat with the red band and magenta shawl with the silver pin. Use the backstrap loom and half-finished textile from image 2, keeping the same red, deep green and golden yellow diamond and zigzag pattern with the small white llama figures. Set the scene in the adobe courtyard from image 3 with its ochre walls, blue door, clay pot of geraniums and the terraces and snowy peaks beyond the low wall. The woman kneels on the straw mat in three-quarter view; the far end bar of the loom is tied to the wooden post, the near bar is attached to a strap around her waist, and her hands pass the weaving sword through the warp threads. Relight her and the loom with the same warm low afternoon sun from the left and matching long shadows, consistent scale and perspective, no text, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-02.png",
+                        "https://cdn.vidgo.ai/apis/models/bytedance/seedream/v5/lite/edit/v1/01/input-03.png"
+                      ],
+                      "size": {
+                        "width": 2304,
+                        "height": 1728
+                      },
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "MYBFV6M8G3QZ4W4C",
+                    "status": "running",
+                    "created_time": "2026-09-25T16:21:48"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求校验错误或账户余额不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "达到请求速率或账户限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "任务创建错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "服务暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

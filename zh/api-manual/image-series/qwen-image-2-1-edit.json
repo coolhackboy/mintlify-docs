@@ -1,0 +1,305 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Qwen Image 2.1 图像编辑",
+    "description": "使用 Qwen Image 2.1，通过文字指令和参考图编辑一张图像。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交 Qwen Image 2.1 图像编辑任务",
+        "operationId": "submitQwenImage21ImageEditTask",
+        "tags": [
+          "Qwen Image 2.1 Image Edit"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "reference-edit": {
+                  "summary": "使用参考图编辑",
+                  "value": {
+                    "model": "alibaba/qwen-image-2.1/edit",
+                    "input": {
+                      "prompt": "Preserve the product and replace the background with a warm modern studio.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-product.png"
+                      ],
+                      "size": "auto",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "mask-edit": {
+                  "summary": "编辑蒙版区域",
+                  "value": {
+                    "model": "alibaba/qwen-image-2.1/edit",
+                    "input": {
+                      "prompt": "Replace the masked area with a small vase of flowers.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-product.png"
+                      ],
+                      "mask_url": "https://cdn.vidgo.ai/temp/edit-mask.png",
+                      "background": "opaque",
+                      "size": "auto",
+                      "prompt_extend": false
+                    }
+                  }
+                },
+                "transparent-background": {
+                  "summary": "编辑并输出透明背景图像",
+                  "value": {
+                    "model": "alibaba/qwen-image-2.1/edit",
+                    "input": {
+                      "prompt": "Keep the silver robot and remove its background.",
+                      "background": "transparent",
+                      "output_format": "webp",
+                      "resolution": "2K",
+                      "seed": 20261009,
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-product.png"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交结果。任务 ID 标识一项异步任务；生成可能仍在进行中。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "使用 `Authorization: Bearer VIDGO_API_KEY`。"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "alibaba/qwen-image-2.1/edit"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "可选的 Webhook URL，用于接收完成或失败通知。",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt",
+              "image_urls"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 5000,
+                "description": "描述编辑内容的文字指令。\n\n至少包含一个非空白字符。"
+              },
+              "size": {
+                "type": "string",
+                "description": "输出宽高比。\n\nauto 跟随参考图。\n\n提供 mask_url 时忽略。",
+                "enum": [
+                  "1:1",
+                  "4:3",
+                  "3:4",
+                  "3:2",
+                  "2:3",
+                  "16:9",
+                  "9:16",
+                  "21:9",
+                  "9:21",
+                  "auto"
+                ],
+                "default": "auto"
+              },
+              "resolution": {
+                "type": "string",
+                "enum": [
+                  "1K",
+                  "2K"
+                ],
+                "default": "1K",
+                "description": "输出分辨率档位。"
+              },
+              "image_urls": {
+                "type": "array",
+                "maxItems": 10,
+                "items": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "使用公开可访问的 HTTP(S) 下载 URL。"
+                },
+                "description": "编辑所需的参考图，按提示词中的顺序排列。",
+                "minItems": 1
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "png",
+                  "jpeg",
+                  "webp"
+                ],
+                "default": "png",
+                "description": "输出图像格式。\n\n透明输出需要 PNG 或 WebP。"
+              },
+              "enable_safety_checker": {
+                "type": "boolean",
+                "default": true,
+                "description": "开启内容安全检查。"
+              },
+              "background": {
+                "type": "string",
+                "enum": [
+                  "opaque",
+                  "transparent"
+                ],
+                "default": "opaque",
+                "description": "背景模式。\n\n透明输出需要 PNG 或 WebP。"
+              },
+              "mask_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "可选的局部编辑蒙版。\n\n需要恰好一张参考图，且蒙版背景不透明。\n\n白色区域会被修改，黑色区域保持不变。\n\n与参考图的宽高比一致；蒙版会缩放到参考图尺寸。\n\nsize 和 prompt_extend 会被忽略。\n\n使用公开可访问的 HTTP(S) 下载 URL。"
+              },
+              "prompt_extend": {
+                "type": "boolean",
+                "default": true,
+                "description": "生成前增强提示词。\n\n提供 mask_url 时忽略。"
+              },
+              "seed": {
+                "type": "integer",
+                "description": "可选的随机种子。\n\n省略时使用随机种子。"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-example-001"
+              },
+              "status": {
+                "type": "string",
+                "example": "running"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-10-09T10:30:00"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "error"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

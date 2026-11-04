@@ -1,0 +1,36 @@
+---
+title: "Nano Banana 2.1 文生图"
+description: "Nano Banana 2.1 文生图 API 根据文本提示词生成一张图像。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/nano-banana-2-1-text-to-image.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+## 可选参数
+
+- `size` (string)：输出宽高比。可选值：`1:1`、`2:3`、`3:2`、`3:4`、`4:3`、`4:5`、`5:4`、`9:16`、`16:9`、`21:9`。默认：`1:1`。
+- `resolution` (string)：输出分辨率档位。可选值：`1K`、`2K`、`4K`。默认：`1K`。
+
+## 使用指南
+
+使用 Nano Banana 2.1 根据文本提示词生成一张图像。
+
+- 将 `model` 设为 `google/nano-banana-2.1/text-to-image`。
+- `model` 和可选的 `callback_url` 放在请求根级；工作流参数放在 `input` 内。
+- 每次请求生成一张图像。
+- 如需基于参考图编辑，请使用[图像编辑](/zh/api-manual/image-series/nano-banana-2-1-edit)，并设置 `model=google/nano-banana-2.1/edit`。
+
+## 参数详情
+
+- `prompt` 必填。提供非空文本，最多 20,000 个字符。
+- `size` 默认 `1:1`。
+
+## 计费
+
+按输出图像计费，取决于 `resolution`。在每个档位上，文生图和图像编辑的计费标准相同。
+
+积分在提交时扣除，任务失败会退还。

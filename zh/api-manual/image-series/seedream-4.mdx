@@ -1,0 +1,36 @@
+---
+title: "Seedream-4"
+description: "Seedream-4 API 由字节跳动 Seedream-4 驱动，支持文生图和图像编辑。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/seedream-4.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+Seedream-4 由字节跳动 Seedream-4 驱动，通过同一个统一提交接口同时支持文生图和图像编辑。
+
+## 模型
+
+- **seedream-4** - 文生图，可选参考图
+- **seedream-4-edit** - 图像编辑模式，`image_urls` 必填
+
+{/* poyo-20260910:start */}
+
+## 工作流 ID
+
+现有 ID 仍可使用。新接入可以选择专用的工作流：
+
+- [bytedance/seedream/v4/text-to-image](/zh/api-manual/image-series/bytedance-seedream-v4-text-to-image)
+- [bytedance/seedream/v4/edit](/zh/api-manual/image-series/bytedance-seedream-v4-edit)
+{/* poyo-20260910:end */}
+
+## 注意事项
+
+- `size` 对应宽高比，支持 `1:1`、`3:4`、`4:3`、`16:9`、`9:16`、`3:2`、`2:3`、`21:9`
+- `resolution` 支持 `1K`、`2K`、`4K`，默认 `2K`
+- `n` 支持 `1-15`
+- `image_urls` 数量与 `n` 之和不得超过 `15`
+- 积分按 `base credits * n`（基础积分 × n） 预扣。如果返回的图像少于请求数量，未使用的部分会自动退还

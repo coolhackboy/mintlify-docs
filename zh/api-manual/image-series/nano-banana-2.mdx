@@ -1,0 +1,18 @@
+---
+title: "Nano Banana Pro"
+description: "Nano Banana Pro API 由 Gemini 3 Pro Image Preview 驱动，提供新一代 AI 图像生成。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/nano-banana-2.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+由 Google Gemini 3 Pro Image Preview 驱动的新一代 AI 图像生成。不到 1 秒即可生成原生 2K 分辨率图像，文字渲染更强，角色一致性好，具备设计师级品质。
+
+## 模型
+
+- **nano-banana-2** - 文生图和图生图
+- **nano-banana-2-edit** - 高级图像编辑

@@ -1,0 +1,49 @@
+---
+title: "Seedream 5.0 Pro 文生图"
+description: "Seedream 5.0 Pro 文生图 API 是 Seedream 旗舰文生图模型，提示词遵循精准，支持版式控制和多语言文字排版。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/seedream-v5-0-pro.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+Seedream 5.0 Pro 面向复杂提示词、结构化版式、多语言文字排版和产品视觉。
+
+## 模型
+
+- **seedream-v5.0-pro** - 旗舰文生图
+
+## 尺寸参数
+
+`input.size` 控制输出宽高比，默认 `1:1`：
+
+- 比例预设：`1:1`、`4:3`、`3:4`、`16:9`、`9:16`、`2:3`、`3:2`、`21:9`
+
+## 分辨率参数
+
+`input.resolution` 控制输出分辨率，默认 `1K`：
+
+- 分辨率预设：`1K`、`2K`
+
+## 定价
+
+每次请求生成一张图像，按当前 Seedream 5.0 Pro 模型价格计费。
+
+## 调用方式
+
+使用统一提交接口：`POST /api/generate/submit`
+
+```json
+{
+  "model": "seedream-v5.0-pro",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "A cinematic scene with natural lighting and coherent motion",
+    "resolution": "1K",
+    "size": "1:1"
+  }
+}
+```

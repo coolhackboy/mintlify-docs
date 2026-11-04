@@ -1,0 +1,47 @@
+---
+title: "Qwen Image 2.1 图像编辑"
+description: "Qwen Image 2.1 图像编辑 API 通过文字指令和参考图编辑一张图像。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/qwen-image-2-1-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+## 可选参数
+
+- `size` (string)：输出宽高比。auto 跟随参考图。提供 mask_url 时忽略。可选值：`1:1`、`4:3`、`3:4`、`3:2`、`2:3`、`16:9`、`9:16`、`21:9`、`9:21`、`auto`。默认：`auto`。
+- `resolution` (string)：输出分辨率档位。可选值：`1K`、`2K`。默认：`1K`。
+- `output_format` (string)：输出图像格式。透明输出需要 PNG 或 WebP。可选值：`png`、`jpeg`、`webp`。默认：`png`。
+- `enable_safety_checker` (boolean)：开启内容安全检查。默认：`true`。
+- `background` (string)：背景模式。透明输出需要 PNG 或 WebP。可选值：`opaque`、`transparent`。默认：`opaque`。
+- `mask_url` (string)：可选的局部编辑蒙版。需要恰好一张参考图，且背景不透明。白色区域会被修改，黑色区域保持不变。与参考图的宽高比一致；蒙版会缩放到参考图尺寸。size 和 prompt_extend 会被忽略。
+- `prompt_extend` (boolean)：生成前增强提示词。提供 mask_url 时忽略。默认：`true`。
+- `seed` (integer)：可选的随机种子。省略时使用随机种子。
+
+## 使用指南
+
+使用 Qwen Image 2.1，通过文字指令和参考图编辑一张图像。
+
+- 将 `model` 设为 `alibaba/qwen-image-2.1/edit`。
+- `model` 和可选的 `callback_url` 放在请求根级；工作流参数放在 `input` 内。
+- 每次请求生成一张图像。
+- 如只需根据提示词生成，请使用[文生图](/zh/api-manual/image-series/qwen-image-2-1-text-to-image)，并设置 `model=alibaba/qwen-image-2.1/text-to-image`。
+
+## 参数详情
+
+- `prompt` 必填。提供非空文本，最多 5,000 个字符。
+- `image_urls` 必填，接受 1 到 10 个参考图 URL。使用公开可访问的 HTTP(S) URL，顺序与提示词中引用参考图的顺序一致。
+- `size` 默认 `auto`。`auto` 跟随参考图的宽高比。
+- 透明背景需要 `output_format=png` 或 `webp`。
+- `mask_url` 需要恰好一张参考图，且 `background=opaque`。白色区域会被修改；黑色区域保持不变。与参考图的宽高比一致；蒙版会缩放到参考图尺寸。
+- 使用蒙版时，输出跟随参考图的宽高比；`size` 和 `prompt_extend` 会被忽略。
+- 参考图支持 JPEG、PNG 和 WebP，每张最大 30 MB、2500 万像素。媒体限制在生成时检查。
+
+## 计费
+
+按输出图像计费，取决于 `resolution`。在每个档位上，文生图和图像编辑的计费标准相同。
+
+积分在提交时扣除，任务失败会退还。

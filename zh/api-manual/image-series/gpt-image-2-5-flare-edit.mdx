@@ -1,0 +1,44 @@
+---
+title: "GPT Image 2.5 Flare 图像编辑"
+description: "GPT Image 2.5 Flare 图像编辑 API 通过文字指令和参考图编辑一张图像。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/gpt-image-2-5-flare-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+## 可选参数
+
+- `size` (string)：使用 `auto`、`1:1`、`2:3`、`3:2`、`4:3`、`3:4`、`4:5`、`5:4`、`16:9`、`9:16`、`21:9`，或自定义 `WIDTHxHEIGHT` 尺寸。默认：`1:1`。
+- `resolution` (string)：输出分辨率档位。可选值：`1K`、`2K`、`4K`。默认：`1K`。
+- `output_format` (string)：输出图像格式。透明输出需要 PNG 或 WebP。可选值：`png`、`jpeg`、`webp`。默认：`png`。
+- `quality` (string)：图像质量档位。计费取决于质量和请求的分辨率档位。可选值：`low`、`medium`、`high`、`xhigh`、`max`。默认：`high`。
+- `background` (string)：背景模式。透明输出需要 PNG 或 WebP。可选值：`auto`、`transparent`、`opaque`。默认：`auto`。
+- `mask_url` (string)：可选蒙版，用于选定要编辑的区域。需要至少一张参考图。
+
+## 使用指南
+
+使用 GPT Image 2.5 Flare，通过文字指令和参考图编辑一张图像。
+
+- 将 `model` 设为 `openai/gpt-image-2.5-flare/edit`。
+- `model` 和可选的 `callback_url` 放在请求根级；工作流参数放在 `input` 内。
+- 每次请求生成一张图像。
+- 如只需根据提示词生成，请使用[文生图](/zh/api-manual/image-series/gpt-image-2-5-flare-text-to-image)，并设置 `model=openai/gpt-image-2.5-flare/text-to-image`。
+
+## 参数详情
+
+- `prompt` 必填。提供非空文本，最多 32,000 个字符。
+- `image_urls` 必填，接受 1 到 16 个参考图 URL。使用公开可访问的 HTTP(S) URL，顺序与提示词中引用参考图的顺序一致。
+- `size` 默认 `1:1`。`auto` 仅在 `resolution=1K` 时可用。
+- 自定义 `WIDTHxHEIGHT` 尺寸需要 `2K` 或 `4K`。两条边都必须是 16 的正整数倍，最长边不超过 3,840 像素，宽高比不超过 3:1，像素总数在 655,360 到 8,294,400 之间。边长为 3,840 像素时需要 `4K`。
+- `mask_url` 用于选定要编辑的区域，需要 `image_urls` 中的参考图。
+- 透明背景需要 `output_format=png` 或 `webp`。
+
+## 计费
+
+按输出图像计费，取决于 `quality` 和请求的 `resolution` 档位。按宽高比请求时保持所选档位；实际图像尺寸可能有所不同。
+
+积分在提交时扣除，任务失败会退还。

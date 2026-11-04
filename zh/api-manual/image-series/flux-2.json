@@ -1,0 +1,234 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Flux 2 API",
+    "description": "Black Forest Labs 推出的 320 亿参数图像生成模型，支持多参考图，文字渲染出色",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交 Flux 2 生成任务",
+        "description": "Black Forest Labs 推出的 320 亿参数图像生成与编辑模型。集成文生图和多图编辑，文字渲染出色，支持多参考图",
+        "operationId": "submitFlux2Task",
+        "tags": ["Flux 2"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "flux-2-pro": {
+                  "summary": "Flux 2 Pro 图像生成",
+                  "value": {
+                    "model": "flux-2-pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "The jar in image 1 is filled with capsules exactly same as image 2 with the exact logo",
+                      "size": "1:1",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "flux-2-pro-edit": {
+                  "summary": "Flux 2 Pro 图像编辑",
+                  "value": {
+                    "model": "flux-2-pro-edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Add colorful flowers in the foreground",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/1.jpg",
+                        "https://cdn.vidgo.ai/temp/2.jpg"
+                      ],
+                      "size": "1:1",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "flux-2-flex": {
+                  "summary": "Flux 2 Flex 图像生成",
+                  "value": {
+                    "model": "flux-2-flex",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "The jar in image 1 is filled with capsules exactly same as image 2 with the exact logo",
+                      "size": "1:1",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "flux-2-flex-edit": {
+                  "summary": "Flux 2 Flex 图像编辑",
+                  "value": {
+                    "model": "flux-2-flex-edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Add colorful flowers in the foreground",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/1.jpg",
+                        "https://cdn.vidgo.ai/temp/2.jpg"
+                      ],
+                      "size": "1:1",
+                      "resolution": "1K"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n前往 [仪表盘 → API 密钥](https://vidgo.ai/apis/dashboard/api-key) 获取 API Key\n\n将其添加到请求头：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "flux-2-pro"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "用于接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["prompt", "size", "resolution"],
+            "description": "生成所用的输入参数",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "描述期望输出的生成提示词",
+                "maxLength": 1000,
+                "example": "A beautiful sunset over the ocean"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 8,
+                "description": "输入参考图（1-8 张）。编辑模型（flux-2-pro-edit、flux-2-flex-edit）必填",
+                "example": ["https://cdn.vidgo.ai/temp/1.jpg", "https://cdn.vidgo.ai/temp/2.jpg"]
+              },
+              "size": {
+                "type": "string",
+                "description": "图像尺寸比例。使用 'auto' 根据第一张输入图像自动识别",
+                "enum": ["1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "auto"],
+                "example": "1:1"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "输出图像分辨率",
+                "enum": ["1K", "2K"],
+                "example": "1K"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "用于查询状态的唯一任务标识"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started"],
+                "example": "not_started",
+                "description": "任务初始状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "说明出错原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

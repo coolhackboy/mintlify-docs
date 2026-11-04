@@ -1,0 +1,267 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - GPT Image 2.5 Flare 文生图",
+    "description": "使用 GPT Image 2.5 Flare 根据文本提示词生成一张图像。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交 GPT Image 2.5 Flare 文生图任务",
+        "operationId": "submitGPTImage25FlareTexttoImageTask",
+        "tags": [
+          "GPT Image 2.5 Flare Text to Image"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "default": {
+                  "summary": "生成一张图像",
+                  "value": {
+                    "model": "openai/gpt-image-2.5-flare/text-to-image",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A product photograph of a silver coffee maker in a bright studio.",
+                      "size": "1:1",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "transparent-background": {
+                  "summary": "生成透明背景素材",
+                  "value": {
+                    "model": "openai/gpt-image-2.5-flare/text-to-image",
+                    "input": {
+                      "prompt": "A clean cutout of a small silver robot.",
+                      "background": "transparent",
+                      "output_format": "webp",
+                      "resolution": "4K",
+                      "quality": "xhigh"
+                    }
+                  }
+                },
+                "custom-size": {
+                  "summary": "使用自定义尺寸生成",
+                  "value": {
+                    "model": "openai/gpt-image-2.5-flare/text-to-image",
+                    "input": {
+                      "prompt": "A panoramic city garden with soft morning light.",
+                      "size": "2304x1536",
+                      "resolution": "2K",
+                      "quality": "medium"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交结果。任务 ID 标识一项异步任务；生成可能仍在进行中。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "使用 `Authorization: Bearer VIDGO_API_KEY`。"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "openai/gpt-image-2.5-flare/text-to-image"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "可选的 Webhook URL，用于接收完成或失败通知。",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32000,
+                "description": "描述期望图像的文本。\n\n至少包含一个非空白字符。"
+              },
+              "size": {
+                "type": "string",
+                "description": "输出宽高比或 WIDTHxHEIGHT。\n\n默认 1:1。\n\nauto 需要 1K。\n\n自定义尺寸需要 2K 或 4K，宽高须为 16 的倍数，最长边不超过 3840，宽高比不超过 3:1，像素总数为 655360–8294400。\n\n边长为 3840 像素时需要 4K。\n\n使用预设（`auto`、`1:1`、`2:3`、`3:2`、`4:3`、`3:4`、`4:5`、`5:4`、`16:9`、`9:16`、`21:9`）或自定义 `WIDTHxHEIGHT` 尺寸。\n\n宽和高之间用 `x` 或 `X` 分隔。",
+                "default": "1:1"
+              },
+              "resolution": {
+                "type": "string",
+                "enum": [
+                  "1K",
+                  "2K",
+                  "4K"
+                ],
+                "default": "1K",
+                "description": "输出分辨率档位。"
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "png",
+                  "jpeg",
+                  "webp"
+                ],
+                "default": "png",
+                "description": "输出图像格式。\n\n透明输出需要 PNG 或 WebP。"
+              },
+              "quality": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high",
+                  "xhigh",
+                  "max"
+                ],
+                "default": "high",
+                "description": "图像质量档位。\n\n计费取决于质量和请求的分辨率档位。"
+              },
+              "background": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "transparent",
+                  "opaque"
+                ],
+                "default": "auto",
+                "description": "背景模式。\n\n透明输出需要 PNG 或 WebP。"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-example-001"
+              },
+              "status": {
+                "type": "string",
+                "example": "running"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-10-09T10:30:00"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "error"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,506 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Seedream 4 文生图",
+    "description": "使用 Seedream 4 生成组图，输出最高 4K，适合插画、设计概念和视觉变体。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Image Series"
+        ],
+        "summary": "Seedream 4 文生图",
+        "operationId": "submit_bytedance_seedream_v4_text_to_image",
+        "description": "提交异步文生图任务。prompt 为 1–5,000 个字符，且至少包含一个非空白字符。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "bytedance/seedream/v4/text-to-image",
+                    "enum": [
+                      "bytedance/seedream/v4/text-to-image"
+                    ]
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "prompt"
+                    ],
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "maxLength": 5000,
+                        "minLength": 1,
+                        "description": "描述期望的图像，1–5,000 个字符，且至少包含一个非空白字符。"
+                      },
+                      "size": {
+                        "type": "string",
+                        "enum": [
+                          "1:1",
+                          "3:4",
+                          "4:3",
+                          "16:9",
+                          "9:16",
+                          "3:2",
+                          "2:3",
+                          "21:9"
+                        ],
+                        "default": "1:1",
+                        "description": "输出宽高比：1:1、3:4、4:3、16:9、9:16、3:2、2:3 或 21:9。默认：1:1。"
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "enum": [
+                          "1K",
+                          "2K",
+                          "4K"
+                        ],
+                        "default": "2K",
+                        "description": "输出分辨率预设：1K、2K 或 4K。默认：2K。"
+                      },
+                      "n": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 15,
+                        "default": 1,
+                        "description": "要生成的图像数量，1 到 15。默认：1。"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) URL，用于接收任务完成通知。"
+                  }
+                },
+                "description": "model 和可选的 callback_url 放在请求根级，生成参数放在 input 内。"
+              },
+              "examples": {
+                "text-to-image-02": {
+                  "summary": "第比利斯浴场的蒸汽时光",
+                  "value": {
+                    "model": "bytedance/seedream/v4/text-to-image",
+                    "input": {
+                      "prompt": "A cinematic documentary photograph inside a historic sulfur bath house in the Abanotubani district of Tbilisi, Georgia, mid-afternoon. In the foreground, an older Georgian attendant in a white cotton wrap and rubber sandals kneels at the rim of a hexagonal stone pool, testing the water with the back of his hand; steam wraps around his forearm. In the middle ground, a younger woman sits on a marble bench with a folded striped towel over her shoulders, her face half-hidden by a drifting steam veil, talking to a friend who is only visible as a silhouette behind a brick arch. In the far background, a high oculus window drops a single hard shaft of daylight onto the wet brick floor, making the steam glow. Correct occlusion between the three figures, every highlight coming from that one oculus, wet stone texture, visible condensation on the brick vault, 35mm lens, natural skin texture, believable hands with five fingers, no text, no logos, no watermark.",
+                      "size": "3:2",
+                      "resolution": "2K",
+                      "n": 1
+                    }
+                  }
+                },
+                "text-to-image-01": {
+                  "summary": "坎儿井如何分水",
+                  "value": {
+                    "model": "bytedance/seedream/v4/text-to-image",
+                    "input": {
+                      "prompt": "A scientifically accurate educational infographic of a Persian qanat on cream paper, warm naturalist watercolor linework. Title across the top is only the Chinese phrase printed exactly 坎儿井如何分水. Four panels in a 2x2 grid. Panel 1 caption is the single English word WELL under the Chinese 母井: a gravel mound with a vertical well, a blue dashed water table, and a hanging bucket. Panel 2 caption is the single English word TUNNEL under the Chinese 暗渠: a downhill tunnel with a 1 percent slope and left-to-right flow arrows. Panel 3 caption is the single English word SHAFTS under the Chinese 竖井: four evenly spaced vertical shafts. Panel 4 caption is the single English word OUTLET under the Chinese 龙口: the tunnel emerges at an oasis and splits into two channels labeled with the single words LEFT and RIGHT under 左渠 and 右渠. Use only these English words: WELL, TUNNEL, SHAFTS, OUTLET, LEFT, RIGHT. Each English word stands alone with space around it. Do not add extra letters. Consistent water table and downhill slope. No other text, no watermark.",
+                      "size": "4:3",
+                      "resolution": "4K",
+                      "n": 1
+                    }
+                  }
+                },
+                "text-to-image-03": {
+                  "summary": "阿贝湖上的采盐",
+                  "value": {
+                    "model": "bytedance/seedream/v4/text-to-image",
+                    "input": {
+                      "prompt": "An ultra-wide cinematic landscape photograph of Lake Abbe on the Ethiopia–Djibouti border at first light. In the left third of the foreground, two Afar salt workers in faded cotton wraps and sandals stand beside a low wooden sledge piled with pale salt cakes; one man lifts a slab while the other steadies a long wooden pole. Mid-frame, a shallow pink-white salt crust stretches toward the lake, with a few flamingos standing in a thin sheet of water. On the right, a row of tall pale limestone chimneys rises from the flats, their bases still in blue shadow while their tops catch the first gold sun. Far behind, a hazy volcanic ridge sits under a clear pale sky. Correct relative scale between the workers, the flamingos, the chimneys and the distant ridge, one consistent low sun from the right, fine crystal texture on the salt, visible breath in the cool air, no text, no watermark.",
+                      "size": "21:9",
+                      "resolution": "2K",
+                      "n": 1
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "bytedance/seedream/v4/text-to-image",
+                    "input": {
+                      "prompt": "A cinematic documentary photograph inside a historic sulfur bath house in the Abanotubani district of Tbilisi, Georgia, mid-afternoon. In the foreground, an older Georgian attendant in a white cotton wrap and rubber sandals kneels at the rim of a hexagonal stone pool, testing the water with the back of his hand; steam wraps around his forearm. In the middle ground, a younger woman sits on a marble bench with a folded striped towel over her shoulders, her face half-hidden by a drifting steam veil, talking to a friend who is only visible as a silhouette behind a brick arch. In the far background, a high oculus window drops a single hard shaft of daylight onto the wet brick floor, making the steam glow. Correct occlusion between the three figures, every highlight coming from that one oculus, wet stone texture, visible condensation on the brick vault, 35mm lens, natural skin texture, believable hands with five fingers, no text, no logos, no watermark.",
+                      "size": "3:2",
+                      "resolution": "2K",
+                      "n": 1
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "KM1JC58S12F3BATH",
+                    "status": "running",
+                    "created_time": "2026-09-26T10:59:51"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求校验错误或账户余额不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "达到请求速率或账户限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "任务创建错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "服务暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

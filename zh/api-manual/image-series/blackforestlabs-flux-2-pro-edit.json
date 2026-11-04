@@ -1,0 +1,520 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - FLUX.2 Pro 图像编辑",
+    "description": "在 FLUX.2 Pro 中将视觉参考与文字指令结合，编辑场景、迁移风格并保留可辨识的主体。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Image Series"
+        ],
+        "summary": "FLUX.2 Pro 图像编辑",
+        "operationId": "submit_blackforestlabs_flux_2_pro_edit",
+        "description": "发送本工作流列出的字段。将 `prompt`、`image_urls`、`size` 和 `resolution` 放在 `input` 内。每个 `image_urls` 项都是公开的 HTTP(S) URL。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "blackforestlabs/flux-2-pro/edit"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "image_urls",
+                      "prompt",
+                      "resolution",
+                      "size"
+                    ],
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 5000,
+                        "description": "编辑参考图的文字指令，3-5,000 个字符。"
+                      },
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "公开的 HTTP(S) 图像 URL。"
+                        },
+                        "minItems": 1,
+                        "maxItems": 8,
+                        "description": "参考图，1-8 个公开的 HTTP(S) URL。"
+                      },
+                      "size": {
+                        "type": "string",
+                        "enum": [
+                          "1:1",
+                          "4:3",
+                          "3:4",
+                          "16:9",
+                          "9:16",
+                          "3:2",
+                          "2:3",
+                          "auto"
+                        ],
+                        "description": "输出图像的宽高比。`auto` 使用 `image_urls` 中第一张图像的宽高比。"
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "enum": [
+                          "1K",
+                          "2K"
+                        ],
+                        "description": "输出图像分辨率。"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 接口，用于接收任务完成通知。建议使用 HTTPS。省略、设为 null 或空字符串即关闭回调。"
+                  }
+                },
+                "description": "model 和 callback_url 放在根级。工作流参数放在 input 内。"
+              },
+              "examples": {
+                "default": {
+                  "summary": "包饺子课",
+                  "value": {
+                    "model": "blackforestlabs/flux-2-pro/edit",
+                    "input": {
+                      "prompt": "Using image 1 (the grandmother) and image 2 (the boy) as identity references and image 3 as the location, create one warm documentary photograph of the grandmother teaching the boy to fold jiaozi dumplings at the flour-dusted wooden table in the kitchen from image 3. Keep both people exactly recognisable: the grandmother's pinned silver hair with black clip, smile lines, maroon knitted cardigan, white collar and jade earrings; the boy's bowl haircut, missing front tooth, mustard corduroy overalls and striped shirt. The grandmother stands beside and slightly behind the boy, guiding his small hands as he pinches a dumpling closed; a tray of neat finished dumplings and a few lopsided ones sits in front of him, with a rolling pin and a bowl of pork-and-chive filling nearby. Preserve the brick stove, iron wok, bamboo steamer, frosted window with red paper-cuts, and hanging garlic and chillies from image 3. Soft afternoon window light, a little flour in the air, natural skin texture, believable hands, 35mm lens. No text, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-pro/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-pro/edit/v1/01/input-02.png",
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-pro/edit/v1/01/input-03.png"
+                      ],
+                      "size": "3:2",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "pro-edit-02": {
+                  "summary": "水粉画里的里斯本电车坡道",
+                  "value": {
+                    "model": "blackforestlabs/flux-2-pro/edit",
+                    "input": {
+                      "prompt": "Repaint image 1 in the painting style of image 2. Keep the exact composition, perspective, street geometry, tram position, building layout, balconies, laundry and river glimpse of image 1. Take only the medium and palette from image 2: flat opaque gouache shapes, matte chalky brush strokes, simplified forms, a limited palette of ochre, sage green, cobalt blue and warm off-white, and visible cold-press paper texture at the edges. The tram stays yellow, rendered as a muted gouache ochre. Do not add the pears, jug or cloth from image 2. No text, no signature, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-pro/edit/v1/02/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-pro/edit/v1/02/input-02.png"
+                      ],
+                      "size": "3:4",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "pro-edit-03": {
+                  "summary": "站台黑板更新",
+                  "value": {
+                    "model": "blackforestlabs/flux-2-pro/edit",
+                    "input": {
+                      "prompt": "Edit only the handwriting on the chalkboard in image 1. Replace the three chalk lines with exactly: first line \"NEXT TRAIN\", second line \"08:05 DELAYED\", third line \"SNOW ON THE LINE\". Match the original white chalk stroke texture, letter size, slant, dusty smudges and line spacing. Keep everything else in image 1 unchanged: the framing, chalkboard position and size, easel, waiting shelter, bench, platform, yellow line, track, forest, mountains, dry overcast weather, lighting and camera angle. No extra text, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-pro/edit/v1/03/input-01.png"
+                      ],
+                      "size": "4:3",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "blackforestlabs/flux-2-pro/edit",
+                    "input": {
+                      "prompt": "Using image 1 (the grandmother) and image 2 (the boy) as identity references and image 3 as the location, create one warm documentary photograph of the grandmother teaching the boy to fold jiaozi dumplings at the flour-dusted wooden table in the kitchen from image 3. Keep both people exactly recognisable: the grandmother's pinned silver hair with black clip, smile lines, maroon knitted cardigan, white collar and jade earrings; the boy's bowl haircut, missing front tooth, mustard corduroy overalls and striped shirt. The grandmother stands beside and slightly behind the boy, guiding his small hands as he pinches a dumpling closed; a tray of neat finished dumplings and a few lopsided ones sits in front of him, with a rolling pin and a bowl of pork-and-chive filling nearby. Preserve the brick stove, iron wok, bamboo steamer, frosted window with red paper-cuts, and hanging garlic and chillies from image 3. Soft afternoon window light, a little flour in the air, natural skin texture, believable hands, 35mm lens. No text, no watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-pro/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-pro/edit/v1/01/input-02.png",
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-2-pro/edit/v1/01/input-03.png"
+                      ],
+                      "size": "3:2",
+                      "resolution": "1K"
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "G4SI8DYZSIKS9UV5",
+                    "status": "running",
+                    "created_time": "2026-09-26T10:37:28"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

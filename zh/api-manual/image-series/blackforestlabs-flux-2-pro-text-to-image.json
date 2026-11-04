@@ -1,0 +1,491 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - FLUX.2 Pro 文生图",
+    "description": "使用 FLUX.2 Pro 创作细节丰富的图像，用自然语言控制主体、构图和画面中的文字，最高 2K。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Image Series"
+        ],
+        "summary": "FLUX.2 Pro 文生图",
+        "operationId": "submit_blackforestlabs_flux_2_pro_text_to_image",
+        "description": "发送本工作流列出的字段。将 `prompt`、`size` 和 `resolution` 放在 `input` 内。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "blackforestlabs/flux-2-pro/text-to-image"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "prompt",
+                      "resolution",
+                      "size"
+                    ],
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 5000,
+                        "description": "要生成图像的文字描述，3-5,000 个字符。"
+                      },
+                      "size": {
+                        "type": "string",
+                        "enum": [
+                          "1:1",
+                          "4:3",
+                          "3:4",
+                          "16:9",
+                          "9:16",
+                          "3:2",
+                          "2:3",
+                          "auto"
+                        ],
+                        "description": "输出图像的宽高比。"
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "enum": [
+                          "1K",
+                          "2K"
+                        ],
+                        "description": "输出图像分辨率。"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 接口，用于接收任务完成通知。建议使用 HTTPS。省略、设为 null 或空字符串即关闭回调。"
+                  }
+                },
+                "description": "model 和 callback_url 放在根级。工作流参数放在 input 内。"
+              },
+              "examples": {
+                "default": {
+                  "summary": "雨中夜渡",
+                  "value": {
+                    "model": "blackforestlabs/flux-2-pro/text-to-image",
+                    "input": {
+                      "prompt": "A candid documentary photograph taken at night on the open deck of a small wooden river ferry crossing a wide Southeast Asian river in steady monsoon rain. In the foreground, a middle-aged woman in a translucent green raincoat steadies a dented red motor scooter by its handlebars. Behind her, an elderly man in a conical straw hat shares a folded black umbrella with a schoolgirl in a navy uniform who clutches a paper bag against her chest. At the far right, a young deckhand in rubber boots coils a wet mooring rope. A single sodium-vapor lamp above the wheelhouse casts warm orange light that falls off into deep blue darkness; distant city lights on the far bank blur into soft bokeh and long wavering reflections on the black water. Diagonal rain streaks catch the lamplight, beads of water cling to the scooter's chrome mirror, and the worn deck planks shine with puddles reflecting the lamp. 35mm lens at eye level, shallow depth of field focused on the woman's face, natural skin texture, believable hands, subtle film grain, a quiet and patient mood. No text, no signage, no logos, no watermark.",
+                      "size": "3:2",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "pro-text-to-image-02": {
+                  "summary": "蒙古包里的清晨",
+                  "value": {
+                    "model": "blackforestlabs/flux-2-pro/text-to-image",
+                    "input": {
+                      "prompt": "An interior photograph of a traditional Mongolian ger on a cold clear morning, viewed from just inside the low wooden door toward the back wall. Pale sunlight enters through the circular roof crown and forms a bright shaft through faint stove smoke. Exact colour palette: the painted roof crown ring and the radiating roof poles are lacquered in #C8102E crimson with fine #F2A900 saffron-yellow geometric knot patterns; the two central support columns are painted #1B4D89 deep blue; the felt walls are undyed #EDE3D1 wool cream; the floor carpet is #7A2E1F madder brown with cream borders. A cast-iron stove with a steaming kettle stands in the centre, a low painted table holds two small bowls of milk tea, and a folded deel robe lies on a wooden bed at the left. Every coloured surface matches the specified hex values under natural daylight, with authentic hand-painted brush texture, wool fibre detail and soft bounce light. Documentary interior photography, 24mm lens, no people, no text, no logos, no watermark.",
+                      "size": "4:3",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "pro-text-to-image-03": {
+                  "summary": "隧道掘进班组",
+                  "value": {
+                    "model": "blackforestlabs/flux-2-pro/text-to-image",
+                    "input": {
+                      "prompt": "A wide-angle industrial documentary photograph deep underground in a newly excavated metro tunnel. The enormous circular cutterhead of a tunnel boring machine, about twelve metres across, fills the right half of the frame, its steel disc cutters worn and caked with damp grey clay. Three workers in orange high-visibility overalls, white helmets with headlamps and mud-streaked boots inspect the cutters from a narrow steel gantry at mid-height: one points a flashlight at a chipped cutter, one takes notes on a clipboard, and the third holds a long torque wrench. Along the left, curved precast concrete tunnel rings recede into the distance, lit by a string of cool-white work lights that create repeating pools of light and hard shadows. Water drips from the tunnel crown and glistens on the rails of a small muck-removal train. Strong sense of scale between people and machine, realistic steel, concrete and clay textures, humid haze catching the light beams, truthful colour. No brand names, no lettering on the machine or clothing, no watermark.",
+                      "size": "16:9",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "blackforestlabs/flux-2-pro/text-to-image",
+                    "input": {
+                      "prompt": "A candid documentary photograph taken at night on the open deck of a small wooden river ferry crossing a wide Southeast Asian river in steady monsoon rain. In the foreground, a middle-aged woman in a translucent green raincoat steadies a dented red motor scooter by its handlebars. Behind her, an elderly man in a conical straw hat shares a folded black umbrella with a schoolgirl in a navy uniform who clutches a paper bag against her chest. At the far right, a young deckhand in rubber boots coils a wet mooring rope. A single sodium-vapor lamp above the wheelhouse casts warm orange light that falls off into deep blue darkness; distant city lights on the far bank blur into soft bokeh and long wavering reflections on the black water. Diagonal rain streaks catch the lamplight, beads of water cling to the scooter's chrome mirror, and the worn deck planks shine with puddles reflecting the lamp. 35mm lens at eye level, shallow depth of field focused on the woman's face, natural skin texture, believable hands, subtle film grain, a quiet and patient mood. No text, no signage, no logos, no watermark.",
+                      "size": "3:2",
+                      "resolution": "1K"
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "FUI8N7NW2JLV34RB",
+                    "status": "running",
+                    "created_time": "2026-09-26T10:30:10"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

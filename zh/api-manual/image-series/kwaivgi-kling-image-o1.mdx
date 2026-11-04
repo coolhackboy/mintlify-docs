@@ -1,0 +1,90 @@
+---
+title: "Kling O1 图像编辑"
+description: "Kling O1 图像编辑 API 结合视觉参考和主体元素编辑图像，支持批量输出，分辨率最高 2K。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/kwaivgi-kling-image-o1.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Kling O1 结合视觉参考和主体元素编辑图像，支持批量输出，分辨率最高 2K。
+
+## 模型
+
+- **kwaivgi/kling-image-o1** - 使用提示词和参考图编辑图像。
+
+## 功能
+
+- 使用提示词和参考图编辑图像。
+- `image_urls` 接受 1-10 张图像。
+- 可选 `1K`、`2K` 输出分辨率。
+- 通过 `elements` 提供额外的主体参考。
+- 通过 `n` 控制输出图像数量。
+
+## 输出选项
+
+### 图像尺寸
+
+- `size`：可选。可选值：`auto`、`16:9`、`9:16`、`1:1`、`4:3`、`3:4`、`3:2`、`2:3`、`21:9`。默认：`auto`。
+
+### 分辨率
+
+- `resolution`：可选。可选值：`1K`、`2K`。默认：`1K`。
+
+### 图像数量
+
+- `n`：可选。要生成的图像数量。`1` 到 `9` 的整数。默认：`1`。
+
+### 输出格式
+
+- `output_format`：可选。可选值：`jpeg`、`png`、`webp`。默认：`png`。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流参数（包括输出选项）都放在 `input` 内。
+
+只发送本工作流支持的 input 字段。不支持的 `input` 字段会在扣除积分前被拒绝。输入 URL 必须使用 HTTP(S)、包含主机名，且不含内嵌凭证。
+
+### 提示词
+
+- `prompt`：必填。描述期望的图像。长度：**1-2,000 个字符**。
+- 提供时不能为空。
+
+### 图像 URL
+
+- `image_urls`：必填。提供公开可访问的图像 URL。1-10 项。每项都必须是 HTTP(S) URL。不接受单个 URL 字符串或 Base64 输入。
+
+### 主体元素
+
+- `elements`：可选，主体参考对象数组。在提示词中按数组顺序以 `@Element1`、`@Element2` 等引用。对象中的其他属性会被保留。未规定元素数量或额外视图数量上限。
+
+- `elements[].frontal_image_url`：可选。使用公开可访问的 HTTP(S) URL。
+- `elements[].reference_image_urls`：可选。提供数组。每项都必须是 HTTP(S) URL。
+
+### 已测试的多图示例
+
+```json
+{
+  "model": "kwaivgi/kling-image-o1",
+  "input": {
+    "prompt": "Use image 1 as the flooded forest boardwalk scene to edit and image 2 only as the animal identity reference. Edit the scene in image 1 by adding exactly one adult Malayan tapir, the tapir from image 2, standing on the wide wooden deck in the left-center foreground. Preserve the exact tapir identity and anatomy from image 2: black head, neck and hindquarters, broad white saddle, short flexible snout and white-rimmed ears. The tapir faces left in three-quarter side view, pausing as if listening toward the flooded forest. Its full body must be visible, four feet planted naturally on the boardwalk, correct real-world scale, weight and soft contact shadows. Preserve the boardwalk structure, tree positions, floodwater reflections, original camera perspective and documentary photographic style. Match the soft green canopy daylight. Do not add people, other animals, accessories, text, logos or watermark.",
+    "image_urls": [
+      "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-image-o1/edit/v1/01/input-01.png",
+      "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-image-o1/edit/v1/01/input-02.png"
+    ],
+    "resolution": "2K",
+    "size": "16:9",
+    "output_format": "png",
+    "n": 1
+  }
+}
+```
+
+## 计费因素
+
+计费取决于输出图像数量（`n`）。两种支持的分辨率计费标准相同。参考图和主体元素不会额外计费。
+
+积分在提交时扣除，任务失败会退还。

@@ -1,0 +1,36 @@
+---
+title: "Nano Banana 文生图"
+description: "Nano Banana 文生图 API 根据自然语言生成图像，可用方形、竖版或横版构图探索不同主体和风格。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/google-nano-banana-text-to-image.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Nano Banana 根据自然语言生成图像，以方形、竖版或横版构图探索不同主体和风格。
+
+## 模型
+
+- **google/nano-banana/text-to-image** - 根据文本提示词生成图像。
+
+## 功能
+
+- 根据文本提示词生成图像。
+
+## 输出选项
+
+### 图像尺寸
+
+- `size`：可选。可选值：`1:1`、`2:3`、`3:2`、`3:4`、`4:3`、`4:5`、`5:4`、`9:16`、`16:9`、`21:9`。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流参数（包括输出选项）都放在 `input` 内。
+
+### 提示词
+
+- `prompt`：必填。描述期望的图像。长度：**1-5,000 个字符**。
+- 至少包含一个非空白字符。

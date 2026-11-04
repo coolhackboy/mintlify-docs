@@ -1,0 +1,288 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Seedream-4 API",
+    "description": "由字节跳动 Seedream-4 驱动的图像生成模型，支持文生图和图像编辑",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Seedream-4"
+        ],
+        "summary": "提交 Seedream-4 生成任务",
+        "description": "通过统一的提交接口，使用字节跳动 Seedream-4 生成或编辑图像",
+        "operationId": "submitSeedream4Task",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "seedream-4": {
+                  "summary": "Seedream-4 文生图",
+                  "value": {
+                    "model": "seedream-4",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A minimalist product photo of a ceramic mug on a clean studio background",
+                      "size": "1:1",
+                      "resolution": "1K",
+                      "n": 1
+                    }
+                  }
+                },
+                "seedream-4-edit": {
+                  "summary": "Seedream-4 图像编辑",
+                  "value": {
+                    "model": "seedream-4-edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Transform this scene into a polished ecommerce product photo with clean studio lighting",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/reference1.jpg"
+                      ],
+                      "size": "1:1",
+                      "resolution": "1K",
+                      "n": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 400,
+                  "error": {
+                    "message": "Invalid request parameters",
+                    "type": "invalid_request_error"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权 - API Key 无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 401,
+                  "error": {
+                    "message": "Unauthorized - Invalid API key",
+                    "type": "authentication_error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "seedream-4"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "用于接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "description": "生成所用的输入参数",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "描述期望输出的生成提示词",
+                "maxLength": 2000,
+                "example": "A beautiful sunset over the ocean"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 10,
+                "description": "用于图像编辑的参考图 URL。seedream-4-edit 必填。image_urls 数量与 n 之和不得超过 15。",
+                "example": [
+                  "https://cdn.vidgo.ai/temp/reference1.jpg"
+                ]
+              },
+              "size": {
+                "type": "string",
+                "description": "输出宽高比。支持的值：1:1、3:4、4:3、16:9、9:16、3:2、2:3、21:9。文生图请求省略时默认 1:1。",
+                "enum": [
+                  "1:1",
+                  "3:4",
+                  "4:3",
+                  "16:9",
+                  "9:16",
+                  "3:2",
+                  "2:3",
+                  "21:9"
+                ],
+                "default": "1:1",
+                "example": "16:9"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "输出分辨率预设。",
+                "enum": [
+                  "1K",
+                  "2K",
+                  "4K"
+                ],
+                "default": "2K",
+                "example": "1K"
+              },
+              "n": {
+                "type": "integer",
+                "description": "要生成的图像数量。积分按该数量预扣，如果最终生成的图像较少，会部分退还。image_urls 数量与 n 之和不得超过 15。",
+                "minimum": 1,
+                "maximum": 15,
+                "default": 1,
+                "example": 1
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "用于查询状态的唯一任务标识"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "任务初始状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "error"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "message",
+              "type"
+            ],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "说明出错原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n前往 [仪表盘 → API 密钥](https://vidgo.ai/apis/dashboard/api-key) 获取 API Key\n\n将其添加到请求头：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

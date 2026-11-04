@@ -1,0 +1,54 @@
+---
+title: "Seedream 4 图像编辑"
+description: "Seedream 4 图像编辑 API 结合多张视觉参考改造图像，支持批量变体，输出最高 4K。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/bytedance-seedream-v4-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Seedream 4 结合多张视觉参考改造图像，支持批量变体，输出最高 4K。
+
+## 模型
+
+- **bytedance/seedream/v4/edit** - 使用提示词和参考图编辑图像。
+
+## 功能
+
+- 使用提示词和参考图编辑图像。
+- `image_urls` 接受 1-10 张图像。
+- 可选 `1K`、`2K`、`4K` 输出分辨率。
+- 通过 `n` 控制输出图像数量。
+
+## 输出选项
+
+### 图像尺寸
+
+- `size`：可选。可选值：`1:1`、`3:4`、`4:3`、`16:9`、`9:16`、`3:2`、`2:3`、`21:9`。默认：`1:1`。
+
+### 分辨率
+
+- `resolution`：可选。可选值：`1K`、`2K`、`4K`。默认：`2K`。
+
+### 图像数量
+
+- `n`：可选。要生成的图像数量。`1` 到 `15` 的整数。默认：`1`。
+- `image_urls` 数量与 `n` 之和不超过 15。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流参数（包括输出选项）都放在 `input` 内。
+
+输入图像 URL 使用 HTTP(S)，并指向公开可访问的图像文件。
+
+### 提示词
+
+- `prompt`：必填。描述要做的修改。长度：**1-5,000 个字符**。
+- 至少包含一个非空白字符。
+
+### 图像 URL
+
+- `image_urls`：必填。提供公开可访问的图像 URL。1-10 项。每项都必须是 HTTP(S) URL。

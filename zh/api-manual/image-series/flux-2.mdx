@@ -1,0 +1,32 @@
+---
+title: "Flux.2"
+description: "Flux.2 API 基于 Black Forest Labs 的 320 亿参数图像生成模型，支持多参考图，文字渲染出色。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/flux-2.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+FLUX.2 是 Black Forest Labs 推出的 320 亿参数图像生成与编辑模型。它在单一架构中集成了文生图和多图编辑，可生成最高 2K 分辨率、文字排版清晰的写实图像。支持同时参考最多 8 张图像，在角色、产品和风格上保持出色的一致性。
+
+## 模型
+
+- **flux-2-pro** - 面向生产部署的高保真文生图
+- **flux-2-pro-edit** - 高级多参考图编辑，最多 8 张输入图像
+- **flux-2-flex** - 可调节速度与质量的平衡，适合灵活的工作流
+- **flux-2-flex-edit** - 支持多参考图的灵活图像编辑
+
+{/* poyo-20260910:start */}
+
+## 工作流 ID
+
+现有 ID 仍可使用。新接入可以选择专用的工作流：
+
+- [blackforestlabs/flux-2-pro/text-to-image](/zh/api-manual/image-series/blackforestlabs-flux-2-pro-text-to-image)
+- [blackforestlabs/flux-2-pro/edit](/zh/api-manual/image-series/blackforestlabs-flux-2-pro-edit)
+- [blackforestlabs/flux-2-flex/text-to-image](/zh/api-manual/image-series/blackforestlabs-flux-2-flex-text-to-image)
+- [blackforestlabs/flux-2-flex/edit](/zh/api-manual/image-series/blackforestlabs-flux-2-flex-edit)
+{/* poyo-20260910:end */}

@@ -1,0 +1,38 @@
+---
+title: "Seedream 5.0 Flash 图像编辑"
+description: "Seedream 5.0 Flash 图像编辑 API 通过文字指令和参考图编辑一张图像。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/seedream-v5-0-flash-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+## 可选参数
+
+- `size` (string)：输出宽高比。可选值：`1:1`、`4:3`、`3:4`、`16:9`、`9:16`、`2:3`、`3:2`、`21:9`。默认：`1:1`。
+- `resolution` (string)：输出分辨率档位。可选值：`1K`、`1.5K`、`2K`。默认：`1K`。
+- `output_format` (string)：输出图像格式。可选值：`jpeg`、`png`。省略时由模型选择格式。
+- `enable_safety_checker` (boolean)：开启内容安全检查。默认：`true`。
+
+## 使用指南
+
+使用 Seedream 5.0 Flash，通过文字指令和参考图编辑一张图像。
+
+- 将 `model` 设为 `bytedance/seedream-v5.0-flash/edit`。
+- `model` 和可选的 `callback_url` 放在请求根级；工作流参数放在 `input` 内。
+- 每次请求生成一张图像。
+- 如只需根据提示词生成，请使用[文生图](/zh/api-manual/image-series/seedream-v5-0-flash)，并设置 `model=bytedance/seedream-v5.0-flash/text-to-image`。
+
+## 参数详情
+
+- `prompt` 必填。提供非空文本，最多 5,000 个字符。
+- `image_urls` 必填，接受 1 到 10 个参考图 URL。使用公开可访问的 HTTP(S) URL，顺序与提示词中引用参考图的顺序一致。
+
+## 计费
+
+按输出图像计费。在所有支持的分辨率档位上，文生图和图像编辑的计费标准相同。
+
+积分在提交时扣除，任务失败会退还。

@@ -1,0 +1,236 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Nano Banana 2 API",
+    "description": "由 Gemini 3 Pro Image Preview 驱动的新一代 AI 图像生成",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交 Nano Banana 2 生成任务",
+        "description": "由 Gemini 3 Pro Image Preview 驱动的新一代 AI 图像生成与编辑，原生 2K 分辨率",
+        "operationId": "submitNanoBanana2Task",
+        "tags": ["Nano Banana 2"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "nano-banana-2": {
+                  "summary": "Nano Banana Pro（Nano Banana 2）图像生成",
+                  "value": {
+                    "model": "nano-banana-2",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cyberpunk street scene with neon signs and rain",
+                      "size": "16:9",
+                      "resolution": "2K"
+                    }
+                  }
+                },
+                "nano-banana-2-edit": {
+                  "summary": "Nano Banana 2 图像编辑",
+                  "value": {
+                    "model": "nano-banana-2-edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Add colorful flowers in the foreground",
+                      "image_urls": ["https://cdn.vidgo.ai/temp/landscape.jpg"],
+                      "size": "16:9",
+                      "resolution": "2K"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 400,
+                  "error": {
+                    "message": "Invalid request parameters",
+                    "type": "invalid_request_error"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权 - API Key 无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 401,
+                  "error": {
+                    "message": "Unauthorized - Invalid API key",
+                    "type": "authentication_error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n前往 [仪表盘 → API 密钥](https://vidgo.ai/apis/dashboard/api-key) 获取 API Key\n\n将其添加到请求头：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "nano-banana-2"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "用于接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["prompt"],
+            "description": "生成所用的输入参数",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "描述期望输出的生成提示词",
+                "maxLength": 10000,
+                "example": "A beautiful sunset over the ocean"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "参考图 URL（用于图像编辑）",
+                "example": []
+              },
+              "size": {
+                "type": "string",
+                "description": "图像尺寸比例",
+                "enum": ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"],
+                "example": "16:9"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "输出图像分辨率",
+                "enum": ["1K", "2K", "4K"],
+                "default": "1K",
+                "example": "1K"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "用于查询状态的唯一任务标识"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started"],
+                "example": "not_started",
+                "description": "任务初始状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "说明出错原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

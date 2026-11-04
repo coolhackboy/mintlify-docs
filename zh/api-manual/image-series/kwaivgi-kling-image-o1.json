@@ -1,0 +1,564 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling O1 图像编辑",
+    "description": "使用 Kling O1 结合视觉参考和主体元素编辑图像，支持批量输出，分辨率最高 2K。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Image Series"
+        ],
+        "summary": "Kling O1 图像编辑",
+        "operationId": "submit_kwaivgi_kling_image_o1",
+        "description": "只发送本工作流列出的字段。其他工作流的参数会在扣除积分前被拒绝。\n\n提供 prompt 时不能为空。输入 URL 字段须为带主机名、不含内嵌凭证的 HTTP(S) URL。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "kwaivgi/kling-image-o1"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "image_urls",
+                      "prompt"
+                    ],
+                    "description": "图像编辑的输入参数",
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "description": "描述期望输出的编辑提示词",
+                        "maxLength": 2000,
+                        "example": "Place the referenced animal on the forest boardwalk, preserving its markings and the scene perspective",
+                        "minLength": 1
+                      },
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "minItems": 1,
+                        "maxItems": 10,
+                        "description": "用于编辑的参考图 URL。kling-o1-image-edit 必填。",
+                        "example": [
+                          "https://example.com/reference1.png"
+                        ]
+                      },
+                      "elements": {
+                        "type": "array",
+                        "description": "可选的元素描述数组，用于控制角色/物体。在 prompt 中以 @Element1、@Element2 等引用。建议字段为 `frontal_image_url` 和可选的 `reference_image_urls`。",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "frontal_image_url": {
+                              "type": "string",
+                              "format": "uri",
+                              "description": "主要人脸/物体参考的公开图像 URL。"
+                            },
+                            "reference_image_urls": {
+                              "type": "array",
+                              "description": "同一元素的其他可选公开图像 URL。",
+                              "items": {
+                                "type": "string",
+                                "format": "uri"
+                              }
+                            }
+                          },
+                          "additionalProperties": true
+                        },
+                        "example": [
+                          {
+                            "frontal_image_url": "https://example.com/subject-front.png",
+                            "reference_image_urls": [
+                              "https://example.com/subject-side.png"
+                            ]
+                          }
+                        ]
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "description": "输出分辨率预设",
+                        "enum": [
+                          "1K",
+                          "2K"
+                        ],
+                        "default": "1K",
+                        "example": "2K"
+                      },
+                      "size": {
+                        "type": "string",
+                        "description": "输出宽高比预设",
+                        "enum": [
+                          "auto",
+                          "16:9",
+                          "9:16",
+                          "1:1",
+                          "4:3",
+                          "3:4",
+                          "3:2",
+                          "2:3",
+                          "21:9"
+                        ],
+                        "default": "auto",
+                        "example": "16:9"
+                      },
+                      "output_format": {
+                        "type": "string",
+                        "description": "输出图像格式。",
+                        "enum": [
+                          "jpeg",
+                          "png",
+                          "webp"
+                        ],
+                        "default": "png",
+                        "example": "png"
+                      },
+                      "n": {
+                        "type": "integer",
+                        "description": "要生成的图像数量（1-9）。计费取决于 `n`；两种支持的分辨率计费标准相同。",
+                        "minimum": 1,
+                        "maximum": 9,
+                        "default": 1,
+                        "example": 2
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 接口，用于接收任务完成通知。建议使用 HTTPS。省略、设为 null 或空字符串即关闭回调。"
+                  }
+                },
+                "description": "model 和 callback_url 放在根级。未知的根级字段会被忽略；不支持的 input 字段会被拒绝。"
+              },
+              "examples": {
+                "edit-01": {
+                  "summary": "被淹木栈道上的貘",
+                  "value": {
+                    "model": "kwaivgi/kling-image-o1",
+                    "input": {
+                      "prompt": "Use image 1 as the flooded forest boardwalk scene to edit and image 2 only as the animal identity reference. Edit the scene in image 1 by adding exactly one adult Malayan tapir, the tapir from image 2, standing on the wide wooden deck in the left-center foreground. Preserve the exact tapir identity and anatomy from image 2: black head, neck and hindquarters, broad white saddle, short flexible snout and white-rimmed ears. The tapir faces left in three-quarter side view, pausing as if listening toward the flooded forest. Its full body must be visible, four feet planted naturally on the boardwalk, correct real-world scale, weight and soft contact shadows. Preserve the boardwalk structure, tree positions, floodwater reflections, original camera perspective and documentary photographic style. Match the soft green canopy daylight. Do not add people, other animals, accessories, text, logos or watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-image-o1/edit/v1/01/input-01.png",
+                        "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-image-o1/edit/v1/01/input-02.png"
+                      ],
+                      "resolution": "2K",
+                      "size": "16:9",
+                      "output_format": "png",
+                      "n": 1
+                    }
+                  }
+                },
+                "edit-02": {
+                  "summary": "盐洞中的聆听",
+                  "value": {
+                    "model": "kwaivgi/kling-image-o1",
+                    "input": {
+                      "prompt": "Make one precise localized edit to this documentary photograph: change only the faded blue canvas messenger bag and its shoulder strap into worn warm-brown leather. Preserve the exact bag silhouette, flap, size, position at the man's right hip, strap route and existing perspective. Add believable leather grain, subtle creases and gently polished worn edges; keep the design plain and unbranded. Everything else must remain unchanged: the same man's face, skin tone, shaved head, expression, pose, hands, dark fleece jacket, trousers, boots, black headphones, handheld recorder, camera framing, salt-crystal cavern geometry, lighting and shadows. Do not add or remove objects, people or animals. No text, logos or watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-image-o1/edit/v1/02/input-01.png"
+                      ],
+                      "resolution": "2K",
+                      "size": "3:4",
+                      "output_format": "png",
+                      "n": 1
+                    }
+                  }
+                },
+                "edit-03": {
+                  "summary": "双色木刻中的雨水路径",
+                  "value": {
+                    "model": "kwaivgi/kling-image-o1",
+                    "input": {
+                      "prompt": "Transform this rooftop rainwater-collection photograph into a detailed hand-carved two-color woodcut print, using deep indigo and warm terracotta ink on warm ivory paper. Preserve the original camera view and spatial composition exactly: two cylindrical tanks side by side on the left, the sloping corrugated roof at upper left, downpipe feeding the left tank, connector between the tanks, descending outlet, low brick parapet, drain grate at right foreground, and distant apartment skyline. Keep all pipes connected plausibly and each original object recognizable. Translate shading into expressive carved hatching, bold clean silhouettes, slightly imperfect ink edges and subtle paper texture; no photographic gradients. One continuous scene, no borders, panels, diagrams, added objects, people, animals, text, labels, branding or watermark.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/kwaivgi/kling-image-o1/edit/v1/03/input-01.png"
+                      ],
+                      "resolution": "2K",
+                      "size": "4:3",
+                      "output_format": "png",
+                      "n": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "G9UB0VC3IRIBRX9W",
+                    "status": "running",
+                    "created_time": "2026-09-24T11:52:39"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、档位不支持、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建上游生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

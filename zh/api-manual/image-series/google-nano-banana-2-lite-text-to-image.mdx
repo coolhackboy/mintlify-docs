@@ -1,0 +1,46 @@
+---
+title: "Nano Banana 2 Lite 文生图"
+description: "Nano Banana 2 Lite 文生图 API 将视觉创意生成为图像，提供竖版、横版和宽幅构图等多种画幅选项。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/google-nano-banana-2-lite-text-to-image.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Nano Banana 2 Lite 将视觉创意生成为图像，提供竖版、横版和宽幅构图等画幅选项。
+
+## 模型
+
+- **google/nano-banana-2-lite/text-to-image** - 根据文本提示词生成图像。
+
+## 功能
+
+- 根据文本提示词生成图像。
+
+## 输出选项
+
+### 宽高比
+
+- `size`：可选。可选值：`1:1`、`2:3`、`3:2`、`3:4`、`4:3`、`4:5`、`5:4`、`9:16`、`16:9`、`21:9`。省略时不指定宽高比；没有默认值。不接受 `auto`。
+
+如需图像编辑，请使用 `google/nano-banana-2-lite/edit`。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流参数（包括输出选项）都放在 `input` 内。
+
+只发送本工作流支持的 input 字段。不支持的 `input` 字段会在扣除积分前被拒绝。
+
+### 提示词
+
+- `prompt`：必填。描述期望的图像。最小长度：**1 个字符**。
+- 提供时不能为空。未规定提示词最大长度。
+
+## 计费因素
+
+按次计费。文生图和图像编辑使用相同的计费标准。所选宽高比（`size`）和参考图数量不会额外计费。
+
+积分在提交时扣除，任务失败会退还。

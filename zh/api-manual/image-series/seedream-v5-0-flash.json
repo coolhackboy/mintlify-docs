@@ -1,0 +1,233 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Seedream 5.0 Flash 文生图",
+    "description": "使用 Seedream 5.0 Flash 根据文本提示词生成一张图像。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交 Seedream 5.0 Flash 文生图任务",
+        "operationId": "submitSeedream50FlashTexttoImageTask",
+        "tags": [
+          "Seedream 5.0 Flash Text to Image"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "default": {
+                  "summary": "生成一张图像",
+                  "value": {
+                    "model": "bytedance/seedream-v5.0-flash/text-to-image",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A product photograph of a silver coffee maker in a bright studio.",
+                      "size": "1:1",
+                      "resolution": "1K"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交结果。任务 ID 标识一项异步任务；生成可能仍在进行中。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "使用 `Authorization: Bearer VIDGO_API_KEY`。"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "bytedance/seedream-v5.0-flash/text-to-image"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "可选的 Webhook URL，用于接收完成或失败通知。",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 5000,
+                "description": "描述期望图像的文本。\n\n至少包含一个非空白字符。"
+              },
+              "size": {
+                "type": "string",
+                "description": "输出宽高比。",
+                "enum": [
+                  "1:1",
+                  "4:3",
+                  "3:4",
+                  "16:9",
+                  "9:16",
+                  "2:3",
+                  "3:2",
+                  "21:9"
+                ],
+                "default": "1:1"
+              },
+              "resolution": {
+                "type": "string",
+                "enum": [
+                  "1K",
+                  "1.5K",
+                  "2K"
+                ],
+                "default": "1K",
+                "description": "输出分辨率档位。"
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "jpeg",
+                  "png"
+                ],
+                "description": "输出图像格式。"
+              },
+              "enable_safety_checker": {
+                "type": "boolean",
+                "default": true,
+                "description": "开启内容安全检查。"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-example-001"
+              },
+              "status": {
+                "type": "string",
+                "example": "running"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-10-09T10:30:00"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "error"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

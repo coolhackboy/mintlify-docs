@@ -1,0 +1,515 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Flux Kontext Pro 图像编辑",
+    "description": "使用 FLUX Kontext Pro 通过文字指令编辑图像，支持角色一致性和对特定视觉细节的修改。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Image Series"
+        ],
+        "summary": "Flux Kontext Pro 图像编辑",
+        "operationId": "submit_blackforestlabs_flux_kontext_pro",
+        "description": "提交 Flux Kontext Pro 图像编辑任务：model 和可选的 callback_url 放在请求根级，生成参数放在 input 内。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "blackforestlabs/flux-kontext-pro",
+                    "enum": [
+                      "blackforestlabs/flux-kontext-pro"
+                    ]
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "image_urls",
+                      "prompt"
+                    ],
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "maxLength": 2000,
+                        "minLength": 1,
+                        "description": "描述要对图像做的修改，1–2,000 个字符，且至少包含一个非空白字符。"
+                      },
+                      "image_urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "公开可访问的 HTTP(S) 图像 URL。"
+                        },
+                        "minItems": 1,
+                        "maxItems": 1,
+                        "description": "要编辑的源图。只提供 1 个公开可访问的 HTTP(S) 图像 URL。"
+                      },
+                      "size": {
+                        "type": "string",
+                        "enum": [
+                          "1:1",
+                          "4:3",
+                          "3:4",
+                          "16:9",
+                          "9:16",
+                          "21:9",
+                          "9:21"
+                        ],
+                        "default": "1:1",
+                        "description": "输出宽高比。默认 1:1。"
+                      },
+                      "output_format": {
+                        "type": "string",
+                        "enum": [
+                          "png",
+                          "jpg"
+                        ],
+                        "description": "输出图像文件格式：png 或 jpg。"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "公开的 HTTP(S) URL，任务变为 finished 或 failed 时会向其发送 POST 通知。"
+                  }
+                },
+                "description": "model 和可选的 callback_url 放在请求根级，生成参数放在 input 内。"
+              },
+              "examples": {
+                "default": {
+                  "summary": "为奇洛埃的渔船重新命名",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-pro",
+                    "input": {
+                      "prompt": "Replace the painted name on the bow \"MARISOL\" with \"ALBATROS\". Paint the new letters in the same hand-painted white capital lettering style, same size, same brush texture, with the same chipping and weathering as the rest of the hull. Keep everything else unchanged: the boat, its sky blue hull and white stripe, the rope and buoy, the pebble beach, the palafito stilt houses, the hills, the overcast light and the camera framing.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-pro/v1/02/input-01.png"
+                      ],
+                      "size": "16:9",
+                      "output_format": "jpg"
+                    }
+                  }
+                },
+                "pro-edit-01": {
+                  "summary": "灯下的腰机织布",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-pro",
+                    "input": {
+                      "prompt": "Change the time of day from bright midday to late night. The only light source is now a single old tin oil lantern with a warm flickering flame, placed on the ground to the left of the woman, casting warm orange light across her face, hands and the textile and long soft shadows on the wall. The sky above the courtyard becomes deep navy with a few stars, the turquoise door and bougainvillea fall mostly into shadow. Keep everything else exactly the same: the woman's face, expression, pose, braid with red ribbons, embroidered huipil, the exact position of her hands on the batten, the diamond pattern of the textile, the loom, the post, the clay jar and the camera framing.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-pro/v1/01/input-01.png"
+                      ],
+                      "size": "4:3",
+                      "output_format": "png"
+                    }
+                  }
+                },
+                "pro-edit-03": {
+                  "summary": "清理马拉喀什里亚德庭院",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-pro",
+                    "input": {
+                      "prompt": "Remove the stacked white plastic chairs, the yellow bucket, the grey mop and the green garden hose. Fill in the areas behind them with the matching zellige mosaic fountain tiles and patterned floor tiles, continuing the existing geometric pattern and the diagonal late-afternoon light and shadows. Keep the fountain, the water, the arches, the carved balconies, the orange trees in terracotta pots and the camera framing exactly the same.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-pro/v1/03/input-01.png"
+                      ],
+                      "size": "3:4"
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-pro",
+                    "input": {
+                      "prompt": "Replace the painted name on the bow \"MARISOL\" with \"ALBATROS\". Paint the new letters in the same hand-painted white capital lettering style, same size, same brush texture, with the same chipping and weathering as the rest of the hull. Keep everything else unchanged: the boat, its sky blue hull and white stripe, the rope and buoy, the pebble beach, the palafito stilt houses, the hills, the overcast light and the camera framing.",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/blackforestlabs/flux-kontext-pro/v1/02/input-01.png"
+                      ],
+                      "size": "16:9",
+                      "output_format": "jpg"
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "KH8OWRITIOASWYGA",
+                    "status": "running",
+                    "created_time": "2026-09-26T11:02:37"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求校验错误或账户余额不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "任务创建错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "模型服务暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

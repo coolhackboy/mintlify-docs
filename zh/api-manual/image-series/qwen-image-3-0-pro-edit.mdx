@@ -1,0 +1,47 @@
+---
+title: "Qwen Image 3.0 Pro 图像编辑"
+description: "Qwen Image 3.0 Pro 图像编辑 API 是 Qwen Image 3 高质量版参考图编辑模型，输出 1K 和 2K。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/qwen-image-3-0-pro-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+此模型支持基于参考图的编辑，适用于海报、产品视觉、文字排版和自然语言创意任务。
+
+## 模型
+
+- **qwen-image-3.0-pro/edit** - 高质量版参考图编辑，输出 1K 和 2K
+
+## 参数
+
+- `prompt` 必填，最多 5,000 个字符。
+- `size` 支持 `1:1`、`3:2`、`2:3`、`4:3`、`3:4`、`16:9`、`9:16` 和 `21:9`。
+- `resolution` 支持 `1K` 和 `2K`。
+- `output_format` 支持 `png` 和 `jpeg`。
+- `prompt_extend` 控制是否自动增强提示词。
+- `negative_prompt` 描述不希望出现在输出中的内容。
+- `seed` 取值范围为 0 到 2,147,483,647。
+- `enable_safety_checker` 控制内容安全检查。
+- `image_urls` 必填。
+- 按输出图像计费；分辨率和输入图像数量可能影响当前模型价格。
+
+## 参考图示例
+
+```json
+{
+  "model": "qwen-image-3.0-pro/edit",
+  "callback_url": "https://your-domain.com/callback",
+  "input": {
+    "prompt": "A cinematic scene with natural lighting and coherent motion",
+    "resolution": "1K",
+    "size": "1:1",
+    "image_urls": [
+      "https://cdn.vidgo.ai/temp/reference-1.jpg"
+    ]
+  }
+}
+```

@@ -1,0 +1,546 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Seedream 5.0 Lite 文生图",
+    "description": "使用 Seedream 5.0 Lite 探索图像创意，根据文字描述批量生成视觉变体。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Image Series"
+        ],
+        "summary": "Seedream 5.0 Lite 文生图",
+        "operationId": "submit_bytedance_seedream_v5_lite_text_to_image",
+        "description": "提交异步图像生成任务。prompt 为 3–3,000 个字符。自定义尺寸的宽和高均为正整数。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "bytedance/seedream/v5/lite/text-to-image",
+                    "enum": [
+                      "bytedance/seedream/v5/lite/text-to-image"
+                    ]
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "prompt"
+                    ],
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 3000,
+                        "description": "描述期望的图像，3–3,000 个字符，按去除首尾空白后的长度计算。"
+                      },
+                      "size": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "description": "使用预设（`2K`、`3K`、`1:1`、`4:3`、`3:4`、`16:9`、`9:16`、`3:2`、`2:3`、`21:9`）或自定义 `WIDTHxHEIGHT` 尺寸。\n\n宽和高之间用 `x` 或 `X` 分隔。",
+                            "title": "尺寸字符串"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "width",
+                              "height"
+                            ],
+                            "properties": {
+                              "width": {
+                                "type": "integer",
+                                "description": "输出宽度（像素），正整数。",
+                                "minimum": 1
+                              },
+                              "height": {
+                                "type": "integer",
+                                "description": "输出高度（像素），正整数。",
+                                "minimum": 1
+                              }
+                            },
+                            "additionalProperties": false,
+                            "description": "以对象表示的自定义尺寸，宽和高均为正整数。",
+                            "title": "宽和高"
+                          }
+                        ],
+                        "default": "1:1",
+                        "description": "输出尺寸：2K、3K、比例预设、WIDTHxHEIGHT 字符串，或宽高为正整数的对象。默认：1:1。"
+                      },
+                      "n": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 15,
+                        "default": 1,
+                        "description": "要生成的图像数量，1 到 15。默认：1。"
+                      },
+                      "enable_safety_checker": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "设为 true 开启安全检查，设为 false 关闭。默认：true。"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) URL，用于接收任务完成通知。"
+                  }
+                },
+                "description": "model 和可选的 callback_url 放在请求根级，生成参数放在 input 内。"
+              },
+              "examples": {
+                "text-to-image-01": {
+                  "summary": "蜜蜂如何分享花朵地图",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/text-to-image",
+                    "input": {
+                      "prompt": "A scientifically accurate educational infographic explaining the honeybee waggle dance, drawn in a warm naturalist illustration style on cream paper. A title across the top reads exactly \"THE WAGGLE DANCE\". Below it, four numbered panels in a 2x2 grid, each with one short caption in clean capital letters. Panel 1 caption \"1. A FORAGER FINDS FLOWERS\": a worker bee flies from a wooden hive to a field of purple lavender; a dotted flight line leads to the flowers, a small sun sits in the sky, and a thin arc marks a 40 degree angle between the sun direction and the flight line. Panel 2 caption \"2. SHE DANCES ON THE COMB\": a vertical honeycomb of hexagonal wax cells; the returning bee traces a figure-eight path whose straight waggle run is tilted 40 degrees to the right of vertical, with a dashed vertical reference line, a thin arc marking the 40 degree angle between that line and the waggle run, and a small upward arrow whose tip carries the single word \"SUN\" to show that straight up on the comb stands for the direction of the sun. Panel 3 caption \"3. LONGER WAGGLE, FARTHER FOOD\": three waggle runs of increasing length drawn side by side, each connected to a flower patch placed at an increasing distance from the hive. Panel 4 caption \"4. SISTERS FOLLOW THE MAP\": several bees that watched the dance fly out from the hive along the same 40 degree angle to the sun and reach the lavender field. The 40 degree angle must stay consistent in panels 1, 2 and 4. Anatomically correct bees with six legs and four wings, readable fine linework, every word spelled correctly, no other text, no watermark.",
+                      "size": "3K",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "text-to-image-02": {
+                  "summary": "玻璃熔炉的夜班",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/text-to-image",
+                    "input": {
+                      "prompt": "A cinematic documentary photograph inside a centuries-old glassblowing furnace room on the island of Murano, Venice, late at night. In the foreground, a master glassblower in a sweat-darkened grey linen shirt and a scorched leather apron turns a long blowpipe with a glowing orange gather of molten glass at its tip; his face is lit from below by the glow. In the middle ground, a young female assistant shields her face with a wooden paddle as she opens the round furnace door, revealing a white-hot interior that is the brightest light source in the room. In the background, partly hidden behind the assistant's shoulder, an older artisan sits at a steel bench shaping a translucent cobalt-blue vase with folded wet newspaper, a wisp of steam rising. Shelves along the soot-darkened brick wall hold finished clear, amber and green glass pieces that refract the orange light and cast colored caustics onto the bench. Correct occlusion and depth between the three people, every shadow falling away from the furnace, warm firelight contrasted with cool blue moonlight from one small window, visible heat shimmer above the furnace mouth, 35mm lens, natural skin texture, believable hands with five fingers, no text, no logos, no watermark.",
+                      "size": "3:2",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "text-to-image-03": {
+                  "summary": "阿尔泰的猎鹰人",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/text-to-image",
+                    "input": {
+                      "prompt": "An ultra-wide cinematic landscape photograph of the Altai Mountains in western Mongolia in deep winter at golden hour. In the left third of the foreground, a Kazakh eagle hunter sits on a sturdy brown Mongolian horse, wearing a fox-fur hat and a long embroidered wool coat; he raises his thick leather-gloved forearm as a golden eagle with fully spread wings lands on it, powder snow kicked up around the horse's hooves. In the middle distance on the right, a second rider leads a small caravan of four Bactrian camels across a frozen river, their long shadows stretching over the snow. Far behind, jagged snow-covered peaks glow pink and gold under a clear pale sky, each successive ridge lighter and hazier with distance. Correct relative scale between the eagle, the riders, the camels and the mountains, one consistent low sun from the right, visible breath vapor from the horse, fine detail in feathers and fur, no text, no watermark.",
+                      "size": "21:9",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/text-to-image",
+                    "input": {
+                      "prompt": "A scientifically accurate educational infographic explaining the honeybee waggle dance, drawn in a warm naturalist illustration style on cream paper. A title across the top reads exactly \"THE WAGGLE DANCE\". Below it, four numbered panels in a 2x2 grid, each with one short caption in clean capital letters. Panel 1 caption \"1. A FORAGER FINDS FLOWERS\": a worker bee flies from a wooden hive to a field of purple lavender; a dotted flight line leads to the flowers, a small sun sits in the sky, and a thin arc marks a 40 degree angle between the sun direction and the flight line. Panel 2 caption \"2. SHE DANCES ON THE COMB\": a vertical honeycomb of hexagonal wax cells; the returning bee traces a figure-eight path whose straight waggle run is tilted 40 degrees to the right of vertical, with a dashed vertical reference line, a thin arc marking the 40 degree angle between that line and the waggle run, and a small upward arrow whose tip carries the single word \"SUN\" to show that straight up on the comb stands for the direction of the sun. Panel 3 caption \"3. LONGER WAGGLE, FARTHER FOOD\": three waggle runs of increasing length drawn side by side, each connected to a flower patch placed at an increasing distance from the hive. Panel 4 caption \"4. SISTERS FOLLOW THE MAP\": several bees that watched the dance fly out from the hive along the same 40 degree angle to the sun and reach the lavender field. The 40 degree angle must stay consistent in panels 1, 2 and 4. Anatomically correct bees with six legs and four wings, readable fine linework, every word spelled correctly, no other text, no watermark.",
+                      "size": "3K",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                },
+                "custom-string": {
+                  "summary": "自定义尺寸字符串",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/text-to-image",
+                    "input": {
+                      "prompt": "A scientifically accurate educational infographic explaining the honeybee waggle dance, drawn in a warm naturalist illustration style on cream paper. A title across the top reads exactly \"THE WAGGLE DANCE\". Below it, four numbered panels in a 2x2 grid, each with one short caption in clean capital letters. Panel 1 caption \"1. A FORAGER FINDS FLOWERS\": a worker bee flies from a wooden hive to a field of purple lavender; a dotted flight line leads to the flowers, a small sun sits in the sky, and a thin arc marks a 40 degree angle between the sun direction and the flight line. Panel 2 caption \"2. SHE DANCES ON THE COMB\": a vertical honeycomb of hexagonal wax cells; the returning bee traces a figure-eight path whose straight waggle run is tilted 40 degrees to the right of vertical, with a dashed vertical reference line, a thin arc marking the 40 degree angle between that line and the waggle run, and a small upward arrow whose tip carries the single word \"SUN\" to show that straight up on the comb stands for the direction of the sun. Panel 3 caption \"3. LONGER WAGGLE, FARTHER FOOD\": three waggle runs of increasing length drawn side by side, each connected to a flower patch placed at an increasing distance from the hive. Panel 4 caption \"4. SISTERS FOLLOW THE MAP\": several bees that watched the dance fly out from the hive along the same 40 degree angle to the sun and reach the lavender field. The 40 degree angle must stay consistent in panels 1, 2 and 4. Anatomically correct bees with six legs and four wings, readable fine linework, every word spelled correctly, no other text, no watermark.",
+                      "size": "2304x1728",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "custom-object": {
+                  "summary": "自定义尺寸对象",
+                  "value": {
+                    "model": "bytedance/seedream/v5/lite/text-to-image",
+                    "input": {
+                      "prompt": "A scientifically accurate educational infographic explaining the honeybee waggle dance, drawn in a warm naturalist illustration style on cream paper. A title across the top reads exactly \"THE WAGGLE DANCE\". Below it, four numbered panels in a 2x2 grid, each with one short caption in clean capital letters. Panel 1 caption \"1. A FORAGER FINDS FLOWERS\": a worker bee flies from a wooden hive to a field of purple lavender; a dotted flight line leads to the flowers, a small sun sits in the sky, and a thin arc marks a 40 degree angle between the sun direction and the flight line. Panel 2 caption \"2. SHE DANCES ON THE COMB\": a vertical honeycomb of hexagonal wax cells; the returning bee traces a figure-eight path whose straight waggle run is tilted 40 degrees to the right of vertical, with a dashed vertical reference line, a thin arc marking the 40 degree angle between that line and the waggle run, and a small upward arrow whose tip carries the single word \"SUN\" to show that straight up on the comb stands for the direction of the sun. Panel 3 caption \"3. LONGER WAGGLE, FARTHER FOOD\": three waggle runs of increasing length drawn side by side, each connected to a flower patch placed at an increasing distance from the hive. Panel 4 caption \"4. SISTERS FOLLOW THE MAP\": several bees that watched the dance fly out from the hive along the same 40 degree angle to the sun and reach the lavender field. The 40 degree angle must stay consistent in panels 1, 2 and 4. Anatomically correct bees with six legs and four wings, readable fine linework, every word spelled correctly, no other text, no watermark.",
+                      "size": {
+                        "width": 2304,
+                        "height": 1728
+                      },
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "EF4PBIXHZKGOWFP6",
+                    "status": "running",
+                    "created_time": "2026-09-25T16:21:46"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求校验错误或账户余额不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "达到请求速率或账户限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "任务创建错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "服务暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

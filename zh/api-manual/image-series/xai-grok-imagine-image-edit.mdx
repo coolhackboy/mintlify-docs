@@ -1,0 +1,42 @@
+---
+title: "Grok Imagine 图像编辑"
+description: "Grok Imagine 图像编辑 API 重新演绎已有图像，通过文字引导对主体、场景或视觉风格的修改。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/xai-grok-imagine-image-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Grok Imagine 重新演绎已有图像，通过文字引导对主体、场景或视觉风格的修改。
+
+## 模型
+
+- **xai/grok-imagine-image/edit** - 使用提示词和参考图编辑图像。
+
+## 功能
+
+- 使用提示词和参考图编辑图像。
+- `image_urls` 只接受 1 张图像。
+
+## 输出选项
+
+### 图像尺寸
+
+- `size`：可选。可选值：`1:1`、`2:3`、`3:2`、`9:16`、`16:9`。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流参数（包括输出选项）都放在 `input` 内。
+
+使用下面列出的 input 字段。参考图请提供公开可访问的 HTTP(S) URL。
+
+### 提示词
+
+- `prompt`：必填。描述要做的修改。长度：**1-5,000 个字符**。
+
+### 图像 URL
+
+- `image_urls`：必填。提供公开可访问的图像 URL。只提供 1 项。使用 JPEG、PNG 或 WebP，最大 10 MB。

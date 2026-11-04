@@ -1,0 +1,335 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - GPT Image 2 API",
+    "description": "在 Vidgo API 上使用 GPT Image 2，每次请求生成或编辑一张图像。支持质量档位、比例预设、自定义尺寸，以及显式的 1K、2K 或 4K 分辨率控制。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交 GPT Image 2 任务",
+        "description": "在 Vidgo API 上使用 GPT Image 2 生成或编辑一张图像。基于提示词生成请使用 gpt-image-2，需要参考图 URL 时请使用 gpt-image-2-edit。",
+        "operationId": "submitGPTImage2Task",
+        "tags": ["GPT Image 2"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "gpt-image-2": {
+                  "summary": "gpt-image-2",
+                  "value": {
+                    "model": "gpt-image-2",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A premium product photo of a silver espresso machine on a clean white studio background, realistic lighting, high detail",
+                      "quality": "low",
+                      "size": "1:1",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "gpt-image-2-2k": {
+                  "summary": "gpt-image-2-2k",
+                  "value": {
+                    "model": "gpt-image-2",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A clean landing-page hero illustration of a fintech dashboard with crisp typography and balanced spacing",
+                      "quality": "medium",
+                      "size": "16:9",
+                      "resolution": "2K"
+                    }
+                  }
+                },
+                "gpt-image-2-4k": {
+                  "summary": "gpt-image-2-4k",
+                  "value": {
+                    "model": "gpt-image-2",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic 21:9 hero image of an electric concept car in a rain-soaked city at night",
+                      "quality": "high",
+                      "size": "21:9",
+                      "resolution": "4K"
+                    }
+                  }
+                },
+                "gpt-image-2-custom-size": {
+                  "summary": "gpt-image-2-custom-size",
+                  "value": {
+                    "model": "gpt-image-2",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A product marketing banner with a centered smartwatch, soft reflections, and clean negative space for headline copy",
+                      "quality": "medium",
+                      "size": "2304x1536",
+                      "resolution": "2K"
+                    }
+                  }
+                },
+                "gpt-image-2-edit": {
+                  "summary": "gpt-image-2-edit",
+                  "value": {
+                    "model": "gpt-image-2-edit",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Replace the background with a clean white studio backdrop and add a soft natural shadow while preserving the product shape",
+                      "quality": "medium",
+                      "size": "1:1",
+                      "resolution": "2K",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-product.jpg"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "missing_prompt": {
+                    "value": {
+                      "code": 400,
+                      "error": {
+                        "message": "prompt is required",
+                        "type": "invalid_request_error"
+                      }
+                    }
+                  },
+                  "missing_image_urls_for_edit": {
+                    "value": {
+                      "code": 400,
+                      "error": {
+                        "message": "image_urls is required for edit",
+                        "type": "invalid_request_error"
+                      }
+                    }
+                  },
+                  "image_urls_not_supported_for_generate": {
+                    "value": {
+                      "code": 400,
+                      "error": {
+                        "message": "image_urls is only supported for gpt-image-2-edit",
+                        "type": "invalid_request_error"
+                      }
+                    }
+                  },
+                  "custom_size_requires_higher_resolution": {
+                    "value": {
+                      "code": 400,
+                      "error": {
+                        "message": "custom size requires resolution 2K or 4K",
+                        "type": "invalid_request_error"
+                      }
+                    }
+                  },
+                  "true_4k_custom_size_requires_4k": {
+                    "value": {
+                      "code": 400,
+                      "error": {
+                        "message": "true 4K custom size requires resolution 4K",
+                        "type": "invalid_request_error"
+                      }
+                    }
+                  },
+                  "invalid_quality": {
+                    "value": {
+                      "code": 400,
+                      "error": {
+                        "message": "quality must be one of: low, medium, high",
+                        "type": "invalid_request_error"
+                      }
+                    }
+                  },
+                  "invalid_resolution": {
+                    "value": {
+                      "code": 400,
+                      "error": {
+                        "message": "resolution must be one of: 1K, 2K, 4K",
+                        "type": "invalid_request_error"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权 - API Key 无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 401,
+                  "error": {
+                    "message": "Unauthorized - Invalid API key",
+                    "type": "authentication_error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证。\n\n在 **仪表盘 → API 密钥** 页面获取 API Key，并在请求头中传入：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "gpt-image-2"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "任务完成或失败时用于接收通知的 Webhook 回调 URL。",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["prompt"],
+            "description": "在 Vidgo API 上进行 GPT Image 2 生成或编辑的输入参数。",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "描述期望图像或编辑内容的提示词。",
+                "maxLength": 4000,
+                "example": "A studio product photo of a matte black espresso machine"
+              },
+              "quality": {
+                "type": "string",
+                "description": "图像质量档位。默认 low，与实际分辨率共同决定积分消耗。",
+                "enum": ["low", "medium", "high"],
+                "default": "low",
+                "example": "low"
+              },
+              "size": {
+                "description": "图像尺寸。可使用 auto、受支持的宽高比，或自定义 WIDTHxHEIGHT 值。省略 size 或设为 auto 时，请求按 1K 档位处理。\n\n使用预设（`auto`、`1:1`、`2:3`、`3:2`、`3:4`、`4:3`、`4:5`、`5:4`、`16:9`、`9:16`、`21:9`）或自定义 `WIDTHxHEIGHT` 尺寸。\n\n自定义尺寸时，每个维度须为三位或四位数字，用小写 `x` 分隔。",
+                "example": "16:9",
+                "type": "string"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "请求的分辨率。自定义尺寸需要 2K 或 4K。size 为 auto 时，实际结果保持 1K。非真 4K 请求可能按实际的 2K 档位计费。",
+                "enum": ["1K", "2K", "4K"],
+                "example": "1K"
+              },
+              "image_urls": {
+                "type": "array",
+                "description": "编辑请求的参考图 URL。gpt-image-2-edit 必填，gpt-image-2 不接受此字段。",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "example": ["https://cdn.vidgo.ai/temp/reference-product.jpg"]
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started"],
+                "example": "not_started"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-04-27T10:30:00"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

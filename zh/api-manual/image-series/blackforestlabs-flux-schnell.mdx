@@ -1,0 +1,46 @@
+---
+title: "Flux Schnell 文生图"
+description: "Flux Schnell 文生图 API 根据提示词快速生成 PNG 或 JPEG 图像，支持预设宽高比、1:1 HD 或自定义 WIDTHxHEIGHT 尺寸，并可一次生成多张。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/blackforestlabs-flux-schnell.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+## 提交任务
+
+向 `POST /api/generate/submit` 发送 `model: "blackforestlabs/flux/schnell"` 和一个 `input` 对象。使用 `Authorization: Bearer VIDGO_API_KEY` 认证。
+
+- `prompt`：必填字符串。描述图像，去除首尾空白后至少一个字符。
+- `size`：输出画布，默认 `1:1`。可选 `1:1`、`1:1 HD`、`4:3`、`3:4`、`16:9`、`9:16`，或自定义 `WIDTHxHEIGHT`（如 `1024x1536`）。自定义宽和高为正整数。
+- `n`：正整数，指定输出图像数量，默认 `1`。
+- `output_format`：`png` 或 `jpeg`，默认 `png`。
+
+## 获取图像
+
+提交响应会返回 `data.task_id`。使用[查询任务状态](/zh/api-manual/task-management/status)跟踪任务经过 `not_started`、`running`、`finished` 或 `failed` 等状态。
+
+状态为 `finished` 时，从 `data.files[].file_url` 读取图像 URL。状态为 `failed` 时，读取 `data.error_message`。
+
+可以在顶层提供 `callback_url`，通过 [Webhook](/zh/api-manual/task-management/webhooks) 接收最终结果。
+
+## 已验证示例
+
+崖边泳池的第一缕晨光。此文生图示例只使用提示词。
+
+```json
+{
+  "model": "blackforestlabs/flux/schnell",
+  "input": {
+    "prompt": "An architectural photograph of an empty public seawater swimming pool built into a coastal cliff at sunrise. From a low viewpoint beside the pool, pale turquoise water fills the foreground, broad curved stone steps descend naturally into the shallow end on the right, and a simple white limewashed wall catches moving water reflections. Warm low morning sunlight reveals the rough limestone coping and delicate ripples. Beyond the far pool edge, the calm open sea and a clean level horizon remain clearly visible. Restrained Mediterranean colors, believable pool geometry, natural light, crisp tactile surfaces, peaceful everyday public architecture. One coherent full-frame photograph, no people, hotel styling, advertising, signs, lettering, logos or watermark.",
+    "size": "4:3",
+    "n": 1,
+    "output_format": "png"
+  }
+}
+```
+
+![崖边泳池的第一缕晨光](https://cdn.vidgo.ai/apis/models/blackforestlabs/flux/schnell/text-to-image/v1/01/output.png)

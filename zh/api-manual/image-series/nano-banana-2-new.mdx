@@ -1,0 +1,18 @@
+---
+title: "Nano Banana 2"
+description: "Nano Banana 2 API 由 Gemini 3.1 Flash Image Preview 驱动，提供新一代 AI 图像生成。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/nano-banana-2-new.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+由 Google Gemini 3.1 Flash Image Preview 驱动的新一代 AI 图像生成。可生成原生 2K / 4K 分辨率图像，多语言文字渲染精准，能以思维链理解物理关系，最多支持 14 张参考图。
+
+## 模型
+
+- **nano-banana-2-new** - 文生图和图生图
+- **nano-banana-2-new-edit** - 高级图像编辑

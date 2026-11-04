@@ -1,0 +1,546 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Seedream 4.5 文生图",
+    "description": "使用 Seedream 4.5 发展视觉概念，根据一条提示词生成多张图像，探索不同风格和构图。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Image Series"
+        ],
+        "summary": "Seedream 4.5 文生图",
+        "operationId": "submit_bytedance_seedream_v4_5_text_to_image",
+        "description": "提交异步图像生成任务。prompt 为 1–3,000 个字符。自定义尺寸的宽和高均为正整数。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "bytedance/seedream/v4.5/text-to-image",
+                    "enum": [
+                      "bytedance/seedream/v4.5/text-to-image"
+                    ]
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "prompt"
+                    ],
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "maxLength": 3000,
+                        "minLength": 1,
+                        "description": "描述期望的图像，1–3,000 个字符，且至少包含一个非空白字符。"
+                      },
+                      "size": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "description": "使用预设（`2K`、`4K`、`1:1`、`4:3`、`3:4`、`16:9`、`9:16`、`3:2`、`2:3`、`21:9`）或自定义 `WIDTHxHEIGHT` 尺寸。\n\n宽和高之间用 `x` 或 `X` 分隔。",
+                            "title": "尺寸字符串"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "width",
+                              "height"
+                            ],
+                            "properties": {
+                              "width": {
+                                "type": "integer",
+                                "description": "输出宽度（像素），正整数。",
+                                "minimum": 1
+                              },
+                              "height": {
+                                "type": "integer",
+                                "description": "输出高度（像素），正整数。",
+                                "minimum": 1
+                              }
+                            },
+                            "additionalProperties": false,
+                            "description": "以对象表示的自定义尺寸，宽和高均为正整数。",
+                            "title": "宽和高"
+                          }
+                        ],
+                        "default": "1:1",
+                        "description": "输出尺寸：2K、4K、比例预设、WIDTHxHEIGHT 字符串，或宽高为正整数的对象。默认：1:1。"
+                      },
+                      "n": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 15,
+                        "default": 1,
+                        "description": "要生成的图像数量，1 到 15。默认：1。"
+                      },
+                      "enable_safety_checker": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "设为 true 开启安全检查，设为 false 关闭。默认：true。"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) URL，用于接收任务完成通知。"
+                  }
+                },
+                "description": "model 和可选的 callback_url 放在请求根级，生成参数放在 input 内。"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "已验证的默认示例：极光山脊站剖面图",
+                  "value": {
+                    "model": "bytedance/seedream/v4.5/text-to-image",
+                    "input": {
+                      "prompt": "A detailed isometric cutaway illustration of a small polar research station standing on steel stilts on an Antarctic ice shelf, shown like a page from a science museum guidebook. The roof and front wall are removed so six rooms are visible, each with a small clean sans-serif label plate printed exactly: \"LAB\" (a scientist examining an ice core under a lamp), \"GALLEY\" (two people cooking soup at a steaming stove), \"BUNKS\" (stacked beds with colorful quilts), \"RADIO\" (an operator with headphones in front of dials), \"GREENHOUSE\" (lettuce and tomatoes under pink grow lights) and \"GARAGE\" (an orange snowcat being repaired). A banner across the top reads exactly \"AURORA RIDGE STATION\", and a small thermometer sign beside the entrance reads \"-38°C\". Tiny figures, pipes, ladders and cables connect the rooms logically. Outside: blowing snow, a weather mast, a pale green aurora in the dark sky. Crisp linework, soft flat colors, consistent isometric perspective, every label spelled correctly and legible, no extra text, no watermark.",
+                      "size": "4:3",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "verified-2": {
+                  "summary": "已验证示例：季风中的补网人",
+                  "value": {
+                    "model": "bytedance/seedream/v4.5/text-to-image",
+                    "input": {
+                      "prompt": "A vertical documentary portrait photograph of an elderly South Indian fisherwoman mending a fishing net under the palm-thatched roof of a wooden pier in Kerala during a monsoon evening. She sits cross-legged, wearing a faded turquoise cotton sari with a thin gold border and a small silver nose stud; her deeply lined face, silver hair tied back and weathered hands pulling green nylon mesh are in sharp focus. Blue-hour light from the backwaters mixes with the warm glow of a single hanging kerosene lantern beside her. Heavy rain falls in streaks beyond the roof edge, drops glint on the net, wet planks reflect the lantern, and a few moored wooden boats fade into the misty background. Natural skin texture with pores and fine wrinkles, calm dignified expression looking at her work, 85mm lens, shallow depth of field, believable hands with five fingers, no text, no watermark.",
+                      "size": "3:4",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "verified-3": {
+                  "summary": "已验证示例：旋转栖息舱内部",
+                  "value": {
+                    "model": "bytedance/seedream/v4.5/text-to-image",
+                    "input": {
+                      "prompt": "An ultra-wide cinematic panorama from inside a gigantic rotating cylindrical space habitat. The camera stands on a gravel path in the foreground among ripening wheat and small orchards; the farmland, rivers, winding roads and small white villages continuously curve upward on both sides and arc overhead, so the opposite side of the cylinder is visible high in the sky, upside down, with tiny fields and lakes. A long glowing sun-line runs along the central axis, casting soft morning light and thin wispy clouds drifting in the middle of the cylinder. At the far end, a huge circular end-cap window shows black space, stars and a slice of a blue planet. A cyclist rides along the path for scale. Coherent curved perspective, consistent lighting, atmospheric haze with distance, grounded realistic sci-fi concept art with photographic detail, no text, no logos, no watermark.",
+                      "size": "21:9",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "bytedance/seedream/v4.5/text-to-image",
+                    "input": {
+                      "prompt": "A detailed isometric cutaway illustration of a small polar research station standing on steel stilts on an Antarctic ice shelf, shown like a page from a science museum guidebook. The roof and front wall are removed so six rooms are visible, each with a small clean sans-serif label plate printed exactly: \"LAB\" (a scientist examining an ice core under a lamp), \"GALLEY\" (two people cooking soup at a steaming stove), \"BUNKS\" (stacked beds with colorful quilts), \"RADIO\" (an operator with headphones in front of dials), \"GREENHOUSE\" (lettuce and tomatoes under pink grow lights) and \"GARAGE\" (an orange snowcat being repaired). A banner across the top reads exactly \"AURORA RIDGE STATION\", and a small thermometer sign beside the entrance reads \"-38°C\". Tiny figures, pipes, ladders and cables connect the rooms logically. Outside: blowing snow, a weather mast, a pale green aurora in the dark sky. Crisp linework, soft flat colors, consistent isometric perspective, every label spelled correctly and legible, no extra text, no watermark.",
+                      "size": "4:3",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                },
+                "custom-string": {
+                  "summary": "自定义尺寸字符串",
+                  "value": {
+                    "model": "bytedance/seedream/v4.5/text-to-image",
+                    "input": {
+                      "prompt": "A detailed isometric cutaway illustration of a small polar research station standing on steel stilts on an Antarctic ice shelf, shown like a page from a science museum guidebook. The roof and front wall are removed so six rooms are visible, each with a small clean sans-serif label plate printed exactly: \"LAB\" (a scientist examining an ice core under a lamp), \"GALLEY\" (two people cooking soup at a steaming stove), \"BUNKS\" (stacked beds with colorful quilts), \"RADIO\" (an operator with headphones in front of dials), \"GREENHOUSE\" (lettuce and tomatoes under pink grow lights) and \"GARAGE\" (an orange snowcat being repaired). A banner across the top reads exactly \"AURORA RIDGE STATION\", and a small thermometer sign beside the entrance reads \"-38°C\". Tiny figures, pipes, ladders and cables connect the rooms logically. Outside: blowing snow, a weather mast, a pale green aurora in the dark sky. Crisp linework, soft flat colors, consistent isometric perspective, every label spelled correctly and legible, no extra text, no watermark.",
+                      "size": "1920x4096",
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "custom-object": {
+                  "summary": "自定义尺寸对象",
+                  "value": {
+                    "model": "bytedance/seedream/v4.5/text-to-image",
+                    "input": {
+                      "prompt": "A detailed isometric cutaway illustration of a small polar research station standing on steel stilts on an Antarctic ice shelf, shown like a page from a science museum guidebook. The roof and front wall are removed so six rooms are visible, each with a small clean sans-serif label plate printed exactly: \"LAB\" (a scientist examining an ice core under a lamp), \"GALLEY\" (two people cooking soup at a steaming stove), \"BUNKS\" (stacked beds with colorful quilts), \"RADIO\" (an operator with headphones in front of dials), \"GREENHOUSE\" (lettuce and tomatoes under pink grow lights) and \"GARAGE\" (an orange snowcat being repaired). A banner across the top reads exactly \"AURORA RIDGE STATION\", and a small thermometer sign beside the entrance reads \"-38°C\". Tiny figures, pipes, ladders and cables connect the rooms logically. Outside: blowing snow, a weather mast, a pale green aurora in the dark sky. Crisp linework, soft flat colors, consistent isometric perspective, every label spelled correctly and legible, no extra text, no watermark.",
+                      "size": {
+                        "width": 2304,
+                        "height": 3072
+                      },
+                      "n": 1,
+                      "enable_safety_checker": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "PGQCZ3X31DC6OEXQ",
+                    "status": "running",
+                    "created_time": "2026-09-25T16:14:03"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求校验错误或账户余额不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "达到请求速率或账户限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "任务创建错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "服务暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

@@ -1,0 +1,492 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Flux Kontext Max 文生图",
+    "description": "使用 FLUX Kontext Max 创作图像，通过详细的提示词控制主体、视觉风格和取景。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Image Series"
+        ],
+        "summary": "Flux Kontext Max 文生图",
+        "operationId": "submit_blackforestlabs_flux_kontext_max_text_to_image",
+        "description": "提交 Flux Kontext Max 文生图任务：model 和可选的 callback_url 放在请求根级，生成参数放在 input 内。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "blackforestlabs/flux-kontext-max/text-to-image",
+                    "enum": [
+                      "blackforestlabs/flux-kontext-max/text-to-image"
+                    ]
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "prompt"
+                    ],
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "maxLength": 2000,
+                        "minLength": 1,
+                        "description": "描述要生成的图像，1–2,000 个字符，且至少包含一个非空白字符。"
+                      },
+                      "size": {
+                        "type": "string",
+                        "enum": [
+                          "1:1",
+                          "4:3",
+                          "3:4",
+                          "16:9",
+                          "9:16",
+                          "21:9",
+                          "9:21"
+                        ],
+                        "default": "1:1",
+                        "description": "输出宽高比。默认 1:1。"
+                      },
+                      "output_format": {
+                        "type": "string",
+                        "enum": [
+                          "png",
+                          "jpg"
+                        ],
+                        "description": "输出图像文件格式：png 或 jpg。"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "公开的 HTTP(S) URL，任务变为 finished 或 failed 时会向其发送 POST 通知。"
+                  }
+                },
+                "description": "model 和可选的 callback_url 放在请求根级，生成参数放在 input 内。"
+              },
+              "examples": {
+                "default": {
+                  "summary": "透过深海潜水器的舷窗",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-max/text-to-image",
+                    "input": {
+                      "prompt": "A photograph taken from inside a small deep-sea research submersible, looking through a thick round acrylic porthole at a depth of 1,200 meters. Outside in the black water, a female deep-sea anglerfish hangs close to the glass, seen from the side: a round lumpy dark-brown body, a huge wide mouth full of long translucent needle teeth, and tiny eyes. Growing out of the top of the fish's own head is a thin, flexible fleshy fishing rod, part of its body, that arches forward over its mouth and ends in a small glowing blue-green bioluminescent bulb, the only strong light source outside. The glow lights the fish's teeth and skin from above. Drifting marine snow particles catch the light. On the inside surface of the porthole, faint reflections of the cabin appear: amber-lit analog gauges, a red emergency switch and the soft silhouette of a scientist's face lit by a tablet screen. Tiny condensation droplets bead on the lower edge of the acrylic. A thick steel ring with heavy hex bolts frames the porthole. Extremely low light, high dynamic range, realistic photographic noise. No text, no logos, no watermark.",
+                      "size": "1:1",
+                      "output_format": "png"
+                    }
+                  }
+                },
+                "max-text-to-image-01": {
+                  "summary": "猪笼草标本图版",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-max/text-to-image",
+                    "input": {
+                      "prompt": "A single hand-colored botanical plate from a nineteenth-century natural history book, photographed flat and straight on in soft daylight. On warm cream paper with faint foxing, a detailed watercolor and engraving of the carnivorous pitcher plant Nepenthes rajah: one large upright urn-shaped pitcher in deep wine red with yellow-green speckles, a ribbed glossy crimson peristome rim around its mouth, a round lid raised above the opening, and a curling tendril joining the base of the pitcher to the tip of a long leathery green leaf. Next to it, a small cutaway of the pitcher shows digestive fluid and a trapped beetle. Delicate engraved line hatching, soft watercolor washes and blooms, fine paper fibers and a slightly uneven plate-mark border. At the top center, one single line of elegant engraved serif capitals reads exactly \"NEPENTHES RAJAH\". That title is the only text on the page: there are no numbers, labels, captions, signatures, stamps or handwriting anywhere else.",
+                      "size": "3:4",
+                      "output_format": "png"
+                    }
+                  }
+                },
+                "max-text-to-image-02": {
+                  "summary": "达纳基勒黎明的运盐驼队",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-max/text-to-image",
+                    "input": {
+                      "prompt": "An ultra-wide cinematic panorama of the Danakil Depression in Ethiopia at dawn. A long camel caravan of about twenty camels, each loaded with stacked rectangular slabs of white salt tied with rope, walks in single file from left to right across a vast, perfectly flat salt pan. Afar herders in white and ochre wraps walk beside the camels holding long sticks. The low sun sits just above the horizon on the right, casting very long blue shadows of the camels across the cracked hexagonal salt crust and turning the ground into a gradient of pink, apricot and pale lilac. A thin layer of standing water in the foreground mirrors the caravan and the sky. Distant dark volcanic hills line the horizon under a clear sky fading from peach to deep blue with a few high streaks of cloud. Shot on an anamorphic lens, low camera height, gentle heat haze, fine detail in the salt texture and camel fur, realistic scale. No text, no logos, no watermark.",
+                      "size": "21:9",
+                      "output_format": "jpg"
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "blackforestlabs/flux-kontext-max/text-to-image",
+                    "input": {
+                      "prompt": "A photograph taken from inside a small deep-sea research submersible, looking through a thick round acrylic porthole at a depth of 1,200 meters. Outside in the black water, a female deep-sea anglerfish hangs close to the glass, seen from the side: a round lumpy dark-brown body, a huge wide mouth full of long translucent needle teeth, and tiny eyes. Growing out of the top of the fish's own head is a thin, flexible fleshy fishing rod, part of its body, that arches forward over its mouth and ends in a small glowing blue-green bioluminescent bulb, the only strong light source outside. The glow lights the fish's teeth and skin from above. Drifting marine snow particles catch the light. On the inside surface of the porthole, faint reflections of the cabin appear: amber-lit analog gauges, a red emergency switch and the soft silhouette of a scientist's face lit by a tablet screen. Tiny condensation droplets bead on the lower edge of the acrylic. A thick steel ring with heavy hex bolts frames the porthole. Extremely low light, high dynamic range, realistic photographic noise. No text, no logos, no watermark.",
+                      "size": "1:1",
+                      "output_format": "png"
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "ENZJ08EV0WERQ3QY",
+                    "status": "running",
+                    "created_time": "2026-09-26T11:05:02"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求校验错误或账户余额不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "任务创建错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "模型服务暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

@@ -1,0 +1,118 @@
+---
+title: "GPT Image 2"
+description: "GPT Image 2 API 用于生成和编辑图像。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/gpt-image-2.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+## 模型
+
+- **gpt-image-2** - 根据提示词进行文生图。
+- **gpt-image-2-edit** - 基于一张或多张 `image_urls` 和文字指令进行图像编辑。
+
+## 概览
+
+使用 Vidgo API 根据提示词生成一张图像，或用自然语言指令编辑一张或多张参考图。GPT Image 2 支持显式的质量档位、比例预设、自定义尺寸，以及 `1K`、`2K` 或 `4K` 分辨率控制。
+
+## 分辨率
+
+`resolution` 参数控制实际输出分辨率。
+
+| 分辨率 | 说明 |
+| --- | --- |
+| `1K` | 标准分辨率 |
+| `2K` | 高分辨率 |
+| `4K` | 超高分辨率，适用于支持真 4K 的尺寸 |
+
+### 计费因素
+
+每次请求生成一张图像。计费取决于 `quality` 以及由 `size` 和 `resolution` 决定的实际输出分辨率。下面的规则说明实际分辨率如何确定。
+
+## 分辨率规则
+
+- 如果省略 `size` 或设为 `auto`，即使提供了 `resolution`，请求也按 `1K` 处理和计费。
+- 自定义 `WIDTHxHEIGHT` 尺寸需要 `resolution` 为 `2K` 或 `4K`。
+- 只有 `16:9`、`9:16`、`21:9`，或某条边为 `3840` 像素的自定义尺寸才按 `4K` 计费。
+- 不满足真 4K 规则的 `4K` 请求按实际的 `2K` 档位计费。
+- 最长边为 `3840` 的自定义尺寸必须使用 `resolution: "4K"`。
+
+## 自定义尺寸限制
+
+自定义尺寸使用 `WIDTHxHEIGHT` 格式，例如 `2304x1536`，并且必须同时满足：
+
+- 宽和高都必须能被 `16` 整除。
+- 最长边不超过 `3840` 像素。
+- 宽高比不超过 `3:1`。
+- 像素总数在 `655,360` 到 `8,294,400` 之间。
+
+## 请求示例
+
+### 生成图像
+
+```bash
+curl --request POST \
+  --url https://api.vidgo.ai/api/generate/submit \
+  --header "Authorization: Bearer VIDGO_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "model": "gpt-image-2",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+      "prompt": "A premium product photo of a silver espresso machine on a clean white studio background, realistic lighting, high detail",
+      "quality": "low",
+      "size": "1:1",
+      "resolution": "1K"
+    }
+  }'
+```
+
+### 编辑图像
+
+```bash
+curl --request POST \
+  --url https://api.vidgo.ai/api/generate/submit \
+  --header "Authorization: Bearer VIDGO_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "model": "gpt-image-2-edit",
+    "callback_url": "https://your-domain.com/callback",
+    "input": {
+      "prompt": "Replace the background with a clean white studio backdrop and add a soft natural shadow while preserving the product shape",
+      "quality": "medium",
+      "size": "1:1",
+      "resolution": "2K",
+      "image_urls": [
+        "https://cdn.vidgo.ai/temp/reference-product.jpg"
+      ]
+    }
+  }'
+```
+
+## 响应流程
+
+提交接口返回 `task_id`、`status` 和 `created_time`。如果提供了 `callback_url`，任务变为 `finished` 或 `failed` 时，Vidgo API 会向其发送 POST 请求。
+
+使用统一的状态接口获取最终结果：
+
+```bash
+curl --request GET \
+  --url https://api.vidgo.ai/api/generate/status/task-unified-1757165031-uyujaw3d \
+  --header "Authorization: Bearer VIDGO_API_KEY"
+```
+
+任务为 `finished` 时，状态响应的 `data.files` 中包含生成的图像文件 URL。任务失败时，状态响应会返回失败详情，便于排查。
+
+## 注意事项
+
+- `input.prompt` 必填，最多 `4000` 个字符。
+- `input.quality` 可选：`low`、`medium` 或 `high`。默认：`low`。
+- `input.size` 可选。支持的值为 `auto`、`1:1`、`2:3`、`3:2`、`3:4`、`4:3`、`4:5`、`5:4`、`16:9`、`9:16`、`21:9`，或自定义 `WIDTHxHEIGHT` 值。
+- `input.resolution` 可选：`1K`、`2K` 或 `4K`。
+- `gpt-image-2-edit` 需要 `input.image_urls`。
+- `gpt-image-2` 不接受 `input.image_urls`。
+- 每次请求返回一张图像。
