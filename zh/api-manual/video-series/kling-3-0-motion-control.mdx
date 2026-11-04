@@ -1,0 +1,46 @@
+---
+title: "Kling 3.0 动作控制"
+description: "参考图 + 参考视频动作迁移"
+icon: "video"
+openapi: "/zh/api-manual/video-series/kling-3-0-motion-control.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+`kling-3.0-motion-control` 结合一张参考图和一段参考视频，将动作迁移到目标角色上。
+
+## 模型
+
+* **kling-3.0-motion-control** - 将参考视频中的动作迁移到参考图上
+
+## 必填参数
+
+* **image_urls**：恰好 `1` 张参考图
+* **video_urls**：恰好 `1` 段参考视频
+* **character_orientation**：`image` 或 `video`
+
+## 可选参数
+
+* **prompt**：可选的场景提示词
+* **resolution**：`720p` 或 `1080p`。默认为 `720p`
+
+{/* poyo-20260910:start */}
+
+## 工作流程 ID
+
+现有 ID 仍可继续使用。新接入可以选择专用的工作流程：
+
+- [kwaivgi/kling-v3.0-std/motion-control](/zh/api-manual/video-series/kwaivgi-kling-v3-0-std-motion-control)
+- [kwaivgi/kling-v3.0-pro/motion-control](/zh/api-manual/video-series/kwaivgi-kling-v3-0-pro-motion-control)
+{/* poyo-20260910:end */}
+
+## 注意事项
+
+* 图片支持 `.jpg`、`.jpeg`、`.png`，最大 `10MB`
+* 视频支持 `.mp4`、`.mov`，最大 `100MB`
+* 参考视频至少 `3` 秒
+* `character_orientation=image` 时，参考视频不得超过 `10` 秒
+* `character_orientation=video` 时，参考视频不得超过 `30` 秒

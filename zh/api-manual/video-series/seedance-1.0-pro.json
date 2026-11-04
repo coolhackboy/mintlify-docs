@@ -1,0 +1,233 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Seedance 1.0 Pro API",
+    "description": "使用 Seedance 1.0 Pro 进行高质量的文生视频和图生视频",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交 Seedance 1.0 Pro 视频生成任务",
+        "description": "使用 Seedance 1.0 Pro 根据文本提示词或参考图生成高质量视频",
+        "operationId": "submitSeedance10ProTask",
+        "tags": [
+          "Seedance 1.0 Pro"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "seedance-1.0-pro-text-to-video": {
+                  "summary": "Seedance 1.0 Pro 文生视频",
+                  "value": {
+                    "model": "seedance-1.0-pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "slow zoom, sunset glow",
+                      "resolution": "720p",
+                      "duration": 5
+                    }
+                  }
+                },
+                "seedance-1.0-pro-image-to-video": {
+                  "summary": "Seedance 1.0 Pro 图生视频",
+                  "value": {
+                    "model": "seedance-1.0-pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "slow zoom, sunset glow",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/image.jpg"
+                      ],
+                      "resolution": "720p",
+                      "duration": 5
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "seedance-1.0-pro"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "用于接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "description": "生成所需的输入参数",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "描述目标视频动画的生成提示词",
+                "maxLength": 10000,
+                "example": "slow zoom, sunset glow"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "maxItems": 1,
+                "description": "可选，图生视频使用的参考图 URL",
+                "example": [
+                  "https://cdn.vidgo.ai/temp/image.jpg"
+                ]
+              },
+              "resolution": {
+                "type": "string",
+                "description": "输出视频分辨率",
+                "enum": [
+                  "720p",
+                  "1080p"
+                ],
+                "example": "720p"
+              },
+              "duration": {
+                "type": "integer",
+                "description": "视频时长（秒）",
+                "enum": [
+                  5,
+                  10
+                ],
+                "example": 5
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "用于跟踪状态的唯一任务标识"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "任务初始状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间（ISO 8601 时间戳）"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "error"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "message",
+              "type"
+            ],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "描述错误原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

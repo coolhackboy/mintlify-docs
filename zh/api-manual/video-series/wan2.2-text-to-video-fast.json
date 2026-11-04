@@ -1,0 +1,180 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Wan 2.2 Fast 文生视频 API",
+    "description": "使用 Alibaba Wan 2.2 Fast 快速文生视频",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Wan 2.2 Fast"
+        ],
+        "summary": "提交 Wan 2.2 Fast 文生视频任务",
+        "description": "使用 Wan 2.2 Fast 根据文本提示词生成短视频",
+        "operationId": "submitWan22TextToVideoFastTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "wan2.2-text-to-video-fast": {
+                  "summary": "Wan 2.2 Fast 文生视频",
+                  "value": {
+                    "model": "wan2.2-text-to-video-fast",
+                    "input": {
+                      "prompt": "A cinematic wide shot of one vintage steam train traveling steadily from left to right across a stone viaduct above a lush tropical gorge. The camera tracks sideways smoothly at the train's speed. White steam trails behind the locomotive, drifting over the dense green canopy; a distant waterfall and soft morning mist create layers of depth. The wheels remain on the rails, the carriages stay connected, and the bridge stays rigid. Natural documentary realism, warm early sunlight, one continuous shot, no cuts, no text or logos.",
+                      "resolution": "480p",
+                      "seed": 22400,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "wan2.2-text-to-video-fast"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "用于接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "description": "生成参数",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "视频生成的文本提示词",
+                "example": "A cinematic wide shot of one vintage steam train traveling steadily from left to right across a stone viaduct above a lush tropical gorge. The camera tracks sideways smoothly at the train's speed. White steam trails behind the locomotive, drifting over the dense green canopy; a distant waterfall and soft morning mist create layers of depth. The wheels remain on the rails, the carriages stay connected, and the bridge stays rigid. Natural documentary realism, warm early sunlight, one continuous shot, no cuts, no text or logos."
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "输出宽高比",
+                "enum": [
+                  "16:9",
+                  "9:16"
+                ],
+                "default": "16:9",
+                "example": "16:9"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "输出视频分辨率",
+                "enum": [
+                  "480p",
+                  "720p"
+                ],
+                "default": "720p",
+                "example": "480p"
+              },
+              "seed": {
+                "type": "integer",
+                "description": "可选的随机种子，用于复现结果",
+                "example": 22400
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于跟踪状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "任务初始状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n访问 [API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)（**仪表盘 → API 密钥**）获取 API Key\n\n添加到请求头：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

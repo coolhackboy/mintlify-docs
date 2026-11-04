@@ -1,0 +1,304 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Seedance 2 API",
+    "description": "使用 Seedance 2 和 Seedance 2 Fast 进行多模态视频生成，包括文生视频、首尾帧控制，以及参考图片、视频或音频引导。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交 Seedance 2 视频生成任务",
+        "description": "使用 Seedance 2 或 Seedance 2 Fast，通过文本提示词、起止帧或多模态参考生成视频。",
+        "operationId": "submitSeedance2Task",
+        "tags": [
+          "Seedance 2"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "seedance-2-text-to-video": {
+                  "summary": "Seedance 2 文生视频",
+                  "value": {
+                    "model": "seedance-2",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic city reveal after rain, smooth dolly shot, reflective streets, natural ambience.",
+                      "resolution": "4k",
+                      "duration": 5,
+                      "aspect_ratio": "auto",
+                      "generate_audio": true,
+                      "return_last_frame": true,
+                      "web_search": false,
+                      "seed": 42
+                    }
+                  }
+                },
+                "seedance-2-fast-multimodal": {
+                  "summary": "Seedance 2 Fast 多模态参考",
+                  "value": {
+                    "model": "seedance-2-fast",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Keep the athlete identity, match the reference pacing, and preserve the synth soundtrack mood.",
+                      "resolution": "480p",
+                      "duration": 6,
+                      "aspect_ratio": "9:16",
+                      "reference_image_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-athlete.png"
+                      ],
+                      "reference_video_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-motion.mp4"
+                      ],
+                      "reference_audio_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-audio.mp3"
+                      ]
+                    }
+                  }
+                },
+                "seedance-2-first-last-frame": {
+                  "summary": "Seedance 2 首尾帧",
+                  "value": {
+                    "model": "seedance-2",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Animate a premium perfume bottle from the opening macro shot to the final hero frame with elegant motion.",
+                      "resolution": "720p",
+                      "duration": 4,
+                      "aspect_ratio": "1:1",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/start-frame.png",
+                        "https://cdn.vidgo.ai/temp/end-frame.png"
+                      ],
+                      "generate_audio": false
+                    }
+                  }
+                },
+                "seedance-2-fast-video-reference": {
+                  "summary": "Seedance 2 Fast 视频参考",
+                  "value": {
+                    "model": "seedance-2-fast",
+                    "input": {
+                      "prompt": "Use the reference motion to drive the camera movement while keeping the scene consistent.",
+                      "resolution": "720p",
+                      "duration": 8,
+                      "reference_video_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-video.mp4"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "seedance-2"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "可选，用于接收结果通知的 Webhook 回调 URL。",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt",
+              "resolution",
+              "duration"
+            ],
+            "description": "Seedance 2 生成的输入参数。`image_urls` 不能与任何 `reference_*_urls` 字段同时使用。",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "描述目标视频的文本提示词。",
+                "example": "A cinematic drone shot crossing a futuristic skyline at blue hour."
+              },
+              "resolution": {
+                "type": "string",
+                "description": "输出分辨率。`seedance-2` 支持 `480p`、`720p`、`1080p` 和 `4k`。`seedance-2-fast` 仅支持 `480p` 和 `720p`。",
+                "enum": [
+                  "480p",
+                  "720p",
+                  "1080p",
+                  "4k"
+                ],
+                "example": "4k"
+              },
+              "duration": {
+                "type": "integer",
+                "minimum": 4,
+                "maximum": 15,
+                "description": "视频时长（秒）。Seedance 2 接受 4 到 15 的整数。",
+                "example": 5
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "maxItems": 2,
+                "description": "可选的首尾帧图片 URL。传入两个值时，第一个为起始帧，第二个为结束帧。不要与 `reference_image_urls`、`reference_video_urls` 或 `reference_audio_urls` 同时使用。"
+              },
+              "reference_image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "maxItems": 9,
+                "description": "可选的多模态引导参考图片 URL。最多 9 个。与 `image_urls` 互斥。"
+              },
+              "reference_video_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "maxItems": 3,
+                "description": "可选的多模态引导参考视频 URL。最多 3 个。与 `image_urls` 互斥。"
+              },
+              "reference_audio_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "maxItems": 3,
+                "description": "可选的多模态引导参考音频 URL。最多 3 个，且至少需要一个 `reference_image_urls` 或 `reference_video_urls`。与 `image_urls` 互斥。"
+              },
+              "generate_audio": {
+                "type": "boolean",
+                "description": "是否在输出视频中生成原生音频。",
+                "example": true
+              },
+              "return_last_frame": {
+                "type": "boolean",
+                "description": "是否在结果中包含最后一帧图片（如可用）。",
+                "example": false
+              },
+              "web_search": {
+                "type": "boolean",
+                "description": "对于需要最新事实的提示词，是否允许使用网络上下文。",
+                "example": false
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "可选的输出宽高比。",
+                "enum": [
+                  "auto",
+                  "1:1",
+                  "21:9",
+                  "4:3",
+                  "3:4",
+                  "16:9",
+                  "9:16"
+                ],
+                "example": "auto"
+              },
+              "seed": {
+                "type": "integer",
+                "description": "可选的随机种子，使结果更可复现。",
+                "example": 42
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "用于跟踪状态的唯一任务标识"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "任务初始状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-04-17T10:30:00",
+                "description": "任务创建时间（ISO 8601 时间戳）"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

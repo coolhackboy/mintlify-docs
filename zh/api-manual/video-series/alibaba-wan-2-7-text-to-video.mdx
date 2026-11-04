@@ -1,0 +1,65 @@
+---
+title: "Wan 2.7 Video 文生视频"
+description: "Wan 2.7 Video API 根据文字描述的场景生成 5、10 或 15 秒的视频，支持可选音频输入，最高 1080p。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/alibaba-wan-2-7-text-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Wan 2.7 文生视频，根据文字描述的场景生成 5、10 或 15 秒的视频，支持可选音频输入，最高 1080p。
+
+## 模型
+
+- **alibaba/wan-2.7/text-to-video** - 根据文本提示词生成视频场景。
+
+## 功能
+
+- 根据文本提示词生成视频场景。
+- 输出分辨率可选 `720p`、`1080p`。
+
+## 时长选项
+
+- **5、10、15 秒** - 以整数设置 `duration`。可选。默认：**5 秒**。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流参数（包括输出选项）都放在 `input` 内。
+
+只发送本工作流支持的 input 字段。不支持的 `input` 字段会在扣除积分前被拒绝。输入 URL 必须使用 HTTP(S)，带主机名，且不含内嵌凭证。
+
+`duration` 和 `seed` 也接受整数字符串，如 `"5"`；小数（如 `5.0`）和小数字符串（如 `"5.0"`）会被拒绝。null 或空值会使用默认时长或省略种子。支持的布尔字段也接受 `0`/`1`，以及不区分大小写的字符串 `true`/`false`、`1`/`0`、`yes`/`no`、`y`/`n` 和 `on`/`off`；null 表示省略该字段。首尾空白会被去除，分辨率取值不区分大小写。
+
+### 提示词
+
+- `prompt`：必填。描述场景和期望的运动。最多：**5,000 个 Unicode 字符**。
+- 首尾空白会被去除。必须提供非空提示词。
+
+### 音频 URL
+
+- `audio_url`：可选。提供输入音频 URL，使用可公开访问的 HTTP(S) URL。
+
+### 宽高比
+
+- `aspect_ratio`：可选。可选值：`16:9`、`9:16`、`1:1`、`4:3`、`3:4`。默认：`16:9`。
+
+### 分辨率
+
+- `resolution`：可选。可选值：`720p`、`1080p`。默认：`720p`。
+
+### 种子
+
+- `seed`：可选。设置生成种子。`0` 到 `2147483647` 的整数。
+
+### 安全检查
+
+- `enable_safety_checker`：可选。控制安全检查。使用 `true` 或 `false`。
+
+## 定价
+
+用量等于输出秒数乘以所选分辨率的费率。当前价格见[定价](https://vidgo.ai/apis/api-pricing)。
+
+提交时扣除积分，任务失败后退还。

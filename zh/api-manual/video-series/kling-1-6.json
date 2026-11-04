@@ -1,0 +1,289 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 1.6",
+    "description": "通过 Vidgo API 使用 Kling 1.6 Standard 和 Pro 生成视频",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交 Kling 1.6 视频生成任务",
+        "description": "使用 Kling 1.6 Standard 或 Pro 生成视频。Vidgo 会根据输入的图像字段自动选择文生视频、图生视频或 Elements。",
+        "operationId": "submitKling16Task",
+        "tags": ["Kling 1.6"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "kling-1-6-standard-text": {
+                  "summary": "Kling 1.6 Standard - 文生视频",
+                  "value": {
+                    "model": "kling-1.6/standard",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A quiet city street after rain, soft reflections on the pavement as the camera moves forward with cinematic natural motion",
+                      "duration": 5,
+                      "aspect_ratio": "16:9",
+                      "negative_prompt": "blur, low quality, distorted hands",
+                      "cfg_scale": 0.5
+                    }
+                  }
+                },
+                "kling-1-6-standard-image": {
+                  "summary": "Kling 1.6 Standard - 图生视频",
+                  "value": {
+                    "model": "kling-1.6/standard",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A landscape photograph comes alive as mist drifts across a quiet mountain lake at sunrise",
+                      "duration": 5,
+                      "start_image_url": "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1r4_atdw7v3gmp.webp",
+                      "negative_prompt": "blur, flicker, distorted scenery",
+                      "cfg_scale": 0.45
+                    }
+                  }
+                },
+                "kling-1-6-standard-elements": {
+                  "summary": "Kling 1.6 Standard - Elements",
+                  "value": {
+                    "model": "kling-1.6/standard",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic product lifestyle video featuring the same young woman walking into a modern studio, picking up silver wireless headphones, placing them on her head, and smiling toward camera. Keep the character identity, outfit colors, headphone design, desk plant, and warm studio lighting consistent.",
+                      "duration": 5,
+                      "aspect_ratio": "16:9",
+                      "negative_prompt": "blurry, distorted hands, extra fingers, deformed face, inconsistent product design, changing outfit, changing identity, warped headphones, text, watermark, logo, low quality",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1qm_4x13kew7voe.webp",
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1r4_atdw7v3gmp.webp",
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1ro_4wevnv01ds4.webp",
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov2eq_5yw6idr10ni.webp"
+                      ]
+                    }
+                  }
+                },
+                "kling-1-6-pro-text": {
+                  "summary": "Kling 1.6 Pro - 文生视频",
+                  "value": {
+                    "model": "kling-1.6/pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A premium fashion editorial shot in a bright studio, the camera slowly pushes in as fabric moves naturally in soft wind",
+                      "duration": 5,
+                      "aspect_ratio": "9:16",
+                      "negative_prompt": "blur, low quality, unnatural motion",
+                      "cfg_scale": 0.5
+                    }
+                  }
+                },
+                "kling-1-6-pro-image": {
+                  "summary": "Kling 1.6 Pro - 带尾帧的图生视频",
+                  "value": {
+                    "model": "kling-1.6/pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A still indoor scene gently animates as warm afternoon light moves across the room",
+                      "duration": 5,
+                      "aspect_ratio": "16:9",
+                      "start_image_url": "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1r4_atdw7v3gmp.webp",
+                      "end_image_url": "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov2eq_5yw6idr10ni.webp",
+                      "negative_prompt": "warped face, flicker, artifacts",
+                      "cfg_scale": 0.4
+                    }
+                  }
+                },
+                "kling-1-6-pro-elements": {
+                  "summary": "Kling 1.6 Pro - Elements",
+                  "value": {
+                    "model": "kling-1.6/pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A polished commercial video where the same model, headphones, studio, and desk plant remain consistent while the camera makes a smooth dolly-in movement",
+                      "duration": 5,
+                      "aspect_ratio": "16:9",
+                      "negative_prompt": "blurry, distorted hands, extra fingers, inconsistent identity, warped product, text, watermark",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1qm_4x13kew7voe.webp",
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1r4_atdw7v3gmp.webp",
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1ro_4wevnv01ds4.webp",
+                        "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov2eq_5yw6idr10ni.webp"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                },
+                "examples": {
+                  "submitted": {
+                    "summary": "任务已提交",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "task-unified-1757165031-uyujaw3d",
+                        "status": "running",
+                        "created_time": "2026-06-23T10:30:00"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证。在请求头中添加 `Authorization: Bearer VIDGO_API_KEY`。"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "kling-1.6/standard"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["prompt", "duration"],
+            "description": "生成参数。Vidgo 会根据提供的图像字段选择工作流程。",
+            "additionalProperties": false,
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "视频生成的文本提示词。所有 Kling 1.6 工作流程都必填",
+                "maxLength": 2500,
+                "example": "A cinematic product lifestyle video with smooth camera movement"
+              },
+              "duration": {
+                "type": "integer",
+                "description": "输出时长（秒）",
+                "enum": [5, 10],
+                "example": 5
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "视频宽高比。文生视频、Elements 和 Pro 图生视频支持。Standard 图生视频不支持 aspect_ratio",
+                "enum": ["1:1", "16:9", "9:16"],
+                "example": "16:9"
+              },
+              "negative_prompt": {
+                "type": "string",
+                "description": "可选的负面提示词，描述不希望出现的视觉瑕疵或动作",
+                "maxLength": 2500,
+                "example": "blur, low quality, artifacts"
+              },
+              "cfg_scale": {
+                "type": "number",
+                "description": "文生视频和图生视频的提示词引导强度。必须介于 0 和 1 之间。提供 image_urls 时不支持",
+                "minimum": 0,
+                "maximum": 1,
+                "example": 0.5
+              },
+              "start_image_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "图生视频的首帧图像 URL。不能与 image_urls 同时使用",
+                "example": "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1r4_atdw7v3gmp.webp"
+              },
+              "end_image_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Pro 图生视频的尾帧图像 URL。需要同时提供 start_image_url 且使用 kling-1.6/pro。不能与 image_urls 同时使用",
+                "example": "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov2eq_5yw6idr10ni.webp"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "Elements 的 1 到 4 个参考图 URL。不能与 start_image_url、end_image_url 或 cfg_scale 同时使用",
+                "minItems": 1,
+                "maxItems": 4,
+                "example": [
+                  "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1qm_4x13kew7voe.webp",
+                  "https://cdn.vidgo.ai/apis/models/kling-1-6/mqqov1r4_atdw7v3gmp.webp"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于查询任务状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started", "running", "failed"],
+                "example": "running",
+                "description": "提交接口返回的初始任务状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间戳"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

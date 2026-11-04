@@ -1,0 +1,35 @@
+---
+title: "Grok Imagine Video 1.5 图生视频"
+description: "Grok Imagine Video 1.5 API 可让一张首帧图片动起来，生成 1–15 秒、480p、720p 或 1080p 的视频。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/xai-grok-imagine-video-v1-5-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+## Grok Imagine Video 1.5 图生视频
+
+使用描述主体运动、镜头运动和声音的提示词让单张图片动起来。图片作为首帧，并决定视频的宽高比。
+
+## 请求
+
+将 `model` 设为 `xai/grok-imagine-video-v1.5/image-to-video`。下列参数放在 `input` 中。可选的 `callback_url` 放在请求根级。
+
+### prompt
+
+必填字符串。用 **1–4,096 个字符**描述场景和期望的运动，至少包含一个非空白字符。
+
+### image_urls
+
+必填数组，包含**恰好一个**可公开访问的 HTTP(S) 图片 URL。URL 需带主机名，且无需凭证即可访问。
+
+### resolution
+
+可选字符串：`480p`、`720p` 或 `1080p`。默认：`720p`。
+
+### duration
+
+可选整数，**1 到 15** 秒。默认：**6**。

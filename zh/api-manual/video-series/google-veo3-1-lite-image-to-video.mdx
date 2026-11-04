@@ -1,0 +1,71 @@
+---
+title: "Veo 3.1 Lite 图生视频"
+description: "Veo 3.1 Lite API 可让图片动起来，或在起始帧与结束帧之间生成过渡，可选生成声音，输出最高 1080p。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/google-veo3-1-lite-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Veo 3.1 Lite 让图片动起来，或在起始帧与结束帧之间生成过渡，可选生成声音，输出最高 1080p。
+
+## 模型
+
+- **google/veo3.1-lite/image-to-video** - 根据输入图片生成视频。
+
+## 功能
+
+- 让一张起始图动起来，或将两张图片作为首帧和尾帧连接起来。
+- 输出分辨率可选 `720p`、`1080p`。
+- 通过 `sound` 控制是否生成音频，默认为 `true`。
+
+## 时长选项
+
+- **4、6、8 秒** - 将 `duration` 设为其中一个值。默认：**8 秒**。
+- 使用 `1080p` 输出或传入两张图片时设置 `duration: 8`。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级，下列参数放在 `input` 中。
+
+只传本工作流支持的 input 字段。不支持的 `input` 字段会在扣除积分前被拒绝。输入 URL 必须使用 HTTP(S)、包含主机名，且不能内嵌凭证。
+
+### 提示词
+
+- `prompt`：必填。描述场景和期望的运动。
+- 传入时提示词不能为空白。
+
+### 图片 URL
+
+- `image_urls`：必填。提供 1-2 个图片 URL。
+- 一张图片时作为起始帧。
+- 两张图片时，先列起始帧，再列结束帧。
+- 图片必须可公开访问且可直接下载。
+
+### 生成类型
+
+- 只传一张图片时省略 `generation_type`。
+- 两张图片时，`generation_type` 默认为 `frame`。
+- 如果显式设置 `generation_type: "frame"`，必须恰好传两张图片。
+
+### 分辨率
+
+- `resolution`：`720p`、`1080p`。默认：`720p`。
+- `1080p` 要求 `duration: 8`。
+
+### 宽高比
+
+- `aspect_ratio`：`auto`、`16:9`、`9:16`。默认：`16:9`。
+
+### 音频
+
+- `sound`：设为 `true` 启用音频生成，设为 `false` 关闭。默认：`true`。
+
+## 定价
+
+价格取决于所选模型及相关输出设置。当前费率请查看 Vidgo 仪表盘。
+
+积分在提交时扣除，任务失败时退还。

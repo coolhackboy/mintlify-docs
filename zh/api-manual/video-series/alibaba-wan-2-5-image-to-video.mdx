@@ -1,0 +1,53 @@
+---
+title: "Wan 2.5 图生视频"
+description: "Wan 2.5 API 将一张参考图片生成 5 或 10 秒的视频，支持同步音频，输出最高 1080p。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/alibaba-wan-2-5-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Wan 2.5 图生视频将一张参考图片生成 5 或 10 秒的视频，支持同步音频，输出最高 1080p。
+
+## 模型
+
+- `alibaba/wan-2.5/image-to-video`：根据运动提示词让参考图片动起来。
+
+## 请求参数
+
+`model` 和可选的 `callback_url` 放在请求根级，下列生成参数放在 `input` 内。
+
+### prompt
+
+- `prompt`（string，必填）：描述主体、场景和运动。去除首尾空白后为 1–1500 个字符。
+
+### image_urls
+
+- `image_urls`（string[]，必填）：只能提供一个可公开访问的 HTTP(S) 图片 URL。
+
+### resolution
+
+- `resolution`（string，可选）：输出分辨率：480p、720p 或 1080p。默认：720p。
+
+### duration
+
+- `duration`（integer，可选）：视频时长：5 或 10 秒。默认：5。
+
+### audio
+
+- `audio`（string，可选）：可选的音频文件 URL，为视频提供一段录音。
+
+### negative_prompt
+
+- `negative_prompt`（string，可选）：可选，描述场景中要排除的元素。
+
+### seed
+
+- `seed`（integer，可选）：可选的整数随机种子，用于复用生成设置。
+
+## 获取视频
+
+使用 `task_id` 查询任务。`status` 为 `not_started` 或 `running` 时继续轮询。状态为 `finished` 时，从 `data.files[].file_url` 读取视频 URL；状态为 `failed` 时，从 `data.error_message` 读取错误详情。

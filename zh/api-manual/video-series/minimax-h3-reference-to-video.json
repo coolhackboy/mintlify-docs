@@ -1,0 +1,225 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - MiniMax H3 参考生视频",
+    "description": "通过 Vidgo 统一生成 API 使用 MiniMax H3 参考生视频。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交 MiniMax H3 参考生视频任务",
+        "operationId": "submitMinimaxH3ReferenceToVideoTask",
+        "tags": [
+          "MiniMax H3 Reference to Video"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "default": {
+                  "summary": "MiniMax H3 参考生视频",
+                  "value": {
+                    "model": "minimax/h3/reference-to-video",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic scene with natural lighting and coherent motion",
+                      "duration": 5,
+                      "resolution": "2K",
+                      "reference_image_urls": [
+                        "https://cdn.vidgo.ai/temp/reference-1.jpg"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1787970600-abcd1234",
+                    "status": "not_started",
+                    "created_time": "2026-08-29T10:30:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数无效"
+          },
+          "401": {
+            "description": "未授权"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "使用 `Authorization: Bearer VIDGO_API_KEY`。"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "minimax/h3/reference-to-video"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "可选的 Webhook 回调 URL。"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "描述目标视频的提示词。",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "duration": {
+                "type": "integer",
+                "description": "输出时长（秒）。",
+                "minimum": 5,
+                "maximum": 15,
+                "default": 5
+              },
+              "resolution": {
+                "type": "string",
+                "description": "输出分辨率固定为 2K。",
+                "enum": [
+                  "2K"
+                ],
+                "default": "2K"
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "输出宽高比。支持 adaptive 或六种固定比例之一。",
+                "enum": [
+                  "adaptive",
+                  "21:9",
+                  "16:9",
+                  "4:3",
+                  "1:1",
+                  "3:4",
+                  "9:16"
+                ]
+              },
+              "reference_image_urls": {
+                "type": "array",
+                "description": "参考图。前五张已包含在按时长计算的价格中。",
+                "minItems": 1,
+                "maxItems": 9,
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              },
+              "reference_video_urls": {
+                "type": "array",
+                "description": "参考视频，其时长计入计费。",
+                "minItems": 1,
+                "maxItems": 3,
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              },
+              "reference_audio_urls": {
+                "type": "array",
+                "description": "参考音频；需要配合参考图或参考视频。",
+                "maxItems": 3,
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            },
+            "description": "`reference_image_urls`、`reference_video_urls` 至少提供一个。"
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started",
+                  "running",
+                  "failed"
+                ]
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

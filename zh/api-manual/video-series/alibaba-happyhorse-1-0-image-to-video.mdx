@@ -1,0 +1,60 @@
+---
+title: "Happy Horse 图生视频"
+description: "Happy Horse API 让静态图片动起来，用文本引导场景和运动，生成最长 15 秒的视频。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/alibaba-happyhorse-1-0-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Happy Horse 图生视频让静态图片动起来，用文本引导场景和运动，视频最长 15 秒。
+
+## 模型
+
+- **alibaba/happyhorse-1.0/image-to-video** - 根据图片输入生成视频。
+
+## 功能
+
+- 让单张参考图片动起来。
+- 输出分辨率可选 `720p`、`1080p`。
+
+## 时长选项
+
+- **3-15 秒** - 以整数设置 `duration`。默认：**5 秒**。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级，下列参数放在 `input` 内。
+
+只发送本工作流支持的 input 字段。不支持的 `input` 字段会在扣除积分前被拒绝。输入 URL 必须使用 HTTP(S)，带主机名，且不含内嵌凭证。
+
+### 提示词
+
+- `prompt`：必填。描述场景和期望的运动。
+- 提供时提示词不能为空。最大长度：**5,000 个字符**。
+
+### 图片 URL
+
+- `image_urls`：必填。只能提供 1 个图片 URL。
+- 图片必须可公开访问并可直接下载。
+
+### 分辨率
+
+- `resolution`：`720p`、`1080p`。默认：`1080p`。
+
+### 种子
+
+- `seed` 可选。传入 `0` 到 `2147483647` 的整数。
+
+### 安全检查
+
+- `enable_safety_checker` 可选。设为 `true` 或 `false` 控制安全检查。
+
+## 定价
+
+价格取决于所选模型和适用的输出设置。当前价格请在 Vidgo 仪表盘查看。
+
+提交时扣除积分，任务失败后退还。

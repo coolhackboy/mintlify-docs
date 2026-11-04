@@ -1,0 +1,28 @@
+---
+title: "Kling 2.6 Pro 图生视频"
+description: "Kling 2.6 Pro 图生视频 API 的参数与计费因素"
+icon: "video"
+openapi: "/zh/api-manual/video-series/kwaivgi-kling-v2-6-pro-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+通过 `POST /api/generate/submit` 提交 `kwaivgi/kling-v2.6-pro/image-to-video`。使用返回的 `task_id` 调用[查询任务状态](/zh/api-manual/task-management/status)接口查询结果，或在顶层提供 `callback_url`。
+
+## 参数
+
+- `prompt`：必填的非空字符串，去除首尾空白后为 1 到 1,000 个字符。
+- `duration`：必填整数：5 或 10 秒。字符串和小数时长会被拒绝。
+- `aspect_ratio`：必填：16:9、9:16 或 1:1。该字段必须提交，但图生视频的输出宽高比不受它控制。
+- `sound`：必填布尔值：true 生成音频，false 不生成音频。提供 end_image_url 时必须为 false。
+- `image_urls`：必填数组，包含至少一个公开可访问的 HTTP(S) 图像 URL。URL 不得包含内嵌凭据或空白字符。
+- `end_image_url`：可选，公开可访问的 HTTP(S) 尾帧图像 URL，不含内嵌凭据或空白字符。不使用尾帧时省略该字段；不接受空字符串和 null。要求 sound=false。
+- 使用标准 JSON 类型。未知的 input 字段和无效值会在提交和扣费之前被拒绝。
+- 使用 `example.com` 或 `your-domain.com` 的 URL 是占位符。请替换为你自己的公开图像 URL 和回调接口（如适用）。
+
+## 计费因素
+
+计费取决于视频时长（`duration`）以及是否生成音频（`sound`）。Pro 文生视频和图生视频接口费率相同。

@@ -1,0 +1,224 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 2.6 动作控制 API",
+    "description": "高级动作迁移与角色动画",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交 Kling 2.6 动作控制任务",
+        "description": "将参考视频中的动作迁移到角色图片上，实现精确的动作控制",
+        "operationId": "submitKling26MotionControlTask",
+        "tags": ["Kling 2.6 Motion Control"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "kling-2.6-motion-control": {
+                  "summary": "Kling 2.6 动作控制",
+                  "value": {
+                    "model": "kling-2.6-motion-control",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "The cartoon character is dancing gracefully in a studio",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/character-image.jpg"
+                      ],
+                      "video_urls": [
+                        "https://cdn.vidgo.ai/temp/dance-reference.mp4"
+                      ],
+                      "character_orientation": "video",
+                      "mode": "1080p"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                },
+                "examples": {
+                  "success": {
+                    "summary": "提交成功",
+                    "value": {
+                      "code": 200,
+                      "data": {
+                        "task_id": "task-unified-1757165031-uyujaw3d",
+                        "status": "not_started",
+                        "created_time": "2025-11-12T10:30:00"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "kling-2.6-motion-control"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["image_urls", "video_urls", "character_orientation", "mode"],
+            "description": "动作控制生成参数",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "期望输出场景的文本描述（可选）",
+                "maxLength": 2500,
+                "example": "The cartoon character is dancing gracefully in a studio"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 1,
+                "description": "单张角色图片 URL（JPEG、PNG、WEBP，最大 10MB）。必须清晰显示主体的头部、肩部和躯干",
+                "example": [
+                  "https://cdn.vidgo.ai/temp/character-image.jpg"
+                ]
+              },
+              "video_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 1,
+                "description": "用于动作迁移的单个参考视频 URL（MP4、MOV、MKV，最大 100MB，3–30 秒）。必须清晰显示主体的头部、肩部和躯干",
+                "example": [
+                  "https://cdn.vidgo.ai/temp/dance-reference.mp4"
+                ]
+              },
+              "character_orientation": {
+                "type": "string",
+                "description": "角色朝向模式：'image' 与照片中人物的朝向一致（输出最长 10 秒），'video' 与参考视频中的角色朝向保持一致（输出最长 30 秒）",
+                "enum": ["image", "video"],
+                "example": "video"
+              },
+              "mode": {
+                "type": "string",
+                "description": "输出视频分辨率。720p 为标准画质，1080p 画质更高",
+                "enum": ["720p", "1080p"],
+                "example": "1080p"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于查询任务状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started"],
+                "example": "not_started",
+                "description": "初始任务状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "描述错误原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

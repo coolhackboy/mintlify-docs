@@ -1,0 +1,48 @@
+---
+title: "Kling 2.6 动作控制"
+description: "高级动作迁移与角色动画"
+icon: "video"
+openapi: "/zh/api-manual/video-series/kling-2.6-motion-control.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+将参考视频中的动作迁移到角色图片上，实现精确的动作控制。把静态图片与动作参考视频结合，创建动态的角色动画，并通过文本提示词控制场景细节。
+
+## 模型
+
+- **kling-2.6-motion-control** - 将视频中的动作迁移到角色图片上
+
+## 功能
+
+- **动作迁移**：将参考视频中真实人物的动作、手势和表情迁移到角色图片上
+- **角色动画**：用动态的动作模式让静态角色动起来
+- **角色朝向控制**：可选择与图片朝向一致（输出最长 10 秒）或与视频朝向一致（输出最长 30 秒）
+- **场景控制**：通过可选的文本提示词控制场景细节和环境
+- **灵活分辨率**：可选择 720p（标准）或 1080p（高画质）输出
+
+## 必填参数
+
+- **image_urls**：单张角色图片，需显示主体的头部、肩部和躯干
+- **video_urls**：用于动作迁移的单个参考视频（3-30 秒）
+- **character_orientation**：
+  - `"image"` - 与照片中人物的朝向一致（输出最长 10 秒）
+  - `"video"` - 与参考视频中的角色朝向保持一致（输出最长 30 秒）
+- **mode**：输出分辨率（`"720p"` 或 `"1080p"`）
+
+## 可选参数
+
+- **prompt**：期望输出场景的文本描述（最多 2,500 个字符）
+
+{/* poyo-20260910:start */}
+
+## 工作流程 ID
+
+现有 ID 仍可继续使用。新接入可以选择专用的工作流程：
+
+- [kwaivgi/kling-v2.6-std/motion-control](/zh/api-manual/video-series/kwaivgi-kling-v2-6-std-motion-control)
+- [kwaivgi/kling-v2.6-pro/motion-control](/zh/api-manual/video-series/kwaivgi-kling-v2-6-pro-motion-control)
+{/* poyo-20260910:end */}

@@ -1,0 +1,37 @@
+---
+title: "Wan 2.6"
+description: "Wan 2.6 API 使用 Alibaba Wan 2.6 生成多镜头 1080p 视频"
+icon: "video"
+openapi: "/zh/api-manual/video-series/wan-2-6.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+Wan 2.6 是 Alibaba 最新的视频生成模型系列，支持文生视频、图生视频和视频生视频工作流，具备稳定的角色一致性、多镜头构图和 1080p 输出。
+
+## 模型
+
+- **wan2.6-text-to-video** - 根据文本提示词生成视频
+- **wan2.6-image-to-video** - 结合提示词让参考图片动起来
+- **wan2.6-video-to-video** - 根据提示词编辑或重绘输入视频
+
+## 功能
+
+- **时长**：5、10 或 15 秒（视频生视频最长 10 秒）
+- **分辨率**：720p 或 1080p
+- **多镜头**：开关多镜头构图，实现电影感转场
+- **提示词长度**：最多 5,000 个字符
+
+{/* poyo-20260910:start */}
+
+## 工作流 ID
+
+原有 ID 仍可使用。新接入可选择专用的工作流：
+
+- [alibaba/wan-2.6/text-to-video](/zh/api-manual/video-series/alibaba-wan-2-6-text-to-video)
+- [alibaba/wan-2.6/image-to-video](/zh/api-manual/video-series/alibaba-wan-2-6-image-to-video)
+- [alibaba/wan-2.6/reference-to-video](/zh/api-manual/video-series/alibaba-wan-2-6-reference-to-video)
+{/* poyo-20260910:end */}

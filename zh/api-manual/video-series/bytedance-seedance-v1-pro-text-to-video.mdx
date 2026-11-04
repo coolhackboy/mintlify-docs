@@ -1,0 +1,47 @@
+---
+title: "Seedance 1.0 Pro 文生视频"
+description: "Seedance 1.0 Pro API 可根据文字描述生成 5 秒或 10 秒的视频场景，输出最高 1080p。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/bytedance-seedance-v1-pro-text-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Seedance 1.0 Pro 根据文字描述生成 5 秒或 10 秒的视频场景，输出最高 1080p。
+
+## 模型
+
+- **bytedance/seedance/v1/pro/text-to-video** - 根据文本提示词生成视频场景。
+
+## 功能
+
+- 根据文本提示词生成视频场景。
+- 输出分辨率可选 `720p`、`1080p`。
+
+## 时长选项
+
+- **5、10 秒** - 将 `duration` 设为数值整数。可选。仅在省略时默认为 **5 秒**。字符串、布尔值、null 和小数会被拒绝。`5.0` 这样的数值等同于 `5`。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流参数（包括输出选项）都放在 `input` 中。
+
+只传本工作流支持的 input 字段。不支持的 `input` 字段会在扣除积分前被拒绝。默认值仅在省略可选 input 字段时生效；显式传入 null 或空值会被拒绝。
+
+### 提示词
+
+- `prompt`：必填字符串。描述场景和期望的运动。去除首尾空白后，长度必须为 **1-10,000 个 Unicode 字符**。非字符串值会被拒绝。
+- 传入时值不能为空白。
+
+### 分辨率
+
+- `resolution`：可选。可选值：`720p`、`1080p`。仅在省略时默认为 `720p`。别名、大小写不同、带首尾空白或数值形式的值都会被拒绝。
+
+## 计费因素
+
+计费取决于输出分辨率（`resolution`）和视频时长（`duration`）。文生视频和图生视频使用相同费率。
+
+积分在提交时扣除，任务失败时退还。

@@ -1,0 +1,490 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 2.5 Turbo Pro 图生视频",
+    "description": "使用首帧、尾帧或两者，加上文本提示词生成视频。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Video Series"
+        ],
+        "summary": "Kling 2.5 Turbo Pro 图生视频",
+        "operationId": "submit_kwaivgi_kling_v2_5_turbo_pro_image_to_video",
+        "description": "生成参数放在 input 中。不支持的 input 字段和类型错误会在扣除积分前被拒绝。计费取决于视频时长（`duration`）。文生视频和图生视频费率相同。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "kwaivgi/kling-v2.5-turbo-pro/image-to-video"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "prompt"
+                    ],
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "description": "必填的非空字符串，去除首尾空白后最多 2,500 个 Unicode 字符。",
+                        "maxLength": 2500,
+                        "example": "A man in a trench coat holding a black umbrella walks briskly through the streets of Tokyo on a rainy night, splashing through puddles. A handheld follow-cam shot from his side and slightly behind. The focus is locked on the man, while background neon signs blur into beautiful bokeh. Cyberpunk aesthetic with a film noir quality; the mood is mysterious and lonely. The pavement is slick and wet, reflecting the vibrant neon signs. Individual raindrops are visible, and a light fog hangs in the air.",
+                        "minLength": 1
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "description": "整数 5 或 10 秒；省略时默认为 5。字符串、布尔值、小数时长和 null 会被拒绝。",
+                        "enum": [
+                          5,
+                          10
+                        ],
+                        "default": 5,
+                        "example": 5
+                      },
+                      "start_image_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "首帧的公开 HTTP(S) URL，不含凭据或空白字符。提供 start_image_url、end_image_url 或两者都提供。不使用时省略；空字符串和 null 会被拒绝。",
+                        "example": "https://cdn.doculator.org/kling-2.5-turbo-pro/start-image.jpeg"
+                      },
+                      "end_image_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "尾帧的公开 HTTP(S) URL，不含凭据或空白字符。提供 start_image_url、end_image_url 或两者都提供。不使用时省略；空字符串和 null 会被拒绝。",
+                        "example": "https://example.com/end-image.png"
+                      },
+                      "aspect_ratio": {
+                        "type": "string",
+                        "description": "可选的宽高比字符串；没有文档化的枚举值或默认值。不使用时省略。",
+                        "example": "16:9"
+                      },
+                      "negative_prompt": {
+                        "type": "string",
+                        "description": "可选字符串，描述需要避免的内容。不使用时省略。",
+                        "example": "low quality, blur"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "`start_image_url`、`end_image_url` 至少提供一个。"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 接口，用于接收任务完成通知。建议使用 HTTPS。省略、传 null 或空字符串即可禁用回调。"
+                  }
+                },
+                "description": "model 和 callback_url 放在根级。未知的根级字段会被忽略；不支持的 input 字段会被拒绝。"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "首帧",
+                  "value": {
+                    "model": "kwaivgi/kling-v2.5-turbo-pro/image-to-video",
+                    "input": {
+                      "prompt": "A slow camera pan across a sunlit garden.",
+                      "duration": 5,
+                      "start_image_url": "https://example.com/start-frame.png"
+                    }
+                  }
+                },
+                "end-frame": {
+                  "summary": "仅尾帧",
+                  "value": {
+                    "model": "kwaivgi/kling-v2.5-turbo-pro/image-to-video",
+                    "input": {
+                      "prompt": "A slow camera pan across a sunlit garden.",
+                      "duration": 5,
+                      "end_image_url": "https://example.com/end-frame.png"
+                    }
+                  }
+                },
+                "first-last-frame": {
+                  "summary": "首尾帧",
+                  "value": {
+                    "model": "kwaivgi/kling-v2.5-turbo-pro/image-to-video",
+                    "input": {
+                      "prompt": "A slow camera pan across a sunlit garden.",
+                      "duration": 5,
+                      "start_image_url": "https://example.com/start-frame.png",
+                      "end_image_url": "https://example.com/end-frame.png"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-example",
+                    "status": "running",
+                    "created_time": "2026-09-10T08:00:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、档位不受支持、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭据无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出请求频率或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建上游生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "所请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

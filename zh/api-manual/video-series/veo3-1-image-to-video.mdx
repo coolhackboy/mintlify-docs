@@ -1,0 +1,46 @@
+---
+title: "Veo 3.1 Quality 图生视频"
+description: "Google Veo 3.1 Quality 图生视频模型，固定输出 8 秒视频"
+icon: "video"
+openapi: "/zh/api-manual/video-series/veo3-1-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Google Veo 3.1 Quality 模型生成 8 秒视频。
+
+## 模型
+
+- **veo3.1/image-to-video** - Veo 3.1 Quality 图生视频
+
+## 功能
+
+- 在明确指定的起始帧和结束帧之间生成。
+- 输出分辨率最高支持 `4k`。
+- 生成的视频 URL 为临时链接，请及时下载。
+
+## 时长选项
+
+- **8 秒** - 该模型为固定时长。
+
+## 高级参数
+
+### 生成类型
+
+- 该 model ID 将生成类型固定为 `image-to-video`。
+
+### 图片 URL
+
+- 按起始帧、结束帧的顺序提供恰好两张图片。
+- 图片必须可公开访问且可直接下载。
+
+### 分辨率
+
+- `720p`（默认）、`1080p` 或 `4k`。
+
+## 定价
+
+价格因模型版本和分辨率而异。当前费率请查看 Vidgo 仪表盘。

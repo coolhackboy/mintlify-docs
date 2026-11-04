@@ -1,0 +1,48 @@
+---
+title: "Veo 3.1"
+description: "使用 Google VEO 3.1 快速生成高质量的 8 秒视频"
+icon: "video"
+openapi: "/zh/api-manual/video-series/veo-3-1.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Google VEO 3.1 模型快速生成或高质量生成 8 秒视频。支持文生视频和图生视频。
+
+## 模型
+
+- **veo3.1-fast** - 快速生成 8 秒视频
+- **veo3.1-quality** - 高质量生成 8 秒视频
+
+## 功能
+
+- 异步处理，返回用于跟踪状态的 `task_id`
+- 支持文生视频和图生视频
+- 输出分辨率最高支持 4k
+- 生成的视频 URL 有效期为 24 小时
+
+## 时长选项
+
+- **8 秒** - 所有生成均为固定时长
+
+## 高级参数
+
+### 生成类型
+
+- `frame` - 首尾帧生成视频（两张图片）
+- `reference` - 参考图生成视频（三张图片）
+- 省略时根据 `image_urls` 数量推断：2 张图片为 `frame`，3 张图片为 `reference`
+
+### 图片 URL
+
+- 最多支持 3 张图片
+- frame 模式：第一张图片为起始帧，第二张图片为结束帧
+- 文件大小上限：10MB
+- 支持格式：.jpeg、.jpg、.png、.webp
+
+### 分辨率
+
+- `720p`（默认）、`1080p` 或 `4k`

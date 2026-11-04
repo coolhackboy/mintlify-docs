@@ -1,0 +1,55 @@
+---
+title: "Wan Animate Replace"
+description: "Wan Animate Replace API 将源视频中的角色替换为参考图片中的角色。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/alibaba-wan-v2-2-14b-animate-replace.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 使用 `VIDGO_API_KEY` 提交请求。Vidgo 会在创建任务前校验请求并检查源视频。任务创建成功后返回 `task_id`。
+2. 使用返回的 `task_id` 调用[查询任务状态](/zh/api-manual/task-management/status)，直到任务变为 `finished` 或 `failed`。如果提供了 `callback_url`，任务完成或失败时 Vidgo 还会将结果发送到你的 [Webhook](/zh/api-manual/task-management/webhooks)。
+</Tip>
+
+使用 Wan Animate Replace，将源视频中的角色替换为参考图片中的角色。
+
+## 模型
+
+- **alibaba/wan/v2.2-14b/animate/replace** - 使用 Wan Animate Replace，将源视频中的角色替换为参考图片中的角色。
+
+## 功能
+
+- 使用 Wan Animate Replace，将源视频中的角色替换为参考图片中的角色。
+- 接受只含一个图片 URL 的 `image_urls` 数组。
+- 支持 `480p`、`580p` 和 `720p` 输出分辨率。
+
+## 源视频要求
+
+- `video_url` 必须指向可公开访问的 HTTP(S) 视频文件。
+- 整个视频文件不超过 **100 MiB**（104,857,600 字节），且时长大于零。
+- Vidgo 会读取源视频以确定计费时长。
+
+## 请求参数
+
+`model` 和可选的 `callback_url` 放在请求根级。`input` 对象只接受 `video_url`、`image_urls` 和 `resolution`。
+
+不支持的 `input` 字段会在扣除积分前被拒绝。输入 URL 必须使用 HTTP(S)，带主机名，且不含内嵌凭证或空白字符。
+
+### 源视频
+
+- `video_url`：必填字符串。包含要替换角色的源视频，须满足上述源视频要求。
+
+### 角色图片
+
+- `image_urls`：必填数组，只包含一个可公开访问的 HTTP(S) 图片 URL，即包含替换角色的参考图片。传入单个 URL 字符串而非数组、空数组、多个 URL 以及 Base64 图片都会被拒绝。
+
+### 分辨率
+
+- `resolution`：可选字符串。可选值：`480p`、`580p`、`720p`。仅在省略该字段时默认 `480p`。null、空字符串、其他取值以及带首尾空白的取值都会被拒绝。
+
+## 计费因素
+
+计费取决于所选分辨率（`resolution`）和检测到的源视频时长（`video_url`）。Move 和 Replace 使用相同费率。
+
+计费前源视频时长会向上取整到整秒。例如，时长 5.1 秒的源视频按 6 秒计费。如果 Vidgo 无法读取视频或确定其时长，请求会在扣除积分前被拒绝。
+
+有效请求提交生成时扣除积分，任务失败后退还。

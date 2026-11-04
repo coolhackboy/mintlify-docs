@@ -1,0 +1,56 @@
+---
+title: "Gemini Omni 1.1 Flash 参考生视频"
+description: "Gemini Omni 1.1 Flash API 以视觉参考引导生成新场景，结合图片输入和文字指引，输出最高 4K 的视频。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/google-gemini-omni-1-1-flash-reference-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Gemini Omni 1.1 Flash 以视觉参考引导生成新场景，结合图片输入和文字指引，输出最高 4K 的视频。
+
+## 模型
+
+- **google/gemini-omni-1.1-flash/reference-to-video** - 根据参考素材和提示词生成新视频。
+
+## 功能
+
+- 使用 1 到 7 张参考图引导视频生成。
+- 输出分辨率可选 `360p`、`720p`、`1080p`、`4k`。
+- 支持横屏（`16:9`）和竖屏（`9:16`）画面。
+
+## 时长选项
+
+- **4、6、8、10 秒** - 将 `duration` 设为其中一个值。默认：**8 秒**。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级，下列参数放在 `input` 中。
+
+只传本工作流支持的 input 字段。不支持的 `input` 字段会在扣除积分前被拒绝。输入 URL 必须使用 HTTP(S)、包含主机名，且不能内嵌凭证。
+
+### 提示词
+
+- `prompt`：必填。描述场景和期望的运动。
+- 传入时提示词不能为空白。最大长度：**20,000 个字符**。
+
+### 参考输入
+
+- `reference_image_urls`：必填；提供 1-7 张图片。
+
+### 分辨率
+
+- `resolution`：`360p`、`720p`、`1080p`、`4k`。默认：`720p`。
+
+### 宽高比
+
+- `aspect_ratio`：`16:9`、`9:16`。默认：`16:9`。
+
+## 定价
+
+价格取决于所选模型及相关输出设置。当前费率请查看 Vidgo 仪表盘。
+
+积分在提交时扣除，任务失败时退还。

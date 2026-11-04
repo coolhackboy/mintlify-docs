@@ -1,0 +1,58 @@
+---
+title: "Kling 3.0 Turbo Pro 文生视频"
+description: "使用 Kling 3.0 Turbo Pro 构建视频场景，通过文本和分镜提示词控制动作与构图。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/kwaivgi-kling-v3-turbo-pro-text-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Kling 3.0 Turbo Pro 构建视频场景，通过文本和分镜提示词控制动作与构图。
+
+## 模型
+
+- **kwaivgi/kling-v3-turbo-pro/text-to-video** - 根据文本提示词生成视频场景。
+
+## 功能
+
+- 根据文本提示词生成视频场景。
+- 用 `prompt` 编排单个场景，或用 `multi_prompt` 编排最多六个镜头。
+
+## 时长选项
+
+- **3-15 秒** - 显式指定 `duration` 时的取值范围。不使用 `multi_prompt` 时，默认为 **5 秒**。
+- **多镜头输出** - 每个镜头接受 `1`-`15` 秒，默认 `5` 秒。总时长不得超过 **15 秒**。
+- 使用 `multi_prompt` 时，省略 `duration` 即使用镜头总时长，包括 **1 或 2 秒**的总时长。如果提供 `duration`，它必须等于镜头总时长，且在 `3`-`15` 秒之间。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。下列参数放在 `input` 中。
+
+只发送该工作流程支持的 input 字段。不支持的 `input` 字段会在扣除积分前被拒绝。
+
+### 提示词
+
+- `prompt` 可选，最多 **2,500 个字符**。空白的可选提示词视为省略。
+- `prompt` 和 `multi_prompt` 二选一，不要同时使用。
+
+### 多镜头提示词
+
+- `multi_prompt` 接受 **1-6 个镜头对象**，不能与 `prompt` 同时使用。
+- 每个镜头都需要非空的 `prompt`，最多 **2,500 个字符**。
+- 每个镜头可以包含 **1 到 15 秒**的整数 `duration`；默认为 **5 秒**。
+- 各镜头的总时长不得超过 **15 秒**。顶层 `duration` 的规则见「时长选项」。
+
+### 宽高比
+
+- `aspect_ratio`：`16:9`、`9:16`、`1:1`。默认值：`16:9`。
+
+## 价格
+
+使用 `multi_prompt` 时，按各镜头的总时长计费；否则按请求的 `duration` 或其默认值计费。
+
+当前费率请查看 Vidgo 仪表盘。
+
+提交时扣除积分，任务失败时退还。

@@ -1,0 +1,42 @@
+---
+title: "Seedance 2"
+description: "Seedance 2 与 Seedance 2 Fast 的文生视频、首尾帧和多模态参考生成"
+icon: "video"
+openapi: "/zh/api-manual/video-series/seedance-2.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+Seedance 2 是字节跳动面向 API 生成的多模态视频模型系列。在 Vidgo API 上，可以选择更高保真的 **seedance-2** 或延迟更低的 **seedance-2-fast**，两者共用同一套提交和状态查询 API。
+
+## 模型
+
+- **seedance-2**：更高质量的视频生成，支持多模态参考和原生音频
+- **seedance-2-fast**：更快的生成路径，提交 schema 相同，按秒计费单价更低
+
+## 支持的生成模式
+
+- **文生视频**：直接根据提示词生成
+- **首尾帧**：通过 `image_urls` 传入一个或两个帧锚点来引导运动
+- **多模态参考**：通过 `reference_image_urls`、`reference_video_urls` 和 `reference_audio_urls` 添加参考图片、视频和音频
+
+## 输入规则
+
+- `resolution`：`seedance-2` 支持 `480p`、`720p`、`1080p` 和 `4k`；`seedance-2-fast` 支持 `480p` 和 `720p`
+- `duration` 接受 `4` 到 `15` 的整数
+- `image_urls` 最多支持 `2` 项
+- `image_urls` 与所有 `reference_*_urls` 字段互斥
+- `reference_image_urls` 最多支持 `9` 项；`reference_video_urls` 和 `reference_audio_urls` 各最多支持 `3` 项
+- `reference_audio_urls` 至少需要一个 `reference_image_urls` 或 `reference_video_urls` 项
+- 图片、视频和音频字段的参考输入合计最多 `12` 个文件
+- `aspect_ratio` 支持 `auto`、`1:1`、`21:9`、`4:3`、`3:4`、`16:9` 和 `9:16`
+- `generate_audio`、`return_last_frame` 和 `web_search` 是可选的布尔开关
+
+## Seedance 2、Seedance 1.5 Pro 与 Seedance 1.0 Pro 对比
+
+- **Seedance 2** 在同一种 API 结构中加入了多模态参考图片、视频和音频引导，以及首尾帧控制。
+- **Seedance 1.5 Pro** 专注于高质量的文生视频和图生视频，可选音频，但不具备同样的多模态参考能力。
+- **Seedance 1.0 Pro** 仍然适合早期的 Seedance 使用场景，而 Seedance 2 为较新的生产流程扩展了创作控制和 API 灵活性。

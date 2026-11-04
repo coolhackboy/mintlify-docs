@@ -1,0 +1,277 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Happy Horse API",
+    "description": "Alibaba Happy Horse 视频生成与编辑，支持文生视频、图生视频、参考生视频和视频编辑工作流。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交 Happy Horse 视频任务",
+        "description": "通过统一提交接口使用 Happy Horse 生成或编辑视频。计费取决于所选工作流、输出分辨率和计费视频时长；当前价格请查看 Vidgo 定价页或仪表盘。",
+        "operationId": "submitHappyHorseTask",
+        "tags": [
+          "Happy Horse"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "text-to-video": {
+                  "summary": "文生视频",
+                  "value": {
+                    "model": "happy-horse",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic tracking shot through a neon city street after rain, reflective pavement, soft ambient audio, realistic motion.",
+                      "resolution": "1080p",
+                      "duration": 5,
+                      "aspect_ratio": "16:9",
+                      "seed": 42,
+                      "enable_safety_checker": true
+                    }
+                  }
+                },
+                "image-to-video": {
+                  "summary": "图生视频",
+                  "value": {
+                    "model": "happy-horse",
+                    "input": {
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/first-frame.png"
+                      ],
+                      "prompt": "Animate the scene with a slow push-in camera move and natural wind motion.",
+                      "resolution": "1080p",
+                      "duration": 5
+                    }
+                  }
+                },
+                "reference-to-video": {
+                  "summary": "参考生视频",
+                  "value": {
+                    "model": "happy-horse",
+                    "input": {
+                      "prompt": "The two people from the reference images walk through a bright studio set, keeping identity and outfit details consistent.",
+                      "reference_image_urls": [
+                        "https://cdn.vidgo.ai/temp/character1.png",
+                        "https://cdn.vidgo.ai/temp/character2.png"
+                      ],
+                      "resolution": "720p",
+                      "duration": 6,
+                      "aspect_ratio": "9:16"
+                    }
+                  }
+                },
+                "video-edit": {
+                  "summary": "视频编辑",
+                  "value": {
+                    "model": "happy-horse",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "Change the background into a cyberpunk street while preserving the subject movement and camera timing.",
+                      "video_url": "https://cdn.vidgo.ai/temp/source-video.mp4",
+                      "reference_image_urls": [
+                        "https://cdn.vidgo.ai/temp/style-reference.png"
+                      ],
+                      "resolution": "1080p",
+                      "audio_setting": "auto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n访问 [API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)（**仪表盘 → API 密钥**）获取 API Key\n\n添加到请求头：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "happy-horse"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "可选的 Webhook 回调 URL，用于接收结果通知。",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "description": "Happy Horse 的输入参数。工作流根据所提供的媒体字段自动选择。",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "description": "生成或编辑提示词。文生视频和参考生视频必填（最多 5,000 个字符），视频编辑必填（最多 2,500 个字符）；图生视频可选。",
+                "example": "A cinematic street scene with realistic character motion."
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "maxItems": 1,
+                "description": "图生视频的单张首帧图片 URL。不要与 reference_image_urls 或 video_url 同时使用。"
+              },
+              "reference_image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "参考图片。参考生视频使用 1–9 张；视频编辑可选最多 5 张。"
+              },
+              "video_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "视频编辑的源视频 URL。源视频时长须为 3–60 秒。"
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "文生视频和参考生视频的输出宽高比。",
+                "enum": [
+                  "16:9",
+                  "9:16",
+                  "1:1",
+                  "4:3",
+                  "3:4"
+                ],
+                "default": "16:9",
+                "example": "16:9"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "输出分辨率。计费可能因分辨率和工作流而不同；当前价格请查看 Vidgo 定价页或仪表盘。",
+                "enum": [
+                  "720p",
+                  "1080p"
+                ],
+                "default": "1080p",
+                "example": "1080p"
+              },
+              "duration": {
+                "type": "integer",
+                "minimum": 3,
+                "maximum": 15,
+                "description": "文生视频、图生视频和参考生视频的时长（秒）。视频编辑会忽略此参数：系统会检测源视频时长，并按该工作流的最大计费时长封顶。",
+                "default": 5,
+                "example": 5
+              },
+              "audio_setting": {
+                "type": "string",
+                "description": "视频编辑的音频处理模式。",
+                "enum": [
+                  "auto",
+                  "origin"
+                ],
+                "default": "auto",
+                "example": "auto"
+              },
+              "seed": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "description": "可选的整数种子，用于可复现的生成。",
+                "example": 42
+              },
+              "enable_safety_checker": {
+                "type": "boolean",
+                "description": "可选的安全检查开关。",
+                "example": true
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于跟踪状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "任务初始状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-05-11T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

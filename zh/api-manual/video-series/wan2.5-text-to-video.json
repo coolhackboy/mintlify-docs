@@ -1,0 +1,194 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Wan 2.5 文生视频 API",
+    "description": "使用 Alibaba Wan 2.5 进行文生视频",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Wan 2.5"
+        ],
+        "summary": "提交 Wan 2.5 文生视频任务",
+        "description": "使用 Wan 2.5 根据文本提示词生成视频",
+        "operationId": "submitWan25TextToVideoTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "wan2.5-text-to-video": {
+                  "summary": "Wan 2.5 文生视频",
+                  "value": {
+                    "model": "wan2.5-text-to-video",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic time-lapse of a bustling city street transitioning from day to night.",
+                      "aspect_ratio": "832*480",
+                      "duration": 5,
+                      "seed": 426
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "wan2.5-text-to-video"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "用于接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "description": "生成参数",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "视频生成的文本提示词",
+                "example": "A cinematic video scene"
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "输出尺寸预设",
+                "enum": [
+                  "832*480",
+                  "480*832",
+                  "1280*720",
+                  "720*1280",
+                  "1920*1080",
+                  "1080*1920"
+                ],
+                "example": "832*480"
+              },
+              "duration": {
+                "type": "integer",
+                "description": "视频时长（秒）",
+                "enum": [
+                  5,
+                  10
+                ],
+                "default": 5,
+                "example": 5
+              },
+              "audio": {
+                "type": "string",
+                "description": "可选的音频设置字符串。不支持布尔值。",
+                "example": "background_music"
+              },
+              "negative_prompt": {
+                "type": "string",
+                "description": "可选的负面提示词",
+                "example": "blurry, low quality"
+              },
+              "seed": {
+                "type": "integer",
+                "description": "可选的随机种子，用于复现结果",
+                "example": 426
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于跟踪状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "任务初始状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n访问 [API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)（**仪表盘 → API 密钥**）获取 API Key\n\n添加到请求头：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

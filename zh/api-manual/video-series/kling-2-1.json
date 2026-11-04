@@ -1,0 +1,190 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 2.1 API",
+    "description": "Standard 和 Pro 图生视频",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Kling 2.1"
+        ],
+        "summary": "提交 Kling 2.1 任务",
+        "description": "使用 Kling 2.1 Standard 或 Pro 生成视频",
+        "operationId": "submitKling21Task",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "kling-2-1-standard": {
+                  "summary": "Kling 2.1 Standard",
+                  "value": {
+                    "model": "kling-2.1/standard",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "a woman takes her hands out her pockets and gestures to the words with both hands, she is excited, behind her it is raining",
+                      "duration": 5,
+                      "start_image_url": "https://cdn.vidgo.ai/temp/kling-2.1/start-image.png?v=20260310-2040"
+                    }
+                  }
+                },
+                "kling-2-1-pro": {
+                  "summary": "Kling 2.1 Pro",
+                  "value": {
+                    "model": "kling-2.1/pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "a woman takes her hands out her pockets and gestures to the words with both hands, she is excited, behind her it is raining",
+                      "duration": 5,
+                      "start_image_url": "https://cdn.vidgo.ai/temp/kling-2.1/start-image.png?v=20260310-2040"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "kling-2.1/standard"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt",
+              "start_image_url"
+            ],
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "用于生成的文本提示词",
+                "example": "a woman takes her hands out her pockets and gestures to the words with both hands, she is excited, behind her it is raining"
+              },
+              "duration": {
+                "type": "integer",
+                "description": "输出时长（秒）",
+                "enum": [
+                  5,
+                  10
+                ],
+                "default": 5,
+                "example": 5
+              },
+              "start_image_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "必填的首帧图像 URL",
+                "example": "https://cdn.vidgo.ai/temp/kling-2.1/start-image.png?v=20260310-2040"
+              },
+              "end_image_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "可选的尾帧图像 URL。仅 kling-2.1/pro 支持",
+                "example": "https://cdn.vidgo.ai/temp/end-image.png"
+              },
+              "negative_prompt": {
+                "type": "string",
+                "description": "可选的负面提示词",
+                "example": "low quality, blur"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

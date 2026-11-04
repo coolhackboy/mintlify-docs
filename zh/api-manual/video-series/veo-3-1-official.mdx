@@ -1,0 +1,57 @@
+---
+title: "Veo 3.1 Official"
+description: "官方 VEO 3.1 视频生成，支持时长、音频控制和图片引导模式"
+icon: "video"
+openapi: "/zh/api-manual/video-series/veo-3-1-official.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+通过一个异步 API 调用官方 VEO 3.1 模型系列生成视频。根据所选模型和输入，这些生成模型支持文生视频、图生视频、首尾帧视频和三图参考生成。
+
+## 模型
+
+- **veo3.1-fast-official** - 快速官方生成，时长可选 `4`、`6` 或 `8` 秒
+- **veo3.1-lite-official** - 轻量官方生成，按秒计费单价更低
+- **veo3.1-quality-official** - 更高质量的官方生成，支持 4K
+
+## 输入模式
+
+- 不传 `image_urls`：文生视频
+- 一张图片：图生视频
+- 两张图片：首尾帧视频。第一张图片为起始帧，第二张图片为结束帧
+- 三张图片：参考图生成。使用 `generation_type: "reference"` 和 `duration: 8`
+- `veo3.1-lite-official` 最多支持两张图片，且不支持 `generation_type: "reference"`
+
+## 参数
+
+- **model**：必填的模型标识。使用 `veo3.1-fast-official`、`veo3.1-lite-official` 或 `veo3.1-quality-official`
+- **prompt**：必填的视频生成文本提示词，最多 `1000` 个字符
+- **image_urls**：可选的图片 URL 数组。最多支持 `3` 个公开图片 URL
+- **generation_type**：可选 `frame` 或 `reference`。省略时根据 `image_urls` 推断模式
+- **duration**：`4`、`6` 或 `8`，默认 `8`。参考图生成以及 `resolution: "1080p"` 下的 `veo3.1-lite-official` 仅支持 `8`
+- **aspect_ratio**：`16:9` 或 `9:16`。单图和双图工作流还支持 `auto`。默认 `16:9`
+- **resolution**：`720p`、`1080p` 或 `4k`，默认 `1080p`。`veo3.1-lite-official` 不支持 `4k`
+- **sound**：布尔型音频开关。默认 `true`；设为 `false` 输出无声视频
+- **callback_url**：可选的 Webhook URL，用于接收任务完成或失败通知
+
+## 定价
+
+按生成的秒数计费，具体因模型、分辨率以及是否生成音频而异。当前积分表见模型页面。
+
+{/* poyo-20260910:start */}
+
+## 工作流 ID
+
+现有 ID 继续可用。新接入可以选择专用的工作流：
+
+- [google/veo3.1/text-to-video](/zh/api-manual/video-series/google-veo3-1-text-to-video)
+- [google/veo3.1/image-to-video](/zh/api-manual/video-series/google-veo3-1-image-to-video)
+- [google/veo3.1-fast/text-to-video](/zh/api-manual/video-series/google-veo3-1-fast-text-to-video)
+- [google/veo3.1-fast/image-to-video](/zh/api-manual/video-series/google-veo3-1-fast-image-to-video)
+- [google/veo3.1-lite/text-to-video](/zh/api-manual/video-series/google-veo3-1-lite-text-to-video)
+- [google/veo3.1-lite/image-to-video](/zh/api-manual/video-series/google-veo3-1-lite-image-to-video)
+{/* poyo-20260910:end */}

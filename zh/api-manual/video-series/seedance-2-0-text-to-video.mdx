@@ -1,0 +1,37 @@
+---
+title: "Seedance 2.0 文生视频"
+description: "Seedance 2.0 文生视频模型，支持多模态生成和可选音频"
+icon: "video"
+openapi: "/zh/api-manual/video-series/seedance-2-0-text-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+## 模型
+
+- **seedance-2.0/text-to-video** - Seedance 2.0 文生视频
+
+## 功能
+
+- **文生视频**：直接根据提示词文本生成视频。
+- **可选音频**：可请求与视频一起生成音频。
+
+## 版本说明
+
+- 该公开 model ID 使用 `seedance-2` 服务商版本。
+- 支持的分辨率为 `480p`、`720p`、`1080p` 和 `4k`。
+
+## 积分参考
+
+- 用量根据输出时长和所选分辨率计算。
+- 提交生产流量前，请在 Vidgo 仪表盘查看该模型的当前费率。
+
+## 注意事项
+
+- `prompt` 为必填，最多 20,000 个字符。
+- `duration` 支持 `4` 到 `15` 的整数。
+- `aspect_ratio` 接受 `auto`、`21:9`、`16:9`、`4:3`、`1:1`、`3:4` 或 `9:16`。
+- 所有远程 URL 必须可公开访问且可直接下载。

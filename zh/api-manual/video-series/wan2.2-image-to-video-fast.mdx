@@ -1,0 +1,23 @@
+---
+title: "Wan 2.2 Fast 图生视频"
+description: "Wan 2.2 Fast API 使用 Alibaba Wan 2.2 Fast 快速图生视频"
+icon: "video"
+openapi: "/zh/api-manual/video-series/wan2.2-image-to-video-fast.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+`wan2.2-image-to-video-fast` 让一张参考图片动起来，并可选用第二张图片作为尾帧，更好地控制过渡。
+
+## 模型
+
+* **wan2.2-image-to-video-fast** - 让参考图片动起来，生成短视频
+
+## 关键参数
+
+* **图片 URL**：必填 1 张，最多支持 2 张
+* **分辨率**：`480p` 或 `720p`
+* **种子**：可选整数，用于复现输出

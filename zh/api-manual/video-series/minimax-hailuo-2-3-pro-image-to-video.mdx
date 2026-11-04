@@ -1,0 +1,56 @@
+---
+title: "Hailuo 2.3 Pro 图生视频"
+description: "使用 Hailuo 2.3 Pro 将首帧图片生成为 1080p 视频，通过文本和可选的提示词优化引导动作。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/minimax-hailuo-2-3-pro-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Hailuo 2.3 Pro 将首帧图片生成为 1080p 视频，通过文本和可选的提示词优化引导动作。
+
+## 模型
+
+- **minimax/hailuo-2.3/pro/image-to-video** - 根据图像输入生成视频。
+
+## 功能
+
+- 根据图像输入生成视频。
+- 用 `start_image_url` 提供首帧。
+- 该 model ID 将输出分辨率固定为 `1080p`。
+
+## 时长选项
+
+- **6 秒** - `duration` 设为整数。可选。默认值：**6 秒**。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流程参数（包括输出选项）都放在 `input` 中。
+
+只发送该工作流程支持的 input 字段。JSON 类型校验时不会把字符串转换为数字或布尔值；`prompt` 必须是字符串，小数时长会被拒绝。不支持的 `input` 字段会在扣除积分前被拒绝。输入 URL 必须使用 HTTP(S)、包含主机名，且不含内嵌凭据。
+
+### 提示词
+
+- `prompt`：必填。描述场景和期望的动作。长度：**1-5,000 个字符**。
+- 提供该值时不能为空。
+
+### 分辨率
+
+- `resolution`：可选。可选值：`1080p`。默认值：`1080p`。
+
+### 首帧图像 URL
+
+- `start_image_url`：必填。提供首帧 URL。使用公开可访问的 HTTP(S) URL。
+
+### 提示词优化
+
+- `prompt_optimizer`：可选。控制自动提示词优化。使用 `true` 或 `false`。未指定默认值；不使用时省略该字段。
+
+## 计费因素
+
+按视频计费，使用 Pro 模型档位。该接口将输出分辨率固定为 `1080p`，时长固定为 `6` 秒。提示词优化（`prompt_optimizer`）不影响费用。
+
+提交时扣除积分，任务失败时退还。

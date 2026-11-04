@@ -1,0 +1,61 @@
+---
+title: "Kling 3.0 Pro 文生视频"
+description: "使用 Kling 3.0 Pro 编排视频序列，通过分镜提示词、镜头时长和可选声音塑造场景。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/kwaivgi-kling-v3-0-pro-text-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Kling 3.0 Pro 编排视频序列，通过分镜提示词、镜头时长和可选声音塑造场景。
+
+## 模型
+
+- **kwaivgi/kling-v3.0-pro/text-to-video** - 根据文本提示词生成视频场景。
+
+## 功能
+
+- 根据文本提示词生成视频场景。
+- 用 `multi_prompt` 描述各个镜头，并启用 `multi_shots`。
+
+## 时长选项
+
+- **3-15 秒** - `duration` 设为整数。必填。
+- 使用 `multi_prompt` 时，各镜头时长之和必须等于请求的 `duration`。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流程参数（包括输出选项）都放在 `input` 中。
+
+使用下面列出的 input 字段。时长以 JSON 整数发送，开关以 JSON 布尔值发送。
+
+- 每个 `multi_prompt` 镜头都需要非空的 `prompt` 和 **1 到 12 秒**的整数 `duration`。
+- 各镜头时长之和必须等于请求的 `duration`。使用 `multi_prompt` 时设置 `multi_shots: true` 和 `sound: true`。
+
+### 提示词
+
+- `prompt`：`multi_shots` 为 `false` 时必填。描述场景和期望的动作。长度：**1-2,500 个字符**。
+- 每个提示词都需使用非空文本。
+
+### 多镜头提示词
+
+- `multi_prompt`：`multi_shots` 为 `true` 时必填。提供非空数组，每一项都是对象。
+
+- `multi_prompt[].prompt`：必填。最大长度：**2,500 个字符**。
+- `multi_prompt[].duration`：必填。时长（秒），`1` 到 `12` 的整数。
+- 每个镜头的时长以秒为单位。
+
+### 多镜头生成
+
+- `multi_shots`：可选。启用多镜头生成。使用 `true` 或 `false`。默认值：`false`。
+
+### 声音
+
+- `sound`：可选。设为 `true` 生成音频，设为 `false` 生成无声的单镜头。多镜头必须为 `true`。默认值：`true`。
+
+### 宽高比
+
+- `aspect_ratio`：可选。可选值：`1:1`、`16:9`、`9:16`。默认值：`1:1`。

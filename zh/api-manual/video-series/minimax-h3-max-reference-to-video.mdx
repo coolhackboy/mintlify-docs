@@ -1,0 +1,33 @@
+---
+title: "MiniMax H3 Max 参考生视频"
+description: "根据参考图、参考视频和参考音频生成视频。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/minimax-h3-max-reference-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+## 可选参数
+
+- `enable_safety_checker`：布尔值，默认为 `true`。设为 `false` 可关闭安全检查。
+- `callback_url`：可选的 Webhook URL，放在请求根级。不使用回调时请查询任务状态。
+
+## 使用指南
+
+使用 `minimax/h3-max/reference-to-video`。至少提供一张参考图，可选添加参考视频和参考音频，所有列表中的素材总数最多 12 个。按列表顺序以 `Image 1`、`Video 1` 和 `Audio 1` 引用素材。首帧和尾帧不能与参考素材组合使用。
+
+`model` 和可选的 `callback_url` 放在请求根级。生成参数放在 `input` 中。
+
+## 参数详情
+
+- `prompt`：必填的非空字符串，最多 50,000 个字符。
+- `duration`：5 到 15 秒的整数；默认为 5。小数时长会被拒绝。
+- `resolution`：`480p`、`768p` 或 `1080p`；默认为 `768p`。
+- `aspect_ratio`：六种固定比例（`21:9`、`16:9`、`4:3`、`1:1`、`3:4`、`9:16`）或 `adaptive`；默认为 `adaptive`。
+- `reference_image_urls`：必填数组，包含 1-9 张静态 JPEG、PNG 或 WebP 图片，每张最大 30 MB。支持的比例为 `1:1`、`4:3`、`3:4`、`16:9`、`9:16`、`5:2` 和 `2:5`；上传前请先校正图片方向。
+- `reference_video_urls`：可选数组，最多 3 段 MP4/MOV 视频，每段最大 50 MB。每段必须为 2-15 秒，合计最多 15 秒。视频必须为恒定 24 fps、方形像素、旋转元数据为 0，比例为 `16:9` 或 `9:16`。按请求的输出时长截取帧后，计入的帧数必须为 48、120、240 或 360。其他时长组合会被拒绝。
+- `reference_audio_urls`：可选数组，最多 3 段 MP3/WAV 音频，每段最大 15 MB。每段必须为 2-15 秒，且不超过输出时长，合计最多 15 秒。音频必须为 32 kHz 的单声道或立体声，解码后的采样数能被 800 整除。
+- 所有参考 URL 都必须是公开的 HTTP(S) 下载链接。三个列表中的素材总数不得超过 12 个。

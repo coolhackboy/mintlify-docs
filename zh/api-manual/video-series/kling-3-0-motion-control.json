@@ -1,0 +1,202 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 3.0 动作控制 API",
+    "description": "参考图 + 参考视频动作迁移",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Kling 3.0 Motion Control"
+        ],
+        "summary": "提交 Kling 3.0 动作控制任务",
+        "description": "将参考视频中的动作迁移到参考图上",
+        "operationId": "submitKling30MotionControlTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "kling-3-0-motion-control": {
+                  "summary": "Kling 3.0 动作控制",
+                  "value": {
+                    "model": "kling-3.0-motion-control",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/kling-3.0-motion-control/reference-image-new.png"
+                      ],
+                      "video_urls": [
+                        "https://cdn.vidgo.ai/temp/kling-3.0-motion-control/reference-video-new.mp4"
+                      ],
+                      "character_orientation": "image",
+                      "resolution": "720p"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "kling-3.0-motion-control"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "image_urls",
+              "video_urls",
+              "character_orientation"
+            ],
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "可选的场景细节提示词",
+                "example": "Keep the character movement smooth and natural"
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 1,
+                "description": "参考图 URL 数组。仅支持一张图片。支持 JPG、JPEG、PNG，最大 10MB",
+                "example": [
+                  "https://cdn.vidgo.ai/temp/kling-3.0-motion-control/reference-image-new.png"
+                ]
+              },
+              "video_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 1,
+                "description": "参考视频 URL 数组。仅支持一个视频。支持 MP4、MOV，最大 100MB",
+                "example": [
+                  "https://cdn.vidgo.ai/temp/kling-3.0-motion-control/reference-video-new.mp4"
+                ]
+              },
+              "character_orientation": {
+                "type": "string",
+                "description": "角色朝向模式",
+                "enum": [
+                  "image",
+                  "video"
+                ],
+                "example": "image"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "输出分辨率",
+                "enum": [
+                  "720p",
+                  "1080p"
+                ],
+                "default": "720p",
+                "example": "720p"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

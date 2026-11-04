@@ -1,0 +1,29 @@
+---
+title: "MiniMax H3 Max Turbo 文生视频"
+description: "MiniMax H3 Max Turbo 文生视频 API 是 H3 Max 的 Turbo 版本，根据提示词生成 5–15 秒、480p–1080p 的视频，支持六种宽高比。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/minimax-h3-max-turbo-text-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+## 可选参数
+
+- `enable_safety_checker`：布尔值，默认为 `true`。设为 `false` 可关闭安全检查。
+- `callback_url`：可选的 Webhook URL，放在请求根级。不使用回调时请查询任务状态。
+
+## 使用指南
+
+使用 `minimax/h3-max-turbo/text-to-video`。只提供提示词，不提供媒体。纯提示词生成请选择文生视频接口。
+
+`model` 和可选的 `callback_url` 放在请求根级。生成参数放在 `input` 中。
+
+## 参数详情
+
+- `prompt`：必填的非空字符串，最多 50,000 个字符。
+- `duration`：5 到 15 秒的整数；默认为 5。小数时长会被拒绝。
+- `resolution`：`480p`、`768p` 或 `1080p`；默认为 `768p`。也接受大写 `P`。
+- `aspect_ratio`：`21:9`、`16:9`、`4:3`、`1:1`、`3:4` 或 `9:16`；默认为 `16:9`。

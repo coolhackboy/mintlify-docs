@@ -1,0 +1,23 @@
+---
+title: "Wan 2.2 Fast 文生视频"
+description: "Wan 2.2 Fast API 使用 Alibaba Wan 2.2 Fast 快速文生视频"
+icon: "video"
+openapi: "/zh/api-manual/video-series/wan2.2-text-to-video-fast.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+`wan2.2-text-to-video-fast` 针对快速文生视频优化，支持竖屏和横屏输出选项。
+
+## 模型
+
+* **wan2.2-text-to-video-fast** - 根据文本提示词生成短视频
+
+## 关键参数
+
+* **宽高比**：`16:9`、`9:16`
+* **分辨率**：`480p` 或 `720p`
+* **种子**：可选整数，用于复现输出

@@ -1,0 +1,44 @@
+---
+title: "Kling 2.1"
+description: "Standard 和 Pro 图生视频"
+icon: "video"
+openapi: "/zh/api-manual/video-series/kling-2-1.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+Kling 2.1 在同一请求格式下提供两个公开模型：`kling-2.1/standard` 和 `kling-2.1/pro`。
+
+## 模型
+
+* **kling-2.1/standard** - 首帧引导的图生视频
+* **kling-2.1/pro** - 首帧引导的图生视频，可选尾帧
+
+## 必填参数
+
+* **prompt**：用于生成的文本提示词
+* **start_image_url**：必填的首帧图像
+
+## 可选参数
+
+* **duration**：`5` 或 `10`。默认为 `5`
+* **end_image_url**：可选，仅 `kling-2.1/pro` 支持
+* **negative_prompt**：可选的负面提示词
+
+{/* poyo-20260910:start */}
+
+## 工作流程 ID
+
+现有 ID 仍可继续使用。新接入可以选择专用的工作流程：
+
+- [kwaivgi/kling-video/v2.1/standard/image-to-video](/zh/api-manual/video-series/kwaivgi-kling-video-v2-1-standard-image-to-video)
+- [kwaivgi/kling-video/v2.1/pro/image-to-video](/zh/api-manual/video-series/kwaivgi-kling-video-v2-1-pro-image-to-video)
+{/* poyo-20260910:end */}
+
+## 注意事项
+
+* `kling-2.1/standard` 不支持 `end_image_url`
+* `kling-2.1/pro` 支持首帧图像和可选的尾帧图像

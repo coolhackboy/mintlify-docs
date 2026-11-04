@@ -1,0 +1,240 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 2.6 Pro 文生视频",
+    "description": "Kling 2.6 Pro 文生视频",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交 Kling 2.6 Pro 文生视频任务",
+        "description": "提交 Kling 2.6 Pro 文生视频任务。生成参数放在 input 中；model 和可选的 callback_url 放在请求根级。请将 example.com 和 your-domain.com 的 URL 替换为你自己的公开图像 URL 和回调接口（如适用）。示例中的输出文件 URL 仅作示意。",
+        "operationId": "submitKling26ProTextToVideo",
+        "tags": [
+          "Kling 2.6"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "基础请求",
+                  "value": {
+                    "model": "kwaivgi/kling-v2.6-pro/text-to-video",
+                    "input": {
+                      "prompt": "A slow camera pan across a sunlit garden.",
+                      "duration": 5,
+                      "sound": false,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "带回调",
+                  "value": {
+                    "model": "kwaivgi/kling-v2.6-pro/text-to-video",
+                    "input": {
+                      "prompt": "A slow camera pan across a sunlit garden.",
+                      "duration": 5,
+                      "sound": false,
+                      "aspect_ratio": "16:9"
+                    },
+                    "callback_url": "https://example.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-example",
+                    "status": "running",
+                    "created_time": "2026-09-23T00:00:00Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "kwaivgi/kling-v2.6-pro/text-to-video"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "aspect_ratio",
+              "duration",
+              "prompt",
+              "sound"
+            ],
+            "description": "生成参数",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "必填的非空字符串，去除首尾空白后为 1 到 1,000 个字符。",
+                "maxLength": 1000,
+                "example": "A cinematic video scene",
+                "minLength": 1
+              },
+              "sound": {
+                "type": "boolean",
+                "description": "必填布尔值：true 生成音频，false 不生成音频。",
+                "example": true
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "必填：16:9、9:16 或 1:1。控制输出视频的宽高比。",
+                "enum": [
+                  "1:1",
+                  "16:9",
+                  "9:16"
+                ],
+                "example": "16:9"
+              },
+              "duration": {
+                "type": "integer",
+                "description": "必填整数：5 或 10 秒。字符串和小数时长会被拒绝。",
+                "enum": [
+                  5,
+                  10
+                ],
+                "example": 5
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于查询任务状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started",
+                  "running"
+                ],
+                "example": "running",
+                "description": "任务已受理；处理可能已经开始。"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "error"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "message",
+              "type"
+            ],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "描述错误原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,57 @@
+---
+title: "Wan 2.6 参考生视频"
+description: "Wan 2.6 API 以参考视频引导新场景生成，支持多镜头，视频输出最高 1080p。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/alibaba-wan-2-6-reference-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Wan 2.6 参考生视频，以参考视频引导新场景生成，支持多镜头，视频输出最高 1080p。
+
+## 模型
+
+- **alibaba/wan-2.6/reference-to-video** - 在参考素材和提示词的引导下生成视频。
+
+## 功能
+
+- 在参考素材和提示词的引导下生成视频。
+- 使用 1-10 个参考视频引导生成的场景。
+- 输出分辨率可选 `720p`、`1080p`。
+
+## 时长选项
+
+- **5、10 秒** - 以整数设置 `duration`。可选。默认：**5 秒**。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流参数（包括输出选项）都放在 `input` 内。
+
+只发送本工作流支持的 input 字段。不支持的 `input` 字段会在扣除积分前被拒绝。输入 URL 必须使用 HTTP(S)，带主机名，且不含内嵌凭证。
+
+### 提示词
+
+- `prompt`：必填。描述场景和期望的运动。长度：**1-5,000 个字符**。
+- 提供时该值不能为空。
+
+### 参考视频
+
+- `video_urls`：必填。提供参考视频 URL。提供 1-10 项，每项必须是 HTTP(S) URL。
+- 参考视频支持 MP4、MOV 和 MKV 文件，每个最大 10 MiB。
+
+### 分辨率
+
+- `resolution`：可选。可选值：`720p`、`1080p`。默认：`720p`。
+
+### 多镜头生成
+
+- `multi_shots`：可选。启用多镜头生成。使用 `true` 或 `false`。
+
+## 定价
+
+价格取决于所选模型和适用的输出设置。当前价格请在 Vidgo 仪表盘查看。
+
+提交时扣除积分，任务失败后退还。

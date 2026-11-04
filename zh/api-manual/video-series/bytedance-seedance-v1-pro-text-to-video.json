@@ -1,0 +1,467 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Seedance 1.0 Pro 文生视频",
+    "description": "使用 Seedance 1.0 Pro 根据文字描述生成 5 秒或 10 秒的视频场景，输出最高 1080p。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Video Series"
+        ],
+        "summary": "Seedance 1.0 Pro 文生视频",
+        "operationId": "submit_bytedance_seedance_v1_pro_text_to_video",
+        "description": "按文档说明的输入类型和取值传参。prompt 必须是字符串，去除首尾空白后为 1–10,000 个 Unicode 字符。duration 必须是数值 5 或 10，字符串和小数会被拒绝。resolution 必须是 720p 或 1080p。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "bytedance/seedance/v1/pro/text-to-video"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "prompt"
+                    ],
+                    "description": "生成所需的输入参数",
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "description": "必填字符串；先去除首尾空白，再校验长度为 1–10,000 个 Unicode 字符。",
+                        "maxLength": 10000,
+                        "example": "One continuous cinematic five-second shot inside a Nordic night sleeper-train compartment. An adult Nordic woman with fair skin and a charcoal wool sweater sits in three-quarter profile at the window, her hands resting on her lap. Outside, a blizzard and dark conifer trunks stream past. Begin as a medium shot of her quiet face and the window, then slowly push in until the glass fills the frame. Warm amber cabin lamps and cold blue snowlight must stay physically consistent on the glass as layered reflections. Keep her anatomy, sweater knit, and seat geometry stable. No cuts, no other passengers, no readable text, no logos, no brands, no advertising, no watermark.",
+                        "minLength": 1
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "description": "仅支持 720p 或 1080p。仅在省略时默认为 720p；别名、null 和空字符串会被拒绝。",
+                        "enum": [
+                          "720p",
+                          "1080p"
+                        ],
+                        "example": "720p",
+                        "default": "720p"
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "description": "数值整数 5 或 10 秒。仅在省略时默认为 5；字符串、布尔值、null 和小数会被拒绝。",
+                        "enum": [
+                          5,
+                          10
+                        ],
+                        "example": 5,
+                        "default": 5
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选，接收任务完成通知的公开 HTTP(S) 地址，建议使用 HTTPS。省略、传 null 或传空字符串即不启用回调。"
+                  }
+                },
+                "description": "model 和可选的 callback_url 放在根级。不支持的 input 字段会被拒绝。默认值仅对省略的字段生效；null 和空的 input 值会被拒绝。"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "夜间卧铺车窗",
+                  "value": {
+                    "model": "bytedance/seedance/v1/pro/text-to-video",
+                    "input": {
+                      "prompt": "One continuous cinematic five-second shot inside a Nordic night sleeper-train compartment. An adult Nordic woman with fair skin and a charcoal wool sweater sits in three-quarter profile at the window, her hands resting on her lap. Outside, a blizzard and dark conifer trunks stream past. Begin as a medium shot of her quiet face and the window, then slowly push in until the glass fills the frame. Warm amber cabin lamps and cold blue snowlight must stay physically consistent on the glass as layered reflections. Keep her anatomy, sweater knit, and seat geometry stable. No cuts, no other passengers, no readable text, no logos, no brands, no advertising, no watermark.",
+                      "resolution": "720p",
+                      "duration": 5
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "夜间卧铺车窗（含完成回调）",
+                  "value": {
+                    "model": "bytedance/seedance/v1/pro/text-to-video",
+                    "input": {
+                      "prompt": "One continuous cinematic five-second shot inside a Nordic night sleeper-train compartment. An adult Nordic woman with fair skin and a charcoal wool sweater sits in three-quarter profile at the window, her hands resting on her lap. Outside, a blizzard and dark conifer trunks stream past. Begin as a medium shot of her quiet face and the window, then slowly push in until the glass fills the frame. Warm amber cabin lamps and cold blue snowlight must stay physically consistent on the glass as layered reflections. Keep her anatomy, sweater knit, and seat geometry stable. No cuts, no other passengers, no readable text, no logos, no brands, no advertising, no watermark.",
+                      "resolution": "720p",
+                      "duration": 5
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-example",
+                    "status": "running",
+                    "created_time": "2026-09-10T08:00:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、档位不支持、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建上游生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "所请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

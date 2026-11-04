@@ -1,0 +1,188 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Wan 2.2 Fast 图生视频 API",
+    "description": "使用 Alibaba Wan 2.2 Fast 快速图生视频",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Wan 2.2 Fast"
+        ],
+        "summary": "提交 Wan 2.2 Fast 图生视频任务",
+        "description": "使用 Wan 2.2 Fast 让一到两张参考图片动起来",
+        "operationId": "submitWan22ImageToVideoFastTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "wan2.2-image-to-video-fast": {
+                  "summary": "Wan 2.2 Fast 图生视频",
+                  "value": {
+                    "model": "wan2.2-image-to-video-fast",
+                    "input": {
+                      "prompt": "A gentle botanical time-lapse connects the supplied first and last frames. The same single pink water lily slowly opens its existing petals outward, gradually revealing the golden center, ending in the open flower pose of the last image. Keep the flower center, stem, lily pad, water surface, greenhouse background and soft lighting stable. Locked macro camera throughout. Smooth organic unfurling, intact petals, no new flowers or objects, no camera movement, no cuts or abrupt morphs.",
+                      "resolution": "720p",
+                      "seed": 22405,
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/apis/models/alibaba/wan/v2.2-a14b/image-to-video/turbo/v1/03/start.png",
+                        "https://cdn.vidgo.ai/apis/models/alibaba/wan/v2.2-a14b/image-to-video/turbo/v1/03/end.png"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "wan2.2-image-to-video-fast"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "用于接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt",
+              "image_urls"
+            ],
+            "description": "生成参数",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "描述运动和场景的文本提示词",
+                "example": "A gentle botanical time-lapse connects the supplied first and last frames. The same single pink water lily slowly opens its existing petals outward, gradually revealing the golden center, ending in the open flower pose of the last image. Keep the flower center, stem, lily pad, water surface, greenhouse background and soft lighting stable. Locked macro camera throughout. Smooth organic unfurling, intact petals, no new flowers or objects, no camera movement, no cuts or abrupt morphs."
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 2,
+                "description": "参考图片 URL。第一张必填；可选的第二张用作尾帧。",
+                "example": [
+                  "https://cdn.vidgo.ai/apis/models/alibaba/wan/v2.2-a14b/image-to-video/turbo/v1/03/start.png",
+                  "https://cdn.vidgo.ai/apis/models/alibaba/wan/v2.2-a14b/image-to-video/turbo/v1/03/end.png"
+                ]
+              },
+              "resolution": {
+                "type": "string",
+                "description": "输出视频分辨率",
+                "enum": [
+                  "480p",
+                  "720p"
+                ],
+                "default": "480p",
+                "example": "720p"
+              },
+              "seed": {
+                "type": "integer",
+                "description": "可选的随机种子，用于复现结果",
+                "example": 22405
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于跟踪状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "任务初始状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n访问 [API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)（**仪表盘 → API 密钥**）获取 API Key\n\n添加到请求头：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

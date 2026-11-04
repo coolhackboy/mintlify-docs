@@ -1,0 +1,520 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling O3 Pro 文生视频",
+    "description": "使用 Kling O3 Pro 根据文本提示词生成 3–15 秒的视频。支持单镜头和多镜头生成。需显式设置 sound；多镜头需要开启音频。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Video Series"
+        ],
+        "summary": "Kling O3 Pro 文生视频",
+        "operationId": "submit_kwaivgi_kling_video_o3_pro_text_to_video",
+        "description": "提交视频生成任务。duration、multi_shots 和 sound 必须显式提供。多镜头模式下需提供 multi_prompt、设置 sound=true，并使各镜头时长之和等于 duration。无效参数会在上传图片、创建任务或扣费之前被拒绝。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "kwaivgi/kling-video-o3-pro/text-to-video"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "duration",
+                      "multi_shots",
+                      "sound"
+                    ],
+                    "description": "视频生成参数。请使用标准 JSON 数字和布尔值。为兼容起见，也接受 \"5\" 这样的整数字符串。布尔字符串 true/1/yes/y/on 表示 true；false/0/no/n/off 表示 false。这些字符串不区分大小写，并会去除首尾空白。布尔字段也接受数字 1 和 0。数字和布尔类型的提示词会转换为文本；0、false 和 null 视为空。提示词不接受对象和数组。",
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "description": "multi_shots=false 时必填。描述场景、动作和运镜。使用非空文本，去除首尾空白后最多 2,500 个字符。multi_shots=true 时省略 prompt。",
+                        "maxLength": 2500,
+                        "minLength": 1
+                      },
+                      "multi_prompt": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "prompt",
+                            "duration"
+                          ],
+                          "properties": {
+                            "prompt": {
+                              "type": "string",
+                              "description": "必填的该镜头非空文本，去除首尾空白后最多 2,500 个字符。",
+                              "maxLength": 2500,
+                              "minLength": 1
+                            },
+                            "duration": {
+                              "type": "integer",
+                              "description": "必填整数，该镜头时长 1 到 12 秒。",
+                              "minimum": 1,
+                              "maximum": 12
+                            }
+                          },
+                          "additionalProperties": true
+                        },
+                        "description": "multi_shots=true 时必填；单镜头模式下省略。至少提供一个镜头，每个镜头包含不超过 2,500 个字符的非空 prompt 和 1–12 秒的整数 duration。各镜头时长之和必须等于顶层 duration（3–15 秒）。镜头对象中的多余字段会被忽略。",
+                        "minItems": 1
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "description": "必填整数，3 到 15 秒。多镜头模式下必须等于所有镜头时长之和。积分按该值计算。",
+                        "minimum": 3,
+                        "maximum": 15
+                      },
+                      "multi_shots": {
+                        "type": "boolean",
+                        "description": "必填：单镜头显式传 false，多镜头传 true。单镜头模式需要 prompt。多镜头模式需要 multi_prompt 和 sound=true，且顶层不能有非空 prompt。省略该字段会报错。"
+                      },
+                      "sound": {
+                        "type": "boolean",
+                        "description": "必填：显式传 true 生成音频，或传 false 生成无音频视频。单镜头模式两者均可；多镜头模式必须为 true。"
+                      },
+                      "aspect_ratio": {
+                        "type": "string",
+                        "description": "可选：16:9（横屏）、9:16（竖屏）或 1:1（方形）。设置视频宽高比。",
+                        "enum": [
+                          "1:1",
+                          "16:9",
+                          "9:16"
+                        ]
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 接口，用于接收任务完成通知。建议使用 HTTPS。省略、传 null 或空字符串即可禁用回调。"
+                  }
+                },
+                "description": "model 和 callback_url 放在根级。未知的根级字段会被忽略；不支持的 input 字段会被拒绝。"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "轻声道歉",
+                  "value": {
+                    "model": "kwaivgi/kling-video-o3-pro/text-to-video",
+                    "input": {
+                      "duration": 5,
+                      "sound": true,
+                      "multi_shots": true,
+                      "multi_prompt": [
+                        {
+                          "prompt": "Cinematic whimsical realism in a warm oak library. Medium two-shot: a small ivory robot with an oval face and amber eyes shelves a blue book, accidentally knocking one red book onto the floor. Beside it, an adult librarian wears a green cardigan and round glasses. Both remain visible under warm reading lamps. One distinct book thud against quiet room tone. Unmarked book covers. No text, logos or watermarks.",
+                          "duration": 2
+                        },
+                        {
+                          "prompt": "Cut closer to the same ivory robot and green-cardigan librarian in the same oak library. The librarian raises one finger to her lips. The robot tilts its head apologetically and softly says exactly \"Sorry.\" in a gentle robotic voice, synchronized with its small mouth light. Preserve their appearance, positions and warm lighting. End in an embarrassed pause; no music. No text, logos or watermarks.",
+                          "duration": 3
+                        }
+                      ],
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "轻声道歉（带回调）",
+                  "value": {
+                    "model": "kwaivgi/kling-video-o3-pro/text-to-video",
+                    "input": {
+                      "duration": 5,
+                      "sound": true,
+                      "multi_shots": true,
+                      "multi_prompt": [
+                        {
+                          "prompt": "Cinematic whimsical realism in a warm oak library. Medium two-shot: a small ivory robot with an oval face and amber eyes shelves a blue book, accidentally knocking one red book onto the floor. Beside it, an adult librarian wears a green cardigan and round glasses. Both remain visible under warm reading lamps. One distinct book thud against quiet room tone. Unmarked book covers. No text, logos or watermarks.",
+                          "duration": 2
+                        },
+                        {
+                          "prompt": "Cut closer to the same ivory robot and green-cardigan librarian in the same oak library. The librarian raises one finger to her lips. The robot tilts its head apologetically and softly says exactly \"Sorry.\" in a gentle robotic voice, synchronized with its small mouth light. Preserve their appearance, positions and warm lighting. End in an embarrassed pause; no music. No text, logos or watermarks.",
+                          "duration": 3
+                        }
+                      ],
+                      "aspect_ratio": "16:9"
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-submitted-example",
+                    "status": "not_started",
+                    "created_time": "2026-09-22T00:00:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "输入无效、档位不受支持、媒体无法访问或积分不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭据无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型未知或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出请求频率或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建视频生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "该模型当前不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

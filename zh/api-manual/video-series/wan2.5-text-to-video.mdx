@@ -1,0 +1,36 @@
+---
+title: "Wan 2.5 文生视频"
+description: "Wan 2.5 API 使用 Alibaba Wan 2.5 进行文生视频"
+icon: "video"
+openapi: "/zh/api-manual/video-series/wan2.5-text-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+`wan2.5-text-to-video` 是 Wan 2.5 视频系列中的纯文本分支，支持多种尺寸预设，可生成 5 秒和 10 秒的视频。
+
+## 模型
+
+* **wan2.5-text-to-video** - 根据文本提示词生成视频片段
+
+## 关键参数
+
+* **宽高比**：`832*480`、`480*832`、`1280*720`、`720*1280`、`1920*1080`、`1080*1920`
+* **时长**：`5` 或 `10` 秒
+* **可选控制**：`audio` 字符串、`negative_prompt`、`seed`
+
+{/* poyo-20260910:start */}
+
+## 工作流 ID
+
+原有 ID 仍可使用。新接入可选择专用的工作流：
+
+- [alibaba/wan-2.5/text-to-video](/zh/api-manual/video-series/alibaba-wan-2-5-text-to-video)
+{/* poyo-20260910:end */}
+
+## 注意事项
+
+* 如果提供 `audio`，必须是字符串，不要传布尔值。

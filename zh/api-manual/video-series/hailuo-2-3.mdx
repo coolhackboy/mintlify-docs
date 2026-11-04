@@ -1,0 +1,44 @@
+---
+title: "Hailuo 2.3"
+description: "文生视频，可选首帧引导"
+icon: "video"
+openapi: "/zh/api-manual/video-series/hailuo-2-3.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+`hailuo-2.3` 支持纯提示词生成，以及可选的首帧引导生成。
+
+## 模型
+
+* **hailuo-2.3** - 文生视频，可选 `start_image_url`
+
+## 必填参数
+
+* **prompt**：视频生成的文本提示词
+
+## 可选参数
+
+* **duration**：`6` 或 `10`。默认为 `6`
+* **resolution**：`768p` 或 `1080p`。默认为 `768p`
+* **start_image_url**：可选的首帧图像
+* **prompt_optimizer**：可选的布尔开关
+
+{/* poyo-20260910:start */}
+
+## 工作流程 ID
+
+现有 ID 仍可继续使用。新接入可以选择专用的工作流程：
+
+- [minimax/hailuo-2.3/standard/text-to-video](/zh/api-manual/video-series/minimax-hailuo-2-3-standard-text-to-video)
+- [minimax/hailuo-2.3/standard/image-to-video](/zh/api-manual/video-series/minimax-hailuo-2-3-standard-image-to-video)
+- [minimax/hailuo-2.3/pro/text-to-video](/zh/api-manual/video-series/minimax-hailuo-2-3-pro-text-to-video)
+- [minimax/hailuo-2.3/pro/image-to-video](/zh/api-manual/video-series/minimax-hailuo-2-3-pro-image-to-video)
+{/* poyo-20260910:end */}
+
+## 注意事项
+
+* `1080p` 仅支持 `duration=6`

@@ -1,0 +1,82 @@
+---
+title: "Happy Horse"
+description: "Happy Horse API 支持 Alibaba Happy Horse 的文生视频、图生视频、参考生视频和视频编辑工作流"
+icon: "video"
+openapi: "/zh/api-manual/video-series/happy-horse.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+`happy-horse` 通过一个公开 model ID 支持文生视频、图生视频、参考生视频和视频编辑。
+
+## 模型
+
+- **happy-horse** - Alibaba Happy Horse 1.0 视频生成与编辑
+
+## 必填参数
+
+- **model**：`happy-horse`
+- **input.prompt**：文生视频和参考生视频必填（最多 5,000 个字符），视频编辑必填（最多 2,500 个字符）；图生视频可选。
+- **input.video_url**：视频编辑必填。
+- **input.reference_image_urls**：参考生视频必填。
+
+## 可选参数
+
+- **image_urls**：图生视频的首帧图片 URL 数组，只含一项
+- **reference_image_urls**：参考生视频使用 1-9 张图片，视频编辑可选最多 5 张
+- **aspect_ratio**：仅文生视频和参考生视频。`16:9`、`9:16`、`1:1`、`4:3` 或 `3:4`。默认 `16:9`
+- **resolution**：`720p` 或 `1080p`。默认 `1080p`
+- **duration**：文生视频、图生视频和参考生视频为 `3` 到 `15` 的整数秒。视频编辑会忽略此参数
+- **audio_setting**：仅视频编辑。`auto` 或 `origin`。默认 `auto`
+- **seed**：可选，`0` 到 `2147483647` 的整数
+- **enable_safety_checker**：可选布尔值
+
+## 工作流
+
+### 文生视频
+
+只发送 `prompt`，不带图片或视频输入字段。用 `aspect_ratio`、`resolution` 和 `duration` 控制输出。
+
+### 图生视频
+
+发送只含一项的 `image_urls` 数组，该图片用作首帧。`prompt` 可选；如果提供，不能为空，最多 5,000 个字符。
+
+### 参考生视频
+
+发送包含 1-9 张图片的 `reference_image_urls`，并提供必填的 `prompt`。在提示词中描述所引用的主体；无需使用 `character1` 和 `character2` 标记。
+
+不要将 `reference_image_urls` 与 `image_urls` 同时使用。
+
+### 视频编辑
+
+发送 `video_url` 和必填的编辑 `prompt`。可选的 `reference_image_urls`（最多 5 张）用于引导编辑；在提示词中描述所引用的主体即可，无需特殊标记。`audio_setting` 控制由 Happy Horse 自动决定音频处理方式，还是保留原始音频。
+
+源视频时长须为 3-60 秒。视频编辑按检测到的源视频时长、依据当前工作流的定价配置计费。
+
+## 定价
+
+Happy Horse 的计费取决于所选工作流、输出分辨率和计费视频时长。在提交生产流量前，请在 Vidgo 定价页或仪表盘查看当前价格。
+
+文生视频、图生视频和参考生视频按请求的 `duration` 计费。视频编辑按检测到的源视频时长计费，并以该工作流的最大计费时长封顶。
+
+{/* poyo-20260910:start */}
+
+## 工作流 ID
+
+原有 ID 仍可使用。新接入可选择专用的工作流：
+
+- [alibaba/happyhorse-1.0/text-to-video](/zh/api-manual/video-series/alibaba-happyhorse-1-0-text-to-video)
+- [alibaba/happyhorse-1.0/image-to-video](/zh/api-manual/video-series/alibaba-happyhorse-1-0-image-to-video)
+- [alibaba/happyhorse-1.0/reference-to-video](/zh/api-manual/video-series/alibaba-happyhorse-1-0-reference-to-video)
+- [alibaba/happyhorse-1.0/video-edit](/zh/api-manual/video-series/alibaba-happyhorse-1-0-video-edit)
+{/* poyo-20260910:end */}
+
+## 注意事项
+
+- `image_urls` 必须恰好对应一张图片，且仅用于图生视频。
+- 提供 `reference_image_urls` 时会选择参考生视频；但如果同时存在 `video_url`，则将其视为视频编辑的可选参考图片。
+- 文生视频和参考生视频不要传 `video_url`，并使用 `aspect_ratio`。
+- 视频编辑不要传 `duration`；系统使用源视频时长进行校验和按时长计费。

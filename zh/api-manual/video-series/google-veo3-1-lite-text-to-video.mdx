@@ -1,0 +1,58 @@
+---
+title: "Veo 3.1 Lite 文生视频"
+description: "Veo 3.1 Lite API 可根据文本生成视频场景，可选生成声音，支持横屏或竖屏，输出最高 1080p。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/google-veo3-1-lite-text-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Veo 3.1 Lite 根据文本生成视频场景，可选生成声音，支持横屏或竖屏，输出最高 1080p。
+
+## 模型
+
+- **google/veo3.1-lite/text-to-video** - 根据文本提示词生成视频场景。
+
+## 功能
+
+- 根据文本提示词生成视频场景。
+- 输出分辨率可选 `720p`、`1080p`。
+- 通过 `sound` 控制是否生成音频，默认为 `true`。
+
+## 时长选项
+
+- **4、6、8 秒** - 将 `duration` 设为其中一个值。默认：**8 秒**。
+- 使用 `1080p` 输出时设置 `duration: 8`。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级，下列参数放在 `input` 中。
+
+只传本工作流支持的 input 字段。不支持的 `input` 字段会在扣除积分前被拒绝。
+
+### 提示词
+
+- `prompt`：必填。描述场景和期望的运动。
+- 传入时提示词不能为空白。
+
+### 分辨率
+
+- `resolution`：`720p`、`1080p`。默认：`720p`。
+- `1080p` 要求 `duration: 8`。
+
+### 宽高比
+
+- `aspect_ratio`：`auto`、`16:9`、`9:16`。默认：`16:9`。
+
+### 音频
+
+- `sound`：设为 `true` 启用音频生成，设为 `false` 关闭。默认：`true`。
+
+## 定价
+
+价格取决于所选模型及相关输出设置。当前费率请查看 Vidgo 仪表盘。
+
+积分在提交时扣除，任务失败时退还。

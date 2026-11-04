@@ -1,0 +1,57 @@
+---
+title: "Seedance 1.5 Pro 图生视频"
+description: "Seedance 1.5 Pro API 可让参考图动起来，可选生成音频并控制固定镜头，输出最高 1080p。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/bytedance-seedance-v1-5-pro-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Seedance 1.5 Pro 让参考图动起来，可选生成音频并控制固定镜头，输出最高 1080p。
+
+## 模型
+
+- **bytedance/seedance-v1.5-pro/image-to-video** - 根据输入图片生成视频。
+
+## 功能
+
+- 根据输入图片生成视频。
+- `image_urls` 中接受 1-2 张图片。
+- 输出分辨率可选 `480p`、`720p`、`1080p`。
+
+## 时长选项
+
+- **4、8、12 秒** - 将 `duration` 设为整数。必填。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流参数（包括输出选项）都放在 `input` 中。
+
+### 提示词
+
+- `prompt`：必填。描述场景和期望的运动。长度：**3-2,500 个字符**。
+- 计算 Unicode 字符数前会去除首尾空白。
+
+### 图片 URL
+
+- `image_urls`：必填。提供 1–2 个可公开访问的 HTTP(S) 图片 URL。第一张为首帧；可选的第二张为尾帧。
+- 使用 JPEG、PNG 或 WebP 图片，**每张不超过 10 MB**。
+
+### 宽高比
+
+- `aspect_ratio`：必填。可选值：`1:1`、`21:9`、`4:3`、`3:4`、`16:9`、`9:16`。
+
+### 分辨率
+
+- `resolution`：可选。可选值：`480p`、`720p`、`1080p`。省略时 Vidgo 默认为 `720p`。
+
+### 固定镜头
+
+- `fixed_lens`：可选。控制是否固定镜头生成。使用 `true` 或 `false`。
+
+### 生成音频
+
+- `generate_audio`：可选。设为 `true` 生成同步音频，设为 `false` 生成无声视频。省略时 Vidgo 默认为 `true`。

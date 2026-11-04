@@ -1,0 +1,61 @@
+---
+title: "Hailuo 02 图生视频"
+description: "使用 Hailuo 02 Standard 让静态图片动起来，支持文本引导、提示词优化和可选的尾帧来塑造镜头。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/minimax-hailuo-02-standard-image-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Hailuo 02 Standard 让静态图片动起来，支持文本引导、提示词优化和可选的尾帧来塑造镜头。
+
+## 模型
+
+- **minimax/hailuo-02/standard/image-to-video** - 根据图像输入生成视频。
+
+## 功能
+
+- 根据图像输入生成视频。
+- `image_urls` 中恰好接受 1 张图片。
+- 可通过 `end_image_url` 提供可选的尾帧。
+- 接受 `512P` 或 `768P` 分辨率；默认 `768P`。
+
+## 时长选项
+
+- **6、10 秒** - `duration` 设为整数。可选。默认值：**6 秒**。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流程参数（包括输出选项）都放在 `input` 中。
+
+只发送该工作流程支持的 input 字段。不支持的 `input` 字段会在扣除积分前被拒绝。输入 URL 必须使用 HTTP(S)、包含主机名，且不含内嵌凭据。
+
+### 提示词
+
+- `prompt`：必填。描述场景和期望的动作。长度：**1-1,500 个字符**。
+- 校验前会去除首尾空白；结果不能为空。
+
+### 图像 URL
+
+- `image_urls`：必填。提供公开可访问的图像 URL，恰好 1 项。每一项都必须是 HTTP(S) URL。
+
+### 尾帧图像 URL
+
+- `end_image_url`：可选。提供尾帧 URL。使用公开可访问的 HTTP(S) URL。需要在 `image_urls` 中提供首帧图像。Standard 提供尾帧时需要 `768P`。
+
+### 分辨率
+
+- `resolution`：可选。可选值：`512P`、`768P`。默认值：`768P`。
+
+### 提示词优化
+
+- `prompt_optimizer`：可选。控制自动提示词优化。使用 `true` 或 `false`。
+
+## 计费因素
+
+计费取决于输出分辨率（`resolution`）和视频时长（`duration`），使用 Standard 模型档位，按生成的秒数计费。
+
+提交时扣除积分，任务失败时退还。

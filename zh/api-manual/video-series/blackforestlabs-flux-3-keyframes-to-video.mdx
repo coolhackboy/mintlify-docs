@@ -1,0 +1,62 @@
+---
+title: "FLUX 3 关键帧生视频"
+description: "FLUX 3 API 可围绕指定的图片关键帧构建视频序列，控制视觉参考在时间轴上出现的位置。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/blackforestlabs-flux-3-keyframes-to-video.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 FLUX 3 围绕指定的图片关键帧构建视频序列，控制视觉参考在时间轴上出现的位置。
+
+## 模型
+
+- **blackforestlabs/flux-3/keyframes-to-video** - 用放在指定帧序号上的图片引导视频序列。
+
+## 功能
+
+- 用放在指定帧序号上的图片引导视频序列。
+- 输出分辨率可选 `720p`、`1080p`。
+- 通过 `sound` 控制是否生成音频，默认为 `true`。
+
+## 时长选项
+
+- **5-20 秒** - 将 `duration` 设为整数。默认：**5 秒**。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级，下列参数放在 `input` 中。
+
+只传本工作流支持的 input 字段。不支持的 `input` 字段会在扣除积分前被拒绝。输入 URL 必须使用 HTTP(S)、包含主机名，且不能内嵌凭证。
+
+### 提示词
+
+- `prompt`：必填。描述场景和期望的运动。
+- 传入时提示词不能为空白。
+
+### 关键帧
+
+- `keyframes` 为必填，接受 **1-10 个对象**。
+- 每个对象需要一个可公开访问的 `image_url` 和一个整数 `frame_index`。
+- 帧序号不能重复，取值范围为 `0` 到 `duration * 24`（含两端）。
+
+### 分辨率
+
+- `resolution`：`720p`、`1080p`。默认：`720p`。
+
+### 宽高比
+
+- `aspect_ratio`：`auto`、`21:9`、`2:1`、`16:9`、`4:3`、`1:1`、`3:4`、`9:16`。默认：`auto`。
+
+### 音频
+
+- `sound`：设为 `true` 启用音频生成，设为 `false` 关闭。默认：`true`。
+
+## 定价
+
+价格取决于所选模型及相关输出设置。当前费率请查看 Vidgo 仪表盘。
+
+积分在提交时扣除，任务失败时退还。

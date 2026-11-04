@@ -1,0 +1,340 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - VEO 3.1 Official API",
+    "description": "官方 VEO 3.1 视频生成，支持时长、音频控制和图片引导模式",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "VEO 3.1 Official"
+        ],
+        "summary": "提交 VEO 3.1 Official 任务",
+        "description": "提交异步的官方 VEO 3.1 视频生成任务。可使用 Fast、Lite 或 Quality 版本，支持文生视频、图生视频、首尾帧或参考图生成工作流。",
+        "operationId": "submitVeo31OfficialTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "fast": {
+                  "summary": "veo3.1-fast-official",
+                  "value": {
+                    "model": "veo3.1-fast-official",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A cinematic close-up of a paper boat drifting through a neon-lit canal",
+                      "duration": 6,
+                      "aspect_ratio": "16:9",
+                      "resolution": "1080p",
+                      "sound": true
+                    }
+                  }
+                },
+                "lite": {
+                  "summary": "veo3.1-lite-official",
+                  "value": {
+                    "model": "veo3.1-lite-official",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A warm handheld shot of a ceramic coffee cup on a windowsill as morning light moves across the steam",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/veo31-official-lite-source.png"
+                      ],
+                      "duration": 8,
+                      "aspect_ratio": "16:9",
+                      "resolution": "1080p",
+                      "sound": true
+                    }
+                  }
+                },
+                "quality": {
+                  "summary": "veo3.1-quality-official",
+                  "value": {
+                    "model": "veo3.1-quality-official",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A high-detail aerial view of a futuristic coastal city at dusk, cinematic camera movement, realistic lighting, crisp architectural detail",
+                      "image_urls": [
+                        "https://cdn.vidgo.ai/temp/veo31-official-reference-character.png",
+                        "https://cdn.vidgo.ai/temp/veo31-official-reference-environment.png",
+                        "https://cdn.vidgo.ai/temp/veo31-official-reference-detail.png"
+                      ],
+                      "generation_type": "reference",
+                      "duration": 8,
+                      "aspect_ratio": "16:9",
+                      "resolution": "4k",
+                      "sound": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-1780000000-veo31official",
+                    "status": "not_started",
+                    "created_time": "2026-05-20T10:30:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "lite-4k": {
+                    "summary": "Lite 不支持 4K",
+                    "value": {
+                      "code": 400,
+                      "message": "veo3.1-lite-official does not support 4k resolution"
+                    }
+                  },
+                  "lite-reference": {
+                    "summary": "Lite 不支持参考图生成",
+                    "value": {
+                      "code": 400,
+                      "message": "veo3.1-lite-official does not support reference mode"
+                    }
+                  },
+                  "reference-duration": {
+                    "summary": "参考图生成要求时长为 8 秒",
+                    "value": {
+                      "code": 400,
+                      "message": "reference mode supports 8s duration only"
+                    }
+                  },
+                  "auto-aspect-ratio": {
+                    "summary": "auto 宽高比需要一张或两张图片",
+                    "value": {
+                      "code": 400,
+                      "message": "aspect_ratio auto is supported only with one or two image_urls"
+                    }
+                  },
+                  "prompt-too-long": {
+                    "summary": "提示词长度超出限制",
+                    "value": {
+                      "code": 400,
+                      "message": "prompt must be 1000 characters or fewer for veo-3.1-official"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权 - API Key 无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 401,
+                  "message": "Unauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "veo3.1-fast-official"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "用于接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "description": "生成所需的输入参数",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "必填，描述目标视频的文本提示词。",
+                "example": "A cinematic close-up of a paper boat drifting through a neon-lit canal."
+              },
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 3,
+                "description": "可选的图片 URL 数组。不传图片为文生视频，传一张为图生视频，传两张为首尾帧生成，传三张则必须使用参考图生成。Lite 最多支持两张图片。"
+              },
+              "generation_type": {
+                "type": "string",
+                "enum": [
+                  "frame",
+                  "reference"
+                ],
+                "description": "可选的生成模式。两张图片 URL 时使用 frame，三张图片 URL 时使用 reference。省略时根据 image_urls 推断模式。"
+              },
+              "duration": {
+                "type": "integer",
+                "description": "输出时长（秒）。支持 4、6 或 8，默认 8。参考图生成和 Lite 1080p 仅支持 8。",
+                "enum": [
+                  4,
+                  6,
+                  8
+                ],
+                "default": 8,
+                "example": 8
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "视频宽高比。auto 仅支持单图和双图工作流。",
+                "enum": [
+                  "auto",
+                  "16:9",
+                  "9:16"
+                ],
+                "default": "16:9",
+                "example": "16:9"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "输出分辨率。Lite 不支持 4k。",
+                "enum": [
+                  "720p",
+                  "1080p",
+                  "4k"
+                ],
+                "default": "1080p",
+                "example": "1080p"
+              },
+              "sound": {
+                "type": "boolean",
+                "description": "生成原生音频。默认为 true；设为 false 输出无声视频。",
+                "default": true,
+                "example": true
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应码",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "description": "已提交任务的元数据",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "description": "用于跟踪状态的唯一任务标识",
+                "example": "task-unified-1780000000-veo31official"
+              },
+              "status": {
+                "type": "string",
+                "description": "任务初始状态",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "description": "任务创建时间（ISO 8601 时间戳）",
+                "example": "2026-05-20T10:30:00"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "错误码",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "description": "描述错误原因的错误信息",
+            "example": "duration must be one of [4, 6, 8] for veo-3.1-official"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

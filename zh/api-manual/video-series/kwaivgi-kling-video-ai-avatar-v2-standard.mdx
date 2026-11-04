@@ -1,0 +1,54 @@
+---
+title: "Kling Avatar 2.0 Standard"
+description: "使用 Kling Avatar 2.0 Standard 创建说话的数字人，结合角色图片与音频表演，可选文本引导。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/kwaivgi-kling-video-ai-avatar-v2-standard.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Kling Avatar 2.0 Standard 创建说话的数字人，结合角色图片与音频表演，可选文本引导。
+
+## 模型
+
+- **kwaivgi/kling-video/ai-avatar/v2/standard** - 用驱动音频让角色图片动起来。
+
+## 功能
+
+- 用驱动音频让角色图片动起来。
+- `image_urls` 中恰好接受 1 张图片。
+
+## 时长选项
+
+- **驱动音频：2-60 秒** - 服务会检测 `audio_url` 的时长。
+- 音频必须可通过 HTTP(S) 公开访问，且不超过 **5 MiB**。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级。所有工作流程参数（包括输出选项）都放在 `input` 中。
+
+只发送该工作流程支持的 input 字段。不支持的 `input` 字段会在扣除积分前被拒绝。输入 URL 必须使用 HTTP(S)、包含主机名，且不含内嵌凭据。图像输入也接受图片 Data URI 或原始 Base64。图像转换和媒体校验在扣除积分前完成。
+
+### 图像 URL
+
+- `image_urls`：必填。恰好提供 1 项。每一项可以是公开的 HTTP(S) URL、图片 Data URI 或原始 Base64。图片顺序保持不变。
+
+### 音频 URL
+
+- `audio_url`：必填。提供输入音频 URL。使用公开可访问的 HTTP(S) URL。
+
+### 提示词
+
+- `prompt`：可选。描述场景和期望的动作。去除首尾空白后最多 **2500 个字符**。
+- 首尾空白会被去除。省略、null、空字符串和仅含空白的值都视为省略。
+
+## 价格
+
+用量按检测到的驱动音频时长计算，向上取整到整秒。
+
+当前费率请查看 Vidgo 仪表盘。
+
+提交时扣除积分，任务失败时退还。

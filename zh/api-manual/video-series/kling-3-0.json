@@ -1,0 +1,300 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Kling 3.0 API",
+    "description": "使用 Kling 3.0 进行新一代视频生成",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Kling 3.0"
+        ],
+        "summary": "提交 Kling 3.0 视频生成任务",
+        "description": "使用 Kling 3.0 生成高质量视频，提供 standard 和 pro 两种分辨率选项",
+        "operationId": "submitKling30Task",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "kling-3.0/standard": {
+                  "summary": "Kling 3.0 Standard - 文生视频",
+                  "value": {
+                    "model": "kling-3.0/standard",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A chef carefully plating a gourmet dish in a modern kitchen, steam rising from the food under warm lighting",
+                      "multi_shots": false,
+                      "duration": 5,
+                      "sound": true,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                },
+                "kling-3.0/pro": {
+                  "summary": "Kling 3.0 Pro - 文生视频",
+                  "value": {
+                    "model": "kling-3.0/pro",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A vintage train traveling through a misty valley at dawn, golden light breaking through the clouds above rolling green hills",
+                      "multi_shots": false,
+                      "duration": 10,
+                      "sound": true,
+                      "aspect_ratio": "16:9"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "kling-3.0/standard"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "duration",
+              "multi_shots",
+              "sound"
+            ],
+            "description": "生成参数",
+            "properties": {
+              "image_urls": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "文生视频时可选。单镜头模式（multi_shots: false）的图生视频中，提供首帧和可选的尾帧。多镜头模式（multi_shots: true）中，只提供首帧 URL。提供 `kling_elements` 时**必填**。",
+                "example": [
+                  "https://cdn.vidgo.ai/temp/start-frame.png"
+                ]
+              },
+              "prompt": {
+                "type": "string",
+                "description": "视频生成提示词。multi_shots 为 false 时必填。可以用 @element_name 语法引用元素（例如 @element_dog）",
+                "maxLength": 2500,
+                "example": "A street musician playing violin on a rainy evening, reflections shimmering on wet cobblestones"
+              },
+              "multi_prompt": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "prompt",
+                    "duration"
+                  ],
+                  "properties": {
+                    "prompt": {
+                      "type": "string",
+                      "description": "该镜头的提示词",
+                      "maxLength": 2500
+                    },
+                    "duration": {
+                      "type": "integer",
+                      "description": "该镜头的时长（秒，1–12）",
+                      "minimum": 1,
+                      "maximum": 12
+                    }
+                  }
+                },
+                "description": "多镜头模式的提示词对象数组。multi_shots 为 true 时必填。每个对象包含一个 prompt 和 duration。所有镜头的总时长不能超过 15 秒",
+                "example": [
+                  {
+                    "prompt": "A surfer paddling out into the ocean as waves build on the horizon",
+                    "duration": 4
+                  },
+                  {
+                    "prompt": "The surfer catches a massive wave and rides it toward the shore at sunset",
+                    "duration": 5
+                  }
+                ]
+              },
+              "duration": {
+                "type": "integer",
+                "description": "视频时长（秒）。单镜头模式下为 3–15 秒。多镜头模式下为所有镜头的总时长",
+                "minimum": 3,
+                "maximum": 15,
+                "example": 5
+              },
+              "multi_shots": {
+                "type": "boolean",
+                "description": "启用多镜头模式。为 true 时使用 multi_prompt 数组代替 prompt 字符串；为 false 时使用 prompt 字符串。默认为 false",
+                "default": false,
+                "example": false
+              },
+              "sound": {
+                "type": "boolean",
+                "description": "是否启用音效。true 启用音效，false 关闭。multi_shots 为 true 时该字段必须为 true。",
+                "default": true,
+                "example": true
+              },
+              "kling_elements": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "name"
+                  ],
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "在 @element_name 引用中使用的元素名称"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "元素描述"
+                    },
+                    "element_input_urls": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "description": "包含 2–4 个图像 URL 的数组（JPG/PNG，每张最大 10MB）"
+                    },
+                    "element_input_video_urls": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "description": "包含 1 个视频 URL 的数组（MP4/MOV，最大 50MB）"
+                    }
+                  }
+                },
+                "description": "元素对象数组，可在提示词中通过 @element_name 语法引用。元素可以用图像（2–4 张）或单个视频定义。提供该字段时，`image_urls` 为必填",
+                "example": [
+                  {
+                    "name": "element_robot",
+                    "description": "robot character",
+                    "element_input_urls": [
+                      "https://cdn.vidgo.ai/temp/robot-front.jpeg",
+                      "https://cdn.vidgo.ai/temp/robot-side.png"
+                    ]
+                  },
+                  {
+                    "name": "element_dancer",
+                    "description": "dancer reference motion",
+                    "element_input_video_urls": [
+                      "https://cdn.vidgo.ai/temp/dancer-motion.mp4"
+                    ]
+                  }
+                ]
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "视频宽高比。当输入不包含参考图（image_urls）且未传 aspect_ratio 参数时，默认为 1:1；当输入包含首帧图片时，aspect_ratio 参数会被忽略，输出使用首帧图片的宽高比",
+                "enum": [
+                  "1:1",
+                  "16:9",
+                  "9:16"
+                ],
+                "example": "1:1"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于查询任务状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started"
+                ],
+                "example": "not_started",
+                "description": "初始任务状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    }
+  }
+}

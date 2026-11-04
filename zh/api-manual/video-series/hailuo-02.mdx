@@ -1,0 +1,38 @@
+---
+title: "Hailuo 02"
+description: "使用 Hailuo 02 进行高级视频生成"
+icon: "video"
+openapi: "/zh/api-manual/video-series/hailuo-02.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Hailuo 02 模型生成高质量视频。借助文生视频和图生视频能力创作专业内容。
+
+## 模型
+
+- **hailuo-02** - 标准视频生成（768P/512P，最长 10 秒）
+- **hailuo-02-pro** - Pro 档视频生成。不要传 `resolution` 和 `duration`；如需在 Pro 档选择 `512P` 或 `768P`，请使用下方专用的 `minimax/hailuo-02/pro/*` 工作流 ID
+
+## 功能
+
+- **灵活模式**：文生视频和图生视频
+- **多种分辨率**：512P 和 768P（Standard；Pro 工作流 ID 同样支持 512P 和 768P）
+- **时长选项**：6 或 10 秒（仅 Standard）
+- **提示词优化**：可选的 AI 提示词增强
+- **尾帧控制**：为图生视频指定尾帧（可选）
+
+{/* poyo-20260910:start */}
+
+## 工作流程 ID
+
+现有 ID 仍可继续使用。新接入可以选择专用的工作流程：
+
+- [minimax/hailuo-02/standard/text-to-video](/zh/api-manual/video-series/minimax-hailuo-02-standard-text-to-video)
+- [minimax/hailuo-02/standard/image-to-video](/zh/api-manual/video-series/minimax-hailuo-02-standard-image-to-video)
+- [minimax/hailuo-02/pro/text-to-video](/zh/api-manual/video-series/minimax-hailuo-02-pro-text-to-video)
+- [minimax/hailuo-02/pro/image-to-video](/zh/api-manual/video-series/minimax-hailuo-02-pro-image-to-video)
+{/* poyo-20260910:end */}

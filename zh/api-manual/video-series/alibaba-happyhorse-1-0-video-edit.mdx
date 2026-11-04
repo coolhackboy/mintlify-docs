@@ -1,0 +1,74 @@
+---
+title: "Happy Horse 视频编辑"
+description: "Happy Horse API 根据文本指令和参考图片改造现有视频，引导出新的视觉方向。"
+icon: "video"
+openapi: "/zh/api-manual/video-series/alibaba-happyhorse-1-0-video-edit.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Happy Horse 视频编辑，根据文本指令和参考图片改造现有视频，引导出新的视觉方向。
+
+## 模型
+
+- **alibaba/happyhorse-1.0/video-edit** - 根据文字指令编辑现有视频。
+
+## 功能
+
+- 根据文字指令编辑现有视频。
+- 可选添加最多 5 张参考图片引导编辑。
+- 输出分辨率可选 `720p`、`1080p`。
+- 可选择自动处理音频或保留源音频。
+
+## 时长选项
+
+- **源视频：3-60 秒** - 时长从 `video_url` 读取。
+
+## 高级参数
+
+`model` 和可选的 `callback_url` 放在请求根级，下列参数放在 `input` 内。
+
+只发送本工作流支持的 input 字段。不支持的 `input` 字段会在扣除积分前被拒绝。输入 URL 必须使用 HTTP(S)，带主机名，且不含内嵌凭证。
+
+### 提示词
+
+- `prompt`：必填。描述要对视频做的修改。
+- 提示词不能为空。最大长度：**2,500 个字符**。
+
+### 参考输入
+
+- `reference_image_urls`：可选；最多 5 张图片。
+- 在提示词中描述所引用的主体；无需使用 `character1` 和 `character2` 标记。
+
+### 源视频
+
+- `video_url`：必填。提供一个可公开访问的源视频 URL。
+- 源视频必须可通过 HTTP(S) 直接下载，且不超过 **100 MiB**，以便检测时长。
+
+### 分辨率
+
+- `resolution`：`720p`、`1080p`。默认：`1080p`。
+
+### 音频
+
+- `audio_setting`：`auto` 或 `origin`。默认：`auto`。
+- `auto` 由模型决定音频处理方式；`origin` 保留原始音频。
+
+### 种子
+
+- `seed` 可选。传入 `0` 到 `2147483647` 的整数。
+
+### 安全检查
+
+- `enable_safety_checker` 可选。设为 `true` 或 `false` 控制安全检查。
+
+## 定价
+
+积分按检测到的源视频时长（最多按 **15 秒**计）乘以所选分辨率的费率计算。
+
+当前价格请在 Vidgo 仪表盘查看。
+
+提交时扣除积分，任务失败后退还。
