@@ -1,0 +1,35 @@
+---
+title: "Claude Messages"
+openapi: "/zh/api-manual/chat-series/claude-messages.json POST /v1/messages"
+description: "兼容 Anthropic 的 Messages API"
+icon: "message"
+---
+
+使用支持 Messages 协议的模型。`Authorization: Bearer` 和 `x-api-key` 两种认证方式均可。
+
+```bash
+curl https://api.vidgo.ai/v1/messages \
+  -H "x-api-key: $VIDGO_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"claude-sonnet-5","max_tokens":512,"messages":[{"role":"user","content":"Hello"}]}'
+```
+
+{/* poyo-20260910:start */}
+## 其他支持的模型
+
+- `anthropic/claude-fable-5.1`
+- `anthropic/claude-opus-4.8`
+- `anthropic/claude-sonnet-4.6`
+- `anthropic/claude-opus-4.6`
+- `anthropic/claude-opus-5.5`
+- `anthropic/claude-sonnet-5.5`
+- `anthropic/claude-haiku-5.5`
+- `anthropic/claude-opus-4.7`
+- `anthropic/claude-opus-4.5`
+- `anthropic/claude-sonnet-4.5`
+- `anthropic/claude-haiku-4.5`
+- `deepseek/deepseek-v4.1-flash`
+
+在根级发送协议字段，不需要生成接口的 input 包装。messages 必须是非空数组，max_tokens 必须是正整数。
+{/* poyo-20260910:end */}

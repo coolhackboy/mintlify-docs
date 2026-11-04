@@ -1,0 +1,133 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Vidgo Chat Completions",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "paths": {
+    "/v1/chat/completions": {
+      "post": {
+        "summary": "创建 Chat Completion",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "messages"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "openai/gpt-6-astra"
+                  },
+                  "messages": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": true
+                    },
+                    "minItems": 1
+                  },
+                  "stream": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "additionalProperties": true
+              },
+              "examples": {
+                "workflow": {
+                  "summary": "Vidgo 工作流程示例",
+                  "value": {
+                    "model": "openai/gpt-6-astra",
+                    "messages": [
+                      {
+                        "role": "user",
+                        "content": "Hello"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Completion 或 SSE 流",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "不支持的模型或协议"
+          },
+          "401": {
+            "description": "凭证无效"
+          },
+          "402": {
+            "description": "积分不足"
+          },
+          "403": {
+            "description": "拒绝访问"
+          },
+          "404": {
+            "description": "未找到厂商上下文"
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象"
+          },
+          "429": {
+            "description": "超出上游速率限制"
+          },
+          "502": {
+            "description": "上游连接或响应错误"
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        },
+        "description": "使用原生协议请求体，不需要生成接口的 input 包装。JSON 和 SSE 响应体由上游转发；返回的模型名可能与 Vidgo 公开 ID 不同。认证错误可能使用 detail 字段；协议错误使用该协议的错误结构。"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

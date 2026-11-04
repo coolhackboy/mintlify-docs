@@ -1,0 +1,23 @@
+---
+title: "Gemini Native Format"
+openapi: "/zh/api-manual/chat-series/gemini-native-format.json POST /v1beta/models/{model}:generateContent"
+description: "兼容 Gemini 的 generateContent 和流式接口"
+icon: "message"
+---
+
+使用支持 Gemini 原生协议的模型。不支持的 model ID 会返回 Gemini 格式的错误响应。
+
+流式输出请调用 `POST /v1beta/models/{model}:streamGenerateContent` 并读取 SSE 响应。
+
+{/* poyo-20260910:start */}
+## 其他支持的模型
+
+- `google/gemini-3.7-flash`
+- `google/gemini-3.5-flash`
+- `google/gemini-3.8-flash`
+- `google/gemini-4-argon`
+- `google/gemini-3.1-pro-preview`
+- `google/gemini-3-flash-preview`
+
+URL 中使用完整的公开 ID，包含厂商前缀和斜杠，例如 `/v1beta/models/google/gemini-3.7-flash:generateContent`。发送非空的 contents 数组。流式输出使用 `:streamGenerateContent?alt=sse`。
+{/* poyo-20260910:end */}

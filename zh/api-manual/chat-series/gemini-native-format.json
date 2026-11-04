@@ -1,0 +1,282 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Vidgo Gemini Native",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "paths": {
+    "/v1beta/models/{model}:generateContent": {
+      "post": {
+        "summary": "生成 Gemini 内容",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "googleApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "google/gemini-3.7-flash",
+                "google/gemini-3.5-flash",
+                "google/gemini-3.8-flash",
+                "google/gemini-4-argon",
+                "google/gemini-3.1-pro-preview",
+                "google/gemini-3-flash-preview"
+              ]
+            },
+            "description": "完整的 Vidgo 公开模型 ID，包含厂商前缀和斜杠。"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "properties": {
+                  "contents": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                },
+                "required": [
+                  "contents"
+                ]
+              },
+              "examples": {
+                "workflow": {
+                  "summary": "Vidgo 工作流程示例",
+                  "value": {
+                    "contents": [
+                      {
+                        "role": "user",
+                        "parts": [
+                          {
+                            "text": "Hello"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Gemini 响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "不支持的模型或协议"
+          },
+          "401": {
+            "description": "凭证无效"
+          },
+          "402": {
+            "description": "积分不足"
+          },
+          "403": {
+            "description": "拒绝访问"
+          },
+          "404": {
+            "description": "未找到厂商上下文"
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象"
+          },
+          "429": {
+            "description": "超出上游速率限制"
+          },
+          "502": {
+            "description": "上游连接或响应错误"
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        },
+        "description": "使用原生协议请求体，不需要生成接口的 input 包装。JSON 和 SSE 响应体由上游转发；返回的模型名可能与 Vidgo 公开 ID 不同。认证错误可能使用 detail 字段；协议错误使用该协议的错误结构。"
+      }
+    },
+    "/v1beta/models/{model}:streamGenerateContent": {
+      "post": {
+        "summary": "流式生成 Gemini 内容",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "googleApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "google/gemini-3.7-flash",
+                "google/gemini-3.5-flash",
+                "google/gemini-3.8-flash",
+                "google/gemini-4-argon",
+                "google/gemini-3.1-pro-preview",
+                "google/gemini-3-flash-preview"
+              ]
+            },
+            "description": "完整的 Vidgo 公开模型 ID，包含厂商前缀和斜杠。"
+          },
+          {
+            "name": "alt",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "sse"
+              ]
+            },
+            "description": "可选的兼容参数；此操作 Vidgo 总是请求 SSE。"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "properties": {
+                  "contents": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                },
+                "required": [
+                  "contents"
+                ]
+              },
+              "examples": {
+                "workflow": {
+                  "summary": "Vidgo 工作流程示例",
+                  "value": {
+                    "contents": [
+                      {
+                        "role": "user",
+                        "parts": [
+                          {
+                            "text": "Hello"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SSE 流",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "不支持的模型或协议"
+          },
+          "401": {
+            "description": "凭证无效"
+          },
+          "402": {
+            "description": "积分不足"
+          },
+          "403": {
+            "description": "拒绝访问"
+          },
+          "404": {
+            "description": "未找到厂商上下文"
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象"
+          },
+          "429": {
+            "description": "超出上游速率限制"
+          },
+          "502": {
+            "description": "上游连接或响应错误"
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        },
+        "description": "使用原生协议请求体，不需要生成接口的 input 包装。JSON 和 SSE 响应体由上游转发；返回的模型名可能与 Vidgo 公开 ID 不同。认证错误可能使用 detail 字段；协议错误使用该协议的错误结构。"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "googleApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-goog-api-key"
+      }
+    }
+  }
+}
