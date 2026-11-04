@@ -1,0 +1,536 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - ElevenLabs V3 TTS",
+    "description": "使用 ElevenLabs V3 将文本转为语音，可选择音色、控制语言，并可返回时间戳，适用于旁白和对话。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Audio Series"
+        ],
+        "summary": "ElevenLabs V3 TTS",
+        "operationId": "submit_elevenlabs_tts_eleven_v3",
+        "description": "将文本转换为语音，可设置音色、稳定性、语言和文本规范化。提交请求后，使用 task_id 获取音频，以及 files 中返回的时间戳附件。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "elevenlabs/tts/eleven-v3",
+                    "enum": [
+                      "elevenlabs/tts/eleven-v3"
+                    ]
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "text"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 5000,
+                        "description": "要朗读的文本，去除首尾空白后为 1–5,000 个字符。"
+                      },
+                      "voice": {
+                        "type": "string",
+                        "default": "Rachel",
+                        "description": "用于生成语音的音色名称，从列出的音色中选择一个。",
+                        "enum": [
+                          "Aria",
+                          "Roger",
+                          "Sarah",
+                          "Laura",
+                          "Charlie",
+                          "George",
+                          "Callum",
+                          "River",
+                          "Liam",
+                          "Charlotte",
+                          "Alice",
+                          "Matilda",
+                          "Will",
+                          "Jessica",
+                          "Eric",
+                          "Chris",
+                          "Brian",
+                          "Daniel",
+                          "Lily",
+                          "Bill",
+                          "Rachel"
+                        ]
+                      },
+                      "stability": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "default": 0.5,
+                        "description": "音色稳定性，取值 0 到 1。"
+                      },
+                      "timestamps": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "设为 true 时请求时间戳。返回的 timestamps.json 是 files 中单独的一项，file_type 为 other。"
+                      },
+                      "language_code": {
+                        "type": "string",
+                        "description": "可选的 ISO 639-1 语言代码，用于指定朗读语言，例如 en 或 zh。"
+                      },
+                      "apply_text_normalization": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "on",
+                          "off"
+                        ],
+                        "default": "auto",
+                        "description": "选择 auto、on 或 off，控制生成语音前的文本规范化。"
+                      }
+                    }
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) URL，用于接收任务完成或失败的通知。"
+                  }
+                },
+                "description": "在请求根级设置 model 和可选的 callback_url，语音生成参数放在 input 中。"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "阁楼上的星星",
+                  "value": {
+                    "model": "elevenlabs/tts/eleven-v3",
+                    "input": {
+                      "text": "[whispers] Wait... that ticking is coming from inside the wall. [curious] This little brass key fits the crack. One turn, and... [excited] the whole ceiling is full of stars! [laughs] Grandpa, you built a planetarium in the attic. [exhales] All these years, it was waiting for us.",
+                      "voice": "Charlotte",
+                      "language_code": "en",
+                      "stability": 0.5,
+                      "timestamps": false,
+                      "apply_text_normalization": "auto"
+                    }
+                  }
+                },
+                "eleven-v3-02": {
+                  "summary": "我的第一个饺子",
+                  "value": {
+                    "model": "elevenlabs/tts/eleven-v3",
+                    "input": {
+                      "text": "[sighs] 我练了一个下午，面团还是歪歪扭扭的。奶奶看了一眼，说：别急，手放轻一点。[curious] 这样吗？先对折，再慢慢捏紧……[laughs] 真的站住了！虽然像只胖企鹅，但这是我第一次包好饺子。原来，有些本事不是听懂的，是一起做着学会的。",
+                      "voice": "Rachel",
+                      "language_code": "zh",
+                      "stability": 0.5,
+                      "timestamps": false,
+                      "apply_text_normalization": "auto"
+                    }
+                  }
+                },
+                "eleven-v3-03": {
+                  "summary": "声音的性格",
+                  "value": {
+                    "model": "elevenlabs/tts/eleven-v3",
+                    "input": {
+                      "text": "[curious] Why does a violin sound different from a flute when both play the same note? Their fundamental frequency can match, but the overtones do not. [excited] Those extra vibrations give each instrument its own sound. At 440 Hz, the pitch is A; the pattern above it is what makes the voice of the instrument recognizable.",
+                      "voice": "George",
+                      "language_code": "en",
+                      "stability": 0.5,
+                      "timestamps": true,
+                      "apply_text_normalization": "on"
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "elevenlabs/tts/eleven-v3",
+                    "input": {
+                      "text": "[whispers] Wait... that ticking is coming from inside the wall. [curious] This little brass key fits the crack. One turn, and... [excited] the whole ceiling is full of stars! [laughs] Grandpa, you built a planetarium in the attic. [exhales] All these years, it was waiting for us.",
+                      "voice": "Charlotte",
+                      "language_code": "en",
+                      "stability": 0.5,
+                      "timestamps": false,
+                      "apply_text_normalization": "auto"
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "LPV36KJQ0Y2SYT21",
+                    "status": "running",
+                    "created_time": "2026-09-27T10:45:57"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求校验错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型不存在或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "无法创建生成任务",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

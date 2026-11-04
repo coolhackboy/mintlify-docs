@@ -1,0 +1,678 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Gemini 3.1 Flash TTS",
+    "description": "使用 Gemini 3.1 Flash TTS 生成语音，支持风格指令和可选音色，适用于旁白或双人对话。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Audio Series"
+        ],
+        "summary": "Gemini 3.1 Flash TTS",
+        "operationId": "submit_google_gemini_3_1_flash_text_to_speech",
+        "description": "生成旁白或双人对话。将 speaker_id 别名作为文本前缀，并为每位说话人指定音色。从 files 中读取生成的音频 URL，file_type 为 audio。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "google/gemini-3.1-flash/text-to-speech"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "text"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 50000,
+                        "description": "文本。"
+                      },
+                      "style_instructions": {
+                        "type": "string",
+                        "description": "风格指令。"
+                      },
+                      "voice": {
+                        "type": "string",
+                        "enum": [
+                          "Achernar",
+                          "Achird",
+                          "Algenib",
+                          "Algieba",
+                          "Alnilam",
+                          "Aoede",
+                          "Autonoe",
+                          "Callirrhoe",
+                          "Charon",
+                          "Despina",
+                          "Enceladus",
+                          "Erinome",
+                          "Fenrir",
+                          "Gacrux",
+                          "Iapetus",
+                          "Kore",
+                          "Laomedeia",
+                          "Leda",
+                          "Orus",
+                          "Pulcherrima",
+                          "Puck",
+                          "Rasalgethi",
+                          "Sadachbia",
+                          "Sadaltager",
+                          "Schedar",
+                          "Sulafat",
+                          "Umbriel",
+                          "Vindemiatrix",
+                          "Zephyr",
+                          "Zubenelgenubi"
+                        ],
+                        "default": "Kore",
+                        "description": "单人语音的预设音色。对话使用 speakers 中为各说话人指定的音色。"
+                      },
+                      "language_code": {
+                        "type": "string",
+                        "enum": [
+                          "Arabic (Egypt)",
+                          "Bangla (Bangladesh)",
+                          "Dutch (Netherlands)",
+                          "English (India)",
+                          "English (US)",
+                          "French (France)",
+                          "German (Germany)",
+                          "Hindi (India)",
+                          "Indonesian (Indonesia)",
+                          "Italian (Italy)",
+                          "Japanese (Japan)",
+                          "Korean (South Korea)",
+                          "Marathi (India)",
+                          "Polish (Poland)",
+                          "Portuguese (Brazil)",
+                          "Romanian (Romania)",
+                          "Russian (Russia)",
+                          "Spanish (Spain)",
+                          "Tamil (India)",
+                          "Telugu (India)",
+                          "Thai (Thailand)",
+                          "Turkish (Turkey)",
+                          "Ukrainian (Ukraine)",
+                          "Vietnamese (Vietnam)",
+                          "Afrikaans (South Africa)",
+                          "Albanian (Albania)",
+                          "Amharic (Ethiopia)",
+                          "Arabic (World)",
+                          "Armenian (Armenia)",
+                          "Azerbaijani (Azerbaijan)",
+                          "Basque (Spain)",
+                          "Belarusian (Belarus)",
+                          "Bulgarian (Bulgaria)",
+                          "Burmese (Myanmar)",
+                          "Catalan (Spain)",
+                          "Cebuano (Philippines)",
+                          "Chinese Mandarin (China)",
+                          "Chinese Mandarin (Taiwan)",
+                          "Croatian (Croatia)",
+                          "Czech (Czech Republic)",
+                          "Danish (Denmark)",
+                          "English (Australia)",
+                          "English (UK)",
+                          "Estonian (Estonia)",
+                          "Filipino (Philippines)",
+                          "Finnish (Finland)",
+                          "French (Canada)",
+                          "Galician (Spain)",
+                          "Georgian (Georgia)",
+                          "Greek (Greece)",
+                          "Gujarati (India)",
+                          "Haitian Creole (Haiti)",
+                          "Hebrew (Israel)",
+                          "Hungarian (Hungary)",
+                          "Icelandic (Iceland)",
+                          "Javanese (Java)",
+                          "Kannada (India)",
+                          "Konkani (India)",
+                          "Lao (Laos)",
+                          "Latin (Vatican City)",
+                          "Latvian (Latvia)",
+                          "Lithuanian (Lithuania)",
+                          "Luxembourgish (Luxembourg)",
+                          "Macedonian (North Macedonia)",
+                          "Maithili (India)",
+                          "Malagasy (Madagascar)",
+                          "Malay (Malaysia)",
+                          "Malayalam (India)",
+                          "Mongolian (Mongolia)",
+                          "Nepali (Nepal)",
+                          "Norwegian Bokmal (Norway)",
+                          "Norwegian Nynorsk (Norway)",
+                          "Odia (India)",
+                          "Pashto (Afghanistan)",
+                          "Persian (Iran)",
+                          "Portuguese (Portugal)",
+                          "Punjabi (India)",
+                          "Serbian (Serbia)",
+                          "Sindhi (India)",
+                          "Sinhala (Sri Lanka)",
+                          "Slovak (Slovakia)",
+                          "Slovenian (Slovenia)",
+                          "Spanish (Latin America)",
+                          "Spanish (Mexico)",
+                          "Swahili (Kenya)",
+                          "Swedish (Sweden)",
+                          "Urdu (Pakistan)"
+                        ],
+                        "description": "选择朗读语言，省略此字段则根据 text 自动识别。"
+                      },
+                      "speakers": {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "voice",
+                            "speaker_id"
+                          ],
+                          "additionalProperties": false,
+                          "properties": {
+                            "voice": {
+                              "type": "string",
+                              "enum": [
+                                "Achernar",
+                                "Achird",
+                                "Algenib",
+                                "Algieba",
+                                "Alnilam",
+                                "Aoede",
+                                "Autonoe",
+                                "Callirrhoe",
+                                "Charon",
+                                "Despina",
+                                "Enceladus",
+                                "Erinome",
+                                "Fenrir",
+                                "Gacrux",
+                                "Iapetus",
+                                "Kore",
+                                "Laomedeia",
+                                "Leda",
+                                "Orus",
+                                "Pulcherrima",
+                                "Puck",
+                                "Rasalgethi",
+                                "Sadachbia",
+                                "Sadaltager",
+                                "Schedar",
+                                "Sulafat",
+                                "Umbriel",
+                                "Vindemiatrix",
+                                "Zephyr",
+                                "Zubenelgenubi"
+                              ],
+                              "description": "音色。"
+                            },
+                            "speaker_id": {
+                              "type": "string",
+                              "description": "说话人 ID。\n\n使用一个或多个 ASCII 字母、数字或下划线。"
+                            }
+                          },
+                          "description": "说话人。"
+                        },
+                        "description": "必须提供恰好两位说话人，speaker_id 别名唯一，由字母、数字和下划线组成。语音使用为每位说话人指定的音色。"
+                      },
+                      "temperature": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 2,
+                        "default": 1,
+                        "description": "温度。"
+                      },
+                      "output_format": {
+                        "type": "string",
+                        "enum": [
+                          "mp3",
+                          "wav",
+                          "ogg_opus"
+                        ],
+                        "default": "mp3",
+                        "description": "输出格式。"
+                      }
+                    }
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 接口，用于接收任务完成通知，建议使用 HTTPS。省略、设为 null 或空字符串即不回调。"
+                  }
+                },
+                "description": "在请求根级设置 model 和可选的 callback_url，语音参数放在 input 中。"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "基础工作流程",
+                  "value": {
+                    "model": "google/gemini-3.1-flash/text-to-speech",
+                    "input": {
+                      "text": "Welcome to the studio. [short pause] Let us tell your story.",
+                      "style_instructions": "Warm narration with a relaxed pace.",
+                      "voice": "Kore",
+                      "temperature": 1,
+                      "output_format": "mp3"
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "google/gemini-3.1-flash/text-to-speech",
+                    "input": {
+                      "text": "Welcome to the studio. [short pause] Let us tell your story.",
+                      "style_instructions": "Warm narration with a relaxed pace.",
+                      "voice": "Kore",
+                      "temperature": 1,
+                      "output_format": "mp3"
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                },
+                "dialogue": {
+                  "summary": "双人对话",
+                  "value": {
+                    "model": "google/gemini-3.1-flash/text-to-speech",
+                    "input": {
+                      "text": "Host: Welcome to Launch Notes.\nGuest: Let us explore the new features.",
+                      "speakers": [
+                        {
+                          "speaker_id": "Host",
+                          "voice": "Charon"
+                        },
+                        {
+                          "speaker_id": "Guest",
+                          "voice": "Kore"
+                        }
+                      ],
+                      "temperature": 1,
+                      "output_format": "ogg_opus"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-example",
+                    "status": "running",
+                    "created_time": "2026-09-10T08:00:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请检查请求参数和账户余额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型不存在或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "生成任务创建错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "生成服务暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

@@ -1,0 +1,212 @@
+---
+title: "ElevenLabs V3 TTS"
+description: "使用 ElevenLabs V3 将文本转为语音，可选择音色、控制语言，并可返回时间戳，适用于旁白和对话。"
+icon: "music"
+openapi: "/zh/api-manual/music-series/elevenlabs-tts-eleven-v3.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 ElevenLabs V3 将文本转为语音，可选择音色、控制语言，并可返回时间戳，适用于旁白和对话。
+
+## 模型
+
+- **elevenlabs/tts/eleven-v3** - 将文本转换为语音。
+
+## 功能
+
+- 将文本转换为语音。
+- 可在生成音频的同时请求时间戳。
+- 使用 `voice` 选择音色，使用 `language_code` 指定朗读语言。
+
+## 高级参数
+
+在请求根级设置 `model` 和可选的 `callback_url`。所有工作流程参数（包括输出选项）都放在 `input` 中。
+
+### 文本
+
+- `text`：必填。要朗读的文本。长度：**1-5,000 个字符**。
+- 检查字符上限前会先去除首尾空白。
+
+### 音色
+
+- `voice`：可选。选择音色。字符串。默认：`Rachel`。
+- 可选值：`Aria`、`Roger`、`Sarah`、`Laura`、`Charlie`、`George`、`Callum`、`River`、`Liam`、`Charlotte`、`Alice`、`Matilda`、`Will`、`Jessica`、`Eric`、`Chris`、`Brian`、`Daniel`、`Lily`、`Bill`、`Rachel`。
+
+### 稳定性
+
+- `stability`：可选。控制音色稳定性。数值 `0` 到 `1`。默认：`0.5`。
+
+### 时间戳
+
+- `timestamps`：可选。在返回音频的同时请求时间戳信息。使用 `true` 或 `false`。默认：`false`。
+
+### 语言代码
+
+- `language_code`：可选。ISO 639-1 语言代码，例如英语为 `en`，中文为 `zh`。
+
+### 文本规范化
+
+- `apply_text_normalization`：可选。选择文本规范化行为。可选值：`auto`、`on`、`off`。默认：`auto`。
+
+## 输出文件
+
+- 读取返回的 `files` 数组中的每一项。
+- 生成的音频 `file_type` 为 `"audio"`。
+- 返回的 `timestamps.json` 是单独的一项，`file_type` 为 `"other"`。如有可选的文件元数据，请一并保留。
+
+## 示例
+
+每个示例都包含请求、对应的已完成任务响应和生成的音频。将请求提交到 `POST https://api.vidgo.ai/api/generate/submit`，然后使用提交返回的任务 ID 查询 `GET https://api.vidgo.ai/api/generate/status/{task_id}`。
+
+<AccordionGroup>
+
+<Accordion title="阁楼上的星星">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/tts/eleven-v3",
+  "input": {
+    "text": "[whispers] Wait... that ticking is coming from inside the wall. [curious] This little brass key fits the crack. One turn, and... [excited] the whole ceiling is full of stars! [laughs] Grandpa, you built a planetarium in the attic. [exhales] All these years, it was waiting for us.",
+    "voice": "Charlotte",
+    "language_code": "en",
+    "stability": 0.5,
+    "timestamps": false,
+    "apply_text_normalization": "auto"
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "LPV36KJQ0Y2SYT21",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/01/speech.mp3",
+        "file_type": "audio",
+        "file_name": "speech.mp3"
+      }
+    ],
+    "created_time": "2026-09-27T10:45:57",
+    "error_message": null,
+    "progress": 100
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/01/speech.mp3" aria-label="阁楼上的星星" />
+
+[下载音频](https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/01/speech.mp3)
+
+</Accordion>
+
+<Accordion title="我的第一个饺子">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/tts/eleven-v3",
+  "input": {
+    "text": "[sighs] 我练了一个下午，面团还是歪歪扭扭的。奶奶看了一眼，说：别急，手放轻一点。[curious] 这样吗？先对折，再慢慢捏紧……[laughs] 真的站住了！虽然像只胖企鹅，但这是我第一次包好饺子。原来，有些本事不是听懂的，是一起做着学会的。",
+    "voice": "Rachel",
+    "language_code": "zh",
+    "stability": 0.5,
+    "timestamps": false,
+    "apply_text_normalization": "auto"
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "VLXQ5DI7PNWFRJQ4",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/02/speech.mp3",
+        "file_type": "audio",
+        "file_name": "speech.mp3"
+      }
+    ],
+    "created_time": "2026-09-27T10:46:38",
+    "error_message": null,
+    "progress": 100
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/02/speech.mp3" aria-label="我的第一个饺子" />
+
+[下载音频](https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/02/speech.mp3)
+
+</Accordion>
+
+<Accordion title="声音的性格">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/tts/eleven-v3",
+  "input": {
+    "text": "[curious] Why does a violin sound different from a flute when both play the same note? Their fundamental frequency can match, but the overtones do not. [excited] Those extra vibrations give each instrument its own sound. At 440 Hz, the pitch is A; the pattern above it is what makes the voice of the instrument recognizable.",
+    "voice": "George",
+    "language_code": "en",
+    "stability": 0.5,
+    "timestamps": true,
+    "apply_text_normalization": "on"
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "0E09515629QS87GR",
+    "status": "finished",
+    "files": [
+      {
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/03/speech.mp3",
+        "file_type": "audio",
+        "file_name": "speech.mp3"
+      },
+      {
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/03/timestamps.json",
+        "file_type": "other",
+        "file_name": "timestamps.json"
+      }
+    ],
+    "created_time": "2026-09-27T10:47:13",
+    "error_message": null,
+    "progress": 100
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/03/speech.mp3" aria-label="声音的性格" />
+
+[下载音频](https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/03/speech.mp3)
+
+[下载 timestamps.json](https://cdn.vidgo.ai/apis/models/elevenlabs/tts/eleven-v3/v1/03/timestamps.json)
+
+</Accordion>
+
+</AccordionGroup>

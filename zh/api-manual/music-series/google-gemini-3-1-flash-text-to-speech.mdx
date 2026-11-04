@@ -1,0 +1,234 @@
+---
+title: "Gemini 3.1 Flash TTS"
+description: "使用 Gemini 3.1 Flash TTS 生成语音，支持风格指令和可选音色，适用于旁白或双人对话。"
+icon: "music"
+openapi: "/zh/api-manual/music-series/google-gemini-3-1-flash-text-to-speech.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+使用 Gemini 3.1 Flash TTS 生成语音，支持风格指令和可选音色，适用于旁白或双人对话。
+
+## 模型
+
+- **google/gemini-3.1-flash/text-to-speech** - 将文本转换为语音。
+
+## 功能
+
+- 将文本转换为语音。
+- 使用单一音色，或两个说话人别名。
+- 使用 `style_instructions` 和 `temperature` 控制演绎方式。
+- 使用 `voice` 选择音色，使用 `language_code` 指定朗读语言。
+
+## 输出选项
+
+### 输出格式
+
+- `output_format`：可选。可选值：`mp3`、`wav`、`ogg_opus`。默认：`mp3`。
+
+## 高级参数
+
+在请求根级设置 `model` 和可选的 `callback_url`。所有工作流程参数（包括输出选项）都放在 `input` 中。
+
+使用参数参考中的字段配置语音生成。
+
+- 提供 `speakers` 时，必须恰好包含两个不同的 `speaker_id` 别名，只能使用字母、数字和下划线。语音使用为每位说话人指定的音色。
+
+### 文本
+
+- `text`：必填。要朗读的文本。长度：**1-50,000 个字符**。
+- 填写要朗读的内容，可加入 `[short pause]`、`[whispering]`、`[laughing]` 等音频标签。对话中每一轮都以对应的 `speaker_id` 加冒号开头。
+
+### 风格指令
+
+- `style_instructions`：可选。描述语音应如何演绎。
+
+### 音色
+
+- `voice`：可选。选择音色。字符串。默认：`Kore`。
+
+<Accordion title="支持的音色">
+
+- `Achernar`
+- `Achird`
+- `Algenib`
+- `Algieba`
+- `Alnilam`
+- `Aoede`
+- `Autonoe`
+- `Callirrhoe`
+- `Charon`
+- `Despina`
+- `Enceladus`
+- `Erinome`
+- `Fenrir`
+- `Gacrux`
+- `Iapetus`
+- `Kore`
+- `Laomedeia`
+- `Leda`
+- `Orus`
+- `Pulcherrima`
+- `Puck`
+- `Rasalgethi`
+- `Sadachbia`
+- `Sadaltager`
+- `Schedar`
+- `Sulafat`
+- `Umbriel`
+- `Vindemiatrix`
+- `Zephyr`
+- `Zubenelgenubi`
+
+</Accordion>
+
+### 语言代码
+
+- `language_code`：可选。从下列值中选择，或省略以根据 `text` 自动识别语言。
+
+<Accordion title="支持的语言代码">
+
+- `Arabic (Egypt)`
+- `Bangla (Bangladesh)`
+- `Dutch (Netherlands)`
+- `English (India)`
+- `English (US)`
+- `French (France)`
+- `German (Germany)`
+- `Hindi (India)`
+- `Indonesian (Indonesia)`
+- `Italian (Italy)`
+- `Japanese (Japan)`
+- `Korean (South Korea)`
+- `Marathi (India)`
+- `Polish (Poland)`
+- `Portuguese (Brazil)`
+- `Romanian (Romania)`
+- `Russian (Russia)`
+- `Spanish (Spain)`
+- `Tamil (India)`
+- `Telugu (India)`
+- `Thai (Thailand)`
+- `Turkish (Turkey)`
+- `Ukrainian (Ukraine)`
+- `Vietnamese (Vietnam)`
+- `Afrikaans (South Africa)`
+- `Albanian (Albania)`
+- `Amharic (Ethiopia)`
+- `Arabic (World)`
+- `Armenian (Armenia)`
+- `Azerbaijani (Azerbaijan)`
+- `Basque (Spain)`
+- `Belarusian (Belarus)`
+- `Bulgarian (Bulgaria)`
+- `Burmese (Myanmar)`
+- `Catalan (Spain)`
+- `Cebuano (Philippines)`
+- `Chinese Mandarin (China)`
+- `Chinese Mandarin (Taiwan)`
+- `Croatian (Croatia)`
+- `Czech (Czech Republic)`
+- `Danish (Denmark)`
+- `English (Australia)`
+- `English (UK)`
+- `Estonian (Estonia)`
+- `Filipino (Philippines)`
+- `Finnish (Finland)`
+- `French (Canada)`
+- `Galician (Spain)`
+- `Georgian (Georgia)`
+- `Greek (Greece)`
+- `Gujarati (India)`
+- `Haitian Creole (Haiti)`
+- `Hebrew (Israel)`
+- `Hungarian (Hungary)`
+- `Icelandic (Iceland)`
+- `Javanese (Java)`
+- `Kannada (India)`
+- `Konkani (India)`
+- `Lao (Laos)`
+- `Latin (Vatican City)`
+- `Latvian (Latvia)`
+- `Lithuanian (Lithuania)`
+- `Luxembourgish (Luxembourg)`
+- `Macedonian (North Macedonia)`
+- `Maithili (India)`
+- `Malagasy (Madagascar)`
+- `Malay (Malaysia)`
+- `Malayalam (India)`
+- `Mongolian (Mongolia)`
+- `Nepali (Nepal)`
+- `Norwegian Bokmal (Norway)`
+- `Norwegian Nynorsk (Norway)`
+- `Odia (India)`
+- `Pashto (Afghanistan)`
+- `Persian (Iran)`
+- `Portuguese (Portugal)`
+- `Punjabi (India)`
+- `Serbian (Serbia)`
+- `Sindhi (India)`
+- `Sinhala (Sri Lanka)`
+- `Slovak (Slovakia)`
+- `Slovenian (Slovenia)`
+- `Spanish (Latin America)`
+- `Spanish (Mexico)`
+- `Swahili (Kenya)`
+- `Swedish (Sweden)`
+- `Urdu (Pakistan)`
+
+</Accordion>
+
+### 说话人
+
+- `speakers`：可选。必须恰好包含 2 项，每项为一个对象。
+
+- `speakers[].voice`：必填。为该说话人选择音色。
+
+<Accordion title="支持的音色">
+
+- `Achernar`
+- `Achird`
+- `Algenib`
+- `Algieba`
+- `Alnilam`
+- `Aoede`
+- `Autonoe`
+- `Callirrhoe`
+- `Charon`
+- `Despina`
+- `Enceladus`
+- `Erinome`
+- `Fenrir`
+- `Gacrux`
+- `Iapetus`
+- `Kore`
+- `Laomedeia`
+- `Leda`
+- `Orus`
+- `Pulcherrima`
+- `Puck`
+- `Rasalgethi`
+- `Sadachbia`
+- `Sadaltager`
+- `Schedar`
+- `Sulafat`
+- `Umbriel`
+- `Vindemiatrix`
+- `Zephyr`
+- `Zubenelgenubi`
+
+</Accordion>
+- `speakers[].speaker_id`：必填。字符串，只能使用字母、数字和下划线。
+
+### 温度
+
+- `temperature`：可选。控制语音生成的随机性。数值 `0` 到 `2`。默认：`1`。
+
+## 输出文件
+
+- 读取返回的 `files` 数组中的每一项。
+- 生成的音频 `file_type` 为 `"audio"`。
+- 从 `files[].file_url` 读取音频 URL。

@@ -1,0 +1,522 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - xAI TTS 1",
+    "description": "使用 xAI TTS 将文本转换为语音，可从五种音色和多种语言中选择，适用于旁白、对话和口播内容。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Audio Series"
+        ],
+        "summary": "xAI TTS 1",
+        "operationId": "submit_xai_tts_v1",
+        "description": "使用五种音色之一，将 1–15,000 个字符的文本生成语音。语音设置放在 input 中。通过任务状态接口获取生成的音频；files 中的音频条目 file_type 为 audio。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "xai/tts/v1",
+                    "enum": [
+                      "xai/tts/v1"
+                    ]
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "text"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 15000,
+                        "description": "要朗读的文本，去除首尾空白后为 1 到 15,000 个字符。可使用 `[laugh]`、`[pause]`、`[sigh]`、`<whisper>text</whisper>` 或 `<slow>text</slow>` 控制演绎方式。"
+                      },
+                      "voice": {
+                        "type": "string",
+                        "enum": [
+                          "eve",
+                          "ara",
+                          "rex",
+                          "sal",
+                          "leo"
+                        ],
+                        "default": "eve",
+                        "description": "为旁白或角色选择 eve、ara、rex、sal 或 leo。默认：eve。"
+                      },
+                      "language_code": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "en",
+                          "ar-EG",
+                          "ar-SA",
+                          "ar-AE",
+                          "bn",
+                          "zh",
+                          "fr",
+                          "de",
+                          "hi",
+                          "id",
+                          "it",
+                          "ja",
+                          "ko",
+                          "pt-BR",
+                          "pt-PT",
+                          "ru",
+                          "es-MX",
+                          "es-ES",
+                          "tr",
+                          "vi"
+                        ],
+                        "default": "auto",
+                        "description": "选择列出的 BCP-47 语言代码，或使用 auto 自动识别语言。"
+                      },
+                      "output_format": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "codec": {
+                            "type": "string",
+                            "enum": [
+                              "mp3",
+                              "wav",
+                              "pcm",
+                              "mulaw",
+                              "alaw"
+                            ],
+                            "default": "mp3",
+                            "description": "音频编码：mp3、wav、pcm、mulaw 或 alaw。默认：mp3。"
+                          },
+                          "sample_rate": {
+                            "type": "integer",
+                            "enum": [
+                              8000,
+                              16000,
+                              22050,
+                              24000,
+                              44100,
+                              48000
+                            ],
+                            "default": 24000,
+                            "description": "采样率（Hz）：8000、16000、22050、24000、44100 或 48000。默认：24000。"
+                          },
+                          "bit_rate": {
+                            "type": "integer",
+                            "nullable": true,
+                            "enum": [
+                              32000,
+                              64000,
+                              96000,
+                              128000,
+                              192000,
+                              null
+                            ],
+                            "default": 128000,
+                            "description": "MP3 比特率（bit/s）：32000、64000、96000、128000、192000 或 null。MP3 默认：128000。wav、pcm、mulaw 和 alaw 请省略 bit_rate 或设为 null。"
+                          }
+                        },
+                        "description": "包含 codec、sample_rate 和 MP3 bit_rate 设置的对象。"
+                      }
+                    }
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "提供公开的 HTTP(S) callback_url 以接收任务完成通知，建议使用 HTTPS。"
+                  }
+                },
+                "description": "model 和 callback_url 放在根级；text、voice、language_code 和 output_format 放在 input 中。"
+              },
+              "example": {
+                "model": "xai/tts/v1",
+                "input": {
+                  "text": "Welcome to our story. [pause] <whisper>Listen closely.</whisper> [laugh] Let us begin.",
+                  "voice": "eve",
+                  "language_code": "auto",
+                  "output_format": {
+                    "codec": "mp3",
+                    "sample_rate": 24000,
+                    "bit_rate": 128000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-example",
+                    "status": "running",
+                    "created_time": "2026-09-10T08:00:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请检查请求参数和账户余额。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型不存在或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "已达到请求限制。请在服务指示的间隔后重试。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "任务提交失败，请重试请求。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "服务暂时不可用，请稍后重试。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

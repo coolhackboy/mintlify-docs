@@ -1,0 +1,556 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - ElevenLabs TTS Turbo v2.5",
+    "description": "使用 ElevenLabs Turbo v2.5 生成语音旁白，可调节语速、演绎风格和音色相似度，并可选返回文本对齐数据。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Audio Series"
+        ],
+        "summary": "ElevenLabs TTS Turbo v2.5",
+        "operationId": "submit_elevenlabs_tts_turbo_v2_5",
+        "description": "模型参数放在 input 中。text 去除首尾空白后需包含 1 到 40,000 个 Unicode 字符。读取 files 中的每一项：生成的语音 file_type=audio。如有时间戳文件和可选的文件元数据，请一并保留。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "elevenlabs/tts/turbo-v2.5"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "text"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "voice": {
+                        "type": "string",
+                        "default": "Rachel",
+                        "description": "音色名称或兼容的音色 ID，默认 Rachel。"
+                      },
+                      "stability": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "default": 0.5,
+                        "description": "音色稳定性，取值 0 到 1，默认 0.5。"
+                      },
+                      "similarity_boost": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "default": 0.75,
+                        "description": "音色相似度强度，取值 0 到 1，默认 0.75。"
+                      },
+                      "style": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "default": 0,
+                        "description": "风格夸张程度，取值 0 到 1，默认 0。"
+                      },
+                      "speed": {
+                        "type": "number",
+                        "minimum": 0.7,
+                        "maximum": 1.2,
+                        "default": 1,
+                        "description": "语速，取值 0.7 到 1.2。小于 1 放慢语速，大于 1 加快语速。默认 1。"
+                      },
+                      "timestamps": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "在生成音频的同时请求时间戳数据，默认 false。"
+                      },
+                      "previous_text": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "当前片段之前的文本，用于保持多段旁白之间的连贯性。"
+                      },
+                      "next_text": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "当前片段之后的文本，用于保持多段旁白之间的连贯性。"
+                      },
+                      "language_code": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "朗读语言的 ISO 639-1 语言代码，例如 en、fr、de、ja、vi、hu 或 no。"
+                      },
+                      "apply_text_normalization": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "on",
+                          "off"
+                        ],
+                        "default": "auto",
+                        "description": "为朗读处理数字、日期和货币：auto 自动选择是否规范化，on 启用规范化，off 直接朗读所给文本。默认 auto。"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40000,
+                        "description": "要转换为语音的文本，去除首尾空白后需包含 1 到 40,000 个 Unicode 字符。"
+                      }
+                    }
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的公开 HTTP(S) 接口，用于接收任务完成通知，建议使用 HTTPS。省略、设为 null 或空字符串即不回调。"
+                  }
+                },
+                "description": "在请求根级放置 model 和可选的 callback_url，语音参数放在 input 中。"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "一次折一折",
+                  "value": {
+                    "model": "elevenlabs/tts/turbo-v2.5",
+                    "input": {
+                      "similarity_boost": 0.75,
+                      "style": 0,
+                      "apply_text_normalization": "auto",
+                      "text": "Almost there. Fold the top corner down until it meets the center crease. Now press along the edge with your fingertip. That's it. Turn the paper over, and we'll make the next fold together.",
+                      "voice": "Rachel",
+                      "language_code": "en",
+                      "speed": 1.05,
+                      "stability": 0.5,
+                      "timestamps": false
+                    }
+                  }
+                },
+                "turbo-stargazing-zh": {
+                  "summary": "在夜空中寻找北方",
+                  "value": {
+                    "model": "elevenlabs/tts/turbo-v2.5",
+                    "input": {
+                      "similarity_boost": 0.75,
+                      "style": 0,
+                      "apply_text_normalization": "auto",
+                      "text": "今晚，我们先找到北斗七星，再从勺口两颗星的方向寻找北极星。它看起来并不耀眼，却能帮我们辨认北方。在黑暗中安静地等待片刻，你会发现，夜空远比第一眼看到的更丰富。",
+                      "voice": "Aria",
+                      "language_code": "zh",
+                      "speed": 0.95,
+                      "stability": 0.6,
+                      "timestamps": true
+                    }
+                  }
+                },
+                "turbo-memory-es": {
+                  "summary": "两杯茶",
+                  "value": {
+                    "model": "elevenlabs/tts/turbo-v2.5",
+                    "input": {
+                      "similarity_boost": 0.75,
+                      "style": 0,
+                      "apply_text_normalization": "auto",
+                      "text": "Hoy volví a la casa de mi abuela. En la cocina seguía el reloj de siempre, cinco minutos adelantado. Preparé dos tazas de té por costumbre y, al darme cuenta, sonreí. Algunos gestos también guardan recuerdos.",
+                      "voice": "Sarah",
+                      "language_code": "es",
+                      "speed": 0.98,
+                      "stability": 0.45,
+                      "timestamps": false,
+                      "previous_text": "Hacía años que no cruzaba aquella puerta.",
+                      "next_text": "Después abrí las ventanas para dejar entrar la luz."
+                    }
+                  }
+                },
+                "callback": {
+                  "summary": "接收完成回调",
+                  "value": {
+                    "model": "elevenlabs/tts/turbo-v2.5",
+                    "input": {
+                      "similarity_boost": 0.75,
+                      "style": 0,
+                      "apply_text_normalization": "auto",
+                      "text": "Almost there. Fold the top corner down until it meets the center crease. Now press along the edge with your fingertip. That's it. Turn the paper over, and we'll make the next fold together.",
+                      "voice": "Rachel",
+                      "language_code": "en",
+                      "speed": 1.05,
+                      "stability": 0.5,
+                      "timestamps": false
+                    },
+                    "callback_url": "https://your-domain.com/callback"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "QKTPQMIP4AZY1LGE",
+                    "status": "running",
+                    "created_time": "2026-09-27T10:51:18"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求校验错误。请检查 input 参数类型、文本长度和数值范围。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型不存在或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "任务创建错误。请确认服务状态后重试请求。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}
