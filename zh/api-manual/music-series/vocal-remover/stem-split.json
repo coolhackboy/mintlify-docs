@@ -1,0 +1,187 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Stem Split API",
+    "description": "将音乐音轨拆分为多个乐器分轨",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交分轨拆分任务",
+        "description": "将音乐音轨拆分为多个乐器分轨",
+        "operationId": "submitStemSplitTask",
+        "tags": ["Audio Processing"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "stem-split": {
+                  "summary": "拆分为多个乐器音轨",
+                  "value": {
+                    "model": "stem-split",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "task_id": "5c79xxxxbe8e",
+                      "audio_id": "e231xxxx-xxxx-xxxx-xxxx-xxxx8cadc7dc"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "分轨拆分结果已存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 409,
+                  "error": {
+                    "message": "Stem split already exists for this audio",
+                    "type": "conflict_error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model", "callback_url", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "stem-split"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "用于结果通知的 Webhook 回调 URL。\n\n该地址会收到 POST 请求，包含分轨拆分完成状态和各音轨的下载 URL。",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["task_id", "audio_id"],
+            "description": "分轨拆分的输入参数",
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "description": "音乐生成任务的唯一标识符。\n\n应为 Generate Music 或 Extend Music 接口返回的 task_id。",
+                "example": "5c79xxxxbe8e"
+              },
+              "audio_id": {
+                "type": "string",
+                "description": "要进行分轨拆分的具体音轨唯一标识符。\n\n音乐生成完成后，此 ID 会在回调数据中返回。",
+                "example": "e231xxxx-xxxx-xxxx-xxxx-xxxx8cadc7dc"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于查询任务状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started"],
+                "example": "not_started",
+                "description": "初始任务状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "描述错误原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

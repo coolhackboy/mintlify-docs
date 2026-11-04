@@ -1,0 +1,24 @@
+---
+title: "生成歌词"
+description: "根据主题和描述，使用 AI 生成歌词"
+icon: "music"
+openapi: "/zh/api-manual/music-series/generate-lyrics.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询音乐详情](/zh/api-manual/music-series/query-music-detail)接口获取结果。
+</Tip>
+
+## 使用指南
+
+- 此接口根据你的主题或描述生成歌词
+- 每次请求可能生成多个歌词版本
+- 可在自定义模式下将生成的歌词用于 Generate Music 接口
+
+## 参数详情
+
+- `prompt`（必填）：对期望歌词内容的描述
+  - 具体说明主题、情绪、风格或故事元素
+  - 最大长度：200 个单词
+  - 可包含流派感觉、情感基调和叙事元素等细节

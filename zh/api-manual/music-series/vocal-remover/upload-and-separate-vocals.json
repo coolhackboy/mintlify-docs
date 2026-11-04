@@ -1,0 +1,228 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Upload and Separate Vocals API",
+    "description": "上传音频并将其分离为多个分轨",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交上传并分离人声任务",
+        "description": "上传音频文件并将其分离为多个分轨",
+        "operationId": "submitUploadAndSeparateVocalsTask",
+        "tags": ["Audio Processing"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "basic-general": {
+                  "summary": "基础模式 - 通用输出",
+                  "value": {
+                    "model": "upload-and-separate-vocals",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "title": "我的音轨",
+                      "audio_url": "https://cdn.vidgo.ai/temp/audio/my-track.mp3",
+                      "model_name": "base",
+                      "output_type": "general"
+                    }
+                  }
+                },
+                "enhanced-vocals": {
+                  "summary": "增强模式 - 仅人声",
+                  "value": {
+                    "model": "upload-and-separate-vocals",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "title": "我的音轨",
+                      "audio_url": "https://cdn.vidgo.ai/temp/audio/my-track.mp3",
+                      "model_name": "enhanced",
+                      "output_type": "vocals"
+                    }
+                  }
+                },
+                "instrumental-drums": {
+                  "summary": "纯音乐模式 - 仅鼓",
+                  "value": {
+                    "model": "upload-and-separate-vocals",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "title": "我的音轨",
+                      "audio_url": "https://cdn.vidgo.ai/temp/audio/my-track.mp3",
+                      "model_name": "instrumental",
+                      "output_type": "drums"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "分离结果已存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 409,
+                  "error": {
+                    "message": "Separation already exists for this audio",
+                    "type": "conflict_error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model", "callback_url", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "upload-and-separate-vocals"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "用于结果通知的 Webhook 回调 URL。\n\n该地址会收到 POST 请求，包含分离完成状态和各音轨的下载 URL。",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["audio_url"],
+            "description": "上传并分离人声的输入参数",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "分离任务的标题（可选）。\n\n用于识别和整理分离后的音频文件。",
+                "example": "My Audio Track"
+              },
+              "audio_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "要上传并分离的音频文件 URL。\n\n必须是可公开访问的音频文件 URL。",
+                "example": "https://cdn.vidgo.ai/temp/audio/my-track.mp3"
+              },
+              "model_name": {
+                "type": "string",
+                "description": "使用的分离模型。\n\n- `base`：标准分离质量（默认）\n- `enhanced`：更高质量、更准确的分离\n- `instrumental`：针对纯音乐音轨优化\n\n默认值：`base`",
+                "enum": ["base", "enhanced", "instrumental"],
+                "example": "base"
+              },
+              "output_type": {
+                "type": "string",
+                "description": "要生成的输出分轨类型。\n\n- `general`：所有可用分轨（默认）\n- `bass`：仅贝斯音轨\n- `drums`：仅鼓音轨\n- `other`：其他乐器\n- `piano`：仅钢琴音轨\n- `guitar`：仅吉他音轨\n- `vocals`：仅人声音轨\n\n默认值：`general`",
+                "enum": ["general", "bass", "drums", "other", "piano", "guitar", "vocals"],
+                "example": "general"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于查询任务状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started"],
+                "example": "not_started",
+                "description": "初始任务状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "描述错误原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

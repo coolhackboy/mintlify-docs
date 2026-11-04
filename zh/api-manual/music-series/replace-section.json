@@ -1,0 +1,230 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Replace Section API",
+    "description": "替换已生成音乐音轨的指定片段",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交替换片段任务",
+        "description": "用新内容替换现有音乐音轨中的指定时间段",
+        "operationId": "submitReplaceSectionTask",
+        "tags": ["Music Editing"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "replace-chorus": {
+                  "summary": "替换副歌片段",
+                  "value": {
+                    "model": "replace-section",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "task_id": "5c79xxxxbe8e",
+                      "audio_id": "e231xxxx-xxxx-xxxx-xxxx-xxxx8cadc7dc",
+                      "prompt": "A powerful chorus with soaring vocals",
+                      "tags": "pop, upbeat",
+                      "title": "夏日之梦",
+                      "infill_start_s": 30.00,
+                      "infill_end_s": 60.00,
+                      "full_lyrics": "Complete song lyrics including the new chorus and all unchanged sections"
+                    }
+                  }
+                },
+                "replace-with-lyrics": {
+                  "summary": "使用完整歌词替换片段",
+                  "value": {
+                    "model": "replace-section",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "task_id": "5c79xxxxbe8e",
+                      "audio_id": "e231xxxx-xxxx-xxxx-xxxx-xxxx8cadc7dc",
+                      "prompt": "New verse lyrics here",
+                      "tags": "jazz, smooth",
+                      "title": "午夜蓝调",
+                      "infill_start_s": 15.50,
+                      "infill_end_s": 45.00,
+                      "negative_tags": "rock, heavy",
+                      "full_lyrics": "Complete song lyrics including modified and unmodified sections"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "replace-section"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["task_id", "audio_id", "prompt", "tags", "title", "infill_start_s", "infill_end_s", "full_lyrics"],
+            "description": "片段替换的输入参数",
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "description": "原始任务 ID（父任务）。\n\n用于识别要替换片段的源音乐。",
+                "example": "5c79xxxxbe8e"
+              },
+              "audio_id": {
+                "type": "string",
+                "description": "要替换的音轨唯一标识符。\n\n音乐生成完成后，此 ID 会在回调数据中返回。",
+                "example": "e231xxxx-xxxx-xxxx-xxxx-xxxx8cadc7dc"
+              },
+              "prompt": {
+                "type": "string",
+                "description": "描述替换音频内容的文本。\n\n描述你希望替换片段中包含的歌词、旋律或音乐内容。",
+                "example": "A powerful chorus with soaring vocals"
+              },
+              "tags": {
+                "type": "string",
+                "description": "音乐风格标签。\n\n指定替换片段的流派、情绪或风格（例如 jazz、electronic、upbeat）。",
+                "example": "pop, upbeat"
+              },
+              "title": {
+                "type": "string",
+                "description": "音乐标题。\n\n生成音轨的标题。",
+                "example": "Summer Dreams"
+              },
+              "infill_start_s": {
+                "type": "number",
+                "description": "开始时间（秒）。\n\n要替换片段的起点，最多支持 2 位小数。\n\n最小值：0",
+                "minimum": 0,
+                "example": 30.00
+              },
+              "infill_end_s": {
+                "type": "number",
+                "description": "结束时间（秒）。\n\n要替换片段的终点，最多支持 2 位小数。\n\n必须大于 `infill_start_s`。",
+                "example": 60.00
+              },
+              "negative_tags": {
+                "type": "string",
+                "description": "替换时要排除的风格。\n\n指定生成片段中要避免的流派或特征。",
+                "example": "rock, heavy metal"
+              },
+              "full_lyrics": {
+                "type": "string",
+                "description": "修改后的完整歌词。\n\n包含整首音轨中已修改和未修改的歌词。",
+                "example": "Complete song lyrics including all sections"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于查询任务状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started"],
+                "example": "not_started",
+                "description": "初始任务状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "描述错误原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,242 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Add Vocals API",
+    "description": "在现有伴奏上叠加 AI 生成的人声",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交添加人声任务",
+        "description": "在现有伴奏音轨上叠加 AI 生成的人声",
+        "operationId": "submitAddVocalsTask",
+        "tags": ["Music Generation"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "基础人声生成",
+                  "value": {
+                    "model": "add-vocals",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "upload_url": "https://cdn.vidgo.ai/temp/instrumental.mp3",
+                      "prompt": "A heartfelt ballad about love and memories",
+                      "title": "关于你的回忆",
+                      "style": "Pop Ballad",
+                      "negative_tags": "rap, heavy metal"
+                    }
+                  }
+                },
+                "advanced": {
+                  "summary": "高级风格控制",
+                  "value": {
+                    "model": "add-vocals",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "upload_url": "https://cdn.vidgo.ai/temp/instrumental.mp3",
+                      "mv": "V5",
+                      "prompt": "Upbeat lyrics about summer adventures and freedom",
+                      "title": "夏日自由",
+                      "style": "Pop, Upbeat, Energetic",
+                      "negative_tags": "sad, slow, melancholic",
+                      "vocal_gender": "f",
+                      "style_weight": 0.7,
+                      "weirdness_constraint": 0.2,
+                      "audio_weight": 0.6
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "add-vocals"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["upload_url", "prompt", "title", "style", "negative_tags"],
+            "description": "人声生成的输入参数",
+            "properties": {
+              "upload_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "要添加人声的伴奏音频文件 URL。",
+                "example": "https://cdn.vidgo.ai/temp/instrumental.mp3"
+              },
+              "prompt": {
+                "type": "string",
+                "description": "生成人声的歌词或描述。\n\n将作为 AI 生成人声的内容。",
+                "example": "A heartfelt ballad about love and memories"
+              },
+              "title": {
+                "type": "string",
+                "description": "生成音乐的名称。\n\n最多 100 个字符。",
+                "maxLength": 100,
+                "example": "Memories of You"
+              },
+              "style": {
+                "type": "string",
+                "description": "音乐风格说明，用于定义流派、情绪或艺术方向。\n\n用于引导人声风格和演唱方式。",
+                "example": "Pop Ballad"
+              },
+              "negative_tags": {
+                "type": "string",
+                "description": "生成时要排除的音乐风格或特征。\n\n指定输出中要避免的流派、情绪或人声风格。",
+                "example": "rap, heavy metal"
+              },
+              "mv": {
+                "type": "string",
+                "description": "用于人声生成的 AI 模型版本。\n\n- **V5**：音乐表现力更出色，生成更快\n- **V4_5PLUS**：音色更丰富，创作方式更新\n\n默认：V4_5PLUS",
+                "enum": ["V4_5PLUS", "V5"],
+                "example": "V4_5PLUS"
+              },
+              "vocal_gender": {
+                "type": "string",
+                "description": "生成人声的首选性别。\n\n- `m`：男声\n- `f`：女声\n\n**注意**：此参数只能提高指定性别出现的概率，无法保证。",
+                "enum": ["m", "f"],
+                "example": "f"
+              },
+              "style_weight": {
+                "type": "number",
+                "description": "控制指定风格对生成结果的影响强度。\n\n取值范围：0-1，最多 2 位小数。\n\n值越高，越贴合指定风格。",
+                "minimum": 0,
+                "maximum": 1,
+                "example": 0.65
+              },
+              "weirdness_constraint": {
+                "type": "number",
+                "description": "控制实验性创意和非常规元素的程度。\n\n取值范围：0-1，最多 2 位小数。\n\n- 值越低：人声越常规\n- 值越高：人声输出越具实验性和独特性",
+                "minimum": 0,
+                "maximum": 1,
+                "example": 0.65
+              },
+              "audio_weight": {
+                "type": "number",
+                "description": "在音频特性与其他生成因素之间取得平衡。\n\n取值范围：0-1，最多 2 位小数。\n\n调整最终输出中对音质和声音特征的侧重。",
+                "minimum": 0,
+                "maximum": 1,
+                "example": 0.65
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于查询任务状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started"],
+                "example": "not_started",
+                "description": "初始任务状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "描述错误原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

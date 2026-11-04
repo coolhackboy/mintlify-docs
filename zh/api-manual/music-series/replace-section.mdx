@@ -1,0 +1,39 @@
+---
+title: "替换片段"
+description: "替换已生成音乐曲目中的指定片段"
+icon: "music"
+openapi: "/zh/api-manual/music-series/replace-section.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询音乐详情](/zh/api-manual/music-series/query-music-detail)接口获取结果。
+</Tip>
+
+## 使用指南
+
+- 此接口用新内容替换现有音乐曲目中的指定时间段
+- 适合编辑主歌、副歌或已生成曲目的任意部分
+- 替换内容根据你的提示词和风格标签生成
+
+## 参数详情
+
+- `task_id`（必填）：已完成音乐生成的原始任务 ID
+- `audio_id`（必填）：回调数据中具体音轨的标识符
+- `prompt`（必填）：替换内容的描述（歌词或音乐描述）
+- `tags`（必填）：替换片段的风格标签
+- `title`（必填）：生成曲目的标题
+- `infill_start_s`（必填）：开始时间（秒，最小 0，最多 2 位小数）
+- `infill_end_s`（必填）：结束时间（秒，必须大于开始时间）
+
+## 使用说明
+
+- 确保 `infill_end_s` 始终大于 `infill_start_s`
+- 时间范围应在原曲时长之内
+- 希望整首曲目的歌词保持一致时，使用 `full_lyrics`
+
+## 可选参数
+
+- `negative_tags` (string)：替换片段中要排除的风格
+- `full_lyrics` (string)：修改后整首曲目的完整歌词
+- `callback_url` (string)：用于接收完成通知的 Webhook URL

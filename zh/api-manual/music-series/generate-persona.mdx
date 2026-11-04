@@ -1,0 +1,39 @@
+---
+title: "生成 Persona"
+description: "从现有音轨创建可复用的音乐 Persona"
+icon: "music"
+openapi: "/zh/api-manual/music-series/generate-persona.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询音乐详情](/zh/api-manual/music-series/query-music-detail)接口获取结果。
+</Tip>
+
+## 使用指南
+
+- 此接口从现有音轨创建可复用的音乐 Persona
+- Persona 会捕捉人声风格、流派特征和音乐个性
+- 创建后，可以通过 `persona_id` 参数在 Generate Music 接口中使用
+
+## 参数详情
+
+- `task_id`（必填）：已完成音乐生成任务的任务 ID（[生成](/zh/api-manual/music-series/generate-music)、[扩展](/zh/api-manual/music-series/extend-music)、[上传翻唱](/zh/api-manual/music-series/upload-and-cover-audio)或[上传扩展](/zh/api-manual/music-series/upload-and-extend-audio)）
+- `audio_id`（必填）：回调数据中具体音轨的标识符
+- `name`（必填）：体现音乐风格或特点的描述性名称
+- `description`（必填）：详细描述，包括：
+  - 流派和情绪
+  - 配器偏好
+  - 人声特点
+  - 独特的音乐个性特征
+
+## 使用说明
+
+- 每条音轨只能创建一个 Persona
+- 如果该音频已存在 Persona，API 会返回错误码 409
+- 可以将 `persona_id` 用于以下接口：
+  - [生成音乐](/zh/api-manual/music-series/generate-music)
+  - [扩展音乐](/zh/api-manual/music-series/extend-music)
+  - [上传并翻唱音频](/zh/api-manual/music-series/upload-and-cover-audio)
+  - [上传并扩展音频](/zh/api-manual/music-series/upload-and-extend-audio)
+- 提供详细的描述，使用 Persona 时效果最佳

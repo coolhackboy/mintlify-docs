@@ -1,0 +1,55 @@
+---
+title: "扩展音乐"
+description: "基于源音轨创作续写，扩展或修改现有音乐"
+icon: "music"
+openapi: "/zh/api-manual/music-series/extend-music.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询音乐详情](/zh/api-manual/music-series/query-music-detail)接口获取结果。
+</Tip>
+
+## 使用指南
+
+- 此接口从指定位置开始扩展已有音轨
+- 可以使用新的风格、提示词和标题定制扩展内容，也可以继承原音轨的设置
+- 使用 `default_param_flag` 控制使用自定义参数还是原音轨设置
+
+## 参数详情
+
+- 自定义模式（`default_param_flag: true`）：
+
+  - `prompt`、`style`、`title` 和 `continue_at` 为**必填**
+
+  - `continue_at` 指定开始扩展的时间点（秒）
+
+  - 字符上限因模型而异：
+    - **V4**：`prompt` 3000 个字符，`style` 200 个字符，`title` 80 个字符
+    - **V4_5 & V4_5PLUS**：`prompt` 5000 个字符，`style` 1000 个字符，`title` 100 个字符
+    - **V4_5ALL**：`prompt` 5000 个字符，`style` 1000 个字符，`title` 80 个字符
+    - **V5**：`prompt` 5000 个字符，`style` 1000 个字符，`title` 100 个字符
+
+- 简单模式（`default_param_flag: false`）：
+
+  - 只需 `audio_id` 和 `mv`
+
+## 使用说明
+
+- 使用此接口前，请确保已有之前生成音轨的有效 `audio_id`
+
+- 扩展内容会从指定的 `continue_at` 时间点无缝衔接
+
+## 可选参数
+
+- `negative_tags` (string)：扩展时要排除的音乐风格或特征。
+
+- `vocal_gender` (string)：人声性别偏好。`m` 为男声，`f` 为女声。注意：此参数只能提高概率，无法保证严格遵循。
+
+- `style_weight` (number)：遵循风格的强度。取值 0-1，最多 2 位小数。
+
+- `weirdness_constraint` (number)：控制创意偏离程度。取值 0-1，最多 2 位小数。
+
+- `audio_weight` (number)：音频特征的平衡权重。取值 0-1，最多 2 位小数。
+
+- `persona_id` (string)：应用于扩展音乐的 Persona ID。如何生成 persona_id，请参阅 [generate-persona](/zh/api-manual/music-series/generate-persona)。

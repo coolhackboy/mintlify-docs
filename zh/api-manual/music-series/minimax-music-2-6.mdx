@@ -1,0 +1,52 @@
+---
+title: "MiniMax Music 2.6"
+description: "MiniMax Music 2.6 API 根据风格提示词生成歌曲和纯音乐，支持自定义歌词、自动生成歌词以及可配置的音频输出。"
+icon: "music"
+openapi: "/zh/api-manual/music-series/minimax-music-2-6.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+根据风格提示词创作完整的歌曲和纯音乐曲目。描述流派、情绪、配器、节奏和人声方向来引导音乐。
+
+## 模型
+
+将 `model` 设为 `minimax/music-2.6`。音乐参数放在 `input` 中，可选的 `callback_url` 放在请求根级。
+
+## 音乐参数
+
+- `prompt`：必填字符串，**10-2000 个字符**，描述音乐方向。
+- `lyrics`：歌词字符串，最多 **3500 个字符**。`is_instrumental` 和 `lyrics_optimizer` 都为 `false` 时需提供歌词。可以使用 `[Verse]`、`[Chorus]` 等段落标签组织歌词。
+- `lyrics_optimizer`：布尔值，默认 `false`。为 `true` 且 `lyrics` 为空时，根据 `prompt` 生成歌词。
+- `is_instrumental`：布尔值，默认 `false`。设为 `true` 生成纯音乐，此时 `lyrics` 留空，`lyrics_optimizer` 设为 `false`。
+
+## 创作模式
+
+### 自定义歌词
+
+在 `prompt` 中写音乐方向，在 `lyrics` 中写要演唱的歌词。`is_instrumental` 保持为 `false`。
+
+### 自动生成歌词
+
+在 `prompt` 中描述音乐风格、歌曲主题和人声特点。将 `lyrics_optimizer` 设为 `true`，`lyrics` 留空，`is_instrumental` 设为 `false`。
+
+### 纯音乐
+
+在 `prompt` 中描述乐器、节奏和氛围。将 `is_instrumental` 设为 `true`，`lyrics` 留空，`lyrics_optimizer` 设为 `false`。
+
+## 音频设置
+
+`audio_setting` 是可选对象，包含以下字段：
+
+- `sample_rate`：采样率（Hz）。可选值：`16000`、`24000`、`32000`、`44100`。默认：`44100`。
+- `bitrate`：比特率（bit/s）。可选值：`32000`、`64000`、`128000`、`256000`。默认：`256000`。
+- `format`：音频格式。可选值：`mp3`、`wav`、`pcm`。默认：`mp3`。
+
+## 获取音频
+
+使用提交响应中的标识符查询 `GET /api/generate/status/{task_id}`。状态为 `not_started` 或 `running` 时继续查询。
+
+状态为 `finished` 时，读取 `files` 数组，使用 `file_type: "audio"` 条目中的 `file_url` 获取音乐。任务 `failed` 时，读取 `error_message`，检查请求后再重试。

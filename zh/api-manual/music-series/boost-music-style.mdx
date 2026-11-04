@@ -1,0 +1,28 @@
+---
+title: "增强音乐风格"
+description: "使用 AI 生成增强的音乐风格描述"
+icon: "music"
+openapi: "/zh/api-manual/music-series/boost-music-style.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询音乐详情](/zh/api-manual/music-series/query-music-detail)接口获取结果。
+</Tip>
+
+## 使用指南
+
+- 此接口根据你的输入生成增强的音乐风格描述
+- 提供描述流派、情绪或音乐特征的简洁关键词
+- AI 会扩展并丰富你的风格描述，以获得更好的音乐生成效果
+
+## 参数详情
+
+- `content`（必填）：对期望音乐风格的简短描述
+  - 使用逗号分隔的关键词效果最佳
+  - 可包含流派（Pop、Jazz、Rock）、情绪（Mysterious、Upbeat）或乐器（Piano、Guitar）
+
+## 使用说明
+
+- 将生成的风格描述用于 Generate Music 接口，可获得更好的效果
+- 输入描述保持简洁清晰，增强效果最佳

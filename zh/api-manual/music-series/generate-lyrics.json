@@ -1,0 +1,192 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Generate Lyrics API",
+    "description": "基于主题和描述的 AI 歌词生成",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交生成歌词任务",
+        "description": "根据主题或描述生成歌词",
+        "operationId": "submitGenerateLyricsTask",
+        "tags": ["Lyrics"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "nostalgic-song": {
+                  "summary": "怀旧童年歌曲",
+                  "value": {
+                    "model": "generate-lyrics",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A nostalgic song about childhood memories and growing up in a small town"
+                    }
+                  }
+                },
+                "love-song": {
+                  "summary": "浪漫情歌",
+                  "value": {
+                    "model": "generate-lyrics",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A romantic ballad about finding love unexpectedly in the city"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "提示词超出长度限制",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 413,
+                  "error": {
+                    "message": "Prompt exceeds maximum length of 200 words",
+                    "type": "payload_too_large"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model", "callback_url", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "generate-lyrics"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "用于结果通知的 Webhook 回调 URL。\n\n生成完成后，该地址会收到 POST 请求，包含结果和各个变体。",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["prompt"],
+            "description": "歌词生成的输入参数",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "期望歌词内容的描述。\n\n尽量具体说明主题、情绪、风格或故事元素。\n\n最多 200 个单词。",
+                "maxLength": 1500,
+                "example": "A nostalgic song about childhood memories and growing up in a small town"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于查询任务状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started"],
+                "example": "not_started",
+                "description": "初始任务状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "描述错误原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

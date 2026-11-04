@@ -1,0 +1,221 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Get Timestamped Lyrics API",
+    "description": "获取带精确时间戳的同步歌词",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交获取带时间戳歌词任务",
+        "description": "获取已生成音轨的带精确时间戳的同步歌词",
+        "operationId": "submitGetTimestampedLyricsTask",
+        "tags": ["Music Generation"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "获取带时间戳的歌词",
+                  "value": {
+                    "model": "get-timestamped-lyrics",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "task_id": "task-unified-1757165031-uyujaw3d",
+                      "audio_id": "e231xxxx-xxxx-xxxx-xxxx-xxxx8cadc7dc"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功获取带时间戳的歌词",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LyricsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "资源不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 404,
+                  "error": {
+                    "message": "Task or audio not found",
+                    "type": "not_found_error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "get-timestamped-lyrics"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["task_id", "audio_id"],
+            "description": "获取带时间戳歌词的输入参数",
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "description": "音乐生成任务的唯一标识符。\n\n从之前音乐生成请求的响应中获取。",
+                "example": "task-unified-1757165031-uyujaw3d"
+              },
+              "audio_id": {
+                "type": "string",
+                "description": "具体音轨的唯一标识符。\n\n从任务结果或回调响应中获取。",
+                "example": "e231xxxx-xxxx-xxxx-xxxx-xxxx8cadc7dc"
+              }
+            }
+          }
+        }
+      },
+      "LyricsResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "aligned_words": {
+                "type": "array",
+                "description": "已对齐的歌词词语列表，含时间信息",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "word": {
+                      "type": "string",
+                      "description": "歌词文本（可能包含 [Verse] 等段落标记）",
+                      "example": "[Verse] Waggin'"
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "description": "该词是否成功对齐",
+                      "example": true
+                    },
+                    "start_s": {
+                      "type": "number",
+                      "description": "该词的开始时间（秒）",
+                      "example": 1.36
+                    },
+                    "end_s": {
+                      "type": "number",
+                      "description": "该词的结束时间（秒）",
+                      "example": 1.79
+                    },
+                    "palign": {
+                      "type": "number",
+                      "description": "对齐置信度分数",
+                      "example": 0
+                    }
+                  }
+                }
+              },
+              "waveform_data": {
+                "type": "array",
+                "description": "用于音频可视化的波形数据",
+                "items": {
+                  "type": "number"
+                },
+                "example": [0, 1, 0.5, 0.75]
+              },
+              "hoot_cer": {
+                "type": "number",
+                "description": "歌词对齐精度分数（字符错误率）。\n\n值越低表示对齐越准确。",
+                "example": 0.38
+              },
+              "is_streamed": {
+                "type": "boolean",
+                "description": "表示是否为流式音轨",
+                "example": false
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "描述错误原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

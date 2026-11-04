@@ -1,0 +1,28 @@
+---
+title: "生成音乐封面"
+description: "生成音乐封面 API 根据已完成 Suno 音乐任务的 task_id 生成封面图片，每个原始任务只能生成一次封面。"
+icon: "music"
+openapi: "/zh/api-manual/music-series/generate-music-cover.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询音乐详情](/zh/api-manual/music-series/query-music-detail)接口获取结果。
+</Tip>
+
+## 使用指南
+
+- 此接口为现有音乐曲目生成封面图片
+- 需要之前音乐生成任务的有效 task_id
+- 生成的图片在任务结果的 `generate_cover` 字段中返回
+
+## 参数详情
+
+- `task_id`（必填）：已完成音乐生成任务的任务 ID
+  - 必须是 Generate Music 或 Extend Music 接口返回的有效 task_id
+  - 原始任务必须已成功完成
+
+## 使用说明
+
+- 每个原始任务只能生成一次封面图片
+- 处理完成后，结果通过回调 URL 发送

@@ -1,0 +1,48 @@
+---
+title: "获取带时间戳的歌词"
+description: "获取带精确时间戳的同步歌词"
+icon: "music"
+openapi: "/zh/api-manual/music-series/get-timestamped-lyrics.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询音乐详情](/zh/api-manual/music-series/query-music-detail)接口获取结果。
+</Tip>
+
+## 使用指南
+
+- 此接口为已生成的音轨获取带精确时间戳的同步歌词
+- 可用于制作卡拉 OK 式显示、字幕或歌词可视化
+- 需要一个已完成且带人声的音乐生成任务
+
+## 参数详情
+
+- 必填参数：
+
+  - `task_id`：之前音乐生成任务的唯一标识符
+
+  - `audio_id`：任务结果中具体音轨的标识符
+
+- 两个标识符都从音乐生成接口的响应或其回调中获取
+
+## 使用说明
+
+- 此接口仅适用于包含人声的音轨
+- `hoot_cer`（字符错误率）表示对齐精度，值越低表示越准确
+- 可以使用 `waveform_data` 在歌词旁制作音频可视化效果
+
+## 响应字段
+
+- `aligned_words` (array)：带时间信息的歌词词语列表
+  - `word` (string)：歌词文本，可能包含 `[Verse]`、`[Chorus]` 等段落标记
+  - `start_s` (number)：词语开始时间（秒）
+  - `end_s` (number)：词语结束时间（秒）
+  - `success` (boolean)：该词是否成功对齐
+  - `palign` (number)：对齐置信度分数
+
+- `waveform_data` (array)：用于音频波形可视化的数值数据
+
+- `hoot_cer` (number)：对齐精度分数（字符错误率）
+
+- `is_streamed` (boolean)：表示音频是否为流式音轨

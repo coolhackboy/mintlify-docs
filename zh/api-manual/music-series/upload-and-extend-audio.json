@@ -1,0 +1,283 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Upload and Extend Audio API",
+    "description": "在保留原始风格的前提下扩展音轨",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交上传并扩展音频任务",
+        "description": "上传音频文件，并在保留原始风格的前提下进行扩展",
+        "operationId": "submitUploadExtendTask",
+        "tags": ["Music Generation"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "default-params": {
+                  "summary": "默认参数 - 简单扩展",
+                  "value": {
+                    "model": "upload-and-extend-audio",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "upload_url": "https://cdn.vidgo.ai/temp/audio.mp3",
+                      "default_param_flag": true,
+                      "instrumental": true,
+                      "continue_at": 60,
+                      "mv": "V5"
+                    }
+                  }
+                },
+                "custom-params": {
+                  "summary": "自定义参数 - 完全控制",
+                  "value": {
+                    "model": "upload-and-extend-audio",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "upload_url": "https://cdn.vidgo.ai/temp/audio.mp3",
+                      "default_param_flag": false,
+                      "instrumental": false,
+                      "prompt": "Extend the music with more relaxing notes",
+                      "style": "Classical",
+                      "title": "宁静钢琴（扩展版）",
+                      "continue_at": 60,
+                      "mv": "V4_5PLUS",
+                      "negative_tags": "Heavy Metal, Fast Drums",
+                      "vocal_gender": "f",
+                      "style_weight": 0.65
+                    }
+                  }
+                },
+                "instrumental-extension": {
+                  "summary": "纯音乐音轨扩展",
+                  "value": {
+                    "model": "upload-and-extend-audio",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "upload_url": "https://cdn.vidgo.ai/temp/instrumental.mp3",
+                      "default_param_flag": false,
+                      "instrumental": true,
+                      "style": "Cinematic, Orchestral",
+                      "title": "史诗旅程（扩展版）",
+                      "continue_at": 90,
+                      "mv": "V5",
+                      "style_weight": 0.7,
+                      "weirdness_constraint": 0.3
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "upload-and-extend-audio"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "接收结果通知的 Webhook 回调 URL",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["upload_url", "default_param_flag", "instrumental", "continue_at", "mv"],
+            "description": "音频扩展的输入参数",
+            "properties": {
+              "upload_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "上传音频文件的 URL，无论 `default_param_flag` 为 true 还是 false 都必填。\n\n请确保上传的音频时长不超过 8 分钟。\n\n**注意**：使用 V4_5ALL 模型时，上传的音频时长不得超过 1 分钟。",
+                "example": "https://cdn.vidgo.ai/temp/audio.mp3"
+              },
+              "default_param_flag": {
+                "type": "boolean",
+                "description": "启用或停用自定义参数模式。\n\n- 为 `true` 时：启用自定义模式，可完全控制风格、标题等参数。\n\n- 为 `false` 时：只需 `upload_url`。",
+                "example": true
+              },
+              "instrumental": {
+                "type": "boolean",
+                "description": "决定音频是否为纯音乐（无歌词）。\n\n- 自定义参数模式（`default_param_flag: true`）：\n  - 为 `true`：只需 `style`、`title` 和 `upload_url`。\n  - 为 `false`：需要 `style`、`title`、`prompt`（prompt 会作为准确歌词）和 `upload_url`。\n\n- 非自定义参数模式（`default_param_flag: false`）：不影响必填字段（只需 `upload_url`）。为 `false` 时会自动生成歌词。",
+                "example": true
+              },
+              "continue_at": {
+                "type": "number",
+                "description": "开始扩展音频的时间点（秒）。\n\n定义原音频在何处结束、AI 生成的扩展从何处开始。",
+                "example": 60
+              },
+              "mv": {
+                "type": "string",
+                "description": "用于音频扩展的 AI 模型版本。\n\n- **V5**：音乐表现力更出色，生成更快。\n- **V4_5PLUS**：音色更丰富，创作方式更多，最长 8 分钟。\n- **V4_5**：提示词理解更智能，生成更快，最长 8 分钟。\n- **V4_5ALL**：提示词理解更智能，生成更快，最长 8 分钟。\n- **V4**：人声质量提升，最长 4 分钟。",
+                "enum": ["V4", "V4_5", "V4_5ALL", "V4_5PLUS", "V5"],
+                "example": "V5"
+              },
+              "prompt": {
+                "type": "string",
+                "description": "扩展音频的描述或歌词。\n\n`default_param_flag` 为 `true` 且 `instrumental` 为 `false` 时必填。prompt 会严格作为歌词。\n\n`default_param_flag` 为 `false` 时，会根据 prompt 自动生成歌词。\n\n各模型字符上限：\n- **V4**：最多 3000 个字符\n- **V4_5 & V4_5PLUS**：最多 5000 个字符\n- **V4_5ALL**：最多 5000 个字符\n- **V5**：最多 5000 个字符",
+                "maxLength": 5000,
+                "example": "Extend the music with more relaxing notes"
+              },
+              "style": {
+                "type": "string",
+                "description": "音乐风格说明，用于定义流派、情绪或艺术方向。\n\n`default_param_flag` 为 `true` 时必填。\n\n各模型字符上限：\n- **V4**：最多 200 个字符\n- **V4_5 & V4_5PLUS**：最多 1000 个字符\n- **V4_5ALL**：最多 1000 个字符\n- **V5**：最多 1000 个字符",
+                "maxLength": 1000,
+                "example": "Classical"
+              },
+              "title": {
+                "type": "string",
+                "description": "在播放器中显示并用于文件命名的曲目标题。\n\n各模型字符上限：\n- **V4**：最多 80 个字符\n- **V4_5 & V4_5PLUS**：最多 100 个字符\n- **V4_5ALL**：最多 80 个字符\n- **V5**：最多 100 个字符",
+                "maxLength": 100,
+                "example": "Peaceful Piano Extended"
+              },
+              "negative_tags": {
+                "type": "string",
+                "description": "生成时要排除的音乐风格或特征。\n\n指定输出中要避免的曲风、情绪或乐器。",
+                "example": "Heavy Metal, Fast Drums"
+              },
+              "vocal_gender": {
+                "type": "string",
+                "description": "生成音乐的首选人声性别。\n\n- `m`：男声\n- `f`：女声\n\n仅当 `instrumental` 为 `false` 时生效。\n\n**注意**：此参数只能提高指定性别出现的概率，无法保证。",
+                "enum": ["m", "f"],
+                "example": "f"
+              },
+              "style_weight": {
+                "type": "number",
+                "description": "控制指定风格对生成结果的影响强度。\n\n取值范围：0-1，最多 2 位小数。\n\n值越高，越贴合指定风格。",
+                "minimum": 0,
+                "maximum": 1,
+                "example": 0.65
+              },
+              "weirdness_constraint": {
+                "type": "number",
+                "description": "控制实验性创意和非常规元素的程度。\n\n取值范围：0-1，最多 2 位小数。\n\n- 值较低：音乐更常规\n- 值较高：输出更具实验性和独特性",
+                "minimum": 0,
+                "maximum": 1,
+                "example": 0.65
+              },
+              "audio_weight": {
+                "type": "number",
+                "description": "在音频特性与其他生成因素之间取得平衡。\n\n取值范围：0-1，最多 2 位小数。\n\n调整最终输出中对音质和声音特征的侧重。",
+                "minimum": 0,
+                "maximum": 1,
+                "example": 0.65
+              },
+              "persona_id": {
+                "type": "string",
+                "description": "应用于生成音乐的 Persona ID。\n\n用于为音乐生成应用特定的 Persona 风格。\n\n如何生成 persona_id，请参阅 [generate-persona](/zh/api-manual/music-series/generate-persona)。",
+                "example": "persona_123"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于查询任务状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started"],
+                "example": "not_started",
+                "description": "初始任务状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "描述错误原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

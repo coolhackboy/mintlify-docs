@@ -1,0 +1,59 @@
+---
+title: "生成音乐"
+description: "AI 音乐生成，可自定义风格和人声"
+icon: "music"
+openapi: "/zh/api-manual/music-series/generate-music.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询音乐详情](/zh/api-manual/music-series/query-music-detail)接口获取结果。
+</Tip>
+
+## 使用指南
+
+- 此接口根据文本提示词创作音乐
+- 每次请求会生成多个版本
+- 可以通过自定义模式和伴奏设置控制细节程度
+
+## 参数详情
+
+- 自定义模式（`custom_mode: true`）：
+
+  - 若 `instrumental: true`：`style` 和 `title` 必填
+
+  - 若 `instrumental: false`：`style`、`prompt` 和 `title` 必填
+
+  - 字符上限因模型而异：
+
+    - **V4**：`prompt` 3000 个字符，`style` 200 个字符
+
+    - **V4_5 & V4_5PLUS**：`prompt` 5000 个字符，`style` 1000 个字符
+
+    - **V4_5ALL**：`prompt` 5000 个字符，`style` 1000 个字符
+
+    - **V5**：`prompt` 5000 个字符，`style` 1000 个字符
+
+  - `title` 长度上限：80 个字符（所有模型）
+
+- 非自定义模式（`custom_mode: false`）：
+
+  - `prompt` 长度上限：500 个字符
+
+  - 其他参数应留空
+
+## 使用说明
+
+- 新用户建议：先使用 `custom_mode: false`，用法更简单
+
+## 可选参数
+
+- `vocal_gender` (string)：人声性别偏好。`m` 为男声，`f` 为女声。注意：此参数仅在 `custom_mode` 为 `true` 时生效。根据实践，此参数只能提高概率，无法保证严格遵循男声 / 女声指令。
+
+- `style_weight` (number)：遵循风格的强度。取值 0-1，最多 2 位小数。示例：`0.65`。
+
+- `weirdness_constraint` (number)：控制创意偏离程度。取值 0-1，最多 2 位小数。示例：`0.65`。
+
+- `audio_weight` (number)：音频特征的平衡权重。取值 0-1，最多 2 位小数。示例：`0.65`。
+
+- `persona_id` (string)：应用于生成音乐的 Persona ID。用于为音乐生成应用特定的 Persona 风格。仅在启用自定义模式时可用。如何生成 persona_id，请参阅 [generate-persona](/zh/api-manual/music-series/generate-persona)。

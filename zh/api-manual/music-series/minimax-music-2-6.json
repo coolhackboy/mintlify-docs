@@ -1,0 +1,525 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - MiniMax Music 2.6",
+    "description": "根据风格提示词和歌词生成歌曲和纯音乐。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "tags": [
+          "Audio Series"
+        ],
+        "summary": "MiniMax Music 2.6",
+        "operationId": "submit_minimax_music_2_6",
+        "description": "使用自定义或自动生成的歌词生成歌曲，或创作纯音乐。通过查询任务状态接口或 callback_url 通知获取生成的音频。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "example": "minimax/music-2.6",
+                    "enum": [
+                      "minimax/music-2.6"
+                    ],
+                    "description": "MiniMax Music 2.6 的模型标识。"
+                  },
+                  "input": {
+                    "type": "object",
+                    "required": [
+                      "prompt"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 10,
+                        "maxLength": 2000,
+                        "description": "10–2000 个字符，描述流派、情绪、配器、节奏或人声方向。"
+                      },
+                      "lyrics": {
+                        "type": "string",
+                        "maxLength": 3500,
+                        "description": "最多 3500 个字符。is_instrumental 和 lyrics_optimizer 都为 false 时需提供歌词。生成纯音乐时 lyrics 留空。"
+                      },
+                      "lyrics_optimizer": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "为 true 且 lyrics 为空时，根据 prompt 生成歌词。生成纯音乐时设为 false。"
+                      },
+                      "is_instrumental": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "设为 true 生成纯音乐，此时 lyrics 留空，lyrics_optimizer 设为 false。"
+                      },
+                      "audio_setting": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "sample_rate": {
+                            "type": "integer",
+                            "enum": [
+                              16000,
+                              24000,
+                              32000,
+                              44100
+                            ],
+                            "default": 44100,
+                            "description": "采样率（Hz）。"
+                          },
+                          "bitrate": {
+                            "type": "integer",
+                            "enum": [
+                              32000,
+                              64000,
+                              128000,
+                              256000
+                            ],
+                            "default": 256000,
+                            "description": "比特率（bit/s）。"
+                          },
+                          "format": {
+                            "type": "string",
+                            "enum": [
+                              "mp3",
+                              "wav",
+                              "pcm"
+                            ],
+                            "default": "mp3",
+                            "description": "音频文件格式。"
+                          }
+                        },
+                        "description": "音频输出设置，包含 sample_rate、bitrate 和 format。"
+                      }
+                    },
+                    "description": "生成带人声的音乐时提供 lyrics；lyrics 留空并启用 lyrics_optimizer 可自动写词；或将 is_instrumental 设为 true，lyrics 留空且 lyrics_optimizer 为 false。"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "可选的 HTTP(S) 回调 URL，用于接收任务完成或失败的通知。"
+                  }
+                },
+                "description": "在请求根级设置 model 和可选的 callback_url，音乐参数放在 input 中。"
+              },
+              "examples": {
+                "custom-lyrics": {
+                  "summary": "使用自定义歌词创作歌曲",
+                  "value": {
+                    "model": "minimax/music-2.6",
+                    "input": {
+                      "prompt": "City pop, 100 BPM, warm female vocals, electric piano, rounded synth bass and a nostalgic evening mood",
+                      "lyrics": "[Verse]\nThe evening lights begin to glow\nWe follow streets we used to know\n[Chorus]\nCarry the melody into the night\nFollow the rhythm until morning light",
+                      "lyrics_optimizer": false,
+                      "is_instrumental": false,
+                      "audio_setting": {
+                        "sample_rate": 44100,
+                        "bitrate": 256000,
+                        "format": "mp3"
+                      }
+                    }
+                  }
+                },
+                "automatic-lyrics": {
+                  "summary": "根据音乐提示词生成歌词",
+                  "value": {
+                    "model": "minimax/music-2.6",
+                    "input": {
+                      "prompt": "Uplifting indie folk song about a rooftop garden, acoustic guitar, gentle drums and warm English vocals",
+                      "lyrics_optimizer": true,
+                      "is_instrumental": false
+                    }
+                  }
+                },
+                "instrumental": {
+                  "summary": "创作纯音乐曲目",
+                  "value": {
+                    "model": "minimax/music-2.6",
+                    "input": {
+                      "prompt": "Instrumental ambient piano, soft strings, slow flowing rhythm and a peaceful morning atmosphere",
+                      "is_instrumental": true,
+                      "lyrics_optimizer": false,
+                      "audio_setting": {
+                        "sample_rate": 44100,
+                        "bitrate": 256000,
+                        "format": "wav"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务已提交",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "enum": [
+                        200
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "task_id",
+                        "status",
+                        "created_time"
+                      ],
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "not_started",
+                            "running",
+                            "finished",
+                            "failed"
+                          ]
+                        },
+                        "created_time": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "data": {
+                    "task_id": "task-unified-example",
+                    "status": "running",
+                    "created_time": "2026-09-10T08:00:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求校验失败或账户积分不足。请查看响应中的 detail，修正请求或补充账户余额。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "凭证无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "拒绝访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "模型不存在或已停用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "JSON 无效或请求体不是对象",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "超出速率限制或 API Key 积分限额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "任务提交失败。请查看响应信息后重试。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "请求的模型暂时不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "detail"
+                  ],
+                  "properties": {
+                    "detail": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "array",
+                          "items": {}
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "请求超时",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Request timeout"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用 VIDGO_API_KEY。"
+      }
+    }
+  }
+}

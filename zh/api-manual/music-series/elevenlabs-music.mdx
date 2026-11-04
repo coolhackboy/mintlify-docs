@@ -1,0 +1,306 @@
+---
+title: "ElevenLabs Music"
+description: "根据文字简述或逐段编排方案创作歌曲或纯音乐，可控制音乐风格、歌词和编排。"
+icon: "music"
+openapi: "/zh/api-manual/music-series/elevenlabs-music.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+根据文字简述或逐段编排方案创作歌曲或纯音乐，可控制音乐风格、歌词和编排。
+
+## 模型
+
+- **elevenlabs/music** - 根据文本或结构化编排方案生成音乐。
+
+## 功能
+
+- 根据文本或结构化编排方案生成音乐。
+- 规划音乐段落，每段可设置自己的风格、歌词和时长。
+- 使用 `output_format` 选择输出编码。
+
+## 时长选项
+
+- **文本输入** - 可选的 `duration` 为 **3 到 600 秒**之间的数值，仅与 `text` 一起使用。
+- **编排方案** - 每个段落为 **3-120 秒**。
+
+## 输出选项
+
+### 输出格式
+
+- `output_format`：可选。字符串。默认：`mp3_44100_128`。
+
+<Accordion title="支持的输出格式">
+
+- `mp3_22050_32`
+- `mp3_44100_32`
+- `mp3_44100_64`
+- `mp3_44100_96`
+- `mp3_44100_128`
+- `mp3_44100_192`
+- `pcm_8000`
+- `pcm_16000`
+- `pcm_22050`
+- `pcm_24000`
+- `pcm_44100`
+- `pcm_48000`
+- `ulaw_8000`
+- `alaw_8000`
+- `opus_48000_32`
+- `opus_48000_64`
+- `opus_48000_96`
+- `opus_48000_128`
+- `opus_48000_192`
+
+</Accordion>
+
+## 高级参数
+
+在请求根级设置 `model` 和可选的 `callback_url`。所有工作流程参数（包括输出选项）都放在 `input` 中。
+
+选择一种创作方式：文字简述或结构化编排方案。
+
+- `text` 和 `composition_plan` 必须且只能提供一个。
+- `duration` 和 `is_instrumental` 仅适用于 `text`。`respect_sections_durations` 仅与 `composition_plan` 一起使用。
+
+### 文本
+
+- `text`：使用文本方式时必填。描述要生成的音乐。长度：**1-4,100 个字符**。
+- 在音乐描述中写明期望的流派、情绪和乐器。
+
+### 编排方案
+
+- `composition_plan`：使用编排方案方式时必填。描述全局风格和按顺序排列的音乐段落。传入包含以下字段的对象。
+
+- `composition_plan.positive_global_styles`：必填。数组，每项必须是字符串。
+- `composition_plan.negative_global_styles`：必填。数组，每项必须是字符串。
+- `composition_plan.sections`：必填。至少 1 项，每项为一个对象。
+
+- `composition_plan.sections[].section_name`：必填。长度：**1-100 个字符**。
+- `composition_plan.sections[].positive_local_styles`：必填。数组，每项必须是字符串。
+- `composition_plan.sections[].negative_local_styles`：必填。数组，每项必须是字符串。
+- `composition_plan.sections[].duration`：必填。时长（秒）。数值 `3` 到 `120`。
+- `composition_plan.sections[].lines`：必填。数组，每项必须是字符串，每个字符串最多 **200 个字符**。
+- 段落时长以秒为单位。
+
+### 纯音乐模式
+
+- `is_instrumental`：可选。设为 `true` 生成纯音乐。文本方式下默认：`false`。
+- 仅与 `text` 一起使用。
+
+### 段落时长
+
+- `respect_sections_durations`：可选。仅与编排方案一起使用，控制是否严格遵循段落时长。使用 `true` 或 `false`。编排方案方式下默认：`true`。
+
+## 输出文件
+
+- 读取返回的 `files` 数组中的每一项。
+- 生成的音频 `file_type` 为 `"audio"`。
+- 时间戳和对齐文件可能使用 `file_type: "other"`。如有可选的文件元数据，请一并保留。
+
+## 示例
+
+每个示例都包含请求、对应的已完成任务响应和生成的音频。将请求提交到 `POST https://api.vidgo.ai/api/generate/submit`，然后使用提交返回的任务 ID 查询 `GET https://api.vidgo.ai/api/generate/status/{task_id}`。
+
+<AccordionGroup>
+
+<Accordion title="屋顶上的春天">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/music",
+  "input": {
+    "composition_plan": {
+      "positive_global_styles": [
+        "indie folk with subtle organic electronica",
+        "96 BPM, 4/4",
+        "warm clear female lead vocal",
+        "acoustic guitar, rounded bass, delicate electronic percussion",
+        "hopeful intimate song about planting a rooftop garden",
+        "clean spacious studio mix, clear Mandarin and English diction"
+      ],
+      "negative_global_styles": [
+        "harsh distortion",
+        "crowded arrangement",
+        "spoken narration",
+        "abrupt cut off"
+      ],
+      "sections": [
+        {
+          "section_name": "Acoustic introduction",
+          "duration": 8,
+          "positive_local_styles": [
+            "instrumental only",
+            "fingerpicked acoustic guitar introduces a memorable gentle motif",
+            "soft airy pad, no drums"
+          ],
+          "negative_local_styles": [],
+          "lines": []
+        },
+        {
+          "section_name": "Mandarin verse",
+          "duration": 16,
+          "positive_local_styles": [
+            "sing the supplied Mandarin lyrics clearly",
+            "intimate gentle lead vocal",
+            "fingerpicked guitar and soft bass, restrained percussion"
+          ],
+          "negative_local_styles": [],
+          "lines": [
+            "把春天种在屋顶上",
+            "等风翻过旧砖墙"
+          ]
+        },
+        {
+          "section_name": "English chorus",
+          "duration": 16,
+          "positive_local_styles": [
+            "sing the supplied English lyrics clearly",
+            "open uplifting melody",
+            "full warm drums and bass enter",
+            "layered backing vocal harmonies, retain the acoustic motif"
+          ],
+          "negative_local_styles": [],
+          "lines": [
+            "Little seeds above the street",
+            "Find the sunlight, find the beat"
+          ]
+        },
+        {
+          "section_name": "Instrumental resolution",
+          "duration": 8,
+          "positive_local_styles": [
+            "instrumental only, no vocals",
+            "return to fingerpicked guitar motif",
+            "drums fall away, warm sustained final chord with natural decay"
+          ],
+          "negative_local_styles": [],
+          "lines": []
+        }
+      ]
+    },
+    "respect_sections_durations": true,
+    "output_format": "mp3_44100_128"
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "W6KDNIQQOUAE1K8V",
+    "status": "finished",
+    "created_time": "2026-09-27T10:48:12",
+    "progress": 100,
+    "error_message": null,
+    "files": [
+      {
+        "file_type": "audio",
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/01/output.mp3"
+      }
+    ]
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/01/output.mp3" aria-label="屋顶上的春天" />
+
+[下载音频](https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/01/output.mp3)
+
+</Accordion>
+
+<Accordion title="钟表匠的线索">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/music",
+  "input": {
+    "text": "Create a 30-second instrumental jazz cue for a puzzle scene in a clockmaker's workshop. 104 BPM, lightly swinging 4/4, playful curiosity with a hint of mystery. Use plucked upright bass, brushed drums, muted trumpet and vibraphone, each clearly separated in a warm intimate acoustic mix. Begin with a distinctive four-note vibraphone motif over bass; let muted trumpet answer and develop that motif in the middle, while brush accents subtly increase the momentum. Resolve with a short, clean ensemble cadence and allow the last note to decay naturally. No vocals, choir, spoken words, ticking sound effects or abrupt cutoff.",
+    "duration": 30,
+    "is_instrumental": true,
+    "output_format": "mp3_44100_128"
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "EBXJLNFGE8WD7114",
+    "status": "finished",
+    "created_time": "2026-09-27T10:48:48",
+    "progress": 100,
+    "error_message": null,
+    "files": [
+      {
+        "file_type": "audio",
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/02/output.mp3"
+      }
+    ]
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/02/output.mp3" aria-label="钟表匠的线索" />
+
+[下载音频](https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/02/output.mp3)
+
+</Accordion>
+
+<Accordion title="穿过海带森林的光">
+
+<CodeGroup>
+
+```json Request
+{
+  "model": "elevenlabs/music",
+  "input": {
+    "text": "Compose a 40-second instrumental score for a nature documentary gliding through a sunlit underwater kelp forest. 72 BPM, gently flowing 4/4. Felt piano, delicate harp harmonics, soft sustained strings and a subtle low ambient texture; luminous, patient, full of quiet wonder. Start sparsely with isolated felt-piano notes and wide space. Gradually introduce harp and strings into an expansive rising harmony through the middle third, suggesting shafts of light moving through long fronds. Gently thin the arrangement and finish on a peaceful resolved chord with natural reverb decay. Detailed soft dynamics, wide stereo depth, no heavy percussion, no vocals or choir, no narration, no water sound effects, no abrupt cutoff.",
+    "duration": 40,
+    "is_instrumental": true,
+    "output_format": "mp3_44100_128"
+  }
+}
+```
+
+```json Completed task response
+{
+  "code": 200,
+  "data": {
+    "task_id": "VAK9IGFH57XPEUGP",
+    "status": "finished",
+    "created_time": "2026-09-27T10:49:30",
+    "progress": 100,
+    "error_message": null,
+    "files": [
+      {
+        "file_type": "audio",
+        "file_url": "https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/03/output.mp3"
+      }
+    ]
+  }
+}
+```
+
+</CodeGroup>
+
+<audio controls preload="none" src="https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/03/output.mp3" aria-label="穿过海带森林的光" />
+
+[下载音频](https://cdn.vidgo.ai/apis/models/elevenlabs/music/text-to-audio/v1/03/output.mp3)
+
+</Accordion>
+
+</AccordionGroup>

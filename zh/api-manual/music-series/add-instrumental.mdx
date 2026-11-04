@@ -1,0 +1,53 @@
+---
+title: "添加伴奏"
+description: "为上传的音频文件生成伴奏"
+icon: "music"
+openapi: "/zh/api-manual/music-series/add-instrumental.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询音乐详情](/zh/api-manual/music-series/query-music-detail)接口获取结果。
+</Tip>
+
+## 使用指南
+
+- 此接口为上传的音频文件生成伴奏
+- 通常用于人声分轨或旋律，以制作伴奏音轨
+- 无需制作人，即可为现有录音添加伴奏层
+
+## 参数详情
+
+- 必填参数：
+
+  - `upload_url`：要处理的音频文件 URL
+
+  - `title`：生成曲目的名称
+
+  - `tags`：期望的音乐风格（例如 "relaxing, piano, soothing"）
+
+  - `negative_tags`：要排除的风格（例如 "heavy metal, fast drums"）
+
+- 模型选择：
+
+  - **V5**：音乐表现力更出色，生成更快
+
+  - **V4_5PLUS**：音色更丰富（默认）
+
+## 使用说明
+
+- 使用描述性的标签引导伴奏风格
+- 结合正向和负向标签，精确控制输出
+- 回调机制会在三个阶段发送通知：文本生成、第一首曲目完成、全部曲目完成
+
+## 可选参数
+
+- `model` (string)：AI 模型版本。可选值：`V4_5PLUS`（默认）、`V5`。
+
+- `vocal_gender` (string)：人声性别偏好。`m` 为男声，`f` 为女声。注意：此参数只能提高概率，无法保证生成指定性别的人声。
+
+- `style_weight` (number)：遵循风格的强度。取值 0-1，最多 2 位小数。
+
+- `weirdness_constraint` (number)：控制创意偏离程度。取值 0-1，最多 2 位小数。
+
+- `audio_weight` (number)：音频特征的平衡权重。取值 0-1，最多 2 位小数。

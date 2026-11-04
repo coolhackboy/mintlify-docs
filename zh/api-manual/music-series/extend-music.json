@@ -1,0 +1,255 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - Extend Music API",
+    "description": "基于源音轨创建续写，从而扩展或修改已有音乐",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交音乐扩展任务",
+        "description": "基于源音轨创建续写，从而扩展或修改已有音乐",
+        "operationId": "submitExtendMusicTask",
+        "tags": ["Music Extension"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "custom-mode": {
+                  "summary": "自定义模式 - 完全控制",
+                  "value": {
+                    "model": "extend-music",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "default_param_flag": true,
+                      "audio_id": "audio_abc123",
+                      "prompt": "Continue with an energetic chorus section",
+                      "style": "Pop, Upbeat",
+                      "title": "夏日氛围（扩展版）",
+                      "continue_at": 120,
+                      "mv": "V5",
+                      "negative_tags": "Heavy Metal, Sad",
+                      "style_weight": 0.7
+                    }
+                  }
+                },
+                "simple-mode": {
+                  "summary": "简单模式 - 使用原始参数",
+                  "value": {
+                    "model": "extend-music",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "default_param_flag": false,
+                      "audio_id": "audio_abc123",
+                      "mv": "V4_5PLUS"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "所有 API 接口都需要 Bearer Token 认证\n\n获取 API Key：\n\n进入 **仪表盘 → API 密钥**（[API Key 管理页面](https://vidgo.ai/apis/dashboard/api-key)）获取你的 API Key\n\n在请求头中添加：\n\n```\nAuthorization: Bearer VIDGO_API_KEY\n```"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "extend-music"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "用于接收结果通知的 Webhook 回调 URL。\n\n接收任务完成更新的接口。",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": ["default_param_flag", "audio_id", "mv"],
+            "description": "音乐扩展的输入参数",
+            "properties": {
+              "default_param_flag": {
+                "type": "boolean",
+                "description": "控制使用自定义参数还是继承源音频的参数。\n\n- 为 `true` 时：启用自定义参数模式，`prompt`、`style`、`title` 和 `continue_at` 变为必填。\n\n- 为 `false` 时：只需 `audio_id` 和 `mv`。",
+                "example": true
+              },
+              "audio_id": {
+                "type": "string",
+                "description": "要扩展的源音轨标识符。\n\n这是你要续写或修改的已有曲目的唯一 ID。",
+                "example": "audio_abc123"
+              },
+              "prompt": {
+                "type": "string",
+                "description": "描述你希望如何扩展音乐。\n\n`default_param_flag` 为 `true` 时必填。\n\n各模型字符上限：\n- **V4**：最多 3000 个字符\n- **V4_5 & V4_5PLUS**：最多 5000 个字符\n- **V4_5ALL**：最多 5000 个字符\n- **V5**：最多 5000 个字符",
+                "maxLength": 3000,
+                "example": "Continue with an energetic chorus section"
+              },
+              "style": {
+                "type": "string",
+                "description": "扩展部分的音乐风格说明。\n\n`default_param_flag` 为 `true` 时必填。\n\n各模型字符上限：\n- **V4**：最多 200 个字符\n- **V4_5 & V4_5PLUS**：最多 1000 个字符\n- **V4_5ALL**：最多 1000 个字符\n- **V5**：最多 1000 个字符",
+                "maxLength": 200,
+                "example": "Pop, Upbeat"
+              },
+              "title": {
+                "type": "string",
+                "description": "扩展曲目的标题。\n\n`default_param_flag` 为 `true` 时必填。\n\n各模型字符上限：\n- **V4**：最多 80 个字符\n- **V4_5 & V4_5PLUS**：最多 100 个字符\n- **V4_5ALL**：最多 80 个字符\n- **V5**：最多 100 个字符",
+                "maxLength": 80,
+                "example": "Summer Vibes Extended"
+              },
+              "continue_at": {
+                "type": "number",
+                "description": "开始扩展的时间点（秒）。\n\n指定在原曲目中从哪个位置开始扩展。\n\n当 `default_param_flag` 为 `true` 时必填。",
+                "example": 120
+              },
+              "mv": {
+                "type": "string",
+                "description": "用于音乐扩展的 AI 模型版本。\n\n- **V5**：音乐表现力更出色，生成更快\n- **V4_5PLUS**：音色更丰富，创作方式更新，最长 8 分钟\n- **V4_5**：提示词理解更智能，生成更快，最长 8 分钟\n- **V4_5ALL**：提示词理解更智能，生成更快，最长 8 分钟\n- **V4**：人声质量提升，最长 4 分钟",
+                "enum": ["V4", "V4_5", "V4_5ALL", "V4_5PLUS", "V5"],
+                "example": "V5"
+              },
+              "negative_tags": {
+                "type": "string",
+                "description": "扩展中要排除的音乐风格或特征。\n\n指定输出中要避免的流派、情绪或乐器。",
+                "example": "Heavy Metal, Sad"
+              },
+              "vocal_gender": {
+                "type": "string",
+                "description": "扩展部分的偏好人声性别。\n\n- `m`：男声\n- `f`：女声\n\n**注意**：此参数只会提高指定性别出现的概率，无法保证。",
+                "enum": ["m", "f"],
+                "example": "m"
+              },
+              "style_weight": {
+                "type": "number",
+                "description": "控制指定风格对扩展的影响强度。\n\n范围：0-1，最多 2 位小数。\n\n值越高，越贴近指定风格。",
+                "minimum": 0,
+                "maximum": 1,
+                "example": 0.7
+              },
+              "weirdness_constraint": {
+                "type": "number",
+                "description": "控制实验性创意和非常规元素的程度。\n\n取值范围：0-1，最多 2 位小数。\n\n- 值较低：音乐更常规\n- 值较高：输出更具实验性和独特性",
+                "minimum": 0,
+                "maximum": 1,
+                "example": 0.5
+              },
+              "audio_weight": {
+                "type": "number",
+                "description": "在音频特性与其他生成因素之间取得平衡。\n\n取值范围：0-1，最多 2 位小数。\n\n调整最终输出中对音质和声音特征的侧重。",
+                "minimum": 0,
+                "maximum": 1,
+                "example": 0.6
+              },
+              "persona_id": {
+                "type": "string",
+                "description": "应用于扩展音乐的 Persona ID。\n\n仅在启用自定义模式（`default_param_flag: true`）时可用。\n\n用于为音乐扩展应用特定的 Persona 风格。\n\n如何生成 persona_id，请参阅 [generate-persona](/zh/api-manual/music-series/generate-persona)。",
+                "example": "persona_123"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": ["code", "data"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200,
+            "description": "HTTP 状态码"
+          },
+          "data": {
+            "type": "object",
+            "required": ["task_id", "status", "created_time"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-unified-1757165031-uyujaw3d",
+                "description": "任务唯一标识，用于查询任务状态"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["not_started"],
+                "example": "not_started",
+                "description": "初始任务状态"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-11-12T10:30:00",
+                "description": "任务创建时间，ISO 8601 格式"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "error"],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400,
+            "description": "HTTP 状态码"
+          },
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Invalid request parameters",
+                "description": "描述错误原因的错误信息"
+              },
+              "type": {
+                "type": "string",
+                "example": "invalid_request_error",
+                "description": "错误类型标识"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

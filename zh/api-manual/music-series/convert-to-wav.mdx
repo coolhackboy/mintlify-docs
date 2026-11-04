@@ -1,0 +1,28 @@
+---
+title: "转换为 WAV"
+description: "将生成的音乐曲目转换为高质量 WAV 格式"
+icon: "music"
+openapi: "/zh/api-manual/music-series/convert-to-wav.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询音乐详情](/zh/api-manual/music-series/query-music-detail)接口获取结果。
+</Tip>
+
+## 使用指南
+
+- 此接口将生成的音乐曲目转换为高质量 WAV 格式
+- WAV 文件提供无损音质，适合专业用途
+- WAV 文件的下载 URL 通过回调发送
+
+## 参数详情
+
+- `task_id`（必填）：已完成音乐生成任务（Generate Music 或 Extend Music）的任务 ID
+- `audio_id`（必填）：回调数据中具体音轨的标识符
+
+## 使用说明
+
+- 每条音轨只能转换一次 WAV
+- 回调会包含高质量 WAV 文件的下载 URL
+- WAV 文件比压缩格式大得多，请提前规划存储空间

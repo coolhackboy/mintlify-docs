@@ -1,0 +1,34 @@
+---
+title: "分轨拆分"
+description: "将音乐曲目拆分为多条乐器分轨"
+icon: "music"
+openapi: "/zh/api-manual/music-series/vocal-remover/stem-split.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询音乐详情](/zh/api-manual/music-series/query-music-detail)接口获取结果。
+</Tip>
+
+## 使用指南
+
+<Note>
+**人声分离方式：**
+- [separate-vocals](/zh/api-manual/music-series/vocal-remover/separate-vocals)：不支持上传音频，2 轨分离，基于 Suno
+- [stem-split](/zh/api-manual/music-series/vocal-remover/stem-split)：不支持上传音频，12 轨分离，基于 Suno
+- [upload-and-separate-vocals](/zh/api-manual/music-series/vocal-remover/upload-and-separate-vocals)：支持上传音频，7 轨分离
+</Note>
+
+- 此接口将音乐曲目拆分为多条乐器分轨
+- 为和声、贝斯、铜管、鼓、效果音、吉他、键盘、打击乐、弦乐、合成器、人声、木管和钢琴分别生成独立音轨
+- 适用于精细混音或单独提取特定乐器
+
+## 参数详情
+
+- `task_id`（必填）：已完成音乐生成任务（Generate Music 或 Extend Music）的任务 ID
+- `audio_id`（必填）：回调数据中具体音轨的标识符
+
+## 使用说明
+
+- 每条音轨只能执行一次分轨拆分
+- 回调会包含每条分轨的下载 URL

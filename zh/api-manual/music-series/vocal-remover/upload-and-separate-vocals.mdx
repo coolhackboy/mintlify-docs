@@ -1,0 +1,41 @@
+---
+title: "上传并分离人声"
+description: "上传音频并将其拆分为多条分轨"
+icon: "music"
+openapi: "/zh/api-manual/music-series/vocal-remover/upload-and-separate-vocals.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询音乐详情](/zh/api-manual/music-series/query-music-detail)接口获取结果。
+</Tip>
+
+## 使用指南
+
+<Note>
+**人声分离方式：**
+- [separate-vocals](/zh/api-manual/music-series/vocal-remover/separate-vocals)：不支持上传音频，2 轨分离，基于 Suno
+- [stem-split](/zh/api-manual/music-series/vocal-remover/stem-split)：不支持上传音频，12 轨分离，基于 Suno
+- [upload-and-separate-vocals](/zh/api-manual/music-series/vocal-remover/upload-and-separate-vocals)：支持上传音频，7 轨分离
+</Note>
+
+- 此接口上传音频并将其拆分为多条分轨
+- 为贝斯、鼓、钢琴、吉他、人声和其他乐器分别生成独立音轨
+- 适用于混音或从上传的音频中单独提取特定乐器
+
+## 参数详情
+
+- `audio_url`（必填）：要上传并分离的音频文件 URL
+- `title`（可选）：分离任务的标题
+- `model_name`（可选）：使用的分离模型。默认：`base`
+  - `base`：标准分离质量
+  - `enhanced`：更高质量、更准确的分离
+  - `instrumental`：针对纯音乐曲目优化
+- `output_type`（可选）：要生成的输出分轨类型。默认：`general`
+  - `general`：所有可用分轨
+  - `bass`：仅贝斯音轨
+  - `drums`：仅鼓音轨
+  - `other`：其他乐器
+  - `piano`：仅钢琴音轨
+  - `guitar`：仅吉他音轨
+  - `vocals`：仅人声音轨

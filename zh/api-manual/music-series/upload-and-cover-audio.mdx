@@ -1,0 +1,67 @@
+---
+title: "上传并翻唱音频"
+description: "将音轨转换为新风格，同时保留原始旋律"
+icon: "music"
+openapi: "/zh/api-manual/music-series/upload-and-cover-audio.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询音乐详情](/zh/api-manual/music-series/query-music-detail)接口获取结果。
+</Tip>
+
+## 使用指南
+
+- 此接口将上传的音轨转换为新风格，同时保留原始旋律
+- 上传音频文件并指定期望的转换风格
+- 在应用新音乐特征的同时，保留原始旋律和结构
+
+## 参数详情
+
+- **音频上传要求**：
+
+  - 上传的音频时长不得超过 **8 分钟**
+
+  - **注意**：使用 V4_5ALL 模型时，上传的音频时长不得超过 **1 分钟**
+
+  - 通过 `upload_url` 提供指向音频文件的有效 URL
+
+- 自定义模式（`custom_mode: true`）：
+
+  - `style` 和 `title` 为**必填**
+
+  - `instrumental` 为 `false` 时，`prompt` 为**必填**
+
+  - 字符上限因模型而异：
+    - **V4**：`prompt` 3000 个字符，`style` 200 个字符，`title` 80 个字符
+    - **V4_5 & V4_5PLUS**：`prompt` 5000 个字符，`style` 1000 个字符，`title` 100 个字符
+    - **V4_5ALL**：`prompt` 5000 个字符，`style` 1000 个字符，`title` 80 个字符
+    - **V5**：`prompt` 5000 个字符，`style` 1000 个字符，`title` 100 个字符
+
+- 非自定义模式（`custom_mode: false`）：
+
+  - `prompt` 为**必填**，用于描述期望的转换（最多 500 个字符）
+
+  - `style` 和 `title` 应留空
+
+## 使用说明
+
+- 确保音频 URL 可公开访问，且文件时长不超过 8 分钟（V4_5ALL 为 1 分钟）
+
+- 为获得最佳效果，请使用旋律线清晰的高质量源音频
+
+- `audio_weight` 参数有助于在保留原曲与应用新风格之间取得平衡
+
+## 可选参数
+
+- `negative_tags` (string)：翻唱时要排除的音乐风格或特征。
+
+- `vocal_gender` (string)：人声性别偏好。`m` 为男声，`f` 为女声。注意：此参数只能提高概率，无法保证严格遵循。
+
+- `style_weight` (number)：遵循新风格的强度。取值 0-1，最多 2 位小数。
+
+- `weirdness_constraint` (number)：控制创意偏离程度。取值 0-1，最多 2 位小数。
+
+- `audio_weight` (number)：保留原始音频特征的平衡权重。取值 0-1，最多 2 位小数。
+
+- `persona_id` (string)：应用于翻唱曲目的 Persona ID。如何生成 persona_id，请参阅 [generate-persona](/zh/api-manual/music-series/generate-persona)。

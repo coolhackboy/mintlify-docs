@@ -1,0 +1,67 @@
+---
+title: "上传并扩展音频"
+description: "扩展音轨，同时保留原始风格"
+icon: "music"
+openapi: "/zh/api-manual/music-series/upload-and-extend-audio.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询音乐详情](/zh/api-manual/music-series/query-music-detail)接口获取结果。
+</Tip>
+
+## 使用指南
+
+- 此接口扩展上传的音频文件，同时保留原始风格
+- 上传已有音轨，并指定从何处继续
+- AI 会生成与原曲无缝融合的新增内容
+- 上传的音频文件时长不得超过 8 分钟（**注意**：V4_5ALL 模型最长 1 分钟）
+
+## 参数详情
+
+- `default_param_flag: true`（自定义参数模式）时：
+
+  - 可完全控制风格、标题等参数
+
+  - 若 `instrumental: true`：只需 `style`、`title` 和 `upload_url`
+
+  - 若 `instrumental: false`：需要 `style`、`title`、`prompt`（作为准确歌词）和 `upload_url`
+
+  - 字符上限因模型而异：
+
+    - **V4**：`prompt` 3000 个字符，`style` 200 个字符，`title` 80 个字符
+
+    - **V4_5 & V4_5PLUS**：`prompt` 5000 个字符，`style` 1000 个字符，`title` 100 个字符
+
+    - **V4_5ALL**：`prompt` 5000 个字符，`style` 1000 个字符，`title` 80 个字符
+
+    - **V5**：`prompt` 5000 个字符，`style` 1000 个字符，`title` 100 个字符
+
+- `default_param_flag: false` 时：
+
+  - 只需 `upload_url`。若 `instrumental: false`，会自动生成歌词
+
+## 使用说明
+
+- 建议：需要快速扩展并保持原始风格时，使用 `default_param_flag: false`
+- `continue_at` 参数决定扩展从何处开始，请设为希望新内容开始的时间点
+
+## 可选参数
+
+- `prompt` (string)：扩展音频的描述或歌词。`default_param_flag` 为 `true` 且 `instrumental` 为 `false` 时必填。prompt 会严格作为歌词。`default_param_flag` 为 `false` 时，会根据 prompt 自动生成歌词。
+
+- `style` (string)：音乐风格说明。`default_param_flag` 为 `true` 时必填。
+
+- `title` (string)：扩展音频的曲目标题。字符上限因模型而异（V4：80，V4_5 & V4_5PLUS & V5：100，V4_5ALL：80）。
+
+- `negative_tags` (string)：生成时要排除的音乐风格。
+
+- `vocal_gender` (string)：人声性别偏好。`m` 为男声，`f` 为女声。注意：此参数只能提高概率，无法保证生成指定性别的人声。
+
+- `style_weight` (number)：遵循风格的强度。取值 0-1，最多 2 位小数。
+
+- `weirdness_constraint` (number)：控制创意偏离程度。取值 0-1，最多 2 位小数。
+
+- `audio_weight` (number)：音频特征的平衡权重。取值 0-1，最多 2 位小数。
+
+- `persona_id` (string)：应用于生成音乐的 Persona ID。如何生成 persona_id，请参阅 [generate-persona](/zh/api-manual/music-series/generate-persona)。
