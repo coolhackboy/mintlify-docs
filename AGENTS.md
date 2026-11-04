@@ -127,9 +127,10 @@ openapi: "/api-manual/video-series/kwaivgi-kling-v3-0-std-text-to-video.json POS
 
 ### 现状与导航策略
 
-- 已翻译：Platform Tab 全部页面（`zh/index`、quickstart、workflow-guide、error-codes、任务管理、Suno 音乐任务查询 / Webhook、文件管理、账户、FAQs）、`zh/openapi.json`，以及每个模型 Tab 的概览页（含 `zh/api-manual/chat-series/overview`）。
-- 模型页尚未翻译。`docs.json` 的 `zh` 导航**只登记已存在的 zh 页面**：每个模型 Tab 目前只有概览页一个分组，避免 Mintlify 构建时出现缺失页面或空分组。（PoYo 的 zh 树是英文导航的完整镜像；Vidgo 在翻译完成前按「只列已翻译页」逐步逼近同样的镜像。）
-- 未翻译页面在 zh 页面里的链接暂时指向英文路径（不带 `/zh`），翻译后再改成 `/zh/...`。
+- `zh` 导航是 `en` 导航的**完整镜像**：Tab、分组、页面顺序与英文一致，每个英文导航页都有对应的 `zh/` 页面（Tab/分组名按下表翻译，厂商子组名不译）。`api.openapi` 里每个 zh JSON 都已登记，排在全部英文 spec 之后、顺序与英文对应。
+- 不在导航里的旧页（如 `sora-2`、`kling-2-6`、`grok-imagine` 等隐藏页）没有中文版，也不需要补。
+- zh 页面之间的站内链接一律用 `/zh/...`；只有目标 zh 页不存在时才保留英文路径。
+- 新增英文导航页时，必须同时提交中文页并登记到 zh 导航与 `api.openapi`，保持镜像不缺页。
 
 ### 翻译一个模型页的步骤
 
@@ -140,7 +141,7 @@ openapi: "/api-manual/video-series/kwaivgi-kling-v3-0-std-text-to-video.json POS
 5. `grep -rn "(/api-manual/{series}/{name})\|\"/api-manual/{series}/{name}\"" zh/`，把其他 zh 页面里指向该页英文版的链接改成 `/zh/...`。
 6. 运行 `python scripts/validate_docs.py` 和 `mint validate`，都通过再提交。
 
-导航名称译法：Platform → 平台；Overview → 概览；Task Management → 任务管理；All Tasks → 全部任务；Music → 音乐；File Management → 文件管理；Account Management → 账户管理；FAQs → 常见问题；Image Models → 图像模型；Video Models → 视频模型；Audio Models → 音频模型；LLM Models → LLM 模型；3D Models → 3D 模型；Music Models → 音乐模型；API Formats → API 格式；Vocal Remover → 人声分离。厂商子组（OpenAI、Google、Flux、Seedream、Kling、Alibaba、Grok (xAI)、MiniMax / Hailuo、Runway、Seedance、Suno AI、ElevenLabs、Meshy、Hunyuan3D、Tripo3D、xAI、MiniMax）保持英文。
+导航名称译法：Platform → 平台；Overview → 概览；Task Management → 任务管理；All Tasks → 全部任务；Music → 音乐；File Management → 文件管理；Account Management → 账户管理；FAQs → 常见问题；Image Models → 图像模型；Video Models → 视频模型；Audio Models → 音频模型；LLM Models → LLM 模型；3D Models → 3D 模型；Music Models → 音乐模型；API Formats → API 格式；Vocal Remover → 人声分离。厂商子组（OpenAI、Google、Flux、Seedream、Ideogram、Kling、Alibaba、Grok (xAI)、MiniMax / Hailuo、Runway、Seedance、Vidu、OmniHuman (ByteDance)、PixVerse、Suno AI、ElevenLabs、Meshy、Hunyuan3D、Tripo3D、xAI、MiniMax）保持英文。
 
 新增或修改英文页时，若中文页已存在，同步修改中文 MDX 和 JSON。
 
