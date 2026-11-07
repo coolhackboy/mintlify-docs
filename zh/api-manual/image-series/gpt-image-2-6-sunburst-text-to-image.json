@@ -1,0 +1,292 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - GPT Image 2.6 Sunburst 文生图",
+    "description": "GPT Image 2.6 Sunburst 文生图 API 根据提示词生成一张 1K、2K 或 4K 图像，支持透明背景、输出压缩和内容审核强度控制。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "生产环境服务器"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "提交 GPT Image 2.6 Sunburst 文生图任务",
+        "operationId": "submitGPTImage26SunburstTexttoImageTask",
+        "tags": [
+          "GPT Image 2.6 Sunburst Text to Image"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "default": {
+                  "summary": "生成一张图像",
+                  "value": {
+                    "model": "openai/gpt-image-2.6-sunburst/text-to-image",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A product photograph of a silver coffee maker in a bright studio.",
+                      "size": "1:1",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "transparent-background": {
+                  "summary": "生成透明背景素材",
+                  "value": {
+                    "model": "openai/gpt-image-2.6-sunburst/text-to-image",
+                    "input": {
+                      "prompt": "A clean cutout of a small silver robot.",
+                      "background": "transparent",
+                      "output_format": "webp",
+                      "resolution": "4K",
+                      "quality": "xhigh"
+                    }
+                  }
+                },
+                "custom-size": {
+                  "summary": "使用自定义尺寸生成",
+                  "value": {
+                    "model": "openai/gpt-image-2.6-sunburst/text-to-image",
+                    "input": {
+                      "prompt": "A panoramic city garden with soft morning light.",
+                      "size": "2304x1536",
+                      "resolution": "2K",
+                      "quality": "medium"
+                    }
+                  }
+                },
+                "compressed-jpeg": {
+                  "summary": "压缩 JPEG 输出",
+                  "value": {
+                    "model": "openai/gpt-image-2.6-sunburst/text-to-image",
+                    "input": {
+                      "prompt": "A ceramic coffee cup on a linen tablecloth, soft window light",
+                      "size": "3:2",
+                      "quality": "medium",
+                      "output_format": "jpeg",
+                      "output_compression": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "任务提交结果。任务 ID 标识一项异步任务；生成可能仍在进行中。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "使用 `Authorization: Bearer VIDGO_API_KEY`。"
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "openai/gpt-image-2.6-sunburst/text-to-image"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "可选的 Webhook URL，用于接收完成或失败通知。",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32000,
+                "description": "描述期望图像的文本。\n\n至少包含一个非空白字符。"
+              },
+              "size": {
+                "type": "string",
+                "description": "输出宽高比预设、auto 或自定义 WIDTHxHEIGHT。\n\n默认 1:1。\n\n预设：`1:1`、`2:3`、`3:2`、`4:3`、`3:4`、`4:5`、`5:4`、`16:9`、`9:16`、`21:9`。\n\n`auto` 由模型决定尺寸，可与任意分辨率搭配，按 1K 计费。\n\n自定义尺寸可与任意分辨率搭配：两条边都是 16 的倍数，最长边不超过 3840，宽高比不超过 3:1，总像素数 655360–8294400。宽和高之间用 `x` 或 `X` 分隔。按总像素数对应的档位计费（不超过 1572864 为 1K，不超过 4194304 为 2K，更大为 4K），所选分辨率更高时按所选分辨率。",
+                "default": "1:1"
+              },
+              "resolution": {
+                "type": "string",
+                "enum": [
+                  "1K",
+                  "2K",
+                  "4K"
+                ],
+                "default": "1K",
+                "description": "输出分辨率档位。"
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "png",
+                  "jpeg",
+                  "webp"
+                ],
+                "default": "png",
+                "description": "输出图像格式。\n\n透明输出需要 PNG 或 WebP。"
+              },
+              "output_compression": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "description": "输出图像的压缩级别，0 到 100。\n\n仅当 output_format 为 jpeg 或 webp 时可用，其他格式返回 400。省略时使用默认压缩。"
+              },
+              "quality": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high",
+                  "xhigh",
+                  "max"
+                ],
+                "default": "high",
+                "description": "图像质量档位。\n\n计费取决于质量和计费档位。"
+              },
+              "background": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "transparent",
+                  "opaque"
+                ],
+                "default": "auto",
+                "description": "背景模式。\n\n透明输出需要 PNG 或 WebP。"
+              },
+              "moderation": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "low"
+                ],
+                "default": "auto",
+                "description": "内容审核严格程度。\n\nlow 过滤更宽松。"
+              },
+              "complexity": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ],
+                "default": "high",
+                "description": "模型生成前的规划力度。\n\n不影响价格。"
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-example-001"
+              },
+              "status": {
+                "type": "string",
+                "example": "not_started"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-10-09T10:30:00"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "错误信息。参见[错误码](/zh/api-manual/error-codes)。",
+            "example": "prompt is required"
+          }
+        }
+      }
+    }
+  }
+}

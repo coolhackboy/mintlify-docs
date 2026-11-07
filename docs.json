@@ -50,6 +50,10 @@
       "/api-manual/image-series/gpt-image-2-5-flare-edit.json",
       "/api-manual/image-series/gpt-image-2-5-sunburst-text-to-image.json",
       "/api-manual/image-series/gpt-image-2-5-sunburst-edit.json",
+      "/api-manual/image-series/gpt-image-2-6-flare-text-to-image.json",
+      "/api-manual/image-series/gpt-image-2-6-flare-edit.json",
+      "/api-manual/image-series/gpt-image-2-6-sunburst-text-to-image.json",
+      "/api-manual/image-series/gpt-image-2-6-sunburst-edit.json",
       "/api-manual/image-series/nano-banana.json",
       "/api-manual/image-series/nano-banana-2.json",
       "/api-manual/image-series/nano-banana-2-new.json",
@@ -333,6 +337,10 @@
       "/zh/api-manual/image-series/gpt-image-2-5-flare-edit.json",
       "/zh/api-manual/image-series/gpt-image-2-5-sunburst-text-to-image.json",
       "/zh/api-manual/image-series/gpt-image-2-5-sunburst-edit.json",
+      "/zh/api-manual/image-series/gpt-image-2-6-flare-text-to-image.json",
+      "/zh/api-manual/image-series/gpt-image-2-6-flare-edit.json",
+      "/zh/api-manual/image-series/gpt-image-2-6-sunburst-text-to-image.json",
+      "/zh/api-manual/image-series/gpt-image-2-6-sunburst-edit.json",
       "/zh/api-manual/image-series/nano-banana-2.json",
       "/zh/api-manual/image-series/nano-banana-2-new.json",
       "/zh/api-manual/image-series/nano-banana-2-1-text-to-image.json",
@@ -663,7 +671,11 @@
                       "api-manual/image-series/gpt-image-2-5-flare-text-to-image",
                       "api-manual/image-series/gpt-image-2-5-flare-edit",
                       "api-manual/image-series/gpt-image-2-5-sunburst-text-to-image",
-                      "api-manual/image-series/gpt-image-2-5-sunburst-edit"
+                      "api-manual/image-series/gpt-image-2-5-sunburst-edit",
+                      "api-manual/image-series/gpt-image-2-6-flare-text-to-image",
+                      "api-manual/image-series/gpt-image-2-6-flare-edit",
+                      "api-manual/image-series/gpt-image-2-6-sunburst-text-to-image",
+                      "api-manual/image-series/gpt-image-2-6-sunburst-edit"
                     ]
                   },
                   {
@@ -1195,7 +1207,11 @@
                       "zh/api-manual/image-series/gpt-image-2-5-flare-text-to-image",
                       "zh/api-manual/image-series/gpt-image-2-5-flare-edit",
                       "zh/api-manual/image-series/gpt-image-2-5-sunburst-text-to-image",
-                      "zh/api-manual/image-series/gpt-image-2-5-sunburst-edit"
+                      "zh/api-manual/image-series/gpt-image-2-5-sunburst-edit",
+                      "zh/api-manual/image-series/gpt-image-2-6-flare-text-to-image",
+                      "zh/api-manual/image-series/gpt-image-2-6-flare-edit",
+                      "zh/api-manual/image-series/gpt-image-2-6-sunburst-text-to-image",
+                      "zh/api-manual/image-series/gpt-image-2-6-sunburst-edit"
                     ]
                   },
                   {

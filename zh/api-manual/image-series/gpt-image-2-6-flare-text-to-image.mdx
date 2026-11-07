@@ -1,0 +1,69 @@
+---
+title: "GPT Image 2.6 Flare 文生图"
+description: "GPT Image 2.6 Flare 文生图 API 根据提示词生成一张 1K、2K 或 4K 图像，支持透明背景、输出压缩和内容审核强度控制。"
+icon: "image"
+openapi: "/zh/api-manual/image-series/gpt-image-2-6-flare-text-to-image.json POST /api/generate/submit"
+---
+
+<Tip>
+1. 提交后会返回 `task_id`。如果提供了 `callback_url`，当任务状态变为 `finished` 或 `failed` 时，系统会向 `callback_url` 发送 POST 请求。
+2. 无论是否提供 `callback_url`，都可以通过统一的[查询任务状态](/zh/api-manual/task-management/status)接口获取结果。
+</Tip>
+
+GPT Image 2.6 Flare 文生图根据文本提示词生成一张图像，适用于产品图、透明素材以及需要精确像素的版面，支持 1K、2K 和 4K。Flare 是 GPT Image 2.6 中速度更快的选项，适合快速迭代。
+
+如需基于参考图编辑，请使用[GPT Image 2.6 Flare 图像编辑](/zh/api-manual/image-series/gpt-image-2-6-flare-edit)（`openai/gpt-image-2.6-flare/edit`）。GPT Image 2.6 的参数与 [GPT Image 2.5 Flare](/zh/api-manual/image-series/gpt-image-2-5-flare-text-to-image) 相同，另外新增 `output_compression`、`moderation` 和 `complexity`。
+
+## 模型
+
+- **openai/gpt-image-2.6-flare/text-to-image** — GPT Image 2.6 Flare 文生图，每次请求生成一张图像。
+
+## 功能
+
+- 根据最多 32,000 个字符的提示词进行文生图。
+- 三档分辨率（`1K`、`2K`、`4K`），支持宽高比预设、`auto` 或自定义 `WIDTHxHEIGHT` 尺寸。
+- 五档质量：`low`、`medium`、`high`、`xhigh`、`max`。
+- 透明或不透明背景；输出 PNG、JPEG 或 WebP。
+- 可调节 JPEG/WebP 压缩、内容审核强度和规划力度（`complexity`）。
+
+## 必填参数
+
+- `prompt` (string)：描述目标图像的文本。最多 32,000 个字符，不能为空白。
+
+## 可选参数
+
+- `size` (string)：宽高比预设、`auto` 或自定义 `WIDTHxHEIGHT`。默认 `1:1`。参见[尺寸](#尺寸)。
+- `resolution` (string)：`1K`、`2K` 或 `4K`。默认 `1K`。
+- `quality` (string)：`low`、`medium`、`high`、`xhigh` 或 `max`。默认 `high`。
+- `background` (string)：`auto`、`transparent` 或 `opaque`。默认 `auto`。透明背景需要输出 `png` 或 `webp`。
+- `output_format` (string)：`png`、`jpeg` 或 `webp`。默认 `png`。
+- `output_compression` (integer)：压缩级别，`0` 到 `100`。仅当 `output_format` 为 `jpeg` 或 `webp` 时可用。省略时使用默认压缩。
+- `moderation` (string)：内容审核严格程度，`auto` 或 `low`。默认 `auto`；`low` 过滤更宽松。
+- `complexity` (string)：模型生成前的规划力度，`low`、`medium` 或 `high`。默认 `high`。不影响价格。
+
+## 尺寸
+
+- 预设：`1:1`、`2:3`、`3:2`、`4:3`、`3:4`、`4:5`、`5:4`、`16:9`、`9:16`、`21:9`。省略 `size` 时，按所选 `resolution` 输出 `1:1`。
+- 预设保持所选 `resolution` 档位；实际像素尺寸可能因每次生成而不同。需要精确像素时请使用自定义尺寸。
+- `auto` 由模型决定图像尺寸（约 150 万像素），可与任意 `resolution` 搭配，按 `1K` 档计费。
+- 自定义 `WIDTHxHEIGHT`（用 `x` 或 `X` 分隔，例如 `2304x1536`）可与任意 `resolution` 搭配。两条边都必须是 16 的倍数，最长边不超过 3,840 像素，宽高比不超过 3:1，总像素数在 655,360 到 8,294,400 之间。
+- 自定义尺寸按总像素数对应的档位计费；所选 `resolution` 更高时按所选档位：
+
+| 总像素数（自定义尺寸） | 计费档位 |
+| --- | --- |
+| 不超过 1,572,864 | `1K` |
+| 1,572,865–4,194,304 | `2K` |
+| 超过 4,194,304 | `4K` |
+
+## 示例
+
+- **生成一张图像**：棚拍产品图，`1:1`、`1K`，附带 `callback_url`。
+- **透明素材**：`background: transparent` 的抠图素材，WebP、`4K`、`xhigh` 质量。
+- **自定义尺寸**：`2304x1536` 的全景场景，`2K`、`medium` 质量。
+- **压缩 JPEG**：`3:2`、`medium` 质量，`output_format: jpeg`、`output_compression: 80`。
+
+## 注意事项
+
+- 每次请求只返回一张图像；`n` 不为 `1` 时返回 400。未列出的字段返回 400。`model` 和 `callback_url` 放在请求根级，不放在 `input` 内。
+- 透明背景搭配 `output_format: jpeg` 返回 400。`output_compression` 搭配 `output_format: png` 同样返回 400。
+- 积分取决于 `quality` 和计费档位（`resolution`，或[尺寸](#尺寸)中所述的自定义尺寸档位）。`complexity` 和 `moderation` 不影响价格。提交时预扣单张图像的封顶积分；任务完成后按实际 token 用量计费（不超过封顶），差额退还。任务失败全额退还。当前价格见[定价页](https://vidgo.ai/apis/api-pricing)。

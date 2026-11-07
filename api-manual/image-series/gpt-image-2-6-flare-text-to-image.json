@@ -1,0 +1,292 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vidgo API - GPT Image 2.6 Flare Text to Image",
+    "description": "The GPT Image 2.6 Flare Text to Image API turns a prompt into one 1K, 2K or 4K image, with transparent backgrounds, output compression and moderation control.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.vidgo.ai",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/generate/submit": {
+      "post": {
+        "summary": "Submit GPT Image 2.6 Flare Text to Image Task",
+        "operationId": "submitGPTImage26FlareTexttoImageTask",
+        "tags": [
+          "GPT Image 2.6 Flare Text to Image"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              },
+              "examples": {
+                "default": {
+                  "summary": "Generate one image",
+                  "value": {
+                    "model": "openai/gpt-image-2.6-flare/text-to-image",
+                    "callback_url": "https://your-domain.com/callback",
+                    "input": {
+                      "prompt": "A product photograph of a silver coffee maker in a bright studio.",
+                      "size": "1:1",
+                      "resolution": "1K"
+                    }
+                  }
+                },
+                "transparent-background": {
+                  "summary": "Create a transparent asset",
+                  "value": {
+                    "model": "openai/gpt-image-2.6-flare/text-to-image",
+                    "input": {
+                      "prompt": "A clean cutout of a small silver robot.",
+                      "background": "transparent",
+                      "output_format": "webp",
+                      "resolution": "4K",
+                      "quality": "xhigh"
+                    }
+                  }
+                },
+                "custom-size": {
+                  "summary": "Generate with custom dimensions",
+                  "value": {
+                    "model": "openai/gpt-image-2.6-flare/text-to-image",
+                    "input": {
+                      "prompt": "A panoramic city garden with soft morning light.",
+                      "size": "2304x1536",
+                      "resolution": "2K",
+                      "quality": "medium"
+                    }
+                  }
+                },
+                "compressed-jpeg": {
+                  "summary": "Compressed JPEG output",
+                  "value": {
+                    "model": "openai/gpt-image-2.6-flare/text-to-image",
+                    "input": {
+                      "prompt": "A ceramic coffee cup on a linen tablecloth, soft window light",
+                      "size": "3:2",
+                      "quality": "medium",
+                      "output_format": "jpeg",
+                      "output_compression": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task submission result. A task ID identifies asynchronous work; generation may still be running.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "Use `Authorization: Bearer VIDGO_API_KEY`."
+      }
+    },
+    "schemas": {
+      "SubmitRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "input"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "openai/gpt-image-2.6-flare/text-to-image"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional webhook URL for completion or failure notifications.",
+            "example": "https://your-domain.com/callback"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32000,
+                "description": "Text describing the desired image.\n\nInclude at least one non-whitespace character."
+              },
+              "size": {
+                "type": "string",
+                "description": "Output aspect-ratio preset, auto, or custom WIDTHxHEIGHT.\n\nDefaults to 1:1.\n\nPresets: `1:1`, `2:3`, `3:2`, `4:3`, `3:4`, `4:5`, `5:4`, `16:9`, `9:16`, `21:9`.\n\n`auto` lets the model choose the size at any resolution and is billed at 1K.\n\nCustom sizes work at any resolution: both edges multiples of 16, maximum edge 3840, aspect ratio at most 3:1, and 655360–8294400 total pixels. Use `x` or `X` between width and height. They are billed at the tier matching total pixels (up to 1572864 is 1K, up to 4194304 is 2K, larger is 4K), or the selected resolution if it is higher.",
+                "default": "1:1"
+              },
+              "resolution": {
+                "type": "string",
+                "enum": [
+                  "1K",
+                  "2K",
+                  "4K"
+                ],
+                "default": "1K",
+                "description": "Output resolution tier."
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "png",
+                  "jpeg",
+                  "webp"
+                ],
+                "default": "png",
+                "description": "Output image format.\n\nTransparent output requires PNG or WebP."
+              },
+              "output_compression": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "description": "Compression level for the output image, from 0 to 100.\n\nOnly allowed when output_format is jpeg or webp; any other format returns 400. When omitted, the default compression applies."
+              },
+              "quality": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high",
+                  "xhigh",
+                  "max"
+                ],
+                "default": "high",
+                "description": "Image quality tier.\n\nBilling depends on quality and the billing tier."
+              },
+              "background": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "transparent",
+                  "opaque"
+                ],
+                "default": "auto",
+                "description": "Background mode.\n\nTransparent output requires PNG or WebP."
+              },
+              "moderation": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "low"
+                ],
+                "default": "auto",
+                "description": "Content moderation strictness.\n\nlow applies less restrictive filtering."
+              },
+              "complexity": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ],
+                "default": "high",
+                "description": "Planning effort the model spends before generating.\n\nDoes not change the price."
+              }
+            }
+          }
+        }
+      },
+      "SubmitResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "task_id",
+              "status",
+              "created_time"
+            ],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "example": "task-example-001"
+              },
+              "status": {
+                "type": "string",
+                "example": "not_started"
+              },
+              "created_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-10-09T10:30:00"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "Error message. See [Error Codes](/api-manual/error-codes).",
+            "example": "prompt is required"
+          }
+        }
+      }
+    }
+  }
+}
