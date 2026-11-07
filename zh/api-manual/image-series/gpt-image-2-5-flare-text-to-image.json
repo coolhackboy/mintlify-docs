@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API - GPT Image 2.5 Flare 文生图",
-    "description": "使用 GPT Image 2.5 Flare 根据文本提示词生成一张图像。",
+    "description": "GPT Image 2.5 Flare 文生图 API 根据提示词生成一张 1K、2K 或 4K 图像，支持预设或自定义尺寸、五档质量和透明背景。",
     "version": "1.0.0"
   },
   "servers": [
@@ -151,7 +151,7 @@
               },
               "size": {
                 "type": "string",
-                "description": "输出宽高比或 WIDTHxHEIGHT。\n\n默认 1:1。\n\nauto 需要 1K。\n\n自定义尺寸需要 2K 或 4K，宽高须为 16 的倍数，最长边不超过 3840，宽高比不超过 3:1，像素总数为 655360–8294400。\n\n边长为 3840 像素时需要 4K。\n\n使用预设（`auto`、`1:1`、`2:3`、`3:2`、`4:3`、`3:4`、`4:5`、`5:4`、`16:9`、`9:16`、`21:9`）或自定义 `WIDTHxHEIGHT` 尺寸。\n\n宽和高之间用 `x` 或 `X` 分隔。",
+                "description": "输出宽高比预设、auto 或自定义 WIDTHxHEIGHT。\n\n默认 1:1。\n\n预设：`1:1`、`2:3`、`3:2`、`4:3`、`3:4`、`4:5`、`5:4`、`16:9`、`9:16`、`21:9`。\n\n`auto` 由模型决定尺寸，可与任意分辨率搭配，按 1K 计费。\n\n自定义尺寸可与任意分辨率搭配：两条边都是 16 的倍数，最长边不超过 3840，宽高比不超过 3:1，总像素数 655360–8294400。宽和高之间用 `x` 或 `X` 分隔。按总像素数对应的档位计费（不超过 1572864 为 1K，不超过 4194304 为 2K，更大为 4K），所选分辨率更高时按所选分辨率。",
                 "default": "1:1"
               },
               "resolution": {
@@ -184,7 +184,7 @@
                   "max"
                 ],
                 "default": "high",
-                "description": "图像质量档位。\n\n计费取决于质量和请求的分辨率档位。"
+                "description": "图像质量档位。\n\n计费取决于质量和计费档位。"
               },
               "background": {
                 "type": "string",
@@ -225,7 +225,7 @@
               },
               "status": {
                 "type": "string",
-                "example": "running"
+                "example": "not_started"
               },
               "created_time": {
                 "type": "string",
@@ -239,26 +239,13 @@
       "ErrorResponse": {
         "type": "object",
         "required": [
-          "code",
-          "error"
+          "detail"
         ],
         "properties": {
-          "code": {
-            "type": "integer",
-            "example": 400
-          },
-          "error": {
-            "type": "object",
-            "properties": {
-              "message": {
-                "type": "string",
-                "example": "Invalid request parameters"
-              },
-              "type": {
-                "type": "string",
-                "example": "invalid_request_error"
-              }
-            }
+          "detail": {
+            "type": "string",
+            "description": "错误信息。参见[错误码](/zh/api-manual/error-codes)。",
+            "example": "prompt is required"
           }
         }
       }

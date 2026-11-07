@@ -1,6 +1,6 @@
 ---
 title: "GPT Image 2.5 Sunburst Text to Image"
-description: "Generate one image with GPT Image 2.5 Sunburst using a text prompt."
+description: "The GPT Image 2.5 Sunburst Text to Image API turns a prompt into one 1K, 2K or 4K image, with preset or custom sizes, five quality tiers and transparent backgrounds."
 icon: "image"
 openapi: "/api-manual/image-series/gpt-image-2-5-sunburst-text-to-image.json POST /api/generate/submit"
 ---
@@ -10,32 +10,55 @@ openapi: "/api-manual/image-series/gpt-image-2-5-sunburst-text-to-image.json POS
 2. Regardless of whether `callback_url` is provided, you can retrieve the result through the unified [Query Task Status](/api-manual/task-management/status) endpoint.
 </Tip>
 
+GPT Image 2.5 Sunburst Text to Image generates one image from a text prompt, from quick product shots to transparent assets and exact-pixel layouts at 1K, 2K or 4K. Sunburst is the GPT Image 2.5 option for detailed visual work and precision-focused editing.
+
+For reference-image editing, use [GPT Image 2.5 Sunburst Image Edit](/api-manual/image-series/gpt-image-2-5-sunburst-edit) (`openai/gpt-image-2.5-sunburst/edit`).
+
+## Models
+
+- **openai/gpt-image-2.5-sunburst/text-to-image** — Text to image with GPT Image 2.5 Sunburst, one image per request.
+
+## Features
+
+- Text-to-image from a prompt of up to 32,000 characters.
+- Three resolution tiers (`1K`, `2K`, `4K`) with aspect-ratio presets, `auto`, or custom `WIDTHxHEIGHT` sizes.
+- Five quality tiers: `low`, `medium`, `high`, `xhigh`, `max`.
+- Transparent or opaque backgrounds; PNG, JPEG or WebP output.
+
+## Required parameters
+
+- `prompt` (string): Text describing the desired image. Up to 32,000 characters; must not be blank.
+
 ## Optional parameters
 
-- `size` (string): Use `auto`, `1:1`, `2:3`, `3:2`, `4:3`, `3:4`, `4:5`, `5:4`, `16:9`, `9:16`, `21:9`, or custom `WIDTHxHEIGHT` dimensions. Default: `1:1`.
-- `resolution` (string): Output resolution tier. Accepted values: `1K`, `2K`, `4K`. Default: `1K`.
-- `output_format` (string): Output image format. Transparent output requires PNG or WebP. Accepted values: `png`, `jpeg`, `webp`. Default: `png`.
-- `quality` (string): Image quality tier. Billing depends on quality and the requested resolution tier. Accepted values: `low`, `medium`, `high`, `xhigh`, `max`. Default: `high`.
-- `background` (string): Background mode. Transparent output requires PNG or WebP. Accepted values: `auto`, `transparent`, `opaque`. Default: `auto`.
+- `size` (string): Aspect-ratio preset, `auto`, or custom `WIDTHxHEIGHT`. Default `1:1`. See [Size](#size).
+- `resolution` (string): `1K`, `2K` or `4K`. Default `1K`.
+- `quality` (string): `low`, `medium`, `high`, `xhigh` or `max`. Default `high`.
+- `background` (string): `auto`, `transparent` or `opaque`. Default `auto`. A transparent background requires `png` or `webp` output.
+- `output_format` (string): `png`, `jpeg` or `webp`. Default `png`.
 
-## Usage Guide
+## Size
 
-Generate one image with GPT Image 2.5 Sunburst using a text prompt.
+- Presets: `1:1`, `2:3`, `3:2`, `4:3`, `3:4`, `4:5`, `5:4`, `16:9`, `9:16`, `21:9`. When `size` is omitted, the output is `1:1` at the selected `resolution`.
+- Presets keep the selected `resolution` tier; actual pixel dimensions may vary between generations. Use a custom size when you need exact pixels.
+- `auto` lets the model choose the size (about 1.5 megapixels). It works with any `resolution` and is billed at the `1K` tier.
+- Custom `WIDTHxHEIGHT` (use `x` or `X`, for example `2304x1536`) works with any `resolution`. Both edges must be multiples of 16, the longest edge must not exceed 3,840 pixels, the aspect ratio must not exceed 3:1, and total pixels must be between 655,360 and 8,294,400.
+- A custom size is billed at the tier that matches its total pixels, or at the selected `resolution` if that is higher:
 
-- Set `model` to `openai/gpt-image-2.5-sunburst/text-to-image`.
-- Place `model` and optional `callback_url` at the request root; place workflow parameters inside `input`.
-- Each request produces one image.
-- For reference-image editing, use [Image Edit](/api-manual/image-series/gpt-image-2-5-sunburst-edit) with `model=openai/gpt-image-2.5-sunburst/edit`.
+| Total pixels (custom size) | Billing tier |
+| --- | --- |
+| Up to 1,572,864 | `1K` |
+| 1,572,865–4,194,304 | `2K` |
+| Above 4,194,304 | `4K` |
 
-## Parameter Details
+## Examples
 
-- `prompt` is required. Supply non-blank text of up to 32,000 characters.
-- `size` defaults to `1:1`. `auto` is available only with `resolution=1K`.
-- Custom `WIDTHxHEIGHT` dimensions require `2K` or `4K`. Both edges must be positive multiples of 16, the longest edge must not exceed 3,840 pixels, the aspect ratio must not exceed 3:1, and total pixels must be between 655,360 and 8,294,400. A 3,840-pixel edge requires `4K`.
-- A transparent background requires `output_format=png` or `webp`.
+- **Generate one image**: a studio product photo, `1:1`, `1K`, with a `callback_url`.
+- **Transparent asset**: a cutout with `background: transparent`, WebP, `4K`, `xhigh` quality.
+- **Custom size**: a panoramic scene at `2304x1536`, `2K`, `medium` quality.
 
-## Billing
+## Notes
 
-Billing is per output image and depends on `quality` and the requested `resolution` tier. Aspect-ratio requests keep the selected tier; actual image dimensions may vary.
-
-Credits are deducted on submission and refunded if the task fails.
+- Each request returns exactly one image; `n` other than `1` returns 400. Fields not listed above return 400. `model` and `callback_url` belong at the request root, not inside `input`.
+- A transparent background with `output_format: jpeg` returns 400.
+- Credits depend on `quality` and the billing tier (`resolution`, or the custom-size tier described in [Size](#size)). The per-image maximum is reserved at submission; when the task finishes you are charged for actual token usage, up to that maximum, and the rest is refunded. A failed task is refunded in full. See the [pricing page](https://vidgo.ai/apis/api-pricing) for current rates.

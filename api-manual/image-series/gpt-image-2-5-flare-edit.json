@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Vidgo API - GPT Image 2.5 Flare Image Edit",
-    "description": "Edit one image with GPT Image 2.5 Flare using text instructions and reference images.",
+    "description": "The GPT Image 2.5 Flare Image Edit API edits 1–16 reference images into one 1K–4K image, with optional masks, custom sizes and transparent backgrounds.",
     "version": "1.0.0"
   },
   "servers": [
@@ -41,7 +41,6 @@
                       "image_urls": [
                         "https://cdn.vidgo.ai/temp/reference-product.png"
                       ],
-                      "size": "1:1",
                       "resolution": "2K"
                     }
                   }
@@ -174,8 +173,7 @@
               },
               "size": {
                 "type": "string",
-                "description": "Output aspect ratio or WIDTHxHEIGHT.\n\nDefaults to 1:1.\n\nauto requires 1K.\n\nCustom dimensions require 2K or 4K, multiples of 16, maximum edge 3840, aspect ratio at most 3:1, and 655360–8294400 pixels.\n\nA 3840-pixel edge requires 4K.\n\nUse a preset (`auto`, `1:1`, `2:3`, `3:2`, `4:3`, `3:4`, `4:5`, `5:4`, `16:9`, `9:16`, `21:9`) or custom `WIDTHxHEIGHT` dimensions.\n\nUse `x` or `X` between the width and height.",
-                "default": "1:1"
+                "description": "Output aspect-ratio preset, auto, or custom WIDTHxHEIGHT.\n\nWhen omitted, the output follows the first reference image's aspect ratio (closest supported ratio at the selected resolution).\n\nPresets: `1:1`, `2:3`, `3:2`, `4:3`, `3:4`, `4:5`, `5:4`, `16:9`, `9:16`, `21:9`.\n\n`auto` lets the model choose the size at any resolution and is billed at 1K.\n\nCustom sizes work at any resolution: both edges multiples of 16, maximum edge 3840, aspect ratio at most 3:1, and 655360–8294400 total pixels. Use `x` or `X` between width and height. They are billed at the tier matching total pixels (up to 1572864 is 1K, up to 4194304 is 2K, larger is 4K), or the selected resolution if it is higher."
               },
               "resolution": {
                 "type": "string",
@@ -218,7 +216,7 @@
                   "max"
                 ],
                 "default": "high",
-                "description": "Image quality tier.\n\nBilling depends on quality and the requested resolution tier."
+                "description": "Image quality tier.\n\nBilling depends on quality and the billing tier."
               },
               "background": {
                 "type": "string",
@@ -264,7 +262,7 @@
               },
               "status": {
                 "type": "string",
-                "example": "running"
+                "example": "not_started"
               },
               "created_time": {
                 "type": "string",
@@ -278,26 +276,13 @@
       "ErrorResponse": {
         "type": "object",
         "required": [
-          "code",
-          "error"
+          "detail"
         ],
         "properties": {
-          "code": {
-            "type": "integer",
-            "example": 400
-          },
-          "error": {
-            "type": "object",
-            "properties": {
-              "message": {
-                "type": "string",
-                "example": "Invalid request parameters"
-              },
-              "type": {
-                "type": "string",
-                "example": "invalid_request_error"
-              }
-            }
+          "detail": {
+            "type": "string",
+            "description": "Error message. See [Error Codes](/api-manual/error-codes).",
+            "example": "prompt is required"
           }
         }
       }
